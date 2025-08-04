@@ -48,14 +48,14 @@ public class F1DataMain {
     }
 
     //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
-    private boolean validKey(Map<Integer, ParticipantData> participants, int i) {
+    private boolean validKey(int i) {
         return participants.containsKey(i);
     }
 
     private void handleLapDataPacket(ByteBuffer byteBuffer) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             LapData ld = new LapData(byteBuffer);
-            if (validKey(participants, i)) {
+            if (validKey(i)) {
                 System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
             }
         }
@@ -67,24 +67,21 @@ public class F1DataMain {
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             CarSetupData csd = new CarSetupData(byteBuffer);
-            if (validKey(participants, i)) {
+            if (validKey(i)) {
                 System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
         }
     }
 
     private void handleParticipantsPacket(ByteBuffer byteBuffer) {
-        int index = 0;
         //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
         int numActiveCars = byteBuffer.get();
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             ParticipantData pd = new ParticipantData(byteBuffer);
             if (pd.getRaceNumber() > 0) {
                 pd.printName();
-                participants.put(index, pd);
+                participants.put(i, pd);
             }
-            //CRUCIAL!!!!!!! index value ensures that the drivers will be mapped to the correct lap data.
-            index++;
         }
     }
 
