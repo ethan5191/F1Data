@@ -7,17 +7,17 @@ import java.util.List;
 
 public class TelemetryData {
 
-    private ParticipantData participantData;
+    public TelemetryData(ParticipantData participantData) {
+        this.participantData = participantData;
+    }
+
+    private final ParticipantData participantData;
     private final List<TelemetryRunData> telemetryRunDataList = new ArrayList<>();
     private CarSetupData currentSetup;
     private LapData currentLap;
 
     public ParticipantData getParticipantData() {
         return participantData;
-    }
-
-    public void setParticipantData(ParticipantData participantData) {
-        this.participantData = participantData;
     }
 
     public List<TelemetryRunData> getTelemetryRunDataList() {

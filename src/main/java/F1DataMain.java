@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class F1DataMain {
 
-    private final Map<Integer, ParticipantData> participants = new HashMap<>();
+    private final Map<Integer, TelemetryData> participants = new HashMap<>();
 
     public void run() {
         int port = Constants.PORT_NUM;
@@ -80,7 +80,8 @@ public class F1DataMain {
             ParticipantData pd = new ParticipantData(byteBuffer);
             if (pd.getRaceNumber() > 0) {
                 pd.printName();
-                participants.put(i, pd);
+                TelemetryData td = new TelemetryData(pd);
+                participants.put(i, td);
             }
         }
     }
