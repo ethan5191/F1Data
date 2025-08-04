@@ -37,9 +37,7 @@ public class MotionData extends Data {
     private static final int PACK_SIZE = 60;
 
     public MotionData(ByteBuffer byteBuffer, int playerCarIndex) {
-        printMessage("Motion packets.Data ", byteBuffer.array().length);
-        //Used to ensure we get the players motion data as all cars data is in the byteBuffer.
-        byteBuffer.position(playerCarIndex * PACK_SIZE);
+//        printMessage("Motion packets.Data ", byteBuffer.array().length);
         this.worldPositionX = determineFloatValue(byteBuffer);
         this.worldPositionY = determineFloatValue(byteBuffer);
         this.worldPositionZ = determineFloatValue(byteBuffer);

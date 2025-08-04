@@ -20,3 +20,7 @@ Hamilton
 Bottas
 
 I think this is the order of the LapData information:
+
+Note I think this list can change from mode to mode, this was in Grand Prix.
+According to the documentation, the order is always the same once it has been established.
+Meaning if its ever different from this order, it will be that new order for as long as that session is alive.

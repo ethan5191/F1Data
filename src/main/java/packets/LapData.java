@@ -49,7 +49,7 @@ import java.nio.ByteBuffer;
 public class LapData extends Data {
 
     public LapData(ByteBuffer byteBuffer) {
-        printMessage("Lap Data ", byteBuffer.array().length);
+//        printMessage("Lap Data ", byteBuffer.array().length);
         this.lastLapTimeMs = byteBuffer.getInt();
         this.currentLapTimeMs = byteBuffer.getInt();
         this.sector1TimeMsPart = byteBuffer.getShort();

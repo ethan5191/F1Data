@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 public class ParticipantData extends Data {
 
     public ParticipantData(ByteBuffer byteBuffer) {
-        printMessage("Participant packets.Data ", byteBuffer.array().length);
+//        printMessage("Participant packets.Data ", byteBuffer.array().length);
         this.aiControlled = byteBuffer.get();
         this.driverId = byteBuffer.get();
         this.networkId = byteBuffer.get();
