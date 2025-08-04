@@ -1,5 +1,7 @@
 public class Constants {
 
+    public static final int PACKET_CAR_COUNT = 22;
+
     public static final int PORT_NUM = 20777;
 
     //length of the packet header, always present.

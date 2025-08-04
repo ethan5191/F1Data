@@ -32,17 +32,17 @@ public class F1DataMain {
 //                    System.out.println("Forward X " + md.getWorldForwardDirX() + " Forward Y " + md.getWorldForwardDirY() + " Forward Z " + md.getWorldForwardDirZ());
 //                }
                 if (ph.getPacketId() == Constants.LAP_DATA_PACK && !participants.isEmpty()) {
-                    for (int i = 0; i < 22; i++) {
+                    for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
                         LapData ld = new LapData(byteBuffer);
                         if (validKey(participants, i)) {
                             System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
                         }
                     }
                     //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-//                    byte timeTrailPBCarId = byteBuffer.get();
-//                    byte timeTrailRivalPdCarId = byteBuffer.get();
+                    byte timeTrailPBCarId = byteBuffer.get();
+                    byte timeTrailRivalPdCarId = byteBuffer.get();
                 } else if (ph.getPacketId() == Constants.CAR_SETUP_PACK && !participants.isEmpty()) {
-                    for (int i = 0; i < 22; i++) {
+                    for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
                         CarSetupData csd = new CarSetupData(byteBuffer);
                         if (validKey(participants, i)) {
                             System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
@@ -52,7 +52,7 @@ public class F1DataMain {
                     int index = 0;
                     //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
                     int numActiveCars = byteBuffer.get();
-                    for (int i = 0; i < 22; i++) {
+                    for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
                         ParticipantData pd = new ParticipantData(byteBuffer);
                         if (pd.getRaceNumber() > 0) {
                             pd.printName();
