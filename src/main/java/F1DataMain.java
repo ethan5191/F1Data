@@ -2,12 +2,14 @@ import packets.CarSetupData;
 import packets.LapData;
 import packets.PacketHeader;
 import packets.ParticipantData;
+import packets.events.ButtonsData;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,9 @@ public class F1DataMain {
                 switch (ph.getPacketId()) {
                     case Constants.MOTION_PACK:
                         break;
+                    case Constants.EVENT_PACK:
+                        handleEventPacket(byteBuffer);
+                        break;
                     case Constants.LAP_DATA_PACK:
                         handleLapDataPacket(byteBuffer);
                         break;
@@ -50,6 +55,32 @@ public class F1DataMain {
     //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
     private boolean validKey(int i) {
         return participants.containsKey(i);
+    }
+
+    private void handleEventPacket(ByteBuffer byteBuffer) {
+        byte[] codeArray = new byte[4];
+        byteBuffer.get(codeArray, 0 , 4);
+        String value = new String(codeArray, StandardCharsets.US_ASCII);
+        if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
+            ButtonsData bd = new ButtonsData(byteBuffer);
+            if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()) {
+                for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
+                    Integer key = entry.getKey();
+                    TelemetryData td = entry.getValue();
+                    System.out.println();
+                    System.out.println("ID " + key);
+                    td.getParticipantData().printName();
+                    System.out.println("Setup: " + td.getCurrentSetup() + " Lap " + td.getCurrentLap());
+                    for (TelemetryRunData trd : td.getTelemetryRunDataList()) {
+                        System.out.println("Time " + trd.getStartTime() + " Setup " + trd.getCarSetupData());
+                        for (LapData ld : trd.getLapDataList()) {
+                            System.out.println("Lap #:" + ld.getCurrentLapNum() + " Lap " + ld);
+                        }
+                    }
+                    System.out.println("-------------------------------------------");
+                }
+            }
+        }
     }
 
     private void handleLapDataPacket(ByteBuffer byteBuffer) {
