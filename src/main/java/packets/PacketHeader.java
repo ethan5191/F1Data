@@ -2,6 +2,28 @@ package packets;
 
 import java.nio.ByteBuffer;
 
+/**
+ * F1 24 packets.PacketHeader Breakdown (Little Endian)
+ * <p>
+ * This header is 29 bytes long and is present at the beginning of every telemetry packet.
+ * The values must be read from a ByteBuffer configured for Little Endian byte order.
+ * <p>
+ * Member Name                    | packets.Data Type | Size (bytes) | Starting Offset
+ * -------------------------------|-----------|--------------|-----------------
+ * m_packetFormat                 | uint16    | 2            | 0
+ * m_gameYear                     | uint8     | 1            | 2
+ * m_gameMajorVersion             | uint8     | 1            | 3
+ * m_gameMinorVersion             | uint8     | 1            | 4
+ * m_packetVersion                | uint8     | 1            | 5
+ * m_packetId                     | uint8     | 1            | 6
+ * m_sessionUID                   | uint64    | 8            | 7
+ * m_sessionTime                  | float     | 4            | 15
+ * m_frameIdentifier              | uint32    | 4            | 19
+ * m_overallFrameIdentifier       | uint32    | 4            | 23
+ * m_playerCarIndex               | uint8     | 1            | 27
+ * m_secondaryPlayerCarIndex      | uint8     | 1            | 28
+ */
+
 public class PacketHeader {
 
     public PacketHeader(ByteBuffer byteBuffer) {
@@ -18,30 +40,6 @@ public class PacketHeader {
         this.playerCarIndex = byteBuffer.get();
         this.secondaryPlayerCarIndex = byteBuffer.get();
     }
-
-
-    /**
-     * F1 24 packets.PacketHeader Breakdown (Little Endian)
-     * <p>
-     * This header is 29 bytes long and is present at the beginning of every telemetry packet.
-     * The values must be read from a ByteBuffer configured for Little Endian byte order.
-     * <p>
-     * Member Name                    | packets.Data Type | Size (bytes) | Starting Offset
-     * -------------------------------|-----------|--------------|-----------------
-     * m_packetFormat                 | uint16    | 2            | 0
-     * m_gameYear                     | uint8     | 1            | 2
-     * m_gameMajorVersion             | uint8     | 1            | 3
-     * m_gameMinorVersion             | uint8     | 1            | 4
-     * m_packetVersion                | uint8     | 1            | 5
-     * m_packetId                     | uint8     | 1            | 6
-     * m_sessionUID                   | uint64    | 8            | 7
-     * m_sessionTime                  | float     | 4            | 15
-     * m_frameIdentifier              | uint32    | 4            | 19
-     * m_overallFrameIdentifier       | uint32    | 4            | 23
-     * m_playerCarIndex               | uint8     | 1            | 27
-     * m_secondaryPlayerCarIndex      | uint8     | 1            | 28
-     */
-
 
     private final short packetFormat;
     private final byte gameYear;

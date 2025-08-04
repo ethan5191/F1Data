@@ -3,6 +3,29 @@ package packets;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * F1 24 ParticipantData Breakdown (Little Endian)
+ *
+ * This struct is 60 bytes long and contains data about a single participant.
+ * It is repeated for each participant in the PacketParticipantsData packet.
+ * The values must be read from a ByteBuffer configured for Little Endian byte order.
+ *
+ * Member Name              | Data Type      | Size (bytes) | Starting Offset
+ * -------------------------|----------------|--------------|-----------------
+ * m_aiControlled           | uint8          | 1            | 0
+ * m_driverId               | uint8          | 1            | 1
+ * m_networkId              | uint8          | 1            | 2
+ * m_teamId                 | uint8          | 1            | 3
+ * m_myTeam                 | uint8          | 1            | 4
+ * m_raceNumber             | uint8          | 1            | 5
+ * m_nationality            | uint8          | 1            | 6
+ * m_name                   | char[48]       | 48           | 7
+ * m_yourTelemetry          | uint8          | 1            | 55
+ * m_showOnlineNames        | uint8          | 1            | 56
+ * m_techLevel              | uint16         | 2            | 57
+ * m_platform               | uint8          | 1            | 59
+ */
+
 public class ParticipantData extends Data {
 
     public ParticipantData(ByteBuffer byteBuffer) {

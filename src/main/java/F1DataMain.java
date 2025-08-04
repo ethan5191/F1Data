@@ -1,3 +1,4 @@
+import packets.LapData;
 import packets.PacketHeader;
 import packets.ParticipantData;
 
@@ -29,12 +30,25 @@ public class F1DataMain {
 //                    packets.MotionData md = new packets.MotionData(byteBuffer, ph.getPlayerCarIndex());
 //                    System.out.println("Forward X " + md.getWorldForwardDirX() + " Forward Y " + md.getWorldForwardDirY() + " Forward Z " + md.getWorldForwardDirZ());
 //                }
-                if (ph.getPacketId() == Constants.PARTICIPANTS_PACK && participants.isEmpty()) {
+                if (ph.getPacketId() == Constants.LAP_DATA_PACK) {
+                    for (int i = 0; i < 22; i++) {
+                        if (participants.containsKey(i)) {
+                            LapData ld = new LapData(byteBuffer);
+                            System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
+                        }
+                    }
+                    //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
+//                    byte timeTrailPBCarId = byteBuffer.get();
+//                    byte timeTrailRivalPdCarId = byteBuffer.get();
+                } else if (ph.getPacketId() == Constants.PARTICIPANTS_PACK && participants.isEmpty()) {
                     int numActiveCars = byteBuffer.get();
+                    int index = 0;
                     for (int i = 0; i < numActiveCars; i++) {
                         ParticipantData pd = new ParticipantData(byteBuffer);
                         pd.printName();
-                        participants.put((int) pd.getDriverId(), pd);
+                        participants.put(index, pd);
+                        //CRUCIAL!!!!!!! index value ensures that the drivers will be mapped to the correct lap data.
+                        index++;
                     }
                 }
             }
