@@ -1,0 +1,24 @@
+public class Constants {
+
+    public static final int PORT_NUM = 20777;
+
+    //length of the packet header, always present.
+    public static final int HEADER_OFFSET = 28;
+
+    //Individual packet IDs
+    public static final int MOTION_PACK = 0;
+    public static final int SESSION_PACK = 1;
+    public static final int LAP_DATA_PACK = 2;
+    public static final int EVENT_PACK = 3;
+    public static final int PARTICIPANTS_PACK = 4;
+    public static final int CAR_SETUP_PACK = 5;
+    public static final int CAR_TELEMETRY_PACK = 6;
+    public static final int CAR_STATUS_PACK = 7;
+    public static final int FINAL_CLASS_PACK = 8;
+    public static final int LOBBY_INFO_PACK = 9;
+    public static final int CAR_DAMAGE_PACK = 10;
+    public static final int SESSION_HIST_PACK = 11;
+    public static final int TYRE_SETS_PACK = 12;
+    public static final int MOTION_EX_PACK = 13;
+    public static final int TIME_TRIAL_PACK = 14;
+}
