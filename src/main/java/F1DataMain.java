@@ -94,13 +94,17 @@ public class F1DataMain {
                     TelemetryData td = participants.get(i);
                     //Subtract 1 from the current lap to get the last completed lap #.
                     int lapNumToAdd = ld.getCurrentLapNum() - 1;
-                    if (td.getLastLapNum() == null || td.getLastLapNum() < lapNumToAdd) {
+                    //If the last lap num isn't null and is less than the lapNumToAdd we need to add this lap to the map.
+                    //OR is important here to ensure the first lap still gets added. Since my logic is only adding laps to the dataset,
+                    //at the END of the completed lap. Without the || ld.getCurrentLapNum() == 2, lap 1 will not be saved to the map below.
+                    boolean addLap = (td.getLastLapNum() != null && td.getLastLapNum() < lapNumToAdd) || ld.getCurrentLapNum() == 2;
+                    if (td.getLastLapNum() == null || addLap) {
 //                        System.out.println("Inside the td.getLastLapNum == null check");
                         td.setLastLapNum(lapNumToAdd);
                         td.setLastLapTimeInMs(ld.getLastLapTimeMs());
                     }
                     TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
-                    if (!trd.getLapData().containsKey(lapNumToAdd)) {
+                    if (!trd.getLapData().containsKey(lapNumToAdd) && addLap) {
                         trd.getLapData().put(lapNumToAdd, ld.getLastLapTimeMs());
 //                        System.out.println("Inside the trd.getLapData.containsKey check. trd lap data size " + trd.getLapData().size());
                         participants.put(i, td);
