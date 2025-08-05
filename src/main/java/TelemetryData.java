@@ -1,5 +1,4 @@
 import packets.CarSetupData;
-import packets.LapData;
 import packets.ParticipantData;
 
 import java.util.ArrayList;
@@ -14,7 +13,8 @@ public class TelemetryData {
     private final ParticipantData participantData;
     private final List<TelemetryRunData> telemetryRunDataList = new ArrayList<>();
     private CarSetupData currentSetup;
-    private LapData currentLap;
+    private Integer lastLapNum;
+    private Integer lastLapTimeInMs;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -32,11 +32,19 @@ public class TelemetryData {
         this.currentSetup = currentSetup;
     }
 
-    public LapData getCurrentLap() {
-        return currentLap;
+    public Integer getLastLapNum() {
+        return lastLapNum;
     }
 
-    public void setCurrentLap(LapData currentLap) {
-        this.currentLap = currentLap;
+    public void setLastLapNum(Integer lastLapNum) {
+        this.lastLapNum = lastLapNum;
+    }
+
+    public Integer getLastLapTimeInMs() {
+        return lastLapTimeInMs;
+    }
+
+    public void setLastLapTimeInMs(Integer lastLapTimeInMs) {
+        this.lastLapTimeInMs = lastLapTimeInMs;
     }
 }

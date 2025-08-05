@@ -89,6 +89,8 @@ public class CarSetupData extends Data {
     private final byte ballast;
     private final float fuelLoad;
 
+    private String setupName;
+
     public byte getFrontWing() {
         return frontWing;
     }
@@ -179,6 +181,14 @@ public class CarSetupData extends Data {
 
     public float getFuelLoad() {
         return fuelLoad;
+    }
+
+    public String getSetupName() {
+        return setupName;
+    }
+
+    public void setSetupName(String setupName) {
+        this.setupName = setupName;
     }
 
     public boolean equals(CarSetupData csd) {

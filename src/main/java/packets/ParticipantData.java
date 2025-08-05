@@ -44,6 +44,12 @@ public class ParticipantData extends Data {
         this.showOnlineNames = byteBuffer.get();
         this.techLevel = byteBuffer.getShort();
         this.platform = byteBuffer.get();
+        int length = 0;
+        while (length < this.name.length && name[length] != 0) {
+            length++;
+        }
+        this.lastName = new String(this.name, 0, length, StandardCharsets.UTF_8);
+
     }
 
     private final byte aiControlled;
@@ -58,6 +64,8 @@ public class ParticipantData extends Data {
     private final byte showOnlineNames;
     private final short techLevel;
     private final byte platform;
+
+    private final String lastName;
 
     public byte getAiControlled() {
         return aiControlled;
@@ -107,16 +115,15 @@ public class ParticipantData extends Data {
         return platform;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
+
     public void printName() {
-        int length = 0;
-        while (length < this.name.length && name[length] != 0) {
-            length++;
-        }
-        String name = new String(this.name, 0, length, StandardCharsets.UTF_8);
         if (this.aiControlled == 1) {
-            System.out.println(name);
+            System.out.println(this.lastName);
         } else {
-            System.out.println(name + " (Human Player)" );
+            System.out.println(this.lastName + " (Human Player)" );
         }
     }
 }

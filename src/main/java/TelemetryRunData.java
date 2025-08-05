@@ -1,13 +1,12 @@
 import packets.CarSetupData;
-import packets.LapData;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelemetryRunData {
 
     private final CarSetupData carSetupData;
-    private final List<LapData> lapDataList = new ArrayList<>();
+    private final Map<Integer, Integer> lapData = new HashMap<>();
 
     private final long startTime;
 
@@ -20,8 +19,8 @@ public class TelemetryRunData {
         return carSetupData;
     }
 
-    public List<LapData> getLapDataList() {
-        return lapDataList;
+    public Map<Integer, Integer> getLapData() {
+        return lapData;
     }
 
     public long getStartTime() {

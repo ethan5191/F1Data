@@ -71,11 +71,11 @@ public class F1DataMain {
                     System.out.println();
                     System.out.println("ID " + key);
                     td.getParticipantData().printName();
-                    System.out.println("Setup: " + td.getCurrentSetup() + " Lap " + td.getCurrentLap());
+                    System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
                     for (TelemetryRunData trd : td.getTelemetryRunDataList()) {
-                        System.out.println("Time " + trd.getStartTime() + " Setup " + trd.getCarSetupData());
-                        for (LapData ld : trd.getLapDataList()) {
-                            System.out.println("Lap #:" + ld.getCurrentLapNum() + " Lap " + ld);
+                        System.out.println("Time " + trd.getStartTime() + " Setup " + trd.getCarSetupData().getSetupName());
+                        for (Map.Entry<Integer, Integer> entry1 : trd.getLapData().entrySet()) {
+                            System.out.println("Lap #:" + entry1.getKey() + " Time " + entry1.getValue());
                         }
                     }
                     System.out.println("-------------------------------------------");
@@ -88,7 +88,24 @@ public class F1DataMain {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             LapData ld = new LapData(byteBuffer);
             if (validKey(i)) {
-                System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
+//                System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
+                if (ld.getCurrentLapNum() > 1) {
+//                    System.out.println("i " + i + " prev Lap #" + (ld.getCurrentLapNum() - 1) + " prev lap time " + ld.getLastLapTimeMs());
+                    TelemetryData td = participants.get(i);
+                    //Subtract 1 from the current lap to get the last completed lap #.
+                    int lapNumToAdd = ld.getCurrentLapNum() - 1;
+                    if (td.getLastLapNum() == null || td.getLastLapNum() < lapNumToAdd) {
+//                        System.out.println("Inside the td.getLastLapNum == null check");
+                        td.setLastLapNum(lapNumToAdd);
+                        td.setLastLapTimeInMs(ld.getLastLapTimeMs());
+                    }
+                    TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
+                    if (!trd.getLapData().containsKey(lapNumToAdd)) {
+                        trd.getLapData().put(lapNumToAdd, ld.getLastLapTimeMs());
+//                        System.out.println("Inside the trd.getLapData.containsKey check. trd lap data size " + trd.getLapData().size());
+                        participants.put(i, td);
+                    }
+                }
             }
         }
         //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
@@ -99,21 +116,32 @@ public class F1DataMain {
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             CarSetupData csd = new CarSetupData(byteBuffer);
-            if (validKey(i)) {
-                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
+            if (validKey(i)) {;
+                TelemetryData td = participants.get(i);
+                csd.setSetupName(td.getParticipantData().getLastName());
+                if (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup())) {
+//                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
+                    td.setCurrentSetup(csd);
+                    TelemetryRunData trd = new TelemetryRunData(csd);
+                    td.getTelemetryRunDataList().add(trd);
+                    participants.put(i, td);
+                }
+//                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
         }
     }
 
     private void handleParticipantsPacket(ByteBuffer byteBuffer) {
-        //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
-        int numActiveCars = byteBuffer.get();
-        for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            ParticipantData pd = new ParticipantData(byteBuffer);
-            if (pd.getRaceNumber() > 0) {
-                pd.printName();
-                TelemetryData td = new TelemetryData(pd);
-                participants.put(i, td);
+        if (participants.isEmpty()) {
+            //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
+            int numActiveCars = byteBuffer.get();
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                ParticipantData pd = new ParticipantData(byteBuffer);
+                if (pd.getRaceNumber() > 0) {
+                    pd.printName();
+                    TelemetryData td = new TelemetryData(pd);
+                    participants.put(i, td);
+                }
             }
         }
     }
