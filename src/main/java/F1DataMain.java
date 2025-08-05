@@ -59,11 +59,12 @@ public class F1DataMain {
 
     private void handleEventPacket(ByteBuffer byteBuffer) {
         byte[] codeArray = new byte[4];
-        byteBuffer.get(codeArray, 0 , 4);
+        byteBuffer.get(codeArray, 0, 4);
         String value = new String(codeArray, StandardCharsets.US_ASCII);
         if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
             ButtonsData bd = new ButtonsData(byteBuffer);
-            if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()) {
+            if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()
+                    || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.getButtonsStatus()) {
                 for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
                     Integer key = entry.getKey();
                     TelemetryData td = entry.getValue();

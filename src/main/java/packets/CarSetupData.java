@@ -180,4 +180,17 @@ public class CarSetupData extends Data {
     public float getFuelLoad() {
         return fuelLoad;
     }
+
+    public boolean equals(CarSetupData csd) {
+        return (csd.getFrontWing() == this.frontWing && csd.getRearWing() == this.rearWing
+                && csd.getOnThrottle() == this.onThrottle && csd.getOffThrottle() == this.offThrottle
+                && csd.getFrontCamber() == this.frontCamber && csd.getRearCamber() == this.rearCamber
+                && csd.getFrontToe() == this.frontToe && csd.getRearToe() == this.rearToe
+                && csd.getFrontSusp() == this.frontSusp && csd.getRearSusp() == this.rearSusp
+                && csd.getFrontARB() == this.frontARB && csd.getRearARB() == this.rearARB
+                && csd.getFrontHeight() == this.frontHeight && csd.getRearHeight() == this.rearHeight
+                && csd.getFrontRightPressure() == this.frontRightPressure && csd.getFrontLeftPressure() == this.frontLeftPressure
+                && csd.getRearRightPressure() == this.rearRightPressure && csd.getRearLeftPressure() == this.rearLeftPressure
+        );
+    }
 }

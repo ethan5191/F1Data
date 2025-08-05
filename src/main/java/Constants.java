@@ -28,4 +28,5 @@ public class Constants {
 
     //Value that is passed when pause is pressed on the McLaren GT3 wheel.
     public static final int MCLAREN_GT3_WHEEL_PAUSE_BTN = 256;
+    public static final int MCLAREN_GT3_WHEEL_PAUSE_BTN2 = 131328;
 }
