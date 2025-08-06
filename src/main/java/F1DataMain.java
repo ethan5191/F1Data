@@ -1,3 +1,4 @@
+import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
 import packets.*;
@@ -49,6 +50,9 @@ public class F1DataMain {
                         break;
                     case Constants.CAR_TELEMETRY_PACK:
                         handleCarTelemetryPacket(byteBuffer);
+                        break;
+                    case Constants.CAR_STATUS_PACK:
+                        handleCarStatusPacket(byteBuffer);
                         break;
                 }
             }
@@ -109,12 +113,16 @@ public class F1DataMain {
                         if (td.getCurrentTelemetry() != null) {
                             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
                         }
+                        if (td.getCurrentStatus() != null) {
+                            info.setCarStatusInfo(new CarStatusInfo(td.getCurrentStatus()));
+                        }
                         if (!td.getTelemetryRunDataList().isEmpty()) {
                             TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
                             trd.getLapData().put(info.getLapNum(), info);
                             participants.put(i, td);
                         }
                         info.printInfo(td.getParticipantData().getLastName());
+                        info.printStatus(td.getParticipantData().getLastName());
                     }
                     td.setCurrentLap(ld);
                 } else {
@@ -158,6 +166,17 @@ public class F1DataMain {
         int mfdPanelIdx = byteBuffer.get() & Constants.BIT_MASK_8;
         int mfdPanelIdxSecondPlayer = byteBuffer.get() & Constants.BIT_MASK_8;
         int suggestedGear = byteBuffer.get();
+    }
+
+    private void handleCarStatusPacket(ByteBuffer byteBuffer) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarStatusData csd = new CarStatusData(byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentStatus(csd);
+                }
+            }
+        }
     }
 
     private void handleParticipantsPacket(ByteBuffer byteBuffer) {

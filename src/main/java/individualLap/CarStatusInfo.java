@@ -1,18 +1,82 @@
 package individualLap;
 
+import packets.CarStatusData;
+
 public class CarStatusInfo {
 
-    //Car Status
-    //fuel in tank
-    //fuel remaining in laps
-    //tire compound (c5-c0, ids)  TODO: NEED ENUM
-    //tire type (soft, medium, hard)
-    //tire age (maybe)
-    //engine power ice (maybe)
-    //engine power mguK (maybe)
-    //ers store value (maybe)
-    //ers deploy mode (doubtful)
-    //ers harvested MGUK (maybe)
-    //ers harvested MGUH (maybe)
-    //ers deployed (maybe)
+    public CarStatusInfo(CarStatusData csd) {
+        this.fuelInTank = csd.getFuelInTank();
+        this.fuelRemainingLaps = csd.getFuelRemainingLaps();
+        this.actualTireCompound = csd.getActualTireCompound();
+        this.visualTireCompound = csd.getVisualTireCompound();
+        this.tiresAgeLaps = csd.getTiresAgeLaps();
+        this.enginePowerICE = csd.getEnginePowerICE();
+        this.enginePowerMGUK = csd.getEnginePowerMGUK();
+        this.ersStoreEnergy = csd.getErsStoreEnergy();
+        this.ersDeployMode = csd.getErsDeployMode();
+        this.ersHarvestedThisLapMGUK = csd.getErsHarvestedThisLapMGUK();
+        this.ersHarvestedThisLapMGUH = csd.getErsHarvestedThisLapMGUH();
+        this.ersDeployedThisLap = csd.getErsDeployedThisLap();
+    }
+
+    private final float fuelInTank;
+    private final float fuelRemainingLaps;
+    private final int actualTireCompound;
+    private final int visualTireCompound;
+    private final int tiresAgeLaps;
+    private final float enginePowerICE;
+    private final float enginePowerMGUK;
+    private final float ersStoreEnergy;
+    private final int ersDeployMode;
+    private final float ersHarvestedThisLapMGUK;
+    private final float ersHarvestedThisLapMGUH;
+    private final float ersDeployedThisLap;
+
+    public float getFuelInTank() {
+        return fuelInTank;
+    }
+
+    public float getFuelRemainingLaps() {
+        return fuelRemainingLaps;
+    }
+
+    public int getActualTireCompound() {
+        return actualTireCompound;
+    }
+
+    public int getVisualTireCompound() {
+        return visualTireCompound;
+    }
+
+    public int getTiresAgeLaps() {
+        return tiresAgeLaps;
+    }
+
+    public float getEnginePowerICE() {
+        return enginePowerICE;
+    }
+
+    public float getEnginePowerMGUK() {
+        return enginePowerMGUK;
+    }
+
+    public float getErsStoreEnergy() {
+        return ersStoreEnergy;
+    }
+
+    public int getErsDeployMode() {
+        return ersDeployMode;
+    }
+
+    public float getErsHarvestedThisLapMGUK() {
+        return ersHarvestedThisLapMGUK;
+    }
+
+    public float getErsHarvestedThisLapMGUH() {
+        return ersHarvestedThisLapMGUH;
+    }
+
+    public float getErsDeployedThisLap() {
+        return ersDeployedThisLap;
+    }
 }

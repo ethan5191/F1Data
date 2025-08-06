@@ -68,6 +68,14 @@ public class IndividualLapInfo {
         this.carTelemetryInfo = carTelemetryInfo;
     }
 
+    public CarStatusInfo getCarStatusInfo() {
+        return carStatusInfo;
+    }
+
+    public void setCarStatusInfo(CarStatusInfo carStatusInfo) {
+        this.carStatusInfo = carStatusInfo;
+    }
+
     public void printInfo(String lastName) {
         CarTelemetryInfo cti = this.carTelemetryInfo;
         System.out.println();
@@ -85,7 +93,15 @@ public class IndividualLapInfo {
             TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
             System.out.print(elem.name() + " " + cti.getTirePressures()[i] + " ");
         }
-        System.out.println("\n");
+    }
+
+    public void printStatus(String lastName) {
+        CarStatusInfo csi = this.carStatusInfo;
+        System.out.println();
+        System.out.println(lastName + " In Tank " + csi.getFuelInTank() + " Remain Lap " + csi.getFuelRemainingLaps()
+        + " Actual Tire " + csi.getActualTireCompound() + " Visual tire " + csi.getVisualTireCompound() + " Tire Age " + csi.getTiresAgeLaps());
+        System.out.println("ICE " + csi.getEnginePowerICE() + " MGUK " + csi.getEnginePowerMGUK() + " Store " + csi.getErsStoreEnergy() +
+                " MGUK Harvest " + csi.getErsHarvestedThisLapMGUK() + " MGUH Harvested " + csi.getErsHarvestedThisLapMGUH() + " Deployed " + csi.getErsDeployedThisLap());
     }
 
     private void printLoop(int[] array, String header) {

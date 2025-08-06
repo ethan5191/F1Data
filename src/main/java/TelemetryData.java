@@ -1,7 +1,4 @@
-import packets.CarSetupData;
-import packets.CarTelemetryData;
-import packets.LapData;
-import packets.ParticipantData;
+import packets.*;
 import telemetry.TelemetryRunData;
 
 import java.util.ArrayList;
@@ -22,6 +19,7 @@ public class TelemetryData {
 
     private LapData currentLap;
     private CarTelemetryData currentTelemetry;
+    private CarStatusData currentStatus;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -77,5 +75,13 @@ public class TelemetryData {
 
     public void setCurrentTelemetry(CarTelemetryData currentTelemetry) {
         this.currentTelemetry = currentTelemetry;
+    }
+
+    public CarStatusData getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(CarStatusData currentStatus) {
+        this.currentStatus = currentStatus;
     }
 }
