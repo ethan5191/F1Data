@@ -1,5 +1,8 @@
 package packets;
 
+import utils.Constants;
+
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 /**
@@ -27,58 +30,58 @@ import java.nio.ByteBuffer;
 public class PacketHeader {
 
     public PacketHeader(ByteBuffer byteBuffer) {
-        this.packetFormat = byteBuffer.getShort();
-        this.gameYear = byteBuffer.get();
-        this.majorVersion = byteBuffer.get();
-        this.minorVersion = byteBuffer.get();
-        this.packetVersion = byteBuffer.get();
-        this.packetId = byteBuffer.get();
-        this.sessionUID = byteBuffer.getLong();
+        this.packetFormat = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.gameYear = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.majorVersion = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.minorVersion = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.packetVersion = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.packetId = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.sessionUID = BigInteger.valueOf(byteBuffer.getLong()).and(BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE));
         this.sessionTime = byteBuffer.getFloat();
-        this.frameID = byteBuffer.getInt();
-        this.overallFrameID = byteBuffer.getInt();
-        this.playerCarIndex = byteBuffer.get();
-        this.secondaryPlayerCarIndex = byteBuffer.get();
+        this.frameID = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        this.overallFrameID = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        this.playerCarIndex = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.secondaryPlayerCarIndex = byteBuffer.get() & Constants.BIT_MASK_8;
     }
 
-    private final short packetFormat;
-    private final byte gameYear;
-    private final byte majorVersion;
-    private final byte minorVersion;
-    private final byte packetVersion;
-    private final byte packetId;
-    private final long sessionUID;
+    private final int packetFormat;
+    private final int gameYear;
+    private final int majorVersion;
+    private final int minorVersion;
+    private final int packetVersion;
+    private final int packetId;
+    private final BigInteger sessionUID;
     private final float sessionTime;
-    private final int frameID;
-    private final int overallFrameID;
-    private final byte playerCarIndex;
-    private final byte secondaryPlayerCarIndex;
+    private final long frameID;
+    private final long overallFrameID;
+    private final int playerCarIndex;
+    private final int secondaryPlayerCarIndex;
 
-    public short getPacketFormat() {
+    public int getPacketFormat() {
         return packetFormat;
     }
 
-    public byte getGameYear() {
+    public int getGameYear() {
         return gameYear;
     }
 
-    public byte getMajorVersion() {
+    public int getMajorVersion() {
         return majorVersion;
     }
 
-    public byte getMinorVersion() {
+    public int getMinorVersion() {
         return minorVersion;
     }
 
-    public byte getPacketVersion() {
+    public int getPacketVersion() {
         return packetVersion;
     }
 
-    public byte getPacketId() {
+    public int getPacketId() {
         return packetId;
     }
 
-    public long getSessionUID() {
+    public BigInteger getSessionUID() {
         return sessionUID;
     }
 
@@ -86,19 +89,19 @@ public class PacketHeader {
         return sessionTime;
     }
 
-    public int getFrameID() {
+    public long getFrameID() {
         return frameID;
     }
 
-    public int getOverallFrameID() {
+    public long getOverallFrameID() {
         return overallFrameID;
     }
 
-    public byte getPlayerCarIndex() {
+    public int getPlayerCarIndex() {
         return playerCarIndex;
     }
 
-    public byte getSecondaryPlayerCarIndex() {
+    public int getSecondaryPlayerCarIndex() {
         return secondaryPlayerCarIndex;
     }
 
