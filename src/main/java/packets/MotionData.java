@@ -1,5 +1,7 @@
 package packets;
 
+import utils.Constants;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -44,9 +46,18 @@ public class MotionData extends Data {
         this.worldVelocityX = determineFloatValue(byteBuffer);
         this.worldVelocityY = determineFloatValue(byteBuffer);
         this.worldVelocityZ = determineFloatValue(byteBuffer);
-        this.worldForwardDirX = byteBuffer.getShort();
-        this.worldForwardDirY = byteBuffer.getShort();
-        this.worldForwardDirZ = byteBuffer.getShort();
+        this.worldForwardDirX = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.worldForwardDirY = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.worldForwardDirZ = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.worldRightDirX = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.worldRightDirY = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.worldRightDirZ = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.gForceLat = determineFloatValue(byteBuffer);
+        this.gForceLon = determineFloatValue(byteBuffer);
+        this.gForceVer = determineFloatValue(byteBuffer);
+        this.yaw = determineFloatValue(byteBuffer);
+        this.pitch = determineFloatValue(byteBuffer);
+        this.roll = determineFloatValue(byteBuffer);
     }
 
     private final float worldPositionX;
@@ -55,9 +66,18 @@ public class MotionData extends Data {
     private final float worldVelocityX;
     private final float worldVelocityY;
     private final float worldVelocityZ;
-    private final short worldForwardDirX;
-    private final short worldForwardDirY;
-    private final short worldForwardDirZ;
+    private final int worldForwardDirX;
+    private final int worldForwardDirY;
+    private final int worldForwardDirZ;
+    private final int worldRightDirX;
+    private final int worldRightDirY;
+    private final int worldRightDirZ;
+    private final float gForceLat;
+    private final float gForceLon;
+    private final float gForceVer;
+    private final float yaw;
+    private final float pitch;
+    private final float roll;
 
     public float getWorldPositionX() {
         return worldPositionX;
@@ -83,16 +103,52 @@ public class MotionData extends Data {
         return worldVelocityZ;
     }
 
-    public short getWorldForwardDirX() {
+    public int getWorldForwardDirX() {
         return worldForwardDirX;
     }
 
-    public short getWorldForwardDirY() {
+    public int getWorldForwardDirY() {
         return worldForwardDirY;
     }
 
-    public short getWorldForwardDirZ() {
+    public int getWorldForwardDirZ() {
         return worldForwardDirZ;
+    }
+
+    public int getWorldRightDirX() {
+        return worldRightDirX;
+    }
+
+    public int getWorldRightDirY() {
+        return worldRightDirY;
+    }
+
+    public int getWorldRightDirZ() {
+        return worldRightDirZ;
+    }
+
+    public float getgForceLat() {
+        return gForceLat;
+    }
+
+    public float getgForceLon() {
+        return gForceLon;
+    }
+
+    public float getgForceVer() {
+        return gForceVer;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public float getPitch() {
+        return pitch;
+    }
+
+    public float getRoll() {
+        return roll;
     }
 
     private float determineFloatValue(ByteBuffer byteBuffer) {
