@@ -1,3 +1,4 @@
+import individualLap.IndividualLapInfo;
 import packets.CarSetupData;
 
 import java.util.HashMap;
@@ -6,7 +7,7 @@ import java.util.Map;
 public class TelemetryRunData {
 
     private final CarSetupData carSetupData;
-    private final Map<Integer, Integer> lapData = new HashMap<>();
+    private final Map<Integer, IndividualLapInfo> lapData = new HashMap<>();
 
     private final long startTime;
 
@@ -19,7 +20,7 @@ public class TelemetryRunData {
         return carSetupData;
     }
 
-    public Map<Integer, Integer> getLapData() {
+    public Map<Integer, IndividualLapInfo> getLapData() {
         return lapData;
     }
 

@@ -50,12 +50,12 @@ public class LapData extends Data {
 
     public LapData(ByteBuffer byteBuffer) {
 //        printMessage("Lap Data ", byteBuffer.array().length);
-        this.lastLapTimeMs = byteBuffer.getInt();
-        this.currentLapTimeMs = byteBuffer.getInt();
-        this.sector1TimeMsPart = byteBuffer.getShort();
-        this.sector1TimeMinutesPart = byteBuffer.get();
-        this.sector2TimeMsPart = byteBuffer.getShort();
-        this.sector2TimeMinutesPart = byteBuffer.get();
+        this.lastLapTimeMs = byteBuffer.getInt() & BIT_MASK_32;
+        this.currentLapTimeMs = byteBuffer.getInt() & BIT_MASK_32;
+        this.sector1TimeMsPart = byteBuffer.getShort() & BIT_MASK_16;
+        this.sector1TimeMinutesPart = byteBuffer.get() & BIT_MASK_8;
+        this.sector2TimeMsPart = byteBuffer.getShort() & BIT_MASK_16;
+        this.sector2TimeMinutesPart = byteBuffer.get() & BIT_MASK_8;
         this.deltaCarInFrontMsPart = byteBuffer.getShort();
         this.deltaCarInFrontMinutesPart = byteBuffer.get();
         this.deltaRaceLeaderMsPart = byteBuffer.getShort();
@@ -64,7 +64,7 @@ public class LapData extends Data {
         this.totalDistance = byteBuffer.getFloat();
         this.safetyCarDelta = byteBuffer.getFloat();
         this.carPosition = byteBuffer.get();
-        this.currentLapNum = byteBuffer.get();
+        this.currentLapNum = byteBuffer.get() & BIT_MASK_8;
         this.pitStatus = byteBuffer.get();
         this.numPitStops = byteBuffer.get();
         this.sector = byteBuffer.get();
@@ -85,12 +85,12 @@ public class LapData extends Data {
         this.speedTrapFastestLap = byteBuffer.get();
     }
 
-    private final int lastLapTimeMs;
-    private final int currentLapTimeMs;
-    private final short sector1TimeMsPart;
-    private final byte sector1TimeMinutesPart;
-    private final short sector2TimeMsPart;
-    private final byte sector2TimeMinutesPart;
+    private final long lastLapTimeMs;
+    private final long currentLapTimeMs;
+    private final int sector1TimeMsPart;
+    private final int sector1TimeMinutesPart;
+    private final int sector2TimeMsPart;
+    private final int sector2TimeMinutesPart;
     private final short deltaCarInFrontMsPart;
     private final byte deltaCarInFrontMinutesPart;
     private final short deltaRaceLeaderMsPart;
@@ -99,7 +99,7 @@ public class LapData extends Data {
     private final float totalDistance;
     private final float safetyCarDelta;
     private final byte carPosition;
-    private final byte currentLapNum;
+    private final int currentLapNum;
     private final byte pitStatus;
     private final byte numPitStops;
     private final byte sector;
@@ -119,27 +119,27 @@ public class LapData extends Data {
     private final float speedTrapFastestSpeed;
     private final byte speedTrapFastestLap;
 
-    public int getLastLapTimeMs() {
+    public long getLastLapTimeMs() {
         return lastLapTimeMs;
     }
 
-    public int getCurrentLapTimeMs() {
+    public long getCurrentLapTimeMs() {
         return currentLapTimeMs;
     }
 
-    public short getSector1TimeMsPart() {
+    public int getSector1TimeMsPart() {
         return sector1TimeMsPart;
     }
 
-    public byte getSector1TimeMinutesPart() {
+    public int getSector1TimeMinutesPart() {
         return sector1TimeMinutesPart;
     }
 
-    public short getSector2TimeMsPart() {
+    public int getSector2TimeMsPart() {
         return sector2TimeMsPart;
     }
 
-    public byte getSector2TimeMinutesPart() {
+    public int getSector2TimeMinutesPart() {
         return sector2TimeMinutesPart;
     }
 
@@ -175,7 +175,7 @@ public class LapData extends Data {
         return carPosition;
     }
 
-    public byte getCurrentLapNum() {
+    public int getCurrentLapNum() {
         return currentLapNum;
     }
 

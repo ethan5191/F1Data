@@ -1,3 +1,4 @@
+import individualLap.IndividualLapInfo;
 import packets.CarSetupData;
 import packets.LapData;
 import packets.PacketHeader;
@@ -74,8 +75,9 @@ public class F1DataMain {
                     System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
                     for (TelemetryRunData trd : td.getTelemetryRunDataList()) {
                         System.out.println("Time " + trd.getStartTime() + " Setup " + trd.getCarSetupData().getSetupName());
-                        for (Map.Entry<Integer, Integer> entry1 : trd.getLapData().entrySet()) {
-                            System.out.println("Lap #:" + entry1.getKey() + " Time " + entry1.getValue());
+                        for (Map.Entry<Integer, IndividualLapInfo> entry1 : trd.getLapData().entrySet()) {
+                            IndividualLapInfo info = entry1.getValue();
+                            System.out.println("Lap #:" + entry1.getKey() + " Time " + info.getLapTimeInMs());
                         }
                     }
                     System.out.println("-------------------------------------------");
@@ -88,27 +90,24 @@ public class F1DataMain {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             LapData ld = new LapData(byteBuffer);
             if (validKey(i)) {
-//                System.out.println(ld.getCurrentLapNum() + " " + ld.getSpeedTrapFastestSpeed() + " " + ld.getCarPosition() + " " + ld.getLapDistance() + " " + ld.getTotalDistance());
-                if (ld.getCurrentLapNum() > 1) {
-//                    System.out.println("i " + i + " prev Lap #" + (ld.getCurrentLapNum() - 1) + " prev lap time " + ld.getLastLapTimeMs());
-                    TelemetryData td = participants.get(i);
-                    //Subtract 1 from the current lap to get the last completed lap #.
-                    int lapNumToAdd = ld.getCurrentLapNum() - 1;
-                    //If the last lap num isn't null and is less than the lapNumToAdd we need to add this lap to the map.
-                    //OR is important here to ensure the first lap still gets added. Since my logic is only adding laps to the dataset,
-                    //at the END of the completed lap. Without the || ld.getCurrentLapNum() == 2, lap 1 will not be saved to the map below.
-                    boolean addLap = (td.getLastLapNum() != null && td.getLastLapNum() < lapNumToAdd) || ld.getCurrentLapNum() == 2;
-                    if (td.getLastLapNum() == null || addLap) {
-//                        System.out.println("Inside the td.getLastLapNum == null check");
-                        td.setLastLapNum(lapNumToAdd);
-                        td.setLastLapTimeInMs(ld.getLastLapTimeMs());
+                TelemetryData td = participants.get(i);
+                if (td.getCurrentLap() != null) {
+                    //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
+                    if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
+                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap());
+                        System.out.println(td.getParticipantData().getLastName() + " # " + info.getLapNum() + " Time " + info.getLapTimeInMs() +
+                                " 1st " + info.getSector1InMs() + " 2nd " + info.getSector2InMs() + " 3rd " + info.getSector3InMs());
+                        td.setLastLapNum(info.getLapNum());
+                        td.setLastLapTimeInMs(info.getLapTimeInMs());
+                        if (!td.getTelemetryRunDataList().isEmpty()) {
+                            TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
+                            trd.getLapData().put(info.getLapNum(), info);
+                            participants.put(i, td);
+                        }
                     }
-                    TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
-                    if (!trd.getLapData().containsKey(lapNumToAdd) && addLap) {
-                        trd.getLapData().put(lapNumToAdd, ld.getLastLapTimeMs());
-//                        System.out.println("Inside the trd.getLapData.containsKey check. trd lap data size " + trd.getLapData().size());
-                        participants.put(i, td);
-                    }
+                    td.setCurrentLap(ld);
+                } else {
+                    td.setCurrentLap(ld);
                 }
             }
         }
@@ -120,7 +119,7 @@ public class F1DataMain {
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             CarSetupData csd = new CarSetupData(byteBuffer);
-            if (validKey(i)) {;
+            if (validKey(i)) {
                 TelemetryData td = participants.get(i);
                 csd.setSetupName(td.getParticipantData().getLastName());
                 if (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup())) {
