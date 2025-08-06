@@ -1,6 +1,7 @@
 package packets.events;
 
 import packets.Data;
+import utils.Constants;
 
 import java.nio.ByteBuffer;
 
@@ -23,12 +24,12 @@ public class ButtonsData extends Data {
 
     public ButtonsData(ByteBuffer byteBuffer) {
 //        printMessage("Buttons Event ", byteBuffer.array().length);
-        this.buttonsStatus = byteBuffer.getInt();
+        this.buttonsStatus = byteBuffer.getInt() & Constants.BIT_MASK_32;
     }
 
-    private final int buttonsStatus;
+    private final long buttonsStatus;
 
-    public int getButtonsStatus() {
+    public long getButtonsStatus() {
         return buttonsStatus;
     }
 }
