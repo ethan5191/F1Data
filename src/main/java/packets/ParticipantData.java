@@ -1,5 +1,7 @@
 package packets;
 
+import utils.Constants;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -30,20 +32,20 @@ public class ParticipantData extends Data {
 
     public ParticipantData(ByteBuffer byteBuffer) {
 //        printMessage("Participant packets.Data ", byteBuffer.array().length);
-        this.aiControlled = byteBuffer.get();
-        this.driverId = byteBuffer.get();
-        this.networkId = byteBuffer.get();
-        this.teamId = byteBuffer.get();
-        this.myTeam = byteBuffer.get();
-        this.raceNumber = byteBuffer.get();
-        this.nationality = byteBuffer.get();
+        this.aiControlled = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.driverId = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.networkId = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.teamId = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.myTeam = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.raceNumber = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.nationality = byteBuffer.get() & Constants.BIT_MASK_8;
         byte[] tempName = new byte[48];
         byteBuffer.get(tempName, 0, 48);
         this.name = tempName;
-        this.yourTelemetry = byteBuffer.get();
-        this.showOnlineNames = byteBuffer.get();
-        this.techLevel = byteBuffer.getShort();
-        this.platform = byteBuffer.get();
+        this.yourTelemetry = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.showOnlineNames = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.techLevel = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.platform = byteBuffer.get() & Constants.BIT_MASK_8;
         int length = 0;
         while (length < this.name.length && name[length] != 0) {
             length++;
@@ -52,46 +54,46 @@ public class ParticipantData extends Data {
 
     }
 
-    private final byte aiControlled;
-    private final byte driverId;
-    private final byte networkId;
-    private final byte teamId;
-    private final byte myTeam;
-    private final byte raceNumber;
-    private final byte nationality;
+    private final int aiControlled;
+    private final int driverId;
+    private final int networkId;
+    private final int teamId;
+    private final int myTeam;
+    private final int raceNumber;
+    private final int nationality;
     private final byte[] name;
-    private final byte yourTelemetry;
-    private final byte showOnlineNames;
-    private final short techLevel;
-    private final byte platform;
+    private final int yourTelemetry;
+    private final int showOnlineNames;
+    private final int techLevel;
+    private final int platform;
 
     private final String lastName;
 
-    public byte getAiControlled() {
+    public int getAiControlled() {
         return aiControlled;
     }
 
-    public byte getDriverId() {
+    public int getDriverId() {
         return driverId;
     }
 
-    public byte getNetworkId() {
+    public int getNetworkId() {
         return networkId;
     }
 
-    public byte getTeamId() {
+    public int getTeamId() {
         return teamId;
     }
 
-    public byte getMyTeam() {
+    public int getMyTeam() {
         return myTeam;
     }
 
-    public byte getRaceNumber() {
+    public int getRaceNumber() {
         return raceNumber;
     }
 
-    public byte getNationality() {
+    public int getNationality() {
         return nationality;
     }
 
@@ -99,19 +101,19 @@ public class ParticipantData extends Data {
         return name;
     }
 
-    public byte getYourTelemetry() {
+    public int getYourTelemetry() {
         return yourTelemetry;
     }
 
-    public byte getShowOnlineNames() {
+    public int getShowOnlineNames() {
         return showOnlineNames;
     }
 
-    public short getTechLevel() {
+    public int getTechLevel() {
         return techLevel;
     }
 
-    public byte getPlatform() {
+    public int getPlatform() {
         return platform;
     }
 
