@@ -4,6 +4,7 @@ import packets.LapData;
 import packets.PacketHeader;
 import packets.ParticipantData;
 import packets.events.ButtonsData;
+import packets.events.SpeedTrapData;
 import telemetry.TelemetryRunData;
 import utils.Constants;
 
@@ -85,6 +86,11 @@ public class F1DataMain {
                     System.out.println("-------------------------------------------");
                 }
             }
+        } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
+            SpeedTrapData trap = new SpeedTrapData(byteBuffer);
+            //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
+            TelemetryData td = participants.get(trap.getVehicleId());
+            td.setSpeedTrap(trap.getSpeed());
         }
     }
 
@@ -96,9 +102,10 @@ public class F1DataMain {
                 if (td.getCurrentLap() != null) {
                     //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
                     if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
-                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap());
+                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap());
                         System.out.println(td.getParticipantData().getLastName() + " # " + info.getLapNum() + " Time " + info.getLapTimeInMs() +
-                                " 1st " + info.getSector1InMs() + " 2nd " + info.getSector2InMs() + " 3rd " + info.getSector3InMs());
+                                " 1st " + info.getSector1InMs() + " 2nd " + info.getSector2InMs() + " 3rd " + info.getSector3InMs()
+                                + " Speed Trap " + info.getSpeedTrap());
                         td.setLastLapNum(info.getLapNum());
                         td.setLastLapTimeInMs(info.getLapTimeInMs());
                         if (!td.getTelemetryRunDataList().isEmpty()) {

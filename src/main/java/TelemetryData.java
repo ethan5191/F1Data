@@ -18,6 +18,7 @@ public class TelemetryData {
     private Integer lastLapNum;
     private long lastLapTimeInMs;
     private LapData currentLap;
+    private float speedTrap;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -57,5 +58,13 @@ public class TelemetryData {
 
     public void setCurrentLap(LapData currentLap) {
         this.currentLap = currentLap;
+    }
+
+    public float getSpeedTrap() {
+        return speedTrap;
+    }
+
+    public void setSpeedTrap(float speedTrap) {
+        this.speedTrap = speedTrap;
     }
 }
