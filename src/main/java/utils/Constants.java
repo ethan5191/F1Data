@@ -1,4 +1,10 @@
+package utils;
+
 public class Constants {
+
+    public static final int BIT_MASK_8 = 0xFF;
+    public static final int BIT_MASK_16 = 0xFFFF;
+    public static final long BIT_MASK_32 = 0xFFFFFFFFL;
 
     public static final int PACKET_CAR_COUNT = 22;
 

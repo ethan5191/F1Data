@@ -1,3 +1,5 @@
+package telemetry;
+
 import individualLap.IndividualLapInfo;
 import packets.CarSetupData;
 

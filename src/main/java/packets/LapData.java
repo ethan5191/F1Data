@@ -1,5 +1,7 @@
 package packets;
 
+import utils.Constants;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -50,39 +52,39 @@ public class LapData extends Data {
 
     public LapData(ByteBuffer byteBuffer) {
 //        printMessage("Lap Data ", byteBuffer.array().length);
-        this.lastLapTimeMs = byteBuffer.getInt() & BIT_MASK_32;
-        this.currentLapTimeMs = byteBuffer.getInt() & BIT_MASK_32;
-        this.sector1TimeMsPart = byteBuffer.getShort() & BIT_MASK_16;
-        this.sector1TimeMinutesPart = byteBuffer.get() & BIT_MASK_8;
-        this.sector2TimeMsPart = byteBuffer.getShort() & BIT_MASK_16;
-        this.sector2TimeMinutesPart = byteBuffer.get() & BIT_MASK_8;
-        this.deltaCarInFrontMsPart = byteBuffer.getShort();
-        this.deltaCarInFrontMinutesPart = byteBuffer.get();
-        this.deltaRaceLeaderMsPart = byteBuffer.getShort();
-        this.deltaRaceLeaderMinutesPart = byteBuffer.get();
+        this.lastLapTimeMs = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        this.currentLapTimeMs = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        this.sector1TimeMsPart = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.sector1TimeMinutesPart = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.sector2TimeMsPart = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.sector2TimeMinutesPart = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.deltaCarInFrontMsPart = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.deltaCarInFrontMinutesPart = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.deltaRaceLeaderMsPart = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.deltaRaceLeaderMinutesPart = byteBuffer.get() & Constants.BIT_MASK_8;
         this.lapDistance = byteBuffer.getFloat();
         this.totalDistance = byteBuffer.getFloat();
         this.safetyCarDelta = byteBuffer.getFloat();
-        this.carPosition = byteBuffer.get();
-        this.currentLapNum = byteBuffer.get() & BIT_MASK_8;
-        this.pitStatus = byteBuffer.get();
-        this.numPitStops = byteBuffer.get();
-        this.sector = byteBuffer.get();
-        this.currentLapInvalid = byteBuffer.get();
-        this.penalties = byteBuffer.get();
-        this.totalWarnings = byteBuffer.get();
-        this.cornerCuttingWarnings = byteBuffer.get();
-        this.numUnservedDriveThroughPens = byteBuffer.get();
-        this.numUnservedStopGoPens = byteBuffer.get();
-        this.gridPosition = byteBuffer.get();
-        this.driverStatus = byteBuffer.get();
-        this.resultStatus = byteBuffer.get();
-        this.pitLaneTimeActive = byteBuffer.get();
-        this.pitLaneTimerInLaneInMs = byteBuffer.getShort();
-        this.pitStopTimerInMS = byteBuffer.getShort();
-        this.pitStopShouldServePen = byteBuffer.get();
+        this.carPosition = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.currentLapNum = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.pitStatus = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.numPitStops = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.sector = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.currentLapInvalid = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.penalties = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.totalWarnings = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.cornerCuttingWarnings = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.numUnservedDriveThroughPens = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.numUnservedStopGoPens = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.gridPosition = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.driverStatus = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.resultStatus = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.pitLaneTimeActive = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.pitLaneTimerInLaneInMs = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.pitStopTimerInMS = byteBuffer.getShort() & Constants.BIT_MASK_16;
+        this.pitStopShouldServePen = byteBuffer.get() & Constants.BIT_MASK_8;
         this.speedTrapFastestSpeed = byteBuffer.getFloat();
-        this.speedTrapFastestLap = byteBuffer.get();
+        this.speedTrapFastestLap = byteBuffer.get() & Constants.BIT_MASK_8;
     }
 
     private final long lastLapTimeMs;
@@ -91,33 +93,33 @@ public class LapData extends Data {
     private final int sector1TimeMinutesPart;
     private final int sector2TimeMsPart;
     private final int sector2TimeMinutesPart;
-    private final short deltaCarInFrontMsPart;
-    private final byte deltaCarInFrontMinutesPart;
-    private final short deltaRaceLeaderMsPart;
-    private final byte deltaRaceLeaderMinutesPart;
+    private final int deltaCarInFrontMsPart;
+    private final int deltaCarInFrontMinutesPart;
+    private final int deltaRaceLeaderMsPart;
+    private final int deltaRaceLeaderMinutesPart;
     private final float lapDistance;
     private final float totalDistance;
     private final float safetyCarDelta;
-    private final byte carPosition;
+    private final int carPosition;
     private final int currentLapNum;
-    private final byte pitStatus;
-    private final byte numPitStops;
-    private final byte sector;
-    private final byte currentLapInvalid;
-    private final byte penalties;
-    private final byte totalWarnings;
-    private final byte cornerCuttingWarnings;
-    private final byte numUnservedDriveThroughPens;
-    private final byte numUnservedStopGoPens;
-    private final byte gridPosition;
-    private final byte driverStatus;
-    private final byte resultStatus;
-    private final byte pitLaneTimeActive;
-    private final short pitLaneTimerInLaneInMs;
-    private final short pitStopTimerInMS;
-    private final byte pitStopShouldServePen;
+    private final int pitStatus;
+    private final int numPitStops;
+    private final int sector;
+    private final int currentLapInvalid;
+    private final int penalties;
+    private final int totalWarnings;
+    private final int cornerCuttingWarnings;
+    private final int numUnservedDriveThroughPens;
+    private final int numUnservedStopGoPens;
+    private final int gridPosition;
+    private final int driverStatus;
+    private final int resultStatus;
+    private final int pitLaneTimeActive;
+    private final int pitLaneTimerInLaneInMs;
+    private final int pitStopTimerInMS;
+    private final int pitStopShouldServePen;
     private final float speedTrapFastestSpeed;
-    private final byte speedTrapFastestLap;
+    private final int speedTrapFastestLap;
 
     public long getLastLapTimeMs() {
         return lastLapTimeMs;
@@ -143,19 +145,19 @@ public class LapData extends Data {
         return sector2TimeMinutesPart;
     }
 
-    public short getDeltaCarInFrontMsPart() {
+    public int getDeltaCarInFrontMsPart() {
         return deltaCarInFrontMsPart;
     }
 
-    public byte getDeltaCarInFrontMinutesPart() {
+    public int getDeltaCarInFrontMinutesPart() {
         return deltaCarInFrontMinutesPart;
     }
 
-    public short getDeltaRaceLeaderMsPart() {
+    public int getDeltaRaceLeaderMsPart() {
         return deltaRaceLeaderMsPart;
     }
 
-    public byte getDeltaRaceLeaderMinutesPart() {
+    public int getDeltaRaceLeaderMinutesPart() {
         return deltaRaceLeaderMinutesPart;
     }
 
@@ -171,7 +173,7 @@ public class LapData extends Data {
         return safetyCarDelta;
     }
 
-    public byte getCarPosition() {
+    public int getCarPosition() {
         return carPosition;
     }
 
@@ -179,67 +181,67 @@ public class LapData extends Data {
         return currentLapNum;
     }
 
-    public byte getPitStatus() {
+    public int getPitStatus() {
         return pitStatus;
     }
 
-    public byte getNumPitStops() {
+    public int getNumPitStops() {
         return numPitStops;
     }
 
-    public byte getSector() {
+    public int getSector() {
         return sector;
     }
 
-    public byte getCurrentLapInvalid() {
+    public int getCurrentLapInvalid() {
         return currentLapInvalid;
     }
 
-    public byte getPenalties() {
+    public int getPenalties() {
         return penalties;
     }
 
-    public byte getTotalWarnings() {
+    public int getTotalWarnings() {
         return totalWarnings;
     }
 
-    public byte getCornerCuttingWarnings() {
+    public int getCornerCuttingWarnings() {
         return cornerCuttingWarnings;
     }
 
-    public byte getNumUnservedDriveThroughPens() {
+    public int getNumUnservedDriveThroughPens() {
         return numUnservedDriveThroughPens;
     }
 
-    public byte getNumUnservedStopGoPens() {
+    public int getNumUnservedStopGoPens() {
         return numUnservedStopGoPens;
     }
 
-    public byte getGridPosition() {
+    public int getGridPosition() {
         return gridPosition;
     }
 
-    public byte getDriverStatus() {
+    public int getDriverStatus() {
         return driverStatus;
     }
 
-    public byte getResultStatus() {
+    public int getResultStatus() {
         return resultStatus;
     }
 
-    public byte getPitLaneTimeActive() {
+    public int getPitLaneTimeActive() {
         return pitLaneTimeActive;
     }
 
-    public short getPitLaneTimerInLaneInMs() {
+    public int getPitLaneTimerInLaneInMs() {
         return pitLaneTimerInLaneInMs;
     }
 
-    public short getPitStopTimerInMS() {
+    public int getPitStopTimerInMS() {
         return pitStopTimerInMS;
     }
 
-    public byte getPitStopShouldServePen() {
+    public int getPitStopShouldServePen() {
         return pitStopShouldServePen;
     }
 
@@ -247,7 +249,7 @@ public class LapData extends Data {
         return speedTrapFastestSpeed;
     }
 
-    public byte getSpeedTrapFastestLap() {
+    public int getSpeedTrapFastestLap() {
         return speedTrapFastestLap;
     }
 }

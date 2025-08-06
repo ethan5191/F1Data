@@ -4,6 +4,8 @@ import packets.LapData;
 import packets.PacketHeader;
 import packets.ParticipantData;
 import packets.events.ButtonsData;
+import telemetry.TelemetryRunData;
+import utils.Constants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -112,8 +114,8 @@ public class F1DataMain {
             }
         }
         //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-        byte timeTrailPBCarId = byteBuffer.get();
-        byte timeTrailRivalPdCarId = byteBuffer.get();
+        int timeTrailPBCarId = byteBuffer.get() & Constants.BIT_MASK_8;
+        int timeTrailRivalPdCarId = byteBuffer.get() & Constants.BIT_MASK_8;
     }
 
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
