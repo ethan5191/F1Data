@@ -1,6 +1,7 @@
 package individualLap;
 
 import packets.LapData;
+import packets.enums.TireBrakesOrderEnum;
 
 //Used to represent an individual laps data for an individual car. Idea is this will be populated at the end of the lap.
 public class IndividualLapInfo {
@@ -57,5 +58,41 @@ public class IndividualLapInfo {
 
     public float getSpeedTrap() {
         return speedTrap;
+    }
+
+    public CarTelemetryInfo getCarTelemetryInfo() {
+        return carTelemetryInfo;
+    }
+
+    public void setCarTelemetryInfo(CarTelemetryInfo carTelemetryInfo) {
+        this.carTelemetryInfo = carTelemetryInfo;
+    }
+
+    public void printInfo(String lastName) {
+        CarTelemetryInfo cti = this.carTelemetryInfo;
+        System.out.println();
+        System.out.println(lastName + " Lap # " + this.lapNum + " Time " + this.lapTimeInMs +
+                " 1st " + this.sector1InMs + " 2nd " + this.sector2InMs + " 3rd " + this.sector3InMs
+                + " Speed Trap " + this.speedTrap + " Engine temp " + cti.getEngineTemp() + "\n");
+        printLoop(cti.getBrakeTemps(), "Brakes");
+        System.out.println("\n-----------------");
+        printLoop(cti.getTireSurfaceTemps(), "Tire Surface");
+        System.out.println("\n-----------------");
+        printLoop(cti.getTireInnerTemps(), "Tire Inner");
+        System.out.println("\n-----------------");
+        System.out.println("Tire Pressure");
+        for (int i = 0; i < cti.getTirePressures().length; i++) {
+            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
+            System.out.print(elem.name() + " " + cti.getTirePressures()[i] + " ");
+        }
+        System.out.println("\n");
+    }
+
+    private void printLoop(int[] array, String header) {
+        System.out.println(header);
+        for (int i = 0; i < array.length; i++) {
+            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
+            System.out.print(elem.name() + " " + array[i] + " ");
+        }
     }
 }

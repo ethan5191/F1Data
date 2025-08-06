@@ -1,8 +1,6 @@
+import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
-import packets.CarSetupData;
-import packets.LapData;
-import packets.PacketHeader;
-import packets.ParticipantData;
+import packets.*;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryRunData;
@@ -48,6 +46,9 @@ public class F1DataMain {
                         break;
                     case Constants.PARTICIPANTS_PACK:
                         handleParticipantsPacket(byteBuffer);
+                        break;
+                    case Constants.CAR_TELEMETRY_PACK:
+                        handleCarTelemetryPacket(byteBuffer);
                         break;
                 }
             }
@@ -103,16 +104,17 @@ public class F1DataMain {
                     //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
                     if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
                         IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap());
-                        System.out.println(td.getParticipantData().getLastName() + " # " + info.getLapNum() + " Time " + info.getLapTimeInMs() +
-                                " 1st " + info.getSector1InMs() + " 2nd " + info.getSector2InMs() + " 3rd " + info.getSector3InMs()
-                                + " Speed Trap " + info.getSpeedTrap());
                         td.setLastLapNum(info.getLapNum());
                         td.setLastLapTimeInMs(info.getLapTimeInMs());
+                        if (td.getCurrentTelemetry() != null) {
+                            info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
+                        }
                         if (!td.getTelemetryRunDataList().isEmpty()) {
                             TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
                             trd.getLapData().put(info.getLapNum(), info);
                             participants.put(i, td);
                         }
+                        info.printInfo(td.getParticipantData().getLastName());
                     }
                     td.setCurrentLap(ld);
                 } else {
@@ -141,6 +143,21 @@ public class F1DataMain {
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
         }
+    }
+
+    private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarTelemetryData ctd = new CarTelemetryData(byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentTelemetry(ctd);
+                }
+            }
+        }
+        //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
+        int mfdPanelIdx = byteBuffer.get() & Constants.BIT_MASK_8;
+        int mfdPanelIdxSecondPlayer = byteBuffer.get() & Constants.BIT_MASK_8;
+        int suggestedGear = byteBuffer.get();
     }
 
     private void handleParticipantsPacket(ByteBuffer byteBuffer) {

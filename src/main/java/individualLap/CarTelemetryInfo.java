@@ -1,11 +1,40 @@
 package individualLap;
 
+import packets.CarTelemetryData;
+
 public class CarTelemetryInfo {
 
-    //Car telemetry values
-    //brake temps (4)
-    //tire surface temps (4)
-    //tire inner temps (4)
-    //engine temp
-    //tire pressures (4)
+    public CarTelemetryInfo(CarTelemetryData ctd) {
+        this.brakeTemps = ctd.getBrakeTemps();
+        this.tireSurfaceTemps = ctd.getTireSurfaceTemps();
+        this.tireInnerTemps = ctd.getTireInnerTemps();
+        this.engineTemp = ctd.getEngineTemp();
+        this.tirePressures = ctd.getTirePressure();
+    }
+
+    private final int[] brakeTemps;
+    private final int[] tireSurfaceTemps;
+    private final int[] tireInnerTemps;
+    private final int engineTemp;
+    private final float[] tirePressures;
+
+    public int[] getBrakeTemps() {
+        return brakeTemps;
+    }
+
+    public int[] getTireSurfaceTemps() {
+        return tireSurfaceTemps;
+    }
+
+    public int[] getTireInnerTemps() {
+        return tireInnerTemps;
+    }
+
+    public int getEngineTemp() {
+        return engineTemp;
+    }
+
+    public float[] getTirePressures() {
+        return tirePressures;
+    }
 }

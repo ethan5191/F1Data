@@ -1,4 +1,5 @@
 import packets.CarSetupData;
+import packets.CarTelemetryData;
 import packets.LapData;
 import packets.ParticipantData;
 import telemetry.TelemetryRunData;
@@ -17,8 +18,10 @@ public class TelemetryData {
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private long lastLapTimeInMs;
-    private LapData currentLap;
     private float speedTrap;
+
+    private LapData currentLap;
+    private CarTelemetryData currentTelemetry;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -52,6 +55,14 @@ public class TelemetryData {
         this.lastLapTimeInMs = lastLapTimeInMs;
     }
 
+    public float getSpeedTrap() {
+        return speedTrap;
+    }
+
+    public void setSpeedTrap(float speedTrap) {
+        this.speedTrap = speedTrap;
+    }
+
     public LapData getCurrentLap() {
         return currentLap;
     }
@@ -60,11 +71,11 @@ public class TelemetryData {
         this.currentLap = currentLap;
     }
 
-    public float getSpeedTrap() {
-        return speedTrap;
+    public CarTelemetryData getCurrentTelemetry() {
+        return currentTelemetry;
     }
 
-    public void setSpeedTrap(float speedTrap) {
-        this.speedTrap = speedTrap;
+    public void setCurrentTelemetry(CarTelemetryData currentTelemetry) {
+        this.currentTelemetry = currentTelemetry;
     }
 }
