@@ -1,5 +1,7 @@
 package packets;
 
+import utils.Constants;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -40,70 +42,70 @@ public class CarSetupData extends Data {
 
     public CarSetupData(ByteBuffer byteBuffer) {
 //        printMessage("Car Setup ", byteBuffer.array().length);
-        this.frontWing = byteBuffer.get();
-        this.rearWing = byteBuffer.get();
-        this.onThrottle = byteBuffer.get();
-        this.offThrottle = byteBuffer.get();
+        this.frontWing = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.rearWing = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.onThrottle = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.offThrottle = byteBuffer.get() & Constants.BIT_MASK_8;
         this.frontCamber = byteBuffer.getFloat();
         this.rearCamber = byteBuffer.getFloat();
         this.frontToe = byteBuffer.getFloat();
         this.rearToe = byteBuffer.getFloat();
-        this.frontSusp = byteBuffer.get();
-        this.rearSusp = byteBuffer.get();
-        this.frontARB = byteBuffer.get();
-        this.rearARB = byteBuffer.get();
-        this.frontHeight = byteBuffer.get();
-        this.rearHeight = byteBuffer.get();
-        this.brakePressure = byteBuffer.get();
-        this.brakeBias = byteBuffer.get();
-        this.engineBreaking = byteBuffer.get();
+        this.frontSusp = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.rearSusp = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.frontARB = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.rearARB = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.frontHeight = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.rearHeight = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.brakePressure = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.brakeBias = byteBuffer.get() & Constants.BIT_MASK_8;
+        this.engineBreaking = byteBuffer.get() & Constants.BIT_MASK_8;
         this.rearLeftPressure = byteBuffer.getFloat();
         this.rearRightPressure = byteBuffer.getFloat();
         this.frontLeftPressure = byteBuffer.getFloat();
         this.frontRightPressure = byteBuffer.getFloat();
-        this.ballast = byteBuffer.get();
+        this.ballast = byteBuffer.get() & Constants.BIT_MASK_8;
         this.fuelLoad = byteBuffer.getFloat();
     }
 
-    private final byte frontWing;
-    private final byte rearWing;
-    private final byte onThrottle;
-    private final byte offThrottle;
+    private final int frontWing;
+    private final int rearWing;
+    private final int onThrottle;
+    private final int offThrottle;
     private final float frontCamber;
     private final float rearCamber;
     private final float frontToe;
     private final float rearToe;
-    private final byte frontSusp;
-    private final byte rearSusp;
-    private final byte frontARB;
-    private final byte rearARB;
-    private final byte frontHeight;
-    private final byte rearHeight;
-    private final byte brakePressure;
-    private final byte brakeBias;
-    private final byte engineBreaking;
+    private final int frontSusp;
+    private final int rearSusp;
+    private final int frontARB;
+    private final int rearARB;
+    private final int frontHeight;
+    private final int rearHeight;
+    private final int brakePressure;
+    private final int brakeBias;
+    private final int engineBreaking;
     private final float rearLeftPressure;
     private final float rearRightPressure;
     private final float frontLeftPressure;
     private final float frontRightPressure;
-    private final byte ballast;
+    private final int ballast;
     private final float fuelLoad;
 
     private String setupName;
 
-    public byte getFrontWing() {
+    public int getFrontWing() {
         return frontWing;
     }
 
-    public byte getRearWing() {
+    public int getRearWing() {
         return rearWing;
     }
 
-    public byte getOnThrottle() {
+    public int getOnThrottle() {
         return onThrottle;
     }
 
-    public byte getOffThrottle() {
+    public int getOffThrottle() {
         return offThrottle;
     }
 
@@ -123,39 +125,39 @@ public class CarSetupData extends Data {
         return rearToe;
     }
 
-    public byte getFrontSusp() {
+    public int getFrontSusp() {
         return frontSusp;
     }
 
-    public byte getRearSusp() {
+    public int getRearSusp() {
         return rearSusp;
     }
 
-    public byte getFrontARB() {
+    public int getFrontARB() {
         return frontARB;
     }
 
-    public byte getRearARB() {
+    public int getRearARB() {
         return rearARB;
     }
 
-    public byte getFrontHeight() {
+    public int getFrontHeight() {
         return frontHeight;
     }
 
-    public byte getRearHeight() {
+    public int getRearHeight() {
         return rearHeight;
     }
 
-    public byte getBrakePressure() {
+    public int getBrakePressure() {
         return brakePressure;
     }
 
-    public byte getBrakeBias() {
+    public int getBrakeBias() {
         return brakeBias;
     }
 
-    public byte getEngineBreaking() {
+    public int getEngineBreaking() {
         return engineBreaking;
     }
 
@@ -175,7 +177,7 @@ public class CarSetupData extends Data {
         return frontRightPressure;
     }
 
-    public byte getBallast() {
+    public int getBallast() {
         return ballast;
     }
 
