@@ -206,8 +206,4 @@ public class F1DataMain {
             }
         }
     }
-
-    public static void main(String[] args) {
-        new F1DataMain().run();
-    }
 }
