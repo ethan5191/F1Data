@@ -7,6 +7,7 @@ import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
 import telemetry.TelemetryRunData;
+import ui.DriverDataDTO;
 import utils.Constants;
 
 import java.io.IOException;
@@ -19,13 +20,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class F1DataMain {
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
 
-    public void run() {
+    public void run(Consumer<DriverDataDTO> driverDataDTO) {
         int port = Constants.PORT_NUM;
         byte[] buffer = new byte[2048];
         try {
@@ -50,7 +52,7 @@ public class F1DataMain {
                         handleCarSetupPacket(byteBuffer);
                         break;
                     case Constants.PARTICIPANTS_PACK:
-                        handleParticipantsPacket(byteBuffer);
+                        handleParticipantsPacket(byteBuffer, driverDataDTO);
                         break;
                     case Constants.CAR_TELEMETRY_PACK:
                         handleCarTelemetryPacket(byteBuffer);
@@ -182,7 +184,7 @@ public class F1DataMain {
         handlePacket(byteBuffer, CarDamageData::new, TelemetryData::setCurrentDamage);
     }
 
-    private void handleParticipantsPacket(ByteBuffer byteBuffer) {
+    private void handleParticipantsPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
         if (participants.isEmpty()) {
             //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
             int numActiveCars = byteBuffer.get();
@@ -192,6 +194,7 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd);
                     participants.put(i, td);
+                    driverDataDTO.accept(new DriverDataDTO(i, td));
                 }
             }
         }
