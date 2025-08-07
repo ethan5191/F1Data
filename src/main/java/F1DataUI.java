@@ -1,10 +1,11 @@
 import individualLap.IndividualLapInfo;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.DriverDashboard;
@@ -15,22 +16,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static ui.DriverDashboard.HEADERS;
+import static ui.DriverDashboard.HEADERS_WIDTH;
+import static ui.LapDataDashboard.LAP_HEADERS;
+import static ui.LapDataDashboard.LAP_HEADERS_WIDTH;
+
 public class F1DataUI extends Application {
 
     private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
     private final Map<Integer, VBox> lapDataDashboard = new HashMap<>();
 
-    private final String[] HEADERS = {"NAME (Tire)", "#", "S1", "S2", "S3", "TIME"};
-    private final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
-
     @Override
     public void start(Stage stage) throws Exception {
         VBox content = new VBox();
         HBox headers = new HBox(3);
-        for (String s : HEADERS) {
-            Label header = new Label(s);
-            header.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(header, Priority.ALWAYS);
+        for (int i = 0; i < HEADERS.length; i++) {
+            Label header = new Label(HEADERS[i]);
+            header.setMinWidth(HEADERS_WIDTH[i]);
             headers.getChildren().add(header);
         }
         headers.setMaxWidth(Double.MAX_VALUE);
@@ -78,7 +80,7 @@ public class F1DataUI extends Application {
         });
 
         content.getChildren().add(allDrivers);
-        Scene scene = new Scene(content, 500, 500);
+        Scene scene = new Scene(content, 650, 475);
         stage.setScene(scene);
         stage.show();
 
@@ -89,13 +91,11 @@ public class F1DataUI extends Application {
         Stage lapData = new Stage();
         VBox content = new VBox();
         HBox headerBox = new HBox();
-        for (String s : LAP_HEADERS) {
-            Label header = new Label(s);
-            header.setMaxWidth(Double.MAX_VALUE);
-            HBox.setHgrow(header, Priority.ALWAYS);
+        for (int i = 0; i < LAP_HEADERS.length; i++) {
+            Label header = new Label(LAP_HEADERS[i]);
+            header.setMinWidth(LAP_HEADERS_WIDTH[i]);
             headerBox.getChildren().add(header);
         }
-        headerBox.setMaxWidth(Double.MAX_VALUE);
         content.getChildren().add(headerBox);
         content.getChildren().add(allLaps);
 
@@ -104,8 +104,12 @@ public class F1DataUI extends Application {
             lapData.hide();
             System.out.println("Lap Data closed, app still lives");
         });
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(content);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        Scene lapDataScene = new Scene(content, 700, 300);
+        Scene lapDataScene = new Scene(scroll, 300, 700);
         lapData.setScene(lapDataScene);
         lapData.show();
     }

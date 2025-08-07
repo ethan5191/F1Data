@@ -3,25 +3,22 @@ package ui;
 import individualLap.IndividualLapInfo;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 
 public class LapDataDashboard extends HBox {
 
+    public static final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
+    public static final int[] LAP_HEADERS_WIDTH = {100, 75, 50, 75};
+
     public LapDataDashboard(String lastName, IndividualLapInfo info) {
         this.name = new Label(lastName);
-        this.name.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(this.name, Priority.ALWAYS);
+        this.name.setMinWidth(LAP_HEADERS_WIDTH[0]);
         this.tire = new Label(info.getCarStatusInfo().getVisualTire().getDisplay());
-        this.tire.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(this.tire, Priority.ALWAYS);
+        this.tire.setMinWidth(LAP_HEADERS_WIDTH[1]);
         this.lapNum = new Label(String.valueOf(info.getLapNum()));
-        this.lapNum.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(this.lapNum, Priority.ALWAYS);
+        this.lapNum.setMinWidth(LAP_HEADERS_WIDTH[2]);
         this.lapTime = new Label(String.valueOf(info.getLapTimeInMs()));
-        this.lapTime.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(this.lapTime, Priority.ALWAYS);
+        this.lapTime.setMinWidth(LAP_HEADERS_WIDTH[3]);
 
-        this.setMaxWidth(Double.MAX_VALUE);
         this.getChildren().addAll(name, tire, lapNum, lapTime);
     }
 
