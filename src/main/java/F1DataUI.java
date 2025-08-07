@@ -9,16 +9,20 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.DriverDashboard;
 import ui.DriverDataDTO;
+import ui.LapDataDashboard;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
     private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
+    private final Map<Integer, TreeMap<Integer, LapDataDashboard>> lapDataDashboard = new HashMap<>();
 
-    private final String[] HEADERS = {"NAME", "#", "S1", "S2", "S3", "TIME"};
+    private final String[] HEADERS = {"NAME (Tire)", "#", "S1", "S2", "S3", "TIME"};
+    private final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -34,6 +38,8 @@ public class F1DataUI extends Application {
         content.getChildren().add(headers);
         VBox allDrivers = new VBox(5);
 
+        VBox allLaps = new VBox(5);
+
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
             Platform.runLater(() -> {
@@ -45,6 +51,14 @@ public class F1DataUI extends Application {
                 IndividualLapInfo info = snapshot.getInfo();
                 if (info != null) {
                     dashboard.updateValues(info);
+
+                    //builds out the labels for the lapdata panel (panel 2 at the moment)
+                    TreeMap<Integer, LapDataDashboard> laps = lapDataDashboard.computeIfAbsent(snapshot.getId(), id -> new TreeMap<>());
+                    LapDataDashboard dataDashboard = laps.computeIfAbsent(snapshot.getInfo().getLapNum(), lapNum -> {
+                        LapDataDashboard newDashboard = new LapDataDashboard(snapshot.getLastName(), info);
+                        allLaps.getChildren().add(newDashboard);
+                        return newDashboard;
+                    });
                 }
             });
         };
@@ -65,6 +79,33 @@ public class F1DataUI extends Application {
         Scene scene = new Scene(content, 500, 500);
         stage.setScene(scene);
         stage.show();
+
+        buildLapDataStage(allLaps);
+    }
+
+    private void buildLapDataStage(VBox allLaps) {
+        Stage lapData = new Stage();
+        VBox content = new VBox();
+        HBox headerBox = new HBox();
+        for (String s : LAP_HEADERS) {
+            Label header = new Label(s);
+            header.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(header, Priority.ALWAYS);
+            headerBox.getChildren().add(header);
+        }
+        headerBox.setMaxWidth(Double.MAX_VALUE);
+        content.getChildren().add(headerBox);
+        content.getChildren().add(allLaps);
+
+        Platform.setImplicitExit(false);
+        lapData.setOnCloseRequest(event -> {
+            lapData.hide();
+            System.out.println("Lap Data closed, app still lives");
+        });
+
+        Scene lapDataScene = new Scene(content, 700, 300);
+        lapData.setScene(lapDataScene);
+        lapData.show();
     }
 
     public void run(String[] args) {
