@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class F1DataMain {
 
@@ -164,14 +166,7 @@ public class F1DataMain {
     }
 
     private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarTelemetryData ctd = new CarTelemetryData(byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentTelemetry(ctd);
-                }
-            }
-        }
+        handlePacket(byteBuffer, CarTelemetryData::new, TelemetryData::setCurrentTelemetry);
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
         int mfdPanelIdx = byteBuffer.get() & Constants.BIT_MASK_8;
         int mfdPanelIdxSecondPlayer = byteBuffer.get() & Constants.BIT_MASK_8;
@@ -179,25 +174,11 @@ public class F1DataMain {
     }
 
     private void handleCarStatusPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarStatusData csd = new CarStatusData(byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentStatus(csd);
-                }
-            }
-        }
+        handlePacket(byteBuffer, CarStatusData::new, TelemetryData::setCurrentStatus);
     }
 
     private void handleCarDamagePacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarDamageData cdd = new CarDamageData(byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentDamage(cdd);
-                }
-            }
-        }
+        handlePacket(byteBuffer, CarDamageData::new, TelemetryData::setCurrentDamage);
     }
 
     private void handleParticipantsPacket(ByteBuffer byteBuffer) {
@@ -210,6 +191,17 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd);
                     participants.put(i, td);
+                }
+            }
+        }
+    }
+
+    private <T> void handlePacket(ByteBuffer byteBuffer, Function<ByteBuffer, T> packetCreator, BiConsumer<TelemetryData, T> dataSetter) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                T packet = packetCreator.apply(byteBuffer);
+                if (validKey(i)) {
+                    dataSetter.accept(participants.get(i), packet);
                 }
             }
         }
