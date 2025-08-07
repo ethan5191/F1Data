@@ -13,13 +13,12 @@ import ui.LapDataDashboard;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
     private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
-    private final Map<Integer, TreeMap<Integer, LapDataDashboard>> lapDataDashboard = new HashMap<>();
+    private final Map<Integer, VBox> lapDataDashboard = new HashMap<>();
 
     private final String[] HEADERS = {"NAME (Tire)", "#", "S1", "S2", "S3", "TIME"};
     private final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
@@ -53,12 +52,15 @@ public class F1DataUI extends Application {
                     dashboard.updateValues(info);
 
                     //builds out the labels for the lapdata panel (panel 2 at the moment)
-                    TreeMap<Integer, LapDataDashboard> laps = lapDataDashboard.computeIfAbsent(snapshot.getId(), id -> new TreeMap<>());
-                    LapDataDashboard dataDashboard = laps.computeIfAbsent(snapshot.getInfo().getLapNum(), lapNum -> {
-                        LapDataDashboard newDashboard = new LapDataDashboard(snapshot.getLastName(), info);
-                        allLaps.getChildren().add(newDashboard);
-                        return newDashboard;
+                    VBox driver = lapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
+                        VBox temp = new VBox();
+                        allLaps.getChildren().add(temp);
+                        return temp;
                     });
+                    LapDataDashboard lap = new LapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
+                    VBox lapsContainer = new VBox();
+                    lapsContainer.getChildren().add(lap);
+                    driver.getChildren().add(lapsContainer);
                 }
             });
         };
