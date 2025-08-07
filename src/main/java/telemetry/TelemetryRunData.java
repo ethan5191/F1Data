@@ -3,13 +3,13 @@ package telemetry;
 import individualLap.IndividualLapInfo;
 import packets.CarSetupData;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class TelemetryRunData {
 
     private final CarSetupData carSetupData;
-    private final Map<Integer, IndividualLapInfo> lapData = new HashMap<>();
+    private final TreeMap<Integer, IndividualLapInfo> lapData = new TreeMap<>();
 
     private final long startTime;
 
@@ -22,7 +22,7 @@ public class TelemetryRunData {
         return carSetupData;
     }
 
-    public Map<Integer, IndividualLapInfo> getLapData() {
+    public TreeMap<Integer, IndividualLapInfo> getLapData() {
         return lapData;
     }
 

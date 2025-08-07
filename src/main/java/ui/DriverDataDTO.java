@@ -1,29 +1,34 @@
 package ui;
 
-import telemetry.TelemetryData;
+import individualLap.IndividualLapInfo;
 
 public class DriverDataDTO {
 
-    public DriverDataDTO(Integer id, TelemetryData telemetryData) {
+    public DriverDataDTO(Integer id, String lastName) {
         this.id = id;
-        this.telemetryData = telemetryData;
+        this.lastName = lastName;
+        this.info = null;
+    }
+
+    public DriverDataDTO(Integer id, String lastName, IndividualLapInfo info) {
+        this.id = id;
+        this.lastName = lastName;
+        this.info = info;
     }
 
     private final Integer id;
-    private final TelemetryData telemetryData;
+    private final String lastName;
+    private final IndividualLapInfo info;
 
     public Integer getId() {
         return id;
     }
 
-    public TelemetryData getTelemetryData() {
-        return telemetryData;
+    public String getLastName() {
+        return lastName;
     }
 
-    public String getLastName() {
-        if (this.telemetryData != null && this.telemetryData.getParticipantData() != null) {
-            return this.telemetryData.getParticipantData().getLastName();
-        }
-        return null;
+    public IndividualLapInfo getInfo() {
+        return info;
     }
 }

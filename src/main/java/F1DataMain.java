@@ -46,7 +46,7 @@ public class F1DataMain {
                         handleEventPacket(byteBuffer);
                         break;
                     case Constants.LAP_DATA_PACK:
-                        handleLapDataPacket(byteBuffer);
+                        handleLapDataPacket(byteBuffer, driverDataDTO);
                         break;
                     case Constants.CAR_SETUP_PACK:
                         handleCarSetupPacket(byteBuffer);
@@ -108,7 +108,7 @@ public class F1DataMain {
         }
     }
 
-    private void handleLapDataPacket(ByteBuffer byteBuffer) {
+    private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
             LapData ld = new LapData(byteBuffer);
             if (validKey(i)) {
@@ -136,6 +136,7 @@ public class F1DataMain {
                         info.printInfo(td.getParticipantData().getLastName());
                         info.printStatus(td.getParticipantData().getLastName());
                         info.printDamage(td.getParticipantData().getLastName());
+                        driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName(), info));
                     }
                     td.setCurrentLap(ld);
                 } else {
@@ -194,7 +195,7 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd);
                     participants.put(i, td);
-                    driverDataDTO.accept(new DriverDataDTO(i, td));
+                    driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName()));
                 }
             }
         }

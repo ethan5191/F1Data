@@ -1,36 +1,24 @@
+import individualLap.IndividualLapInfo;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ui.DriverDashboard;
 import ui.DriverDataDTO;
-import utils.Constants;
 
-import java.awt.font.TextMeasurer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
-    private final Map<Integer, Label> labelMap = new HashMap<>();
+    private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
 
-    private static String[] HEADERS = new String[6];
-
-    static {
-        String[] temp = new String[6];
-        temp[0] = "NAME";
-        temp[1] = "#";
-        temp[2] = "S1";
-        temp[3] = "S2";
-        temp[4] = "S3";
-        temp[5] = "TIME";
-        HEADERS = temp;
-    }
+    private final String[] HEADERS = {"NAME", "#", "S1", "S2", "S3", "TIME"};
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -44,18 +32,19 @@ public class F1DataUI extends Application {
         }
         headers.setMaxWidth(Double.MAX_VALUE);
         content.getChildren().add(headers);
-        VBox names = new VBox(5);
-        for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            labelMap.put(i, new Label(null));
-        }
+        VBox allDrivers = new VBox(5);
 
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
             Platform.runLater(() -> {
-                Label l = labelMap.get(snapshot.getId());
-                if (l.getText() == null) {
-                    l.setText(snapshot.getLastName());
-                    names.getChildren().add(l);
+                DriverDashboard dashboard = driverDashboards.computeIfAbsent(snapshot.getId(), id -> {
+                    DriverDashboard newDashboard = new DriverDashboard(snapshot.getLastName());
+                    allDrivers.getChildren().add(newDashboard);
+                    return newDashboard;
+                });
+                IndividualLapInfo info = snapshot.getInfo();
+                if (info != null) {
+                    dashboard.updateValues(info);
                 }
             });
         };
@@ -72,7 +61,7 @@ public class F1DataUI extends Application {
             System.out.println("Window closed, app still lives");
         });
 
-        content.getChildren().add(names);
+        content.getChildren().add(allDrivers);
         Scene scene = new Scene(content, 500, 500);
         stage.setScene(scene);
         stage.show();
