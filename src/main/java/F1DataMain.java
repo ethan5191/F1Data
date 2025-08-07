@@ -5,6 +5,7 @@ import individualLap.IndividualLapInfo;
 import packets.*;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
+import telemetry.TelemetryData;
 import telemetry.TelemetryRunData;
 import utils.Constants;
 

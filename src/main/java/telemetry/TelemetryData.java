@@ -1,5 +1,6 @@
+package telemetry;
+
 import packets.*;
-import telemetry.TelemetryRunData;
 
 import java.util.ArrayList;
 import java.util.List;
