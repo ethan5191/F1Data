@@ -20,6 +20,7 @@ public class TelemetryData {
     private LapData currentLap;
     private CarTelemetryData currentTelemetry;
     private CarStatusData currentStatus;
+    private CarDamageData currentDamage;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -83,5 +84,13 @@ public class TelemetryData {
 
     public void setCurrentStatus(CarStatusData currentStatus) {
         this.currentStatus = currentStatus;
+    }
+
+    public CarDamageData getCurrentDamage() {
+        return currentDamage;
+    }
+
+    public void setCurrentDamage(CarDamageData currentDamage) {
+        this.currentDamage = currentDamage;
     }
 }

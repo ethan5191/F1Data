@@ -1,3 +1,4 @@
+import individualLap.CarDamageInfo;
 import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
@@ -53,6 +54,9 @@ public class F1DataMain {
                         break;
                     case Constants.CAR_STATUS_PACK:
                         handleCarStatusPacket(byteBuffer);
+                        break;
+                    case Constants.CAR_DAMAGE_PACK:
+                        handleCarDamagePacket(byteBuffer);
                         break;
                 }
             }
@@ -116,6 +120,9 @@ public class F1DataMain {
                         if (td.getCurrentStatus() != null) {
                             info.setCarStatusInfo(new CarStatusInfo(td.getCurrentStatus()));
                         }
+                        if (td.getCurrentDamage() != null) {
+                            info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
+                        }
                         if (!td.getTelemetryRunDataList().isEmpty()) {
                             TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
                             trd.getLapData().put(info.getLapNum(), info);
@@ -123,6 +130,7 @@ public class F1DataMain {
                         }
                         info.printInfo(td.getParticipantData().getLastName());
                         info.printStatus(td.getParticipantData().getLastName());
+                        info.printDamage(td.getParticipantData().getLastName());
                     }
                     td.setCurrentLap(ld);
                 } else {
@@ -151,6 +159,8 @@ public class F1DataMain {
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
         }
+        //Trailing value, must be here to ensure the packet is fully parsed.
+        float nextFronWingVal = byteBuffer.getFloat();
     }
 
     private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
@@ -174,6 +184,17 @@ public class F1DataMain {
                 CarStatusData csd = new CarStatusData(byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentStatus(csd);
+                }
+            }
+        }
+    }
+
+    private void handleCarDamagePacket(ByteBuffer byteBuffer) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarDamageData cdd = new CarDamageData(byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentDamage(cdd);
                 }
             }
         }

@@ -76,6 +76,14 @@ public class IndividualLapInfo {
         this.carStatusInfo = carStatusInfo;
     }
 
+    public CarDamageInfo getCarDamageInfo() {
+        return carDamageInfo;
+    }
+
+    public void setCarDamageInfo(CarDamageInfo carDamageInfo) {
+        this.carDamageInfo = carDamageInfo;
+    }
+
     public void printInfo(String lastName) {
         CarTelemetryInfo cti = this.carTelemetryInfo;
         System.out.println();
@@ -89,19 +97,23 @@ public class IndividualLapInfo {
         printLoop(cti.getTireInnerTemps(), "Tire Inner");
         System.out.println("\n-----------------");
         System.out.println("Tire Pressure");
-        for (int i = 0; i < cti.getTirePressures().length; i++) {
-            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
-            System.out.print(elem.name() + " " + cti.getTirePressures()[i] + " ");
-        }
+        printLoop(cti.getTirePressures());
     }
 
     public void printStatus(String lastName) {
         CarStatusInfo csi = this.carStatusInfo;
         System.out.println();
         System.out.println(lastName + " In Tank " + csi.getFuelInTank() + " Remain Lap " + csi.getFuelRemainingLaps()
-        + " Actual Tire " + csi.getActualTireCompound() + " Visual tire " + csi.getVisualTireCompound() + " Tire Age " + csi.getTiresAgeLaps());
+                + " Actual Tire " + csi.getActualTireCompound() + " Visual tire " + csi.getVisualTireCompound() + " Tire Age " + csi.getTiresAgeLaps());
         System.out.println("ICE " + csi.getEnginePowerICE() + " MGUK " + csi.getEnginePowerMGUK() + " Store " + csi.getErsStoreEnergy() +
                 " MGUK Harvest " + csi.getErsHarvestedThisLapMGUK() + " MGUH Harvested " + csi.getErsHarvestedThisLapMGUH() + " Deployed " + csi.getErsDeployedThisLap());
+    }
+
+    public void printDamage(String lastName) {
+        CarDamageInfo cdi = this.carDamageInfo;
+        System.out.println();
+        System.out.println(lastName + " Floor " + cdi.getFloorDamage() + " Diffuser " + cdi.getDiffuserDamage());
+        printLoop(cdi.getTyresWear());
     }
 
     private void printLoop(int[] array, String header) {
@@ -109,6 +121,13 @@ public class IndividualLapInfo {
         for (int i = 0; i < array.length; i++) {
             TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
             System.out.print(elem.name() + " " + array[i] + " ");
+        }
+    }
+
+    private void printLoop(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
+            System.out.print(" " + elem + " " + array[i] + " ");
         }
     }
 }
