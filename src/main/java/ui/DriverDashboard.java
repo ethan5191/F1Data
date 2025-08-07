@@ -64,6 +64,10 @@ public class DriverDashboard extends HBox {
 
     public void updateValues(IndividualLapInfo info) {
         if (info.getLapNum() > Integer.parseInt(this.lapNum.getText())) {
+            if (!this.name.getText().contains("(")) {
+                String text = this.name.getText() + " (" + info.getCarStatusInfo().getVisualTire() + ")";
+                this.name.setText(text);
+            }
             this.lapNum.setText(String.valueOf(info.getLapNum()));
             this.s1.setText(String.valueOf(info.getSector1InMs()));
             this.s2.setText(String.valueOf(info.getSector2InMs()));
