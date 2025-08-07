@@ -1,12 +1,13 @@
 package individualLap;
 
 import packets.CarStatusData;
+import utils.Constants;
 
 public class CarStatusInfo {
 
     public CarStatusInfo(CarStatusData csd) {
-        this.fuelInTank = csd.getFuelInTank();
-        this.fuelRemainingLaps = csd.getFuelRemainingLaps();
+        this.fuelInTank = String.format(Constants.TWO_DECIMAL, csd.getFuelInTank());
+        this.fuelRemainingLaps = String.format(Constants.TWO_DECIMAL, csd.getFuelRemainingLaps());
         this.actualTireCompound = csd.getActualTireCompound();
         this.visualTireCompound = csd.getVisualTireCompound();
         this.tiresAgeLaps = csd.getTiresAgeLaps();
@@ -19,8 +20,8 @@ public class CarStatusInfo {
         this.ersDeployedThisLap = csd.getErsDeployedThisLap();
     }
 
-    private final float fuelInTank;
-    private final float fuelRemainingLaps;
+    private final String fuelInTank;
+    private final String fuelRemainingLaps;
     private final int actualTireCompound;
     private final int visualTireCompound;
     private final int tiresAgeLaps;
@@ -32,11 +33,11 @@ public class CarStatusInfo {
     private final float ersHarvestedThisLapMGUH;
     private final float ersDeployedThisLap;
 
-    public float getFuelInTank() {
+    public String getFuelInTank() {
         return fuelInTank;
     }
 
-    public float getFuelRemainingLaps() {
+    public String getFuelRemainingLaps() {
         return fuelRemainingLaps;
     }
 

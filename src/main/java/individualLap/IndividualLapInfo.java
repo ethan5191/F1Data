@@ -114,6 +114,7 @@ public class IndividualLapInfo {
         System.out.println();
         System.out.println(lastName + " Floor " + cdi.getFloorDamage() + " Diffuser " + cdi.getDiffuserDamage());
         printLoop(cdi.getTyresWear());
+        System.out.println("\n-----------------");
     }
 
     private void printLoop(int[] array, String header) {
@@ -125,6 +126,13 @@ public class IndividualLapInfo {
     }
 
     private void printLoop(float[] array) {
+        for (int i = 0; i < array.length; i++) {
+            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
+            System.out.print(" " + elem + " " + array[i] + " ");
+        }
+    }
+
+    private void printLoop(String[] array) {
         for (int i = 0; i < array.length; i++) {
             TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
             System.out.print(" " + elem + " " + array[i] + " ");
