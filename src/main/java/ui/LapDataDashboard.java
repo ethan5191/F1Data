@@ -1,0 +1,45 @@
+package ui;
+
+import individualLap.IndividualLapInfo;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+
+public class LapDataDashboard extends HBox {
+
+    public static final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
+    public static final int[] LAP_HEADERS_WIDTH = {100, 75, 50, 75};
+
+    public LapDataDashboard(String lastName, IndividualLapInfo info) {
+        this.name = new Label(lastName);
+        this.name.setMinWidth(LAP_HEADERS_WIDTH[0]);
+        this.tire = new Label(info.getCarStatusInfo().getVisualTire().getDisplay());
+        this.tire.setMinWidth(LAP_HEADERS_WIDTH[1]);
+        this.lapNum = new Label(String.valueOf(info.getLapNum()));
+        this.lapNum.setMinWidth(LAP_HEADERS_WIDTH[2]);
+        this.lapTime = new Label(String.valueOf(info.getLapTimeInMs()));
+        this.lapTime.setMinWidth(LAP_HEADERS_WIDTH[3]);
+
+        this.getChildren().addAll(name, tire, lapNum, lapTime);
+    }
+
+    private final Label name;
+    private final Label tire;
+    private final Label lapNum;
+    private final Label lapTime;
+
+    public Label getName() {
+        return name;
+    }
+
+    public Label getTire() {
+        return tire;
+    }
+
+    public Label getLapNum() {
+        return lapNum;
+    }
+
+    public Label getLapTime() {
+        return lapTime;
+    }
+}
