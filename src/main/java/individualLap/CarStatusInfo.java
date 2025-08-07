@@ -1,6 +1,8 @@
 package individualLap;
 
 import packets.CarStatusData;
+import packets.enums.ActualTireEnum;
+import packets.enums.VisualTireEnum;
 import utils.Constants;
 
 public class CarStatusInfo {
@@ -79,5 +81,13 @@ public class CarStatusInfo {
 
     public float getErsDeployedThisLap() {
         return ersDeployedThisLap;
+    }
+
+    public ActualTireEnum getActualTire() {
+        return ActualTireEnum.fromValue(this.actualTireCompound);
+    }
+
+    public VisualTireEnum getVisualTire() {
+        return VisualTireEnum.fromValue(this.visualTireCompound);
     }
 }

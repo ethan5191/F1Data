@@ -42,4 +42,10 @@ public class Constants {
     public static final String F1 = "F1";
     public static final String CLASSIC = "CLASSIC";
     public static final String F2 = "F2";
+    public static final String INTER = "Inter";
+    public static final String WET = "Wet";
+    public static final String HARD = "Hard";
+    public static final String MEDIUM = "Medium";
+    public static final String SOFT = "Soft";
+    public static final String SUPER = "Super Soft";
 }

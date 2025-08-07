@@ -104,7 +104,7 @@ public class IndividualLapInfo {
         CarStatusInfo csi = this.carStatusInfo;
         System.out.println();
         System.out.println(lastName + " In Tank " + csi.getFuelInTank() + " Remain Lap " + csi.getFuelRemainingLaps()
-                + " Actual Tire " + csi.getActualTireCompound() + " Visual tire " + csi.getVisualTireCompound() + " Tire Age " + csi.getTiresAgeLaps());
+                + " Actual Tire " + csi.getActualTire().getDisplay() + " Visual tire " + csi.getVisualTire().getDisplay() + " Tire Age " + csi.getTiresAgeLaps());
         System.out.println("ICE " + csi.getEnginePowerICE() + " MGUK " + csi.getEnginePowerMGUK() + " Store " + csi.getErsStoreEnergy() +
                 " MGUK Harvest " + csi.getErsHarvestedThisLapMGUK() + " MGUH Harvested " + csi.getErsHarvestedThisLapMGUH() + " Deployed " + csi.getErsDeployedThisLap());
     }
