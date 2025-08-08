@@ -15,6 +15,7 @@ public abstract class AbstractStage<T extends Pane> {
 
     public AbstractStage(Stage stage, String[] headers, int[] headersWidth) {
         this.stage = stage;
+        this.stage.setAlwaysOnTop(true);
         this.headers = headers;
         this.headersWidth = headersWidth;
         this.content = createParentContent();
