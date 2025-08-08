@@ -1,6 +1,5 @@
 package ui.stages;
 
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -10,11 +9,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.stages.helper.Delta;
+import ui.stages.helper.StageUtils;
 
 import static ui.LapDataDashboard.LAP_HEADERS;
 import static ui.LapDataDashboard.LAP_HEADERS_WIDTH;
 
-public class LapDataStage implements F1Stages {
+public class LapDataStage implements F1Stages<VBox> {
 
     public LapDataStage(Stage stage, VBox allLaps) {
         this.stage = stage;
@@ -29,7 +29,7 @@ public class LapDataStage implements F1Stages {
 
     private void init() {
         buildHeader();
-        enableHideWindows();
+        StageUtils.enableHideWindows(this.stage);
         content.getChildren().add(allLaps);
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(content);
@@ -73,13 +73,5 @@ public class LapDataStage implements F1Stages {
         this.stage.setScene(scene);
         this.stage.initStyle(StageStyle.TRANSPARENT);
         this.stage.show();
-    }
-
-    private void enableHideWindows() {
-        Platform.setImplicitExit(false);
-        this.stage.setOnCloseRequest(event -> {
-            this.stage.hide();
-            System.out.println("Lap Data closed, app still lives");
-        });
     }
 }

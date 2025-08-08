@@ -1,6 +1,5 @@
 package ui.stages;
 
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -9,11 +8,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.stages.helper.Delta;
+import ui.stages.helper.StageUtils;
 
 import static ui.DriverDashboard.HEADERS;
 import static ui.DriverDashboard.HEADERS_WIDTH;
 
-public class LatestLapStage implements F1Stages {
+public class LatestLapStage implements F1Stages<VBox> {
 
     public LatestLapStage(Stage stage, VBox allDrivers) {
         this.stage = stage;
@@ -28,7 +28,7 @@ public class LatestLapStage implements F1Stages {
 
     private void init() {
         buildHeader();
-        enableHideWindows();
+        StageUtils.enableHideWindows(this.stage);
         this.content.getChildren().add(this.allDrivers);
         showStage();
     }
@@ -67,14 +67,4 @@ public class LatestLapStage implements F1Stages {
         this.stage.initStyle(StageStyle.TRANSPARENT);
         this.stage.show();
     }
-
-    private void enableHideWindows() {
-        //TODO: remove this eventually, for now with everything still printing to the console, it stays.
-        Platform.setImplicitExit(false);
-        this.stage.setOnCloseRequest(event -> {
-            stage.hide();
-            System.out.println("Window closed, app still lives");
-        });
-    }
-
 }
