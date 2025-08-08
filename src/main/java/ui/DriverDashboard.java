@@ -3,6 +3,7 @@ package ui;
 import individualLap.IndividualLapInfo;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 
 public class DriverDashboard extends HBox {
 
@@ -12,16 +13,22 @@ public class DriverDashboard extends HBox {
     public DriverDashboard(String lastName) {
         this.name = new Label(lastName);
         this.name.setMinWidth(HEADERS_WIDTH[0]);
+        this.name.setTextFill(Color.WHITE);
         this.lapNum = new Label("0");
         this.lapNum.setMinWidth(HEADERS_WIDTH[1]);
+        this.lapNum.setTextFill(Color.WHITE);
         this.s1 = new Label("-");
         this.s1.setMinWidth(HEADERS_WIDTH[2]);
+        this.s1.setTextFill(Color.WHITE);
         this.s2 = new Label("-");
         this.s2.setMinWidth(HEADERS_WIDTH[3]);
+        this.s2.setTextFill(Color.WHITE);
         this.s3 = new Label("-");
         this.s3.setMinWidth(HEADERS_WIDTH[4]);
+        this.s3.setTextFill(Color.WHITE);
         this.lapTime = new Label("-");
         this.lapTime.setMinWidth(HEADERS_WIDTH[5]);
+        this.lapTime.setTextFill(Color.WHITE);
 
         this.setMaxWidth(Double.MAX_VALUE);
         this.getChildren().addAll(name, lapNum, s1, s2, s3, lapTime);
