@@ -1,7 +1,9 @@
 package ui.stages;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ui.home.AppState;
 
 import static ui.LatestLapDashboard.HEADERS;
 import static ui.LatestLapDashboard.HEADERS_WIDTH;
@@ -18,10 +20,14 @@ public class LatestLapStage extends AbstractStage<VBox> {
 
     protected void init() {
         this.content.getChildren().add(this.allDrivers);
-        showStage(650, 475);
+        setScene(650, 475);
     }
 
-    public VBox createParentContent() {
+    protected VBox createParentContent() {
         return createParentVbox();
+    }
+
+    protected BooleanProperty getAppState() {
+        return AppState.latestLapPanelVisible;
     }
 }

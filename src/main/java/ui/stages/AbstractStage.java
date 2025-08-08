@@ -1,5 +1,6 @@
 package ui.stages;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -29,9 +30,11 @@ public abstract class AbstractStage<T extends Pane> {
     private final String[] headers;
     private final int[] headersWidth;
 
-    public abstract T createParentContent();
+    protected abstract T createParentContent();
 
     protected abstract void init();
+
+    protected abstract BooleanProperty getAppState();
 
     protected VBox createParentVbox() {
         VBox content = new VBox();
@@ -62,11 +65,17 @@ public abstract class AbstractStage<T extends Pane> {
         this.content.getChildren().add(headersBox);
     }
 
-    public void showStage(double width, double height) {
+    public void setScene(double width, double height) {
         Scene scene = new Scene(this.content, width, height);
         scene.setFill(Color.TRANSPARENT);
         this.stage.setScene(scene);
         this.stage.initStyle(StageStyle.TRANSPARENT);
-        this.stage.show();
+        getAppState().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                this.stage.show();
+            } else if (oldValue) {
+                this.stage.hide();
+            }
+        });
     }
 }
