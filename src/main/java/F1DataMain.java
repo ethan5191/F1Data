@@ -3,6 +3,7 @@ import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
 import packets.*;
+import packets.enums.DriverStatusEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
@@ -145,6 +146,23 @@ public class F1DataMain {
                 } else {
                     td.setCurrentLap(ld);
                 }
+                //If on an out lap or flying lap and current setup is already established in td.
+                if ((DriverStatusEnum.OUT_LAP.getValue() == ld.getDriverStatus() || DriverStatusEnum.FLYING_LAP.getValue() == ld.getDriverStatus())
+                        && td.getCurrentSetup() != null) {
+                    //If the TelemetryRunDataList isn't empty do A.
+                    if (!td.getTelemetryRunDataList().isEmpty()) {
+                        //Get the last record in the list, as its the most recently added run data object.
+                        TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
+                        //Car setup logic does a full compare of the values, so object comparison 'should' be good enough here.
+                        if (trd.getCarSetupData() != td.getCurrentSetup()) {
+                            //If the setup has changed compared to the last setup in the run data, we need to add a new record to run data.
+                            td.getTelemetryRunDataList().add(new TelemetryRunData(td.getCurrentSetup()));
+                        }
+                    } else {
+                        //Else first time out on track, so we know we can just add this new object to the list.
+                        td.getTelemetryRunDataList().add(new TelemetryRunData(td.getCurrentSetup()));
+                    }
+                }
             }
         }
         //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
@@ -161,9 +179,6 @@ public class F1DataMain {
                 if (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup())) {
 //                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
                     td.setCurrentSetup(csd);
-                    TelemetryRunData trd = new TelemetryRunData(csd);
-                    td.getTelemetryRunDataList().add(trd);
-                    participants.put(i, td);
                 }
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
