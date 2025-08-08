@@ -20,7 +20,7 @@ public class LatestLapStage extends AbstractStage<VBox> {
 
     protected void init() {
         this.content.getChildren().add(this.allDrivers);
-        setScene(650, 475);
+        setScene(650, 505);
     }
 
     protected VBox createParentContent() {

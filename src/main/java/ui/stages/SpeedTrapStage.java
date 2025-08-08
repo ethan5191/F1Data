@@ -24,7 +24,7 @@ public class SpeedTrapStage extends AbstractStage<VBox> {
     @Override
     protected void init() {
         this.content.getChildren().add(speedTrap);
-        setScene(350, 475);
+        setScene(350, 505);
     }
 
     @Override
