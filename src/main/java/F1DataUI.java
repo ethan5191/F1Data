@@ -1,11 +1,14 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.AllLapDataDashboard;
 import ui.DriverDataDTO;
 import ui.LatestLapDashboard;
 import ui.SetupInfoDashboard;
+import ui.home.AppState;
 import ui.stages.AllLapDataStage;
 import ui.stages.LatestLapStage;
 import ui.stages.SetupStage;
@@ -22,6 +25,8 @@ public class F1DataUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        createTogglePanel();
+
         VBox latestLap = new VBox(5);
         VBox allLaps = new VBox(5);
         VBox setupData = new VBox(5);
@@ -40,6 +45,23 @@ public class F1DataUI extends Application {
         new SetupStage(new Stage(), setupData);
 
         callTelemetryThread(driverDataConsumer);
+    }
+
+    private void createTogglePanel() {
+        CheckBox latestLapCheckbox = new CheckBox("Show Latest Lap Panel");
+        CheckBox lapsDataCheckbox = new CheckBox("Show Laps Data Panel");
+        CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
+
+        latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
+        lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
+        setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
+
+        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox);
+
+        Scene scene = new Scene(statePanel, 200, 200);
+        Stage panel = new Stage();
+        panel.setScene(scene);
+        panel.show();
     }
 
     private void buildLatestLapBoard(DriverDataDTO snapshot, VBox latestLap) {
