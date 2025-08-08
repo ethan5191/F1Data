@@ -9,16 +9,24 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.stages.helper.Delta;
+import ui.stages.helper.StageUtils;
 
-public abstract class AbstractStage<T extends Pane> implements F1Stages {
+public abstract class AbstractStage<T extends Pane> {
 
-    public AbstractStage(Stage stage) {
+    public AbstractStage(Stage stage, String[] headers, int[] headersWidth) {
         this.stage = stage;
+        this.headers = headers;
+        this.headersWidth = headersWidth;
         this.content = createParentContent();
+        addDragAndDrop();
+        StageUtils.enableHideWindows(this.stage);
+        buildHeader();
     }
 
     protected final Stage stage;
     protected final T content;
+    private final String[] headers;
+    private final int[] headersWidth;
 
     public abstract T createParentContent();
 
@@ -42,11 +50,11 @@ public abstract class AbstractStage<T extends Pane> implements F1Stages {
         });
     }
 
-    public void buildHeader(String[] headers, int[] headersWidth) {
+    public void buildHeader() {
         HBox headersBox = new HBox(3);
-        for (int i = 0; i < headers.length; i++) {
-            Label header = new Label(headers[i]);
-            header.setMinWidth(headersWidth[i]);
+        for (int i = 0; i < this.headers.length; i++) {
+            Label header = new Label(this.headers[i]);
+            header.setMinWidth(this.headersWidth[i]);
             headersBox.getChildren().add(header);
             header.setTextFill(Color.WHITE);
         }
