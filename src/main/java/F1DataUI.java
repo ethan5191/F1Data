@@ -2,10 +2,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import telemetry.TelemetryRunData;
-import ui.LatestLapDashboard;
-import ui.DriverDataDTO;
 import ui.AllLapDataDashboard;
+import ui.DriverDataDTO;
+import ui.LatestLapDashboard;
 import ui.SetupInfoDashboard;
 import ui.stages.AllLapDataStage;
 import ui.stages.LatestLapStage;
@@ -36,8 +35,8 @@ public class F1DataUI extends Application {
             });
         };
 
-//        new LatestLapStage(stage, latestLap);
-//        new AllLapDataStage(new Stage(), allLaps);
+        new LatestLapStage(stage, latestLap);
+        new AllLapDataStage(new Stage(), allLaps);
         new SetupStage(new Stage(), setupData);
 
         callTelemetryThread(driverDataConsumer);
