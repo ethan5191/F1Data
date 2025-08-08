@@ -8,7 +8,8 @@ import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
 import telemetry.TelemetryRunData;
-import ui.DriverDataDTO;
+import ui.dto.DriverDataDTO;
+import ui.dto.SpeedTrapDataDTO;
 import utils.Constants;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class F1DataMain {
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
 
-    public void run(Consumer<DriverDataDTO> driverDataDTO) {
+    public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
         byte[] buffer = new byte[2048];
         try {
@@ -44,7 +45,7 @@ public class F1DataMain {
                     case Constants.MOTION_PACK:
                         break;
                     case Constants.EVENT_PACK:
-                        handleEventPacket(byteBuffer);
+                        handleEventPacket(byteBuffer, speedTrapDataDTO);
                         break;
                     case Constants.LAP_DATA_PACK:
                         handleLapDataPacket(byteBuffer, driverDataDTO);
@@ -76,7 +77,7 @@ public class F1DataMain {
         return participants.containsKey(i);
     }
 
-    private void handleEventPacket(ByteBuffer byteBuffer) {
+    private void handleEventPacket(ByteBuffer byteBuffer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         byte[] codeArray = new byte[4];
         byteBuffer.get(codeArray, 0, 4);
         String value = new String(codeArray, StandardCharsets.US_ASCII);
@@ -106,6 +107,7 @@ public class F1DataMain {
             //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
             TelemetryData td = participants.get(trap.getVehicleId());
             td.setSpeedTrap(trap.getSpeed());
+            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
         }
     }
 
@@ -211,7 +213,7 @@ public class F1DataMain {
                 ParticipantData pd = new ParticipantData(byteBuffer);
                 if (pd.getRaceNumber() > 0) {
                     pd.printName();
-                    TelemetryData td = new TelemetryData(pd);
+                    TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
                     driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName()));
                 }

@@ -1,4 +1,4 @@
-package ui;
+package ui.dashboards;
 
 import individualLap.IndividualLapInfo;
 import javafx.scene.control.Label;

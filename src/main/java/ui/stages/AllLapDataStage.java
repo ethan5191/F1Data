@@ -8,8 +8,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import ui.home.AppState;
 
-import static ui.AllLapDataDashboard.LAP_HEADERS;
-import static ui.AllLapDataDashboard.LAP_HEADERS_WIDTH;
+import static ui.dashboards.AllLapDataDashboard.LAP_HEADERS;
+import static ui.dashboards.AllLapDataDashboard.LAP_HEADERS_WIDTH;
 
 public class AllLapDataStage extends AbstractStage<VBox> {
 
