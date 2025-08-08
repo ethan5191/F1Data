@@ -33,7 +33,7 @@ public class SetupStage extends AbstractStage<VBox> {
         Rectangle2D bounds = screen.getVisualBounds();
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
-        stage.setWidth(725);
+        stage.setWidth(800);
         stage.setHeight(bounds.getHeight());
         setScene(this.stage.getWidth(), this.stage.getHeight());
     }
