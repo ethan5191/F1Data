@@ -14,43 +14,43 @@ import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
-    private final Map<Integer, LatestLapDashboard> driverDashboards = new HashMap<>();
-    private final Map<Integer, VBox> lapDataDashboard = new HashMap<>();
+    private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
+    private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
 
     @Override
     public void start(Stage stage) throws Exception {
-        VBox allDrivers = new VBox(5);
+        VBox latestLap = new VBox(5);
         VBox allLaps = new VBox(5);
 
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
             Platform.runLater(() -> {
-                buildLatestLapBoard(snapshot, allDrivers);
+                buildLatestLapBoard(snapshot, latestLap);
                 buildAllLapBoard(snapshot, allLaps);
             });
         };
 
-        new LatestLapStage(stage, allDrivers);
+        new LatestLapStage(stage, latestLap);
         new LapDataStage(new Stage(), allLaps);
 
         callTelemetryThread(driverDataConsumer);
     }
 
-    private void buildLatestLapBoard(DriverDataDTO snapshot, VBox allDrivers) {
-        LatestLapDashboard latestLap = driverDashboards.computeIfAbsent(snapshot.getId(), id -> {
+    private void buildLatestLapBoard(DriverDataDTO snapshot, VBox latestLap) {
+        LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
             LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
-            allDrivers.getChildren().add(newDashboard);
+            latestLap.getChildren().add(newDashboard);
             return newDashboard;
         });
         if (snapshot.getInfo() != null) {
-            latestLap.updateValues(snapshot.getInfo());
+            latestLapDash.updateValues(snapshot.getInfo());
         }
     }
 
     private void buildAllLapBoard(DriverDataDTO snapshot, VBox allLaps) {
         if (snapshot.getInfo() != null) {
             //builds out the labels for the lapdata panel (panel 2 at the moment)
-            VBox driver = lapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
+            VBox driver = allLapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
                 VBox temp = new VBox();
                 allLaps.getChildren().add(temp);
                 return temp;
