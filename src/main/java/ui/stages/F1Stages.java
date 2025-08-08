@@ -1,10 +1,12 @@
 package ui.stages;
 
-import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 
-public interface F1Stages<T extends Parent> {
+public interface F1Stages<T extends Pane> {
 
-    T createParentContent(javafx.stage.Stage stage);
-    void buildHeader();
-    void showStage();
+    T createParentContent();
+
+    void buildHeader(String[] headers, int[] headersWidth);
+
+    void showStage(double width, double height);
 }
