@@ -5,19 +5,16 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import ui.DriverDashboard;
 import ui.DriverDataDTO;
 import ui.LapDataDashboard;
+import ui.stages.LatestLapStage;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static ui.DriverDashboard.HEADERS;
-import static ui.DriverDashboard.HEADERS_WIDTH;
 import static ui.LapDataDashboard.LAP_HEADERS;
 import static ui.LapDataDashboard.LAP_HEADERS_WIDTH;
 
@@ -26,13 +23,8 @@ public class F1DataUI extends Application {
     private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
     private final Map<Integer, VBox> lapDataDashboard = new HashMap<>();
 
-    private static class Delta { double x, y; }
-
     @Override
     public void start(Stage stage) throws Exception {
-        VBox content = createLatestLapParentContent(stage);
-        buildLatestLapHeader(content);
-
         VBox allDrivers = new VBox(5);
         VBox allLaps = new VBox(5);
 
@@ -44,14 +36,11 @@ public class F1DataUI extends Application {
             });
         };
 
-        callTelemetryThread(driverDataConsumer);
-
-        enableHideWindows(stage);
-
-        content.getChildren().add(allDrivers);
-        showPrimaryStage(stage, content);
+        new LatestLapStage(stage, allDrivers);
 
         buildLapDataStage(allLaps);
+
+        callTelemetryThread(driverDataConsumer);
     }
 
     private void buildLapDataStage(VBox allLaps) {
@@ -79,33 +68,6 @@ public class F1DataUI extends Application {
         Scene lapDataScene = new Scene(scroll, 300, 700);
         lapData.setScene(lapDataScene);
         lapData.show();
-    }
-
-    private VBox createLatestLapParentContent(Stage stage) {
-        VBox content = new VBox();
-        content.setStyle("-fx-background-color: rgba(0, 0, 0, 0.25);");
-        Delta dragDelta = new Delta();
-        content.setOnMousePressed(e -> {
-            dragDelta.x = stage.getX() - e.getScreenX();
-            dragDelta.y = stage.getY() - e.getScreenY();
-        });
-        content.setOnMouseDragged(e -> {
-            stage.setX(e.getScreenX() + dragDelta.x);
-            stage.setY(e.getScreenY() + dragDelta.y);
-        });
-        return content;
-    }
-
-    private void buildLatestLapHeader(VBox content) {
-        HBox headers = new HBox(3);
-        for (int i = 0; i < HEADERS.length; i++) {
-            Label header = new Label(HEADERS[i]);
-            header.setMinWidth(HEADERS_WIDTH[i]);
-            headers.getChildren().add(header);
-            header.setTextFill(Color.WHITE);
-        }
-        headers.setMaxWidth(Double.MAX_VALUE);
-        content.getChildren().add(headers);
     }
 
     private void buildLatestLapBoard(DriverDataDTO snapshot, VBox allDrivers) {
@@ -140,23 +102,6 @@ public class F1DataUI extends Application {
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
-    }
-
-    private void showPrimaryStage(Stage stage, VBox content) {
-        Scene scene = new Scene(content, 650, 475);
-        scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.show();
-    }
-
-    private void enableHideWindows(Stage stage) {
-        //TODO: remove this eventually, for now with everything still printing to the console, it stays.
-        Platform.setImplicitExit(false);
-        stage.setOnCloseRequest(event -> {
-            stage.hide();
-            System.out.println("Window closed, app still lives");
-        });
     }
 
     public void run(String[] args) {
