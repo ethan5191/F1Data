@@ -4,8 +4,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import static ui.LapDataDashboard.LAP_HEADERS;
-import static ui.LapDataDashboard.LAP_HEADERS_WIDTH;
+import static ui.AllLapDataDashboard.LAP_HEADERS;
+import static ui.AllLapDataDashboard.LAP_HEADERS_WIDTH;
 
 public class LapDataStage extends AbstractStage<VBox> {
 

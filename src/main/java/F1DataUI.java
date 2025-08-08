@@ -2,9 +2,9 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ui.DriverDashboard;
+import ui.LatestLapDashboard;
 import ui.DriverDataDTO;
-import ui.LapDataDashboard;
+import ui.AllLapDataDashboard;
 import ui.stages.LapDataStage;
 import ui.stages.LatestLapStage;
 
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
-    private final Map<Integer, DriverDashboard> driverDashboards = new HashMap<>();
+    private final Map<Integer, LatestLapDashboard> driverDashboards = new HashMap<>();
     private final Map<Integer, VBox> lapDataDashboard = new HashMap<>();
 
     @Override
@@ -37,8 +37,8 @@ public class F1DataUI extends Application {
     }
 
     private void buildLatestLapBoard(DriverDataDTO snapshot, VBox allDrivers) {
-        DriverDashboard latestLap = driverDashboards.computeIfAbsent(snapshot.getId(), id -> {
-            DriverDashboard newDashboard = new DriverDashboard(snapshot.getLastName());
+        LatestLapDashboard latestLap = driverDashboards.computeIfAbsent(snapshot.getId(), id -> {
+            LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
             allDrivers.getChildren().add(newDashboard);
             return newDashboard;
         });
@@ -55,7 +55,7 @@ public class F1DataUI extends Application {
                 allLaps.getChildren().add(temp);
                 return temp;
             });
-            LapDataDashboard allLapsDashboard = new LapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
+            AllLapDataDashboard allLapsDashboard = new AllLapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
             VBox lapsContainer = new VBox();
             lapsContainer.getChildren().add(allLapsDashboard);
             driver.getChildren().add(lapsContainer);

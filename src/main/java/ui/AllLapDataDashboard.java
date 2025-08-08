@@ -5,12 +5,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-public class LapDataDashboard extends HBox {
+public class AllLapDataDashboard extends HBox {
 
     public static final String[] LAP_HEADERS = {"NAME", "TIRE", "#", "TIME"};
     public static final int[] LAP_HEADERS_WIDTH = {100, 75, 50, 75};
 
-    public LapDataDashboard(String lastName, IndividualLapInfo info) {
+    public AllLapDataDashboard(String lastName, IndividualLapInfo info) {
         this.name = new Label(lastName);
         this.name.setMinWidth(LAP_HEADERS_WIDTH[0]);
         this.name.setTextFill(Color.WHITE);
@@ -20,7 +20,7 @@ public class LapDataDashboard extends HBox {
         this.lapNum = new Label(String.valueOf(info.getLapNum()));
         this.lapNum.setMinWidth(LAP_HEADERS_WIDTH[2]);
         this.lapNum.setTextFill(Color.WHITE);
-        this.lapTime = new Label(String.valueOf(info.getLapTimeInMs()));
+        this.lapTime = new Label(DashboardUtils.buildTimeText(info.getLapTimeInMs()));
         this.lapTime.setMinWidth(LAP_HEADERS_WIDTH[3]);
         this.lapTime.setTextFill(Color.WHITE);
 
