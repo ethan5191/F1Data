@@ -146,8 +146,9 @@ public class F1DataMain {
                 } else {
                     td.setCurrentLap(ld);
                 }
-                //If on an out lap and current setup is already established in td.
-                if (DriverStatusEnum.OUT_LAP.getValue() == ld.getDriverStatus() && td.getCurrentSetup() != null) {
+                //If on an out lap or flying lap and current setup is already established in td.
+                if ((DriverStatusEnum.OUT_LAP.getValue() == ld.getDriverStatus() || DriverStatusEnum.FLYING_LAP.getValue() == ld.getDriverStatus())
+                        && td.getCurrentSetup() != null) {
                     //If the TelemetryRunDataList isn't empty do A.
                     if (!td.getTelemetryRunDataList().isEmpty()) {
                         //Get the last record in the list, as its the most recently added run data object.
