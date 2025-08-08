@@ -3,6 +3,9 @@ package individualLap;
 import packets.LapData;
 import packets.enums.TireBrakesOrderEnum;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 //Used to represent an individual laps data for an individual car. Idea is this will be populated at the end of the lap.
 public class IndividualLapInfo {
 
@@ -10,22 +13,25 @@ public class IndividualLapInfo {
     //prevLap is the last LapData from the telemetry object, which has the sector 1 and 2 times in it.
     public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap) {
         this.lapNum = prevLap.getCurrentLapNum();
-        this.lapTimeInMs = ld.getLastLapTimeMs();
+        this.lapTimeInMs = roundDecimal(new BigDecimal(ld.getLastLapTimeMs()));
         int sector1MinPart = prevLap.getSector1TimeMinutesPart() * 60;
-        this.sector1InMs = prevLap.getSector1TimeMsPart() + sector1MinPart;
+        int s1 = prevLap.getSector1TimeMsPart() + sector1MinPart;
+        this.sector1InMs = roundDecimal(new BigDecimal(s1));
         int sector2MinPart = prevLap.getSector2TimeMinutesPart() * 60;
-        this.sector2InMs = prevLap.getSector2TimeMsPart() + sector2MinPart;
-        this.sector3InMs = this.lapTimeInMs - (this.sector1InMs + this.sector2InMs);
+        int s2 = prevLap.getSector2TimeMsPart() + sector2MinPart;
+        this.sector2InMs = roundDecimal(new BigDecimal(s2));
+        BigDecimal sumSectors = this.sector1InMs.add(this.sector2InMs);
+        this.sector3InMs = this.lapTimeInMs.subtract(sumSectors);
         this.speedTrap = speedTrap;
     }
 
     //From LapData
     private final int lapNum;
-    private final long lapTimeInMs;
-    private final long sector1InMs;
-    private final long sector2InMs;
+    private final BigDecimal lapTimeInMs;
+    private final BigDecimal sector1InMs;
+    private final BigDecimal sector2InMs;
     //Calculated from lapTimeMs - (sector2InMs + sector1InMs)
-    private final long sector3InMs;
+    private final BigDecimal sector3InMs;
 
     //From SpeedTrap event
     private final float speedTrap;
@@ -40,19 +46,19 @@ public class IndividualLapInfo {
         return lapNum;
     }
 
-    public long getLapTimeInMs() {
+    public BigDecimal getLapTimeInMs() {
         return lapTimeInMs;
     }
 
-    public long getSector1InMs() {
+    public BigDecimal getSector1InMs() {
         return sector1InMs;
     }
 
-    public long getSector2InMs() {
+    public BigDecimal getSector2InMs() {
         return sector2InMs;
     }
 
-    public long getSector3InMs() {
+    public BigDecimal getSector3InMs() {
         return sector3InMs;
     }
 
@@ -82,6 +88,10 @@ public class IndividualLapInfo {
 
     public void setCarDamageInfo(CarDamageInfo carDamageInfo) {
         this.carDamageInfo = carDamageInfo;
+    }
+
+    private BigDecimal roundDecimal(BigDecimal value) {
+        return value.divide(new BigDecimal("1000.000"), 3, RoundingMode.HALF_UP);
     }
 
     public void printInfo(String lastName) {

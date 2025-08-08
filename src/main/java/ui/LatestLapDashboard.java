@@ -5,12 +5,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
-public class DriverDashboard extends HBox {
+import java.math.BigDecimal;
+
+public class LatestLapDashboard extends HBox {
 
     public static final String[] HEADERS = {"NAME (Tire)", "#", "S1", "S2", "S3", "TIME"};
     public static final int[] HEADERS_WIDTH = {155, 55, 100, 100, 100, 100};
 
-    public DriverDashboard(String lastName) {
+    public LatestLapDashboard(String lastName) {
         this.name = new Label(lastName);
         this.name.setMinWidth(HEADERS_WIDTH[0]);
         this.name.setTextFill(Color.WHITE);
@@ -72,10 +74,10 @@ public class DriverDashboard extends HBox {
                 this.name.setText(text);
             }
             this.lapNum.setText(String.valueOf(info.getLapNum()));
-            this.s1.setText(String.valueOf(info.getSector1InMs()));
-            this.s2.setText(String.valueOf(info.getSector2InMs()));
-            this.s3.setText(String.valueOf(info.getSector3InMs()));
-            this.lapTime.setText(String.valueOf(info.getLapTimeInMs()));
+            this.s1.setText(DashboardUtils.buildTimeText(info.getSector1InMs()));
+            this.s2.setText(DashboardUtils.buildTimeText(info.getSector2InMs()));
+            this.s3.setText(DashboardUtils.buildTimeText(info.getSector3InMs()));
+            this.lapTime.setText(DashboardUtils.buildTimeText(info.getLapTimeInMs()));
         }
     }
 }

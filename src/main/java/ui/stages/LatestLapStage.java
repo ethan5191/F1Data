@@ -3,8 +3,8 @@ package ui.stages;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import static ui.DriverDashboard.HEADERS;
-import static ui.DriverDashboard.HEADERS_WIDTH;
+import static ui.LatestLapDashboard.HEADERS;
+import static ui.LatestLapDashboard.HEADERS_WIDTH;
 
 public class LatestLapStage extends AbstractStage<VBox> {
 
