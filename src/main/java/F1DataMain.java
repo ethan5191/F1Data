@@ -119,6 +119,9 @@ public class F1DataMain {
                         IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap());
                         td.setLastLapNum(info.getLapNum());
                         td.setLastLapTimeInMs(info.getLapTimeInMs());
+                        if (td.getCurrentSetup() != null) {
+                            info.setCarSetupData(td.getCurrentSetup());
+                        }
                         if (td.getCurrentTelemetry() != null) {
                             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
                         }

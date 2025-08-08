@@ -20,7 +20,7 @@ public abstract class AbstractStage<T extends Pane> {
         this.content = createParentContent();
         addDragAndDrop();
         StageUtils.enableHideWindows(this.stage);
-        buildHeader();
+        if (headers != null) buildHeader();
     }
 
     protected final Stage stage;
