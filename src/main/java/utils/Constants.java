@@ -6,6 +6,7 @@ public class Constants {
     public static final int BIT_MASK_16 = 0xFFFF;
     public static final long BIT_MASK_32 = 0xFFFFFFFFL;
 
+    public static final String ONE_DECIMAL = "%.1f";
     public static final String TWO_DECIMAL = "%.2f";
 
     public static final int PACKET_CAR_COUNT = 22;

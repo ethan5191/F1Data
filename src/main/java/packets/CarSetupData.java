@@ -195,13 +195,14 @@ public class CarSetupData extends Data {
     }
 
     public Label[][] getSetupDashboardData() {
-        return new Label[][]{{new Label(" Fuel Load ")}, {new Label(this.fuelLoad + "kg")},
+        return new Label[][]{{new Label(" Fuel Load ")}, {new Label(String.format(Constants.ONE_DECIMAL, this.fuelLoad) + "kg")},
                 {new Label(" Front Wing "), new Label(" Rear Wing ")},
                 {new Label(String.valueOf(this.frontWing)), new Label(String.valueOf(this.rearWing))},
                 {new Label(" On Throttle "), new Label(" Off Throttle "), new Label(" Engine Breaking ")},
                 {new Label(String.valueOf(this.onThrottle)), new Label(String.valueOf(this.offThrottle)), new Label(String.valueOf(this.engineBreaking))},
                 {new Label(" Front Camber "), new Label(" Rear Camber "), new Label(" Front Toe-out "), new Label(" Rear Toe-in ")},
-                {new Label(String.valueOf(this.frontCamber)), new Label(String.valueOf(this.rearCamber)), new Label(String.valueOf(this.frontToe)), new Label(String.valueOf(this.rearToe))},
+                {new Label(String.format(Constants.TWO_DECIMAL, this.frontCamber)), new Label(String.format(Constants.TWO_DECIMAL, this.rearCamber)),
+                        new Label(String.format(Constants.TWO_DECIMAL, this.frontToe)), new Label(String.format(Constants.TWO_DECIMAL, this.rearToe))},
                 {new Label(" Front Suspension "), new Label(" Rear Suspension "), new Label(" Front ARB "),
                         new Label(" Rear ARB "), new Label(" Front Height "), new Label(" Rear Height ")},
                 {new Label(String.valueOf(this.frontSusp)), new Label(String.valueOf(this.rearSusp)), new Label(String.valueOf(this.frontARB)),
@@ -209,8 +210,8 @@ public class CarSetupData extends Data {
                 {new Label(" Brake Pressure "), new Label(" Front Brake Bias ")},
                 {new Label(String.valueOf(this.brakePressure)), new Label(String.valueOf(this.brakeBias))},
                 {new Label(" FR Pressure "), new Label(" FL Pressure "), new Label(" RR Pressure "), new Label(" RL Pressure ")},
-                {new Label(String.valueOf(this.frontRightPressure)), new Label(String.valueOf(this.frontLeftPressure)),
-                        new Label(String.valueOf(this.rearRightPressure)), new Label(String.valueOf(this.rearLeftPressure))}
+                {new Label(String.format(Constants.ONE_DECIMAL, this.frontRightPressure)), new Label(String.format(Constants.ONE_DECIMAL, this.frontLeftPressure)),
+                        new Label(String.format(Constants.ONE_DECIMAL, this.rearRightPressure)), new Label(String.format(Constants.ONE_DECIMAL, this.rearLeftPressure))}
         };
     }
 
