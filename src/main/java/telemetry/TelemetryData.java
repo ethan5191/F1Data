@@ -8,12 +8,14 @@ import java.util.List;
 
 public class TelemetryData {
 
-    public TelemetryData(ParticipantData participantData) {
+    public TelemetryData(ParticipantData participantData, int numActiveCars) {
         this.participantData = participantData;
+        this.numActiveCars = numActiveCars;
     }
 
     private final ParticipantData participantData;
     private final List<TelemetryRunData> telemetryRunDataList = new ArrayList<>();
+    private final int numActiveCars;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
@@ -30,6 +32,10 @@ public class TelemetryData {
 
     public List<TelemetryRunData> getTelemetryRunDataList() {
         return telemetryRunDataList;
+    }
+
+    public int getNumActiveCars() {
+        return numActiveCars;
     }
 
     public CarSetupData getCurrentSetup() {

@@ -12,29 +12,27 @@ public class SpeedTrapDashboard extends HBox {
     public static final String[] HEADERS = {"RANK", "NAME", "SPEED", "#"};
     public static final int[] HEADERS_WIDTH = {55, 150, 100, 55};
 
-    public SpeedTrapDashboard(int ranking, SpeedTrapDataDTO dto) {
+    public SpeedTrapDashboard(int ranking) {
         this.rank = new Label(String.valueOf(ranking));
         this.rank.setMinWidth(HEADERS_WIDTH[0]);
         this.rank.setTextFill(Color.WHITE);
-        this.name = new Label(dto.getName());
+        this.name = new Label("-");
         this.name.setMinWidth(HEADERS_WIDTH[1]);
         this.name.setTextFill(Color.WHITE);
-        this.speed = new Label(String.format(Constants.TWO_DECIMAL, dto.getSpeed()));
+        this.speed = new Label("-");
         this.speed.setMinWidth(HEADERS_WIDTH[2]);
         this.speed.setTextFill(Color.WHITE);
-        this.lapNum = new Label(String.valueOf(dto.getLapNum()));
+        this.lapNum = new Label("-");
         this.lapNum.setMinWidth(HEADERS_WIDTH[3]);
         this.lapNum.setTextFill(Color.WHITE);
 
         this.getChildren().addAll(this.rank, this.name, this.speed, this.lapNum);
-        this.dto = dto;
     }
 
     private final Label rank;
     private final Label name;
     private final Label speed;
     private final Label lapNum;
-    private final SpeedTrapDataDTO dto;
 
     public Label getRank() {
         return rank;
@@ -52,12 +50,8 @@ public class SpeedTrapDashboard extends HBox {
         return lapNum;
     }
 
-    public SpeedTrapDataDTO getDto() {
-        return dto;
-    }
-
-    public void updateRank(int newRank, SpeedTrapDataDTO dto) {
-        this.rank.setText(String.valueOf(newRank));
+    public void updateRank(SpeedTrapDataDTO dto) {
+        this.name.setText(dto.getName());
         this.speed.setText(String.format(Constants.TWO_DECIMAL, dto.getSpeed()));
         this.lapNum.setText(String.valueOf(dto.getLapNum()));
     }

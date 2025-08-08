@@ -107,7 +107,7 @@ public class F1DataMain {
             //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
             TelemetryData td = participants.get(trap.getVehicleId());
             td.setSpeedTrap(trap.getSpeed());
-            speedTrapDataDTO.accept(new SpeedTrapDataDTO(trap.getVehicleId(), td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum()));
+            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
         }
     }
 
@@ -213,7 +213,7 @@ public class F1DataMain {
                 ParticipantData pd = new ParticipantData(byteBuffer);
                 if (pd.getRaceNumber() > 0) {
                     pd.printName();
-                    TelemetryData td = new TelemetryData(pd);
+                    TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
                     driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName()));
                 }

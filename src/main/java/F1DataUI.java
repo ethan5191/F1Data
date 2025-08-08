@@ -123,14 +123,32 @@ public class F1DataUI extends Application {
     }
 
     private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
-        SpeedTrapDashboard trap = speedTrapDashboard.computeIfAbsent(snapshot.getId(), id -> {
+        if (speedTrapRankings.isEmpty() && speedTrapDashboard.isEmpty()) {
+            for (int i = 0; i < snapshot.getNumActiveCars(); i++) {
+                SpeedTrapDashboard dashboard = new SpeedTrapDashboard(i + 1);
+                speedTrapData.getChildren().add(dashboard);
+                speedTrapDashboard.put(i, dashboard);
+            }
             speedTrapRankings.add(snapshot);
-            speedTrapRankings.sort((car1, car2) -> Double.compare(car2.getSpeed(), car1.getSpeed()));
-            int rank = speedTrapRankings.indexOf(snapshot) + 1;
-            SpeedTrapDashboard temp = new SpeedTrapDashboard(rank, snapshot);
-            speedTrapData.getChildren().add(temp);
-            return temp;
-        });
+            speedTrapDashboard.get(0).updateRank(snapshot);
+        }
+        if (!speedTrapRankings.isEmpty()) {
+            int index = speedTrapRankings.indexOf(snapshot);
+            if (index < 0) {
+                speedTrapRankings.add(snapshot);
+            } else {
+                SpeedTrapDataDTO currentRanking = speedTrapRankings.get(index);
+                if (currentRanking.getSpeed() < snapshot.getSpeed()) {
+                    speedTrapRankings.remove(currentRanking);
+                    speedTrapRankings.add(snapshot);
+                }
+            }
+            SpeedTrapDataDTO.sortBySpeed(speedTrapRankings);
+            for (int n = 0; n < speedTrapRankings.size(); n++) {
+                SpeedTrapDataDTO current = speedTrapRankings.get(n);
+                speedTrapDashboard.get(n).updateRank(current);
+            }
+        }
     }
 
     private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
