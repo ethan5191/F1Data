@@ -12,9 +12,9 @@ import javafx.stage.StageStyle;
 import static ui.AllLapDataDashboard.LAP_HEADERS;
 import static ui.AllLapDataDashboard.LAP_HEADERS_WIDTH;
 
-public class LapDataStage extends AbstractStage<VBox> {
+public class AllLapDataStage extends AbstractStage<VBox> {
 
-    public LapDataStage(Stage stage, VBox allLaps) {
+    public AllLapDataStage(Stage stage, VBox allLaps) {
         super(stage, LAP_HEADERS, LAP_HEADERS_WIDTH);
         this.allLaps = allLaps;
         init();

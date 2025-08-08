@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 import ui.LatestLapDashboard;
 import ui.DriverDataDTO;
 import ui.AllLapDataDashboard;
-import ui.stages.LapDataStage;
+import ui.stages.AllLapDataStage;
 import ui.stages.LatestLapStage;
 
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class F1DataUI extends Application {
         };
 
         new LatestLapStage(stage, latestLap);
-        new LapDataStage(new Stage(), allLaps);
+        new AllLapDataStage(new Stage(), allLaps);
 
         callTelemetryThread(driverDataConsumer);
     }
