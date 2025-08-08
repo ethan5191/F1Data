@@ -1,4 +1,4 @@
-package ui;
+package ui.dashboards;
 
 import java.math.BigDecimal;
 

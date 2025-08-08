@@ -1,11 +1,9 @@
-package ui;
+package ui.dashboards;
 
 import individualLap.IndividualLapInfo;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-
-import java.math.BigDecimal;
 
 public class LatestLapDashboard extends HBox {
 

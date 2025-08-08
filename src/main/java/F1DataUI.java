@@ -4,16 +4,21 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ui.AllLapDataDashboard;
-import ui.DriverDataDTO;
-import ui.LatestLapDashboard;
-import ui.SetupInfoDashboard;
+import ui.dashboards.AllLapDataDashboard;
+import ui.dashboards.LatestLapDashboard;
+import ui.dashboards.SetupInfoDashboard;
+import ui.dashboards.SpeedTrapDashboard;
+import ui.dto.DriverDataDTO;
+import ui.dto.SpeedTrapDataDTO;
 import ui.home.AppState;
 import ui.stages.AllLapDataStage;
 import ui.stages.LatestLapStage;
 import ui.stages.SetupStage;
+import ui.stages.SpeedTrapStage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -22,6 +27,8 @@ public class F1DataUI extends Application {
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, VBox> setupDataDashboard = new HashMap<>();
+    private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
+    private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -30,6 +37,7 @@ public class F1DataUI extends Application {
         VBox latestLap = new VBox(5);
         VBox allLaps = new VBox(5);
         VBox setupData = new VBox(5);
+        VBox speedTrapData = new VBox(5);
 
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
@@ -39,24 +47,33 @@ public class F1DataUI extends Application {
                 buildSetupBoard(snapshot, setupData);
             });
         };
+        Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
+        {
+            Platform.runLater(() -> {
+                buildSpeedTrapDashboard(snapshot, speedTrapData);
+            });
+        };
 
         new LatestLapStage(stage, latestLap);
         new AllLapDataStage(new Stage(), allLaps);
         new SetupStage(new Stage(), setupData);
+        new SpeedTrapStage(new Stage(), speedTrapData);
 
-        callTelemetryThread(driverDataConsumer);
+        callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
     }
 
     private void createTogglePanel() {
         CheckBox latestLapCheckbox = new CheckBox("Show Latest Lap Panel");
         CheckBox lapsDataCheckbox = new CheckBox("Show Laps Data Panel");
         CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
+        CheckBox speedTrapDataCheckbox = new CheckBox("Show Speed Trap Panel");
 
         latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
         lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
         setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
+        speedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.speedTrapPanelVisible);
 
-        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox);
+        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox);
 
         Scene scene = new Scene(statePanel, 200, 200);
         Stage panel = new Stage();
@@ -105,9 +122,20 @@ public class F1DataUI extends Application {
         }
     }
 
-    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer) {
+    private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
+        SpeedTrapDashboard trap = speedTrapDashboard.computeIfAbsent(snapshot.getId(), id -> {
+            speedTrapRankings.add(snapshot);
+            speedTrapRankings.sort((car1, car2) -> Double.compare(car2.getSpeed(), car1.getSpeed()));
+            int rank = speedTrapRankings.indexOf(snapshot) + 1;
+            SpeedTrapDashboard temp = new SpeedTrapDashboard(rank, snapshot);
+            speedTrapData.getChildren().add(temp);
+            return temp;
+        });
+    }
+
+    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain().run(driverDataConsumer);
+            new F1DataMain().run(driverDataConsumer, speedTrapDataDTO);
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();

@@ -5,8 +5,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.home.AppState;
 
-import static ui.LatestLapDashboard.HEADERS;
-import static ui.LatestLapDashboard.HEADERS_WIDTH;
+import static ui.dashboards.LatestLapDashboard.HEADERS;
+import static ui.dashboards.LatestLapDashboard.HEADERS_WIDTH;
 
 public class LatestLapStage extends AbstractStage<VBox> {
 
