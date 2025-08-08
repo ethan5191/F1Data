@@ -3,6 +3,7 @@ package ui;
 import individualLap.IndividualLapInfo;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 
 public class LapDataDashboard extends HBox {
 
@@ -12,12 +13,16 @@ public class LapDataDashboard extends HBox {
     public LapDataDashboard(String lastName, IndividualLapInfo info) {
         this.name = new Label(lastName);
         this.name.setMinWidth(LAP_HEADERS_WIDTH[0]);
+        this.name.setTextFill(Color.WHITE);
         this.tire = new Label(info.getCarStatusInfo().getVisualTire().getDisplay());
         this.tire.setMinWidth(LAP_HEADERS_WIDTH[1]);
+        this.tire.setTextFill(Color.WHITE);
         this.lapNum = new Label(String.valueOf(info.getLapNum()));
         this.lapNum.setMinWidth(LAP_HEADERS_WIDTH[2]);
+        this.lapNum.setTextFill(Color.WHITE);
         this.lapTime = new Label(String.valueOf(info.getLapTimeInMs()));
         this.lapTime.setMinWidth(LAP_HEADERS_WIDTH[3]);
+        this.lapTime.setTextFill(Color.WHITE);
 
         this.getChildren().addAll(name, tire, lapNum, lapTime);
     }

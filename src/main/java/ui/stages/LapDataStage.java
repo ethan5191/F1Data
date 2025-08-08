@@ -3,6 +3,7 @@ package ui.stages;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -10,29 +11,34 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.stages.helper.Delta;
 
-import static ui.DriverDashboard.HEADERS;
-import static ui.DriverDashboard.HEADERS_WIDTH;
+import static ui.LapDataDashboard.LAP_HEADERS;
+import static ui.LapDataDashboard.LAP_HEADERS_WIDTH;
 
-public class LatestLapStage implements F1Stages {
+public class LapDataStage implements F1Stages {
 
-    public LatestLapStage(Stage stage, VBox allDrivers) {
+    public LapDataStage(Stage stage, VBox allLaps) {
         this.stage = stage;
-        this.allDrivers = allDrivers;
+        this.allLaps = allLaps;
         this.content = createParentContent(this.stage);
         init();
     }
 
     private final Stage stage;
     private final VBox content;
-    private final VBox allDrivers;
+    private final VBox allLaps;
 
     private void init() {
         buildHeader();
         enableHideWindows();
-        this.content.getChildren().add(this.allDrivers);
+        content.getChildren().add(allLaps);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(content);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         showStage();
     }
 
+    @Override
     public VBox createParentContent(Stage stage) {
         VBox content = new VBox();
         content.setStyle("-fx-background-color: rgba(0, 0, 0, 0.25);");
@@ -48,20 +54,21 @@ public class LatestLapStage implements F1Stages {
         return content;
     }
 
+    @Override
     public void buildHeader() {
-        HBox headers = new HBox(3);
-        for (int i = 0; i < HEADERS.length; i++) {
-            Label header = new Label(HEADERS[i]);
-            header.setMinWidth(HEADERS_WIDTH[i]);
-            headers.getChildren().add(header);
+        HBox headerBox = new HBox(3);
+        for (int i = 0; i < LAP_HEADERS.length; i++) {
+            Label header = new Label(LAP_HEADERS[i]);
+            header.setMinWidth(LAP_HEADERS_WIDTH[i]);
+            headerBox.getChildren().add(header);
             header.setTextFill(Color.WHITE);
         }
-        headers.setMaxWidth(Double.MAX_VALUE);
-        this.content.getChildren().add(headers);
+        content.getChildren().add(headerBox);
     }
 
+    @Override
     public void showStage() {
-        Scene scene = new Scene(this.content, 650, 475);
+        Scene scene = new Scene(this.content, 300, 700);
         scene.setFill(Color.TRANSPARENT);
         this.stage.setScene(scene);
         this.stage.initStyle(StageStyle.TRANSPARENT);
@@ -69,12 +76,10 @@ public class LatestLapStage implements F1Stages {
     }
 
     private void enableHideWindows() {
-        //TODO: remove this eventually, for now with everything still printing to the console, it stays.
         Platform.setImplicitExit(false);
         this.stage.setOnCloseRequest(event -> {
-            stage.hide();
-            System.out.println("Window closed, app still lives");
+            this.stage.hide();
+            System.out.println("Lap Data closed, app still lives");
         });
     }
-
 }
