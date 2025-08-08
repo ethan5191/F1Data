@@ -36,7 +36,7 @@ public class F1DataUI extends Application {
             });
         };
 
-        new LatestLapStage(stage, latestLap);
+//        new LatestLapStage(stage, latestLap);
 //        new AllLapDataStage(new Stage(), allLaps);
         new SetupStage(new Stage(), setupData);
 
@@ -71,16 +71,16 @@ public class F1DataUI extends Application {
 
     private void buildSetupBoard(DriverDataDTO snapshot, VBox setupData) {
         if (snapshot.getInfo() != null) {
-            VBox driver = setupDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
-                VBox temp = new VBox();
-                setupData.getChildren().add(temp);
-                return temp;
-            });
-            String setupName = snapshot.getInfo().getCarSetupData().getSetupName();
-            SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
-            VBox container = new VBox(3);
-            container.getChildren().add(setupInfo);
-            driver.getChildren().add(container);
+            if (!setupDataDashboard.containsKey(snapshot.getId())) {
+                VBox driver = new VBox();
+                setupData.getChildren().add(driver);
+                setupDataDashboard.put(snapshot.getId(), driver);
+                String setupName = snapshot.getInfo().getCarSetupData().getSetupName();
+                SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
+                VBox container = new VBox(3);
+                container.getChildren().add(setupInfo);
+                driver.getChildren().add(container);
+            }
         }
     }
 
