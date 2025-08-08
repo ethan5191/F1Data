@@ -32,6 +32,7 @@ public class F1DataUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        //Creates the panel that allows you to show/hide different data panels.
         createTogglePanel();
 
         VBox latestLap = new VBox(5);
@@ -123,30 +124,43 @@ public class F1DataUI extends Application {
     }
 
     private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
+        //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
+        //Based on the number of cars in the session will determine how many dashboards are created.
         if (speedTrapRankings.isEmpty() && speedTrapDashboard.isEmpty()) {
             for (int i = 0; i < snapshot.getNumActiveCars(); i++) {
                 SpeedTrapDashboard dashboard = new SpeedTrapDashboard(i + 1);
                 speedTrapData.getChildren().add(dashboard);
                 speedTrapDashboard.put(i, dashboard);
             }
+            //Add this to the list and update its map object as its the first one in.
             speedTrapRankings.add(snapshot);
             speedTrapDashboard.get(0).updateRank(snapshot);
         }
         if (!speedTrapRankings.isEmpty()) {
+            //Does a check on the driver name to see if this driver already has a top speed recorded.
             int index = speedTrapRankings.indexOf(snapshot);
+            //boolean to indicate if we need to resort and redraw the data.
+            boolean resort = false;
+            //If index < 0 this driver doesn't have a speed in the list, so we just add it.
             if (index < 0) {
                 speedTrapRankings.add(snapshot);
+                resort = true;
             } else {
+                //else he has a speed and we need to see if he went faster, if he did remove the old record and add the new one to the end.
                 SpeedTrapDataDTO currentRanking = speedTrapRankings.get(index);
                 if (currentRanking.getSpeed() < snapshot.getSpeed()) {
                     speedTrapRankings.remove(currentRanking);
                     speedTrapRankings.add(snapshot);
+                    resort = true;
                 }
             }
-            SpeedTrapDataDTO.sortBySpeed(speedTrapRankings);
-            for (int n = 0; n < speedTrapRankings.size(); n++) {
-                SpeedTrapDataDTO current = speedTrapRankings.get(n);
-                speedTrapDashboard.get(n).updateRank(current);
+            //If we need to resort and redraw then we do it now.
+            if (resort) {
+                SpeedTrapDataDTO.sortBySpeed(speedTrapRankings);
+                for (int n = 0; n < speedTrapRankings.size(); n++) {
+                    SpeedTrapDataDTO current = speedTrapRankings.get(n);
+                    speedTrapDashboard.get(n).updateRank(current);
+                }
             }
         }
     }
