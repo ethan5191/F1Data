@@ -1,5 +1,6 @@
 package individualLap;
 
+import packets.CarSetupData;
 import packets.LapData;
 import packets.enums.TireBrakesOrderEnum;
 
@@ -35,7 +36,7 @@ public class IndividualLapInfo {
 
     //From SpeedTrap event
     private final float speedTrap;
-
+    private CarSetupData carSetupData;
     private CarTelemetryInfo carTelemetryInfo;
 
     private CarStatusInfo carStatusInfo;
@@ -64,6 +65,14 @@ public class IndividualLapInfo {
 
     public float getSpeedTrap() {
         return speedTrap;
+    }
+
+    public CarSetupData getCarSetupData() {
+        return carSetupData;
+    }
+
+    public void setCarSetupData(CarSetupData carSetupData) {
+        this.carSetupData = carSetupData;
     }
 
     public CarTelemetryInfo getCarTelemetryInfo() {
