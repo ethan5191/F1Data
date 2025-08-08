@@ -2,6 +2,7 @@ package telemetry;
 
 import packets.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class TelemetryData {
     private final List<TelemetryRunData> telemetryRunDataList = new ArrayList<>();
     private CarSetupData currentSetup;
     private Integer lastLapNum;
-    private long lastLapTimeInMs;
+    private BigDecimal lastLapTimeInMs;
     private float speedTrap;
 
     private LapData currentLap;
@@ -47,11 +48,11 @@ public class TelemetryData {
         this.lastLapNum = lastLapNum;
     }
 
-    public long getLastLapTimeInMs() {
+    public BigDecimal getLastLapTimeInMs() {
         return lastLapTimeInMs;
     }
 
-    public void setLastLapTimeInMs(long lastLapTimeInMs) {
+    public void setLastLapTimeInMs(BigDecimal lastLapTimeInMs) {
         this.lastLapTimeInMs = lastLapTimeInMs;
     }
 

@@ -5,6 +5,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
+import java.math.BigDecimal;
+
 public class DriverDashboard extends HBox {
 
     public static final String[] HEADERS = {"NAME (Tire)", "#", "S1", "S2", "S3", "TIME"};
@@ -72,10 +74,19 @@ public class DriverDashboard extends HBox {
                 this.name.setText(text);
             }
             this.lapNum.setText(String.valueOf(info.getLapNum()));
-            this.s1.setText(String.valueOf(info.getSector1InMs()));
-            this.s2.setText(String.valueOf(info.getSector2InMs()));
-            this.s3.setText(String.valueOf(info.getSector3InMs()));
-            this.lapTime.setText(String.valueOf(info.getLapTimeInMs()));
+            this.s1.setText(buildTimeText(info.getSector1InMs()));
+            this.s2.setText(buildTimeText(info.getSector2InMs()));
+            this.s3.setText(buildTimeText(info.getSector3InMs()));
+            this.lapTime.setText(buildTimeText(info.getLapTimeInMs()));
         }
+    }
+
+    private String buildTimeText(BigDecimal lapTimeLocal) {
+        int lapTimeMinutes = 0;
+        while (lapTimeLocal.doubleValue() > 60) {
+            lapTimeMinutes++;
+            lapTimeLocal = lapTimeLocal.subtract(new BigDecimal(60));
+        }
+        return (lapTimeMinutes > 0) ? lapTimeMinutes + ":" + String.format("%.3f", lapTimeLocal.doubleValue()) : String.format("%.3f", lapTimeLocal.doubleValue());
     }
 }
