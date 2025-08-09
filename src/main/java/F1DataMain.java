@@ -28,6 +28,7 @@ import java.util.function.Function;
 public class F1DataMain {
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
+    private int playerCarIndex = -1;
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
@@ -41,6 +42,7 @@ public class F1DataMain {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOfRange(buffer, 0, length));
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 PacketHeader ph = new PacketHeader(byteBuffer);
+                if (playerCarIndex < 0) playerCarIndex = ph.getPlayerCarIndex();
                 switch (ph.getPacketId()) {
                     case Constants.MOTION_PACK:
                         break;
@@ -215,7 +217,7 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
-                    driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName()));
+                    driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName(), playerCarIndex));
                 }
             }
         }

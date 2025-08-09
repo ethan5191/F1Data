@@ -1,6 +1,21 @@
 package utils;
 
+import java.util.Map;
+
 public class Constants {
+
+    static {
+        DRIVER_PAIRS = Map.ofEntries(Map.entry("VERSTAPPEN", "PÉREZ"), Map.entry("PÉREZ", "VERSTAPPEN"),
+                Map.entry("HAMILTON", "RUSSELL"), Map.entry("RUSSELL", "HAMILTON"),
+                Map.entry("LECLERC", "SAINZ"), Map.entry("SAINZ", "LECLERC"),
+                Map.entry("NORRIS", "PIASTRI"), Map.entry("PIASTRI", "NORRIS"),
+                Map.entry("GASLY", "OCON"), Map.entry("OCON", "GASLY"), Map.entry("ALONSO", "STROLL"),
+                Map.entry("STROLL", "ALONSO"), Map.entry("RICCARDO", "TSUNODA"),
+                Map.entry("TSUNODA", "RICCARDO"), Map.entry("BOTTAS", "ZHOU"),
+                Map.entry("ZHOU", "BOTTAS"), Map.entry("HULKENBERG", "MAGNUSSEN"),
+                Map.entry("MAGNUSSEN", "HULKENBERG"), Map.entry("ALBON", "SARGEANT"),
+                Map.entry("SARGEANT", "ALBON"));
+    }
 
     public static final int BIT_MASK_8 = 0xFF;
     public static final int BIT_MASK_16 = 0xFFFF;
@@ -49,4 +64,6 @@ public class Constants {
     public static final String MEDIUM = "Medium";
     public static final String SOFT = "Soft";
     public static final String SUPER = "Super Soft";
+
+    public static final Map<String, String> DRIVER_PAIRS;
 }

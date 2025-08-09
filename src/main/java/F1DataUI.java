@@ -15,6 +15,7 @@ import ui.stages.AllLapDataStage;
 import ui.stages.LatestLapStage;
 import ui.stages.SetupStage;
 import ui.stages.SpeedTrapStage;
+import utils.Constants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,9 @@ public class F1DataUI extends Application {
     private final Map<Integer, VBox> setupDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
+
+    private int playerCarIndex = -1;
+    private String teamMateName = null;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -86,6 +90,8 @@ public class F1DataUI extends Application {
         LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
             LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
             latestLap.getChildren().add(newDashboard);
+            if (playerCarIndex < 0) playerCarIndex = snapshot.getPlayerCarIndex();
+            if (teamMateName == null) teamMateName = Constants.DRIVER_PAIRS.get(snapshot.getLastName());
             return newDashboard;
         });
         if (snapshot.getInfo() != null) {
