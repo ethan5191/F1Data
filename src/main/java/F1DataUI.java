@@ -31,8 +31,8 @@ public class F1DataUI extends Application {
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
 
-    private int playerCarIndex = -1;
-    private String teamMateName = null;
+    private int playerDriverId = -1;
+    private int teamMateId = -1;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -90,8 +90,15 @@ public class F1DataUI extends Application {
         LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
             LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
             latestLap.getChildren().add(newDashboard);
-            if (playerCarIndex < 0) playerCarIndex = snapshot.getPlayerCarIndex();
-            if (teamMateName == null) teamMateName = Constants.DRIVER_PAIRS.get(snapshot.getLastName());
+            if (snapshot.isPlayer()) {
+                playerDriverId = snapshot.getId();
+                teamMateId = Constants.DRIVER_PAIRS.get(playerDriverId);
+                newDashboard.setStyle("-fx-background-color: #3e3e3e;");
+                if (latestLapDashboard.containsKey(teamMateId)) {
+                    LatestLapDashboard teamMateDash = latestLapDashboard.get(teamMateId);
+                    teamMateDash.setStyle("-fx-background-color: #3e3e3e;");
+                }
+            }
             return newDashboard;
         });
         if (snapshot.getInfo() != null) {
@@ -105,6 +112,9 @@ public class F1DataUI extends Application {
             VBox driver = allLapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
                 VBox temp = new VBox();
                 allLaps.getChildren().add(temp);
+                if (id == playerDriverId || id == teamMateId) {
+                    temp.setStyle("-fx-background-color: #3e3e3e;");
+                }
                 return temp;
             });
             AllLapDataDashboard allLapsDashboard = new AllLapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
@@ -145,27 +155,33 @@ public class F1DataUI extends Application {
         if (!speedTrapRankings.isEmpty()) {
             //Does a check on the driver name to see if this driver already has a top speed recorded.
             int index = speedTrapRankings.indexOf(snapshot);
-            //boolean to indicate if we need to resort and redraw the data.
-            boolean resort = false;
+            //boolean to indicate if we need to reSort and redraw the data.
+            boolean reSort = false;
             //If index < 0 this driver doesn't have a speed in the list, so we just add it.
             if (index < 0) {
                 speedTrapRankings.add(snapshot);
-                resort = true;
+                reSort = true;
             } else {
                 //else he has a speed and we need to see if he went faster, if he did remove the old record and add the new one to the end.
                 SpeedTrapDataDTO currentRanking = speedTrapRankings.get(index);
                 if (currentRanking.getSpeed() < snapshot.getSpeed()) {
                     speedTrapRankings.remove(currentRanking);
                     speedTrapRankings.add(snapshot);
-                    resort = true;
+                    reSort = true;
                 }
             }
-            //If we need to resort and redraw then we do it now.
-            if (resort) {
+            //If we need to reSort and redraw then we do it now.
+            if (reSort) {
                 SpeedTrapDataDTO.sortBySpeed(speedTrapRankings);
                 for (int n = 0; n < speedTrapRankings.size(); n++) {
                     SpeedTrapDataDTO current = speedTrapRankings.get(n);
-                    speedTrapDashboard.get(n).updateRank(current);
+                    SpeedTrapDashboard currentDash = speedTrapDashboard.get(n);
+                    if (current.getDriverId() == playerDriverId || current.getDriverId() == teamMateId) {
+                        currentDash.setStyle("-fx-background-color: #3e3e3e;");
+                    } else {
+                        currentDash.setStyle(null);
+                    }
+                    currentDash.updateRank(current);
                 }
             }
         }

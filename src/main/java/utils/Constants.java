@@ -4,19 +4,6 @@ import java.util.Map;
 
 public class Constants {
 
-    static {
-        DRIVER_PAIRS = Map.ofEntries(Map.entry("VERSTAPPEN", "PÉREZ"), Map.entry("PÉREZ", "VERSTAPPEN"),
-                Map.entry("HAMILTON", "RUSSELL"), Map.entry("RUSSELL", "HAMILTON"),
-                Map.entry("LECLERC", "SAINZ"), Map.entry("SAINZ", "LECLERC"),
-                Map.entry("NORRIS", "PIASTRI"), Map.entry("PIASTRI", "NORRIS"),
-                Map.entry("GASLY", "OCON"), Map.entry("OCON", "GASLY"), Map.entry("ALONSO", "STROLL"),
-                Map.entry("STROLL", "ALONSO"), Map.entry("RICCARDO", "TSUNODA"),
-                Map.entry("TSUNODA", "RICCARDO"), Map.entry("BOTTAS", "ZHOU"),
-                Map.entry("ZHOU", "BOTTAS"), Map.entry("HULKENBERG", "MAGNUSSEN"),
-                Map.entry("MAGNUSSEN", "HULKENBERG"), Map.entry("ALBON", "SARGEANT"),
-                Map.entry("SARGEANT", "ALBON"));
-    }
-
     public static final int BIT_MASK_8 = 0xFF;
     public static final int BIT_MASK_16 = 0xFFFF;
     public static final long BIT_MASK_32 = 0xFFFFFFFFL;
@@ -65,5 +52,21 @@ public class Constants {
     public static final String SOFT = "Soft";
     public static final String SUPER = "Super Soft";
 
-    public static final Map<String, String> DRIVER_PAIRS;
+    public static final Map<Integer, Integer> DRIVER_PAIRS = Map.ofEntries(Map.entry(9, 14), Map.entry(14, 9),
+            Map.entry(7, 50), Map.entry(50, 7),
+            Map.entry(58, 0), Map.entry(0, 58),
+            Map.entry(54, 112), Map.entry(112, 54),
+            Map.entry(59, 17), Map.entry(17, 59),
+            Map.entry(3, 19), Map.entry(19, 3),
+            Map.entry(2, 94), Map.entry(94, 2),
+            Map.entry(15, 80), Map.entry(80, 15),
+            Map.entry(10, 11), Map.entry(11, 10),
+            Map.entry(62, 132), Map.entry(132, 62));
+
+    public static final Map<Integer, String> DRIVER_ID_TO_NAMES = Map.ofEntries(Map.entry(19, "STROLL"), Map.entry(17, "OCON"),
+            Map.entry(58, "LECLERC"), Map.entry(50, "RUSSELL"), Map.entry(132, "SARGEANT"), Map.entry(59, "GASLY"),
+            Map.entry(62, "ALBON"), Map.entry(0, "SAINZ"), Map.entry(54, "NORRIS"), Map.entry(112, "PIASTRI"),
+            Map.entry(94, "TSUNODA"), Map.entry(7, "HAMILTON"), Map.entry(80, "ZHOU"), Map.entry(14, "PÉREZ"),
+            Map.entry(9, "VERSTAPPEN"), Map.entry(10, "HULKENBERG"), Map.entry(3, "ALONSO"), Map.entry(11, "MAGNUSSEN"),
+            Map.entry(2, "RICCIARDO"), Map.entry(15, "BOTTAS"));
 }

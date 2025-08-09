@@ -4,24 +4,24 @@ import individualLap.IndividualLapInfo;
 
 public class DriverDataDTO {
 
-    public DriverDataDTO(Integer id, String lastName, int playerCarIndex) {
+    public DriverDataDTO(Integer id, String lastName, boolean isPlayer) {
         this.id = id;
         this.lastName = lastName;
         this.info = null;
-        this.playerCarIndex = playerCarIndex;
+        this.isPlayer = isPlayer;
     }
 
-    public DriverDataDTO(Integer id, String lastName, IndividualLapInfo info) {
+    public DriverDataDTO(Integer id, String lastName, IndividualLapInfo info, boolean isPlayer) {
         this.id = id;
         this.lastName = lastName;
         this.info = info;
-        this.playerCarIndex = -1;
+        this.isPlayer = isPlayer;
     }
 
     private final Integer id;
     private final String lastName;
     private final IndividualLapInfo info;
-    private final int playerCarIndex;
+    private final boolean isPlayer;
 
     public Integer getId() {
         return id;
@@ -35,7 +35,7 @@ public class DriverDataDTO {
         return info;
     }
 
-    public int getPlayerCarIndex() {
-        return playerCarIndex;
+    public boolean isPlayer() {
+        return isPlayer;
     }
 }

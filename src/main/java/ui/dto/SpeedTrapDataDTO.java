@@ -5,17 +5,23 @@ import java.util.Objects;
 
 public class SpeedTrapDataDTO {
 
-    public SpeedTrapDataDTO(String name, float speed, int lapNum, int numActiveCars) {
+    public SpeedTrapDataDTO(int driverId, String name, float speed, int lapNum, int numActiveCars) {
+        this.driverId = driverId;
         this.name = name;
         this.speed = speed;
         this.lapNum = lapNum;
         this.numActiveCars = numActiveCars;
     }
 
+    private final int driverId;
     private final String name;
     private final float speed;
     private final int lapNum;
     private final int numActiveCars;
+
+    public int getDriverId() {
+        return driverId;
+    }
 
     public String getName() {
         return name;

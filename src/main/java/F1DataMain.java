@@ -109,7 +109,7 @@ public class F1DataMain {
             //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
             TelemetryData td = participants.get(trap.getVehicleId());
             td.setSpeedTrap(trap.getSpeed());
-            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
+            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
         }
     }
 
@@ -144,7 +144,7 @@ public class F1DataMain {
                         info.printInfo(td.getParticipantData().getLastName());
                         info.printStatus(td.getParticipantData().getLastName());
                         info.printDamage(td.getParticipantData().getLastName());
-                        driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName(), info));
+                        driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), info, i == playerCarIndex));
                     }
                     td.setCurrentLap(ld);
                 } else {
@@ -217,7 +217,7 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
-                    driverDataDTO.accept(new DriverDataDTO(i, td.getParticipantData().getLastName(), playerCarIndex));
+                    driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), i == playerCarIndex));
                 }
             }
         }
