@@ -1,12 +1,15 @@
 package ui.stages;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import ui.stages.helper.Delta;
@@ -77,5 +80,19 @@ public abstract class AbstractStage<T extends Pane> {
                 this.stage.hide();
             }
         });
+    }
+
+    protected void setFullHeightScene(int width) {
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(this.content);
+        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(width);
+        stage.setHeight(bounds.getHeight());
+        setScene(this.stage.getWidth(), this.stage.getHeight());
     }
 }
