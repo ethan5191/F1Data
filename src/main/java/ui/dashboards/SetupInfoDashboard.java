@@ -11,6 +11,7 @@ public class SetupInfoDashboard extends VBox {
 
     public SetupInfoDashboard(String setupName, CarSetupData setupData) {
         GridPane setupDetails = new GridPane();
+        //Prints the data out in the order that the setup elements exist in the setup menu in the game.
         for (int i = 0; i < setupData.getSetupDashboardData().length; i++) {
             Label[] inner = setupData.getSetupDashboardData()[i];
             for (int j = 0; j < inner.length; j++) {

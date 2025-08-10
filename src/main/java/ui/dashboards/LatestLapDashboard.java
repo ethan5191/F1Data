@@ -67,6 +67,7 @@ public class LatestLapDashboard extends HBox {
 
     public void updateValues(IndividualLapInfo info) {
         if (info.getLapNum() > Integer.parseInt(this.lapNum.getText())) {
+            //Add the active tire to the output, only do this once to ensure we don't keep adding more data to the name area.
             if (!this.name.getText().contains("(")) {
                 String text = this.name.getText() + " (" + info.getCarStatusInfo().getVisualTire() + ")";
                 this.name.setText(text);

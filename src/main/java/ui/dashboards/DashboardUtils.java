@@ -6,6 +6,7 @@ public class DashboardUtils {
 
     private static final String LAP_TIME_FORMAT = "%06.3f";
 
+    //Convenience method to ensure the different panels with time gets output correctly.
     protected static String buildTimeText(BigDecimal lapTimeLocal) {
         int lapTimeMinutes = 0;
         while (lapTimeLocal.doubleValue() > 60) {
