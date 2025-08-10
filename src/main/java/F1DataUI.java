@@ -31,12 +31,14 @@ public class F1DataUI extends Application {
         //Creates the panel that allows you to show/hide different data panels.
         createTogglePanel();
 
+        //Main content panels for the different views.
         VBox latestLap = new VBox(5);
         VBox allLaps = new VBox(5);
         VBox setupData = new VBox(5);
         VBox speedTrapData = new VBox(5);
         VBox teamSpeedTrapData = new VBox(5);
 
+        //Logic for the Setup, LatestLap, and AllLap panels.
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
             Platform.runLater(() -> {
@@ -45,6 +47,7 @@ public class F1DataUI extends Application {
                 buildSetupBoard(snapshot, setupData);
             });
         };
+        //Logic for the speed trap panels.
         Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
         {
             Platform.runLater(() -> {
@@ -53,15 +56,18 @@ public class F1DataUI extends Application {
             });
         };
 
+        //Call the different stage constructors.
         new LatestLapStage(stage, latestLap);
         new AllLapDataStage(new Stage(), allLaps);
         new SetupStage(new Stage(), setupData);
         new SpeedTrapStage(new Stage(), speedTrapData);
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
 
+        //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
     }
 
+    //Creates the initial toggle panel that allows for showing hiding the individual panels.
     private void createTogglePanel() {
         CheckBox latestLapCheckbox = new CheckBox("Show Latest Lap Panel");
         CheckBox lapsDataCheckbox = new CheckBox("Show Laps Data Panel");
@@ -83,14 +89,19 @@ public class F1DataUI extends Application {
         panel.show();
     }
 
+    //Builds the latest lap panel. This is each cars last lap that they have crossed the start finish line. Not ordered.
     private void buildLatestLapBoard(DriverDataDTO snapshot, VBox latestLap) {
         LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
+            //Creates the new dashboard
             LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
+            //add it to the view.
             latestLap.getChildren().add(newDashboard);
+            //If this is the players driver, then update the background color of this box.
             if (snapshot.isPlayer()) {
                 playerDriverId = snapshot.getId();
                 teamMateId = Constants.DRIVER_PAIRS.get(playerDriverId);
                 newDashboard.setStyle("-fx-background-color: #3e3e3e;");
+                //If we have already created the teammates view, update the background color
                 if (latestLapDashboard.containsKey(teamMateId)) {
                     LatestLapDashboard teamMateDash = latestLapDashboard.get(teamMateId);
                     teamMateDash.setStyle("-fx-background-color: #3e3e3e;");
@@ -98,36 +109,47 @@ public class F1DataUI extends Application {
             }
             return newDashboard;
         });
+        //Make sure we have the info object, if we do then we can actually update the dashboard with data.
         if (snapshot.getInfo() != null) {
             latestLapDash.updateValues(snapshot.getInfo());
         }
     }
 
+    //Builds the all lap panel. This panel groups all the laps each driver does in order of the lapnum.
     private void buildAllLapBoard(DriverDataDTO snapshot, VBox allLaps) {
         if (snapshot.getInfo() != null) {
             //builds out the labels for the lapdata panel (panel 2 at the moment)
             VBox driver = allLapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
                 VBox temp = new VBox();
+                //Add the box to the parent view.
                 allLaps.getChildren().add(temp);
+                //If its the driver or there teammate then update the background color.
                 if (id == playerDriverId || id == teamMateId) {
                     temp.setStyle("-fx-background-color: #3e3e3e;");
                 }
                 return temp;
             });
+            //Creates the actual dashboard
             AllLapDataDashboard allLapsDashboard = new AllLapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
+            //container for the laps information
             VBox lapsContainer = new VBox();
             lapsContainer.getChildren().add(allLapsDashboard);
+            //add to the overall panel.
             driver.getChildren().add(lapsContainer);
         }
     }
 
+    //Builds the carsetup panel. Right now it only shows the first setup that the driver finishes a lap with.
     private void buildSetupBoard(DriverDataDTO snapshot, VBox setupData) {
         if (snapshot.getInfo() != null) {
+            //Ensures we don't duplicate records, as we only want 1 record per driver. At least for now.
             if (!setupDataDashboard.containsKey(snapshot.getId())) {
                 VBox driver = new VBox();
                 setupData.getChildren().add(driver);
+                //Add the box to the map so we can ensure we don't dupliate it.
                 setupDataDashboard.put(snapshot.getId(), driver);
                 String setupName = snapshot.getInfo().getCarSetupData().getSetupName();
+                //Creates the actual dashboard
                 SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
                 VBox container = new VBox(3);
                 container.getChildren().add(setupInfo);
@@ -136,10 +158,12 @@ public class F1DataUI extends Application {
         }
     }
 
+    //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
     private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
         //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
         //Based on the number of cars in the session will determine how many dashboards are created.
         if (speedTrapRankings.isEmpty() && speedTrapDashboard.isEmpty()) {
+            //This is the only panel so far that creates all the dashboards up front, then just updates the values with each new speed trap value.
             for (int i = 0; i < snapshot.getNumActiveCars(); i++) {
                 SpeedTrapDashboard dashboard = new SpeedTrapDashboard(i + 1);
                 speedTrapData.getChildren().add(dashboard);
@@ -169,10 +193,12 @@ public class F1DataUI extends Application {
             }
             //If we need to reSort and redraw then we do it now.
             if (reSort) {
+                //sort the List by the speed values before we redraw the data.
                 SpeedTrapDataDTO.sortBySpeed(speedTrapRankings);
                 for (int n = 0; n < speedTrapRankings.size(); n++) {
                     SpeedTrapDataDTO current = speedTrapRankings.get(n);
                     SpeedTrapDashboard currentDash = speedTrapDashboard.get(n);
+                    //If its the player or there teammate, update the bacckground so they are easy to identify.
                     if (current.getDriverId() == playerDriverId || current.getDriverId() == teamMateId) {
                         currentDash.setStyle("-fx-background-color: #3e3e3e;");
                     } else {
@@ -184,19 +210,25 @@ public class F1DataUI extends Application {
         }
     }
 
+    //Creates the plaeyer team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
     private void buildTeamSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox teamSpeedTrapData) {
+        //This panel is only for the player and there teammate.
         if (snapshot.getDriverId() == playerDriverId || snapshot.getDriverId() == teamMateId) {
             TeamSpeedTrapDashboard dashboard = new TeamSpeedTrapDashboard(snapshot);
             boolean updated = false;
+            //If the map doesn't contain a record for this driver then we are doin gan initial create.
             if (!latestTeamSpeedTrapDash.containsKey(snapshot.getDriverId())) {
                 Map<Integer, TeamSpeedTrapDashboard> temp = new HashMap<>(1);
                 temp.put(snapshot.getLapNum(), dashboard);
                 latestTeamSpeedTrapDash.put(snapshot.getDriverId(), temp);
             } else {
+                //Else we need to make sure that the current lap doesn't already exist for this driver.
                 Map<Integer, TeamSpeedTrapDashboard> latestSpeedDash = latestTeamSpeedTrapDash.get(snapshot.getDriverId());
+                //If the lap already exists in the map (driver pitted) then we just update the dashboard's trap speedd
                 if (latestSpeedDash.containsKey(snapshot.getLapNum())) {
                     dashboard = latestSpeedDash.get(snapshot.getLapNum());
                     dashboard.updateSpeed(snapshot);
+                    //Flip this flag, so we don't try to add this child element, as its already on the view.
                     updated = true;
                 }
                 latestSpeedDash.put(snapshot.getLapNum(), dashboard);
@@ -206,6 +238,7 @@ public class F1DataUI extends Application {
         }
     }
 
+    //Calls the telemetry thread, which handles parsing the packets.
     private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         Thread telemetryThread = new Thread(() -> {
             new F1DataMain().run(driverDataConsumer, speedTrapDataDTO);
