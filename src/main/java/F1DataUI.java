@@ -4,23 +4,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ui.dashboards.AllLapDataDashboard;
-import ui.dashboards.LatestLapDashboard;
-import ui.dashboards.SetupInfoDashboard;
-import ui.dashboards.SpeedTrapDashboard;
+import ui.dashboards.*;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
 import ui.home.AppState;
-import ui.stages.AllLapDataStage;
-import ui.stages.LatestLapStage;
-import ui.stages.SetupStage;
-import ui.stages.SpeedTrapStage;
+import ui.stages.*;
 import utils.Constants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -29,6 +20,7 @@ public class F1DataUI extends Application {
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, VBox> setupDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
+    private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
 
     private int playerDriverId = -1;
@@ -43,6 +35,7 @@ public class F1DataUI extends Application {
         VBox allLaps = new VBox(5);
         VBox setupData = new VBox(5);
         VBox speedTrapData = new VBox(5);
+        VBox teamSpeedTrapData = new VBox(5);
 
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
@@ -56,6 +49,7 @@ public class F1DataUI extends Application {
         {
             Platform.runLater(() -> {
                 buildSpeedTrapDashboard(snapshot, speedTrapData);
+                buildTeamSpeedTrapDashboard(snapshot, teamSpeedTrapData);
             });
         };
 
@@ -63,6 +57,7 @@ public class F1DataUI extends Application {
         new AllLapDataStage(new Stage(), allLaps);
         new SetupStage(new Stage(), setupData);
         new SpeedTrapStage(new Stage(), speedTrapData);
+        new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
 
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
     }
@@ -71,14 +66,16 @@ public class F1DataUI extends Application {
         CheckBox latestLapCheckbox = new CheckBox("Show Latest Lap Panel");
         CheckBox lapsDataCheckbox = new CheckBox("Show Laps Data Panel");
         CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
-        CheckBox speedTrapDataCheckbox = new CheckBox("Show Speed Trap Panel");
+        CheckBox speedTrapDataCheckbox = new CheckBox("Show All Speed Trap Panel");
+        CheckBox teamSpeedTrapDataCheckbox = new CheckBox("Show Team Speed Trap Panel");
 
         latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
         lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
         setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
         speedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.speedTrapPanelVisible);
+        teamSpeedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.teamSpeedTrapPanelVisible);
 
-        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox);
+        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox, teamSpeedTrapDataCheckbox);
 
         Scene scene = new Scene(statePanel, 200, 200);
         Stage panel = new Stage();
@@ -184,6 +181,28 @@ public class F1DataUI extends Application {
                     currentDash.updateRank(current);
                 }
             }
+        }
+    }
+
+    private void buildTeamSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox teamSpeedTrapData) {
+        if (snapshot.getDriverId() == playerDriverId || snapshot.getDriverId() == teamMateId) {
+            TeamSpeedTrapDashboard dashboard = new TeamSpeedTrapDashboard(snapshot);
+            boolean updated = false;
+            if (!latestTeamSpeedTrapDash.containsKey(snapshot.getDriverId())) {
+                Map<Integer, TeamSpeedTrapDashboard> temp = new HashMap<>(1);
+                temp.put(snapshot.getLapNum(), dashboard);
+                latestTeamSpeedTrapDash.put(snapshot.getDriverId(), temp);
+            } else {
+                Map<Integer, TeamSpeedTrapDashboard> latestSpeedDash = latestTeamSpeedTrapDash.get(snapshot.getDriverId());
+                if (latestSpeedDash.containsKey(snapshot.getLapNum())) {
+                    dashboard = latestSpeedDash.get(snapshot.getLapNum());
+                    dashboard.updateSpeed(snapshot);
+                    updated = true;
+                }
+                latestSpeedDash.put(snapshot.getLapNum(), dashboard);
+                latestTeamSpeedTrapDash.put(snapshot.getDriverId(), latestSpeedDash);
+            }
+            if (!updated) teamSpeedTrapData.getChildren().add(dashboard);
         }
     }
 

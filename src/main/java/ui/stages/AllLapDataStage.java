@@ -23,17 +23,7 @@ public class AllLapDataStage extends AbstractStage<VBox> {
 
     protected void init() {
         this.content.getChildren().add(allLaps);
-        ScrollPane scroll = new ScrollPane();
-        scroll.setContent(this.content);
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(300);
-        stage.setHeight(bounds.getHeight());
-        setScene(this.stage.getWidth(), this.stage.getHeight());
+        setFullHeightScene(300);
     }
 
     protected VBox createParentContent() {
