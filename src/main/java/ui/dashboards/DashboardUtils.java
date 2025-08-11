@@ -1,5 +1,7 @@
 package ui.dashboards;
 
+import utils.Constants;
+
 import java.math.BigDecimal;
 
 public class DashboardUtils {
@@ -14,5 +16,13 @@ public class DashboardUtils {
             lapTimeLocal = lapTimeLocal.subtract(new BigDecimal(60));
         }
         return (lapTimeMinutes > 0) ? lapTimeMinutes + ":" + String.format(LAP_TIME_FORMAT, lapTimeLocal.doubleValue()) : String.format(LAP_TIME_FORMAT, lapTimeLocal.doubleValue());
+    }
+
+    //Formats the received float value as a Two Decimal String.
+    public static String formatTwoDecimals(float input) {
+        return String.format(Constants.TWO_DECIMAL, input);
+    }
+
+    public static String formatOneDecimal(float input) { return String.format(Constants.ONE_DECIMAL, input);
     }
 }

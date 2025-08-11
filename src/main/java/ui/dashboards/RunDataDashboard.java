@@ -20,22 +20,22 @@ public class RunDataDashboard extends HBox {
         this.lapTime = new Label(DashboardUtils.buildTimeText(dto.getInfo().getLapTimeInMs()));
         this.lapTime.setTextFill(Color.WHITE);
         this.lapTime.setMinWidth(HEADERS_WIDTH[1]);
-        this.rearLeftWear = new Label(dto.getInfo().getCarDamageInfo().getTyresWear()[0]);
+        this.rearLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[0]) + Constants.PERCENT_SIGN);
         this.rearLeftWear.setTextFill(Color.WHITE);
         this.rearLeftWear.setMinWidth(HEADERS_WIDTH[2]);
-        this.rearRightWear = new Label(dto.getInfo().getCarDamageInfo().getTyresWear()[1]);
+        this.rearRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[1]) + Constants.PERCENT_SIGN);
         this.rearRightWear.setTextFill(Color.WHITE);
         this.rearRightWear.setMinWidth(HEADERS_WIDTH[3]);
-        this.frontLeftWear = new Label(dto.getInfo().getCarDamageInfo().getTyresWear()[2]);
+        this.frontLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[2]) + Constants.PERCENT_SIGN);
         this.frontLeftWear.setTextFill(Color.WHITE);
         this.frontLeftWear.setMinWidth(HEADERS_WIDTH[4]);
-        this.frontRightWear = new Label(dto.getInfo().getCarDamageInfo().getTyresWear()[3]);
+        this.frontRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[3]) + Constants.PERCENT_SIGN);
         this.frontRightWear.setTextFill(Color.WHITE);
         this.frontRightWear.setMinWidth(HEADERS_WIDTH[5]);
-        this.fuelRemaining = new Label(dto.getInfo().getCarStatusInfo().getFuelInTank());
+        this.fuelRemaining = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getFuelUsedThisLap()) + Constants.KG);
         this.fuelRemaining.setTextFill(Color.WHITE);
         this.fuelRemaining.setMinWidth(HEADERS_WIDTH[6]);
-        this.speedTrapThisLap = new Label(String.format(Constants.TWO_DECIMAL,dto.getInfo().getSpeedTrap()));
+        this.speedTrapThisLap = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getSpeedTrap()));
         this.speedTrapThisLap.setTextFill(Color.WHITE);
         this.speedTrapThisLap.setMinWidth(HEADERS_WIDTH[7]);
 

@@ -131,7 +131,16 @@ public class F1DataMain {
                 if (td.getCurrentLap() != null) {
                     //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
                     if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
-                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap());
+                        //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
+                        //then update the start params so that next laps calculations use this laps ending values as there start values.
+                        float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
+                        td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
+                        float[] tireWearThisLap = new float[4];
+                        for (int j = 0; j < tireWearThisLap.length; j++) {
+                            tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
+                        }
+                        td.setStartOfLapTireWear(td.getCurrentTireWear());
+                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
                         td.setLastLapNum(info.getLapNum());
                         td.setLastLapTimeInMs(info.getLapTimeInMs());
                         if (td.getCurrentSetup() != null) {

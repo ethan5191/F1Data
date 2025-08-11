@@ -54,6 +54,9 @@ public class Constants {
 
     public static final int SETUP_PANEL_WIDTH = 800;
 
+    public static final String PERCENT_SIGN = "%";
+    public static final String KG = "kg";
+
     public static final Map<Integer, Integer> DRIVER_PAIRS = Map.ofEntries(Map.entry(9, 14), Map.entry(14, 9),
             Map.entry(7, 50), Map.entry(50, 7),
             Map.entry(58, 0), Map.entry(0, 58),

@@ -12,7 +12,7 @@ public class IndividualLapInfo {
 
     //ld is the current lap, which should be a newly started lap.
     //prevLap is the last LapData from the telemetry object, which has the sector 1 and 2 times in it.
-    public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap) {
+    public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap) {
         this.lapNum = prevLap.getCurrentLapNum();
         this.lapTimeInMs = roundDecimal(new BigDecimal(ld.getLastLapTimeMs()));
         int sector1MinPart = prevLap.getSector1TimeMinutesPart() * 60;
@@ -24,6 +24,8 @@ public class IndividualLapInfo {
         BigDecimal sumSectors = this.sector1InMs.add(this.sector2InMs);
         this.sector3InMs = this.lapTimeInMs.subtract(sumSectors);
         this.speedTrap = speedTrap;
+        this.fuelUsedThisLap = fuelUsedThisLap;
+        this.tireWearThisLap = tireWearThisLap;
     }
 
     //From LapData
@@ -36,6 +38,10 @@ public class IndividualLapInfo {
 
     //From SpeedTrap event
     private final float speedTrap;
+
+    private final float fuelUsedThisLap;
+    private final float[] tireWearThisLap;
+
     private CarSetupData carSetupData;
     private CarTelemetryInfo carTelemetryInfo;
 
@@ -67,6 +73,14 @@ public class IndividualLapInfo {
 
     public float getSpeedTrap() {
         return speedTrap;
+    }
+
+    public float getFuelUsedThisLap() {
+        return fuelUsedThisLap;
+    }
+
+    public float[] getTireWearThisLap() {
+        return tireWearThisLap;
     }
 
     public CarSetupData getCarSetupData() {
