@@ -3,9 +3,9 @@ package individualLap;
 import packets.CarSetupData;
 import packets.LapData;
 import packets.enums.TireBrakesOrderEnum;
+import utils.Util;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 //Used to represent an individual laps data for an individual car. Idea is this will be populated at the end of the lap.
 public class IndividualLapInfo {
@@ -14,13 +14,14 @@ public class IndividualLapInfo {
     //prevLap is the last LapData from the telemetry object, which has the sector 1 and 2 times in it.
     public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap) {
         this.lapNum = prevLap.getCurrentLapNum();
-        this.lapTimeInMs = roundDecimal(new BigDecimal(ld.getLastLapTimeMs()));
+        this.nonRoundedLapTime = ld.getLastLapTimeMs();
+        this.lapTimeInMs = Util.roundDecimal(new BigDecimal(ld.getLastLapTimeMs()));
         int sector1MinPart = prevLap.getSector1TimeMinutesPart() * 60;
         int s1 = prevLap.getSector1TimeMsPart() + sector1MinPart;
-        this.sector1InMs = roundDecimal(new BigDecimal(s1));
+        this.sector1InMs = Util.roundDecimal(new BigDecimal(s1));
         int sector2MinPart = prevLap.getSector2TimeMinutesPart() * 60;
         int s2 = prevLap.getSector2TimeMsPart() + sector2MinPart;
-        this.sector2InMs = roundDecimal(new BigDecimal(s2));
+        this.sector2InMs = Util.roundDecimal(new BigDecimal(s2));
         BigDecimal sumSectors = this.sector1InMs.add(this.sector2InMs);
         this.sector3InMs = this.lapTimeInMs.subtract(sumSectors);
         this.speedTrap = speedTrap;
@@ -30,6 +31,7 @@ public class IndividualLapInfo {
 
     //From LapData
     private final int lapNum;
+    private final float nonRoundedLapTime;
     private final BigDecimal lapTimeInMs;
     private final BigDecimal sector1InMs;
     private final BigDecimal sector2InMs;
@@ -53,6 +55,10 @@ public class IndividualLapInfo {
 
     public int getLapNum() {
         return lapNum;
+    }
+
+    public float getNonRoundedLapTime() {
+        return nonRoundedLapTime;
     }
 
     public BigDecimal getLapTimeInMs() {
@@ -121,10 +127,6 @@ public class IndividualLapInfo {
 
     public void setSetupChange(boolean setupChange) {
         isSetupChange = setupChange;
-    }
-
-    private BigDecimal roundDecimal(BigDecimal value) {
-        return value.divide(new BigDecimal("1000.000"), 3, RoundingMode.HALF_UP);
     }
 
     public void printInfo(String lastName) {

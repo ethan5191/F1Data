@@ -6,6 +6,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ui.RunDataAverage;
 import ui.dashboards.*;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
@@ -21,7 +22,7 @@ public class F1DataUI extends Application {
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
-    private final Map<Integer, Map<Integer, VBox>> runDataDashboard = new HashMap<>();
+    private final Map<Integer, Map<Integer, List<RunDataDashboard>>> runDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
@@ -164,8 +165,6 @@ public class F1DataUI extends Application {
     }
 
     //builds the runData panel. This panel shows the setup, and all laps completed with that setup.
-    //Each lap will hopefully have the tire wear % added that lap for each tire, plus the fuel used.
-    //Hopefully at the end I will be able to compute average lap time, tire wear, and fuel usage.
     private void buildRunDataBoard(DriverDataDTO snapshot, VBox runData) {
         IndividualLapInfo info = snapshot.getInfo();
         if (info != null) {
@@ -178,21 +177,36 @@ public class F1DataUI extends Application {
                     SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().getSetupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox container = new VBox(3);
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
-                    Map<Integer, VBox> initial = new HashMap<>();
-                    initial.put(info.getLapNum(), container);
+                    Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
+                    //calculate the averages and add them as a new dashboard to the end of the list.
+                    RunDataAverage average = new RunDataAverage(info.getLapNum(), snapshot);
+                    RunDataDashboard averages = new RunDataDashboard(average);
+                    initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
                     runDataDashboard.put(snapshot.getId(), initial);
                     container.getChildren().add(setupInfo);
                     RunDataDashboard.createHeaderRow(container);
                     container.getChildren().add(lapInfoBoard);
+                    container.getChildren().add(averages);
                     driver.getChildren().add(container);
-                    //else we have this setup already down with a lap, so we just need to create a new lap info
+                    //else we have this setup already done a lap, so we just need to create a new lap info
                 } else {
-                    Map<Integer, VBox> currentData = runDataDashboard.get(snapshot.getId());
+                    Map<Integer, List<RunDataDashboard>> currentData = runDataDashboard.get(snapshot.getId());
+                    //The lapnum is the key if a setup change has happened, so get the max key to get the latest setup change.
+                    //a setup change will be handled by the if part of this if/else statement.
                     Optional<Integer> maxNewSetupLap = currentData.keySet().stream().max(Integer::compare);
                     Integer maxLap = maxNewSetupLap.get();
-                    VBox container = currentData.get(maxLap);
-                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
-                    container.getChildren().add(lapInfoBoard);
+                    //Create a copy of the value in the map for this lapnum so we can add a new dashboard to the end.
+                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(maxLap));
+                    //get the current averages and use it to update the averages to account for a new lap completed.
+                    RunDataDashboard currentAverages = lapsForSetupCopy.get(lapsForSetupCopy.size() - 1);
+                    RunDataAverage updatedAverages = new RunDataAverage(maxLap, snapshot, currentAverages.getAverage());
+                    RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages);
+                    lapsForSetupCopy.add(newAvgDash);
+                    //Update the previous averages line to have the new laps data in it instead of averages.
+                    currentAverages.updateValues(snapshot);
+                    currentData.put(maxLap, lapsForSetupCopy);
+                    VBox container = (VBox) currentAverages.getParent();
+                    container.getChildren().add(newAvgDash);
                 }
             }
         }

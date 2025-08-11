@@ -145,7 +145,8 @@ public class TelemetryData {
     public void setCurrentStatus(CarStatusData currentStatus) {
         this.currentStatus = currentStatus;
         //Only update this value if the incoming value is different. We get these packets every second.
-        if (this.currentVisualTireCompound != currentStatus.getVisualTireCompound()) this.currentVisualTireCompound = currentStatus.getVisualTireCompound();
+        if (this.currentVisualTireCompound != currentStatus.getVisualTireCompound())
+            this.currentVisualTireCompound = currentStatus.getVisualTireCompound();
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
             if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
