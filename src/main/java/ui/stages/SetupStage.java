@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import ui.home.AppState;
+import utils.Constants;
 
 public class SetupStage extends AbstractStage<VBox> {
 
@@ -33,7 +34,7 @@ public class SetupStage extends AbstractStage<VBox> {
         Rectangle2D bounds = screen.getVisualBounds();
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
-        stage.setWidth(800);
+        stage.setWidth(Constants.SETUP_PANEL_WIDTH);
         stage.setHeight(bounds.getHeight());
         setScene(this.stage.getWidth(), this.stage.getHeight());
     }

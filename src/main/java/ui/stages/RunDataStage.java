@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.home.AppState;
+import utils.Constants;
 
 public class RunDataStage extends AbstractStage<VBox> {
 
@@ -23,7 +24,7 @@ public class RunDataStage extends AbstractStage<VBox> {
     @Override
     protected void init() {
         this.content.getChildren().add(runData);
-        setFullHeightScene(700);
+        setFullHeightScene(Constants.SETUP_PANEL_WIDTH);
     }
 
     @Override

@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.dashboards.*;
@@ -11,7 +12,6 @@ import ui.home.AppState;
 import ui.stages.*;
 import utils.Constants;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -20,6 +20,7 @@ public class F1DataUI extends Application {
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
+    private final Map<Integer, Map<Integer, VBox>> runDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
@@ -47,6 +48,7 @@ public class F1DataUI extends Application {
                 buildLatestLapBoard(snapshot, latestLap);
                 buildAllLapBoard(snapshot, allLaps);
                 buildSetupBoard(snapshot, setupData);
+                buildRunDataBoard(snapshot, runData);
             });
         };
         //Logic for the speed trap panels.
@@ -160,6 +162,40 @@ public class F1DataUI extends Application {
         }
     }
 
+    //builds the runData panel. This panel shows the setup, and all laps completed with that setup.
+    //Each lap will hopefully have the tire wear % added that lap for each tire, plus the fuel used.
+    //Hopefully at the end I will be able to compute average lap time, tire wear, and fuel usage.
+    private void buildRunDataBoard(DriverDataDTO snapshot, VBox runData) {
+        if (snapshot.getInfo() != null) {
+            if (snapshot.getId() == playerDriverId) {
+                //If this is the first pass through or the setup has changed we need to do all of this.
+                if (!runDataDashboard.containsKey(snapshot.getId()) || snapshot.getInfo().isSetupChange()) {
+                    VBox driver = new VBox();
+                    runData.getChildren().add(driver);
+                    //Creates the actual dashboard
+                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(snapshot.getInfo().getCarSetupData().getSetupName(), snapshot.getInfo().getCarSetupData());
+                    VBox container = new VBox(3);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
+                    Map<Integer, VBox> initial = new HashMap<>();
+                    initial.put(snapshot.getInfo().getLapNum(), container);
+                    runDataDashboard.put(snapshot.getId(), initial);
+                    container.getChildren().add(setupInfo);
+                    RunDataDashboard.createHeaderRow(container);
+                    container.getChildren().add(lapInfoBoard);
+                    driver.getChildren().add(container);
+                    //else we have this setup already down with a lap, so we just need to create a new lap info
+                } else {
+                    Map<Integer, VBox> currentData = runDataDashboard.get(snapshot.getId());
+                    Optional<Integer> maxNewSetupLap = currentData.keySet().stream().max(Integer::compare);
+                    Integer maxLap = maxNewSetupLap.get();
+                    VBox container = currentData.get(maxLap);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
+                    container.getChildren().add(lapInfoBoard);
+                }
+            }
+        }
+    }
+
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
     private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
         //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
@@ -249,6 +285,7 @@ public class F1DataUI extends Application {
         telemetryThread.start();
     }
 
+    //Common logic used by the setup panel for both new entries and new setups for drivers who already have a setup listed.
     private void commonSetupLogic(DriverDataDTO snapshot, VBox setupData, Map<Integer, VBox> mapToUpdate, String setupName) {
         VBox driver = new VBox();
         setupData.getChildren().add(driver);
