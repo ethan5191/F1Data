@@ -3,11 +3,9 @@ import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
 import packets.*;
-import packets.enums.DriverStatusEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
-import telemetry.TelemetryRunData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
 import utils.Constants;
@@ -101,13 +99,6 @@ public class F1DataMain {
                     System.out.println("ID " + key);
                     td.getParticipantData().printName();
                     System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
-                    for (TelemetryRunData trd : td.getTelemetryRunDataList()) {
-                        System.out.println("Time " + trd.getStartTime() + " Setup " + trd.getCarSetupData().getSetupName());
-                        for (Map.Entry<Integer, IndividualLapInfo> entry1 : trd.getLapData().entrySet()) {
-                            IndividualLapInfo info = entry1.getValue();
-                            System.out.println("Lap #:" + entry1.getKey() + " Time " + info.getLapTimeInMs());
-                        }
-                    }
                     System.out.println("-------------------------------------------");
                 }
             }
@@ -162,11 +153,6 @@ public class F1DataMain {
                         if (td.getCurrentDamage() != null) {
                             info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
                         }
-                        if (!td.getTelemetryRunDataList().isEmpty()) {
-                            TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
-                            trd.getLapData().put(info.getLapNum(), info);
-                            participants.put(i, td);
-                        }
                         //Print info when the lap is completed.
                         info.printInfo(td.getParticipantData().getLastName());
                         info.printStatus(td.getParticipantData().getLastName());
@@ -177,23 +163,6 @@ public class F1DataMain {
                     td.setCurrentLap(ld);
                 } else {
                     td.setCurrentLap(ld);
-                }
-                //If on an out lap or flying lap and current setup is already established in td.
-                if ((DriverStatusEnum.OUT_LAP.getValue() == ld.getDriverStatus() || DriverStatusEnum.FLYING_LAP.getValue() == ld.getDriverStatus())
-                        && td.getCurrentSetup() != null) {
-                    //If the TelemetryRunDataList isn't empty do A.
-                    if (!td.getTelemetryRunDataList().isEmpty()) {
-                        //Get the last record in the list, as its the most recently added run data object.
-                        TelemetryRunData trd = td.getTelemetryRunDataList().get(td.getTelemetryRunDataList().size() - 1);
-                        //Car setup logic does a full compare of the values, so object comparison 'should' be good enough here.
-                        if (trd.getCarSetupData() != td.getCurrentSetup()) {
-                            //If the setup has changed compared to the last setup in the run data, we need to add a new record to run data.
-                            td.getTelemetryRunDataList().add(new TelemetryRunData(td.getCurrentSetup()));
-                        }
-                    } else {
-                        //Else first time out on track, so we know we can just add this new object to the list.
-                        td.getTelemetryRunDataList().add(new TelemetryRunData(td.getCurrentSetup()));
-                    }
                 }
             }
         }
