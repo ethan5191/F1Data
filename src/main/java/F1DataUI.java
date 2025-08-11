@@ -38,6 +38,7 @@ public class F1DataUI extends Application {
         VBox setupData = new VBox(5);
         VBox speedTrapData = new VBox(5);
         VBox teamSpeedTrapData = new VBox(5);
+        VBox runData = new VBox(5);
 
         //Logic for the Setup, LatestLap, and AllLap panels.
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
@@ -63,6 +64,7 @@ public class F1DataUI extends Application {
         new SetupStage(new Stage(), setupData);
         new SpeedTrapStage(new Stage(), speedTrapData);
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
+        new RunDataStage(new Stage(), runData);
 
         //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
@@ -75,14 +77,17 @@ public class F1DataUI extends Application {
         CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
         CheckBox speedTrapDataCheckbox = new CheckBox("Show All Speed Trap Panel");
         CheckBox teamSpeedTrapDataCheckbox = new CheckBox("Show Team Speed Trap Panel");
+        CheckBox runDataPanelCheckbox = new CheckBox("Show the Run Data Panel");
 
         latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
         lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
         setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
         speedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.speedTrapPanelVisible);
         teamSpeedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.teamSpeedTrapPanelVisible);
+        runDataPanelCheckbox.selectedProperty().bindBidirectional(AppState.runDataPanelVisible);
 
-        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox, teamSpeedTrapDataCheckbox);
+        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox,
+                teamSpeedTrapDataCheckbox, runDataPanelCheckbox);
 
         Scene scene = new Scene(statePanel, 200, 200);
         Stage panel = new Stage();
