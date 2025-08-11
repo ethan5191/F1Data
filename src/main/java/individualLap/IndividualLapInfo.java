@@ -39,6 +39,8 @@ public class IndividualLapInfo {
     private CarSetupData carSetupData;
     private CarTelemetryInfo carTelemetryInfo;
 
+    private boolean isSetupChange;
+
     private CarStatusInfo carStatusInfo;
 
     private CarDamageInfo carDamageInfo;
@@ -97,6 +99,14 @@ public class IndividualLapInfo {
 
     public void setCarDamageInfo(CarDamageInfo carDamageInfo) {
         this.carDamageInfo = carDamageInfo;
+    }
+
+    public boolean isSetupChange() {
+        return isSetupChange;
+    }
+
+    public void setSetupChange(boolean setupChange) {
+        isSetupChange = setupChange;
     }
 
     private BigDecimal roundDecimal(BigDecimal value) {

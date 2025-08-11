@@ -20,6 +20,7 @@ public class TelemetryData {
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
     private float speedTrap;
+    private boolean isSetupChange;
 
     private LapData currentLap;
     private CarTelemetryData currentTelemetry;
@@ -68,6 +69,14 @@ public class TelemetryData {
 
     public void setSpeedTrap(float speedTrap) {
         this.speedTrap = speedTrap;
+    }
+
+    public boolean isSetupChange() {
+        return isSetupChange;
+    }
+
+    public void setSetupChange(boolean setupChange) {
+        isSetupChange = setupChange;
     }
 
     public LapData getCurrentLap() {

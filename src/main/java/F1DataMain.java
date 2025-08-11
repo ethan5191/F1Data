@@ -136,6 +136,8 @@ public class F1DataMain {
                         td.setLastLapTimeInMs(info.getLapTimeInMs());
                         if (td.getCurrentSetup() != null) {
                             info.setCarSetupData(td.getCurrentSetup());
+                            info.setSetupChange(td.isSetupChange());
+                            td.setSetupChange(false);
                         }
                         if (td.getCurrentTelemetry() != null) {
                             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
@@ -196,6 +198,7 @@ public class F1DataMain {
                 if (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup())) {
 //                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
                     td.setCurrentSetup(csd);
+                    td.setSetupChange(true);
                 }
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }
