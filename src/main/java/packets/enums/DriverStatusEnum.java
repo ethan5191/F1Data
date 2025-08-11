@@ -1,5 +1,8 @@
 package packets.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum DriverStatusEnum {
 
     IN_GARAGE(8),
@@ -9,6 +12,13 @@ public enum DriverStatusEnum {
     ON_TRACK(4);
 
     private final int value;
+    private static final Map<Integer, DriverStatusEnum> LOOKUP = new HashMap<>();
+
+    static {
+        for (DriverStatusEnum elem : values()) {
+            LOOKUP.put(elem.value, elem);
+        }
+    }
 
     DriverStatusEnum(int value) {
         this.value = value;
@@ -16,5 +26,9 @@ public enum DriverStatusEnum {
 
     public int getValue() {
         return value;
+    }
+
+    public static DriverStatusEnum fromValue(int value) {
+        return LOOKUP.get(value);
     }
 }
