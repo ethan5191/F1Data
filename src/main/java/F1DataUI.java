@@ -1,7 +1,9 @@
+import individualLap.IndividualLapInfo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.dashboards.*;
@@ -11,7 +13,6 @@ import ui.home.AppState;
 import ui.stages.*;
 import utils.Constants;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -20,6 +21,7 @@ public class F1DataUI extends Application {
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
+    private final Map<Integer, Map<Integer, VBox>> runDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
@@ -38,6 +40,7 @@ public class F1DataUI extends Application {
         VBox setupData = new VBox(5);
         VBox speedTrapData = new VBox(5);
         VBox teamSpeedTrapData = new VBox(5);
+        VBox runData = new VBox(5);
 
         //Logic for the Setup, LatestLap, and AllLap panels.
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
@@ -46,6 +49,7 @@ public class F1DataUI extends Application {
                 buildLatestLapBoard(snapshot, latestLap);
                 buildAllLapBoard(snapshot, allLaps);
                 buildSetupBoard(snapshot, setupData);
+                buildRunDataBoard(snapshot, runData);
             });
         };
         //Logic for the speed trap panels.
@@ -63,6 +67,7 @@ public class F1DataUI extends Application {
         new SetupStage(new Stage(), setupData);
         new SpeedTrapStage(new Stage(), speedTrapData);
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
+        new RunDataStage(new Stage(), runData);
 
         //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
@@ -75,14 +80,17 @@ public class F1DataUI extends Application {
         CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
         CheckBox speedTrapDataCheckbox = new CheckBox("Show All Speed Trap Panel");
         CheckBox teamSpeedTrapDataCheckbox = new CheckBox("Show Team Speed Trap Panel");
+        CheckBox runDataPanelCheckbox = new CheckBox("Show the Run Data Panel");
 
         latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
         lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
         setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
         speedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.speedTrapPanelVisible);
         teamSpeedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.teamSpeedTrapPanelVisible);
+        runDataPanelCheckbox.selectedProperty().bindBidirectional(AppState.runDataPanelVisible);
 
-        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox, teamSpeedTrapDataCheckbox);
+        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox,
+                teamSpeedTrapDataCheckbox, runDataPanelCheckbox);
 
         Scene scene = new Scene(statePanel, 200, 200);
         Stage panel = new Stage();
@@ -155,6 +163,41 @@ public class F1DataUI extends Application {
         }
     }
 
+    //builds the runData panel. This panel shows the setup, and all laps completed with that setup.
+    //Each lap will hopefully have the tire wear % added that lap for each tire, plus the fuel used.
+    //Hopefully at the end I will be able to compute average lap time, tire wear, and fuel usage.
+    private void buildRunDataBoard(DriverDataDTO snapshot, VBox runData) {
+        IndividualLapInfo info = snapshot.getInfo();
+        if (info != null) {
+            if (snapshot.getId() == playerDriverId || snapshot.getId() == teamMateId) {
+                //If this is the first pass through or the setup has changed we need to do all of this.
+                if (!runDataDashboard.containsKey(snapshot.getId()) || info.isSetupChange()) {
+                    VBox driver = new VBox();
+                    runData.getChildren().add(driver);
+                    //Creates the actual dashboard
+                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().getSetupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
+                    VBox container = new VBox(3);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
+                    Map<Integer, VBox> initial = new HashMap<>();
+                    initial.put(info.getLapNum(), container);
+                    runDataDashboard.put(snapshot.getId(), initial);
+                    container.getChildren().add(setupInfo);
+                    RunDataDashboard.createHeaderRow(container);
+                    container.getChildren().add(lapInfoBoard);
+                    driver.getChildren().add(container);
+                    //else we have this setup already down with a lap, so we just need to create a new lap info
+                } else {
+                    Map<Integer, VBox> currentData = runDataDashboard.get(snapshot.getId());
+                    Optional<Integer> maxNewSetupLap = currentData.keySet().stream().max(Integer::compare);
+                    Integer maxLap = maxNewSetupLap.get();
+                    VBox container = currentData.get(maxLap);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
+                    container.getChildren().add(lapInfoBoard);
+                }
+            }
+        }
+    }
+
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
     private void buildSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox speedTrapData) {
         //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
@@ -207,7 +250,7 @@ public class F1DataUI extends Application {
         }
     }
 
-    //Creates the plaeyer team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
+    //Creates the player team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
     private void buildTeamSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox teamSpeedTrapData) {
         //This panel is only for the player and there teammate.
         if (snapshot.getDriverId() == playerDriverId || snapshot.getDriverId() == teamMateId) {
@@ -244,6 +287,7 @@ public class F1DataUI extends Application {
         telemetryThread.start();
     }
 
+    //Common logic used by the setup panel for both new entries and new setups for drivers who already have a setup listed.
     private void commonSetupLogic(DriverDataDTO snapshot, VBox setupData, Map<Integer, VBox> mapToUpdate, String setupName) {
         VBox driver = new VBox();
         setupData.getChildren().add(driver);
@@ -251,7 +295,7 @@ public class F1DataUI extends Application {
         mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
         setupDataDashboard.put(snapshot.getId(), mapToUpdate);
         //Creates the actual dashboard
-        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
+        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
         VBox container = new VBox(3);
         container.getChildren().add(setupInfo);
         driver.getChildren().add(container);
