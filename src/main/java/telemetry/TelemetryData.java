@@ -15,7 +15,6 @@ public class TelemetryData {
     }
 
     private final ParticipantData participantData;
-    private final List<TelemetryRunData> telemetryRunDataList = new ArrayList<>();
     private final int numActiveCars;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
@@ -36,10 +35,6 @@ public class TelemetryData {
 
     public ParticipantData getParticipantData() {
         return participantData;
-    }
-
-    public List<TelemetryRunData> getTelemetryRunDataList() {
-        return telemetryRunDataList;
     }
 
     public int getNumActiveCars() {
