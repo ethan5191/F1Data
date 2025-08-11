@@ -39,12 +39,14 @@ public abstract class AbstractStage<T extends Pane> {
 
     protected abstract BooleanProperty getAppState();
 
+    //Creates the parent content VBOX if the stage uses that.
     protected VBox createParentVbox() {
         VBox content = new VBox();
         content.setStyle("-fx-background-color: rgba(0, 0, 0, 0.33);");
         return content;
     }
 
+    //Adds the drag and drop to the elements as they no longer due to the logic to make them transparent.
     protected void addDragAndDrop() {
         Delta dragDelta = new Delta();
         content.setOnMousePressed(e -> {
@@ -57,6 +59,7 @@ public abstract class AbstractStage<T extends Pane> {
         });
     }
 
+    //Builds the header record based on what is passed in via the constructor.
     public void buildHeader() {
         HBox headersBox = new HBox(3);
         for (int i = 0; i < this.headers.length; i++) {
@@ -68,6 +71,7 @@ public abstract class AbstractStage<T extends Pane> {
         this.content.getChildren().add(headersBox);
     }
 
+    //Scene logic to create the scene based on the width and height passed in.
     public void setScene(double width, double height) {
         Scene scene = new Scene(this.content, width, height);
         scene.setFill(Color.TRANSPARENT);
@@ -82,6 +86,7 @@ public abstract class AbstractStage<T extends Pane> {
         });
     }
 
+    //Creates a full height scene, that uses the screens height and the width passed in.
     protected void setFullHeightScene(int width) {
         ScrollPane scroll = new ScrollPane();
         scroll.setContent(this.content);
