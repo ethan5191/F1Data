@@ -1,3 +1,4 @@
+import individualLap.IndividualLapInfo;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -166,18 +167,19 @@ public class F1DataUI extends Application {
     //Each lap will hopefully have the tire wear % added that lap for each tire, plus the fuel used.
     //Hopefully at the end I will be able to compute average lap time, tire wear, and fuel usage.
     private void buildRunDataBoard(DriverDataDTO snapshot, VBox runData) {
-        if (snapshot.getInfo() != null) {
-            if (snapshot.getId() == playerDriverId) {
+        IndividualLapInfo info = snapshot.getInfo();
+        if (info != null) {
+            if (snapshot.getId() == playerDriverId || snapshot.getId() == teamMateId) {
                 //If this is the first pass through or the setup has changed we need to do all of this.
-                if (!runDataDashboard.containsKey(snapshot.getId()) || snapshot.getInfo().isSetupChange()) {
+                if (!runDataDashboard.containsKey(snapshot.getId()) || info.isSetupChange()) {
                     VBox driver = new VBox();
                     runData.getChildren().add(driver);
                     //Creates the actual dashboard
-                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(snapshot.getInfo().getCarSetupData().getSetupName(), snapshot.getInfo().getCarSetupData());
+                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().getSetupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox container = new VBox(3);
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
                     Map<Integer, VBox> initial = new HashMap<>();
-                    initial.put(snapshot.getInfo().getLapNum(), container);
+                    initial.put(info.getLapNum(), container);
                     runDataDashboard.put(snapshot.getId(), initial);
                     container.getChildren().add(setupInfo);
                     RunDataDashboard.createHeaderRow(container);
@@ -248,7 +250,7 @@ public class F1DataUI extends Application {
         }
     }
 
-    //Creates the plaeyer team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
+    //Creates the player team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
     private void buildTeamSpeedTrapDashboard(SpeedTrapDataDTO snapshot, VBox teamSpeedTrapData) {
         //This panel is only for the player and there teammate.
         if (snapshot.getDriverId() == playerDriverId || snapshot.getDriverId() == teamMateId) {
@@ -293,7 +295,7 @@ public class F1DataUI extends Application {
         mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
         setupDataDashboard.put(snapshot.getId(), mapToUpdate);
         //Creates the actual dashboard
-        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
+        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
         VBox container = new VBox(3);
         container.getChildren().add(setupInfo);
         driver.getChildren().add(container);

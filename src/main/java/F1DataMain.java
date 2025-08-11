@@ -148,6 +148,11 @@ public class F1DataMain {
                             info.setSetupChange(td.isSetupChange());
                             td.setSetupChange(false);
                         }
+                        //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
+                        if (td.getCurrentVisualTireCompound() != td.getPrevLapVisualTireCompound()) {
+                            info.setSetupChange(true);
+                            td.setPrevLapVisualTireCompound(td.getCurrentVisualTireCompound());
+                        }
                         if (td.getCurrentTelemetry() != null) {
                             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
                         }

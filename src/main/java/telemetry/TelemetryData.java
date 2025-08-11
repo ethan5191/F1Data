@@ -25,6 +25,8 @@ public class TelemetryData {
     private float[] startOfLapTireWear = {-1, -1, -1, -1};
     private float currentFuelInTank;
     private float startOfLapFuelInTank = -1;
+    private int currentVisualTireCompound = -1;
+    private int prevLapVisualTireCompound = -1;
     private boolean isSetupChange;
 
     private LapData currentLap;
@@ -100,6 +102,18 @@ public class TelemetryData {
         this.startOfLapFuelInTank = startOfLapFuelInTank;
     }
 
+    public int getCurrentVisualTireCompound() {
+        return currentVisualTireCompound;
+    }
+
+    public int getPrevLapVisualTireCompound() {
+        return prevLapVisualTireCompound;
+    }
+
+    public void setPrevLapVisualTireCompound(int prevLapVisualTireCompound) {
+        this.prevLapVisualTireCompound = prevLapVisualTireCompound;
+    }
+
     public boolean isSetupChange() {
         return isSetupChange;
     }
@@ -130,13 +144,18 @@ public class TelemetryData {
 
     public void setCurrentStatus(CarStatusData currentStatus) {
         this.currentStatus = currentStatus;
+        //Only update this value if the incoming value is different. We get these packets every second.
+        if (this.currentVisualTireCompound != currentStatus.getVisualTireCompound()) this.currentVisualTireCompound = currentStatus.getVisualTireCompound();
         //Only update these values when we are on an actual flying lap.
-        if (this.currentLap != null && this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-            this.currentFuelInTank = currentStatus.getFuelInTank();
-            //default value is -1, if it is that then we need to seed the initial with the current fuel in the tank.
-            if (this.startOfLapFuelInTank == -1) {
-                ;
-                this.startOfLapFuelInTank = this.currentFuelInTank;
+        if (this.currentLap != null) {
+            if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
+                this.currentFuelInTank = currentStatus.getFuelInTank();
+                //default value is -1, if it is that then we need to seed the initial with the current fuel in the tank.
+                if (this.startOfLapFuelInTank == -1) {
+                    this.startOfLapFuelInTank = this.currentFuelInTank;
+                }
+            } else if (this.currentLap.getDriverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.getDriverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
+                this.startOfLapFuelInTank = -1;
             }
         }
     }
@@ -148,11 +167,15 @@ public class TelemetryData {
     public void setCurrentDamage(CarDamageData currentDamage) {
         this.currentDamage = currentDamage;
         //Only update these values when we are on an actual flying lap.
-        if (this.currentLap != null && this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-            this.currentTireWear = currentDamage.getTyresWear();
-            //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
-            if (this.startOfLapTireWear[0] == -1) {
-                this.startOfLapTireWear = this.currentTireWear;
+        if (this.currentLap != null) {
+            if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
+                this.currentTireWear = currentDamage.getTyresWear();
+                //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
+                if (this.startOfLapTireWear[0] == -1) {
+                    this.startOfLapTireWear = this.currentTireWear;
+                }
+            } else if (this.currentLap.getDriverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.getDriverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
+                this.startOfLapTireWear = new float[]{-1, -1, -1, -1};
             }
         }
     }
