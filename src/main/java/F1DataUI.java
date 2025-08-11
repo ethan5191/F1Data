@@ -11,6 +11,7 @@ import ui.home.AppState;
 import ui.stages.*;
 import utils.Constants;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -18,7 +19,7 @@ public class F1DataUI extends Application {
 
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
-    private final Map<Integer, VBox> setupDataDashboard = new HashMap<>();
+    private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
@@ -142,18 +143,14 @@ public class F1DataUI extends Application {
     //Builds the carsetup panel. Right now it only shows the first setup that the driver finishes a lap with.
     private void buildSetupBoard(DriverDataDTO snapshot, VBox setupData) {
         if (snapshot.getInfo() != null) {
-            //Ensures we don't duplicate records, as we only want 1 record per driver. At least for now.
+            //Ensures we don't duplicate records, as we only want 1 record per driver.
             if (!setupDataDashboard.containsKey(snapshot.getId())) {
-                VBox driver = new VBox();
-                setupData.getChildren().add(driver);
-                //Add the box to the map so we can ensure we don't dupliate it.
-                setupDataDashboard.put(snapshot.getId(), driver);
-                String setupName = snapshot.getInfo().getCarSetupData().getSetupName();
-                //Creates the actual dashboard
-                SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
-                VBox container = new VBox(3);
-                container.getChildren().add(setupInfo);
-                driver.getChildren().add(container);
+                commonSetupLogic(snapshot, setupData, new HashMap<>(), snapshot.getInfo().getCarSetupData().getSetupName());
+                //If this driver has already completed a lap with a different setup, we are adding this new setup to the map and using the lap # in the name.
+            } else if (snapshot.getInfo().isSetupChange()) {
+                String setupName = snapshot.getInfo().getCarSetupData().getSetupName() + " Lap #" + snapshot.getInfo().getLapNum();
+                Map<Integer, VBox> existingSetups = setupDataDashboard.get(snapshot.getId());
+                commonSetupLogic(snapshot, setupData, existingSetups, setupName);
             }
         }
     }
@@ -245,6 +242,19 @@ public class F1DataUI extends Application {
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
+    }
+
+    private void commonSetupLogic(DriverDataDTO snapshot, VBox setupData, Map<Integer, VBox> mapToUpdate, String setupName) {
+        VBox driver = new VBox();
+        setupData.getChildren().add(driver);
+        //Add the box to the map so we can ensure we don't dupliate it.
+        mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
+        setupDataDashboard.put(snapshot.getId(), mapToUpdate);
+        //Creates the actual dashboard
+        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData());
+        VBox container = new VBox(3);
+        container.getChildren().add(setupInfo);
+        driver.getChildren().add(container);
     }
 
     public void run(String[] args) {
