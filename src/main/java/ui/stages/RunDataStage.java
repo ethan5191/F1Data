@@ -24,7 +24,7 @@ public class RunDataStage extends AbstractStage<VBox> {
     @Override
     protected void init() {
         this.content.getChildren().add(runData);
-        setFullHeightScene(Constants.SETUP_PANEL_WIDTH);
+        setFullHeightScene(950);
     }
 
     @Override
