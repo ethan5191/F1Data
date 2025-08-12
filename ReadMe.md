@@ -59,12 +59,6 @@ Future Projects
 
 The following features and improvements are planned for upcoming releases:
 
-Bug Fixes
-
-Two known issues are targeted for immediate resolution:
-
-    Car Setup: The displayed car setup is not currently updating to reflect changes in fuel level.
-
 UI Improvements
 
     Refined Data Layout: The existing UI will be updated to ensure data is more logically organized and easier to read.
