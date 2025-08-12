@@ -5,13 +5,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import packets.enums.FormulaTypeEnum;
 import ui.RunDataAverage;
 import ui.dashboards.*;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
 import ui.home.AppState;
 import ui.stages.*;
-import utils.constants.DriverConstants;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -28,6 +28,8 @@ public class F1DataUI extends Application {
 
     private int playerDriverId = -1;
     private int teamMateId = -1;
+    private Map<Integer, Integer> driverPairings = new HashMap<>();
+    private boolean isF1 = false;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -100,6 +102,12 @@ public class F1DataUI extends Application {
 
     //Builds the latest lap panel. This is each cars last lap that they have crossed the start finish line. Not ordered.
     private void buildLatestLapBoard(DriverDataDTO snapshot, VBox latestLap) {
+        //If the global map of driver pairings is empty, then we need to populate it from the DTO. It should have the map we need.
+        //if driver pairings is empty then we haven't populated the formulaType either.
+        if (driverPairings.isEmpty()) {
+            driverPairings = snapshot.getDriverPairings();
+            isF1 = FormulaTypeEnum.isF1(snapshot.getFormulaTypeEnum());
+        }
         LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
             //Creates the new dashboard
             LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
@@ -108,7 +116,8 @@ public class F1DataUI extends Application {
             //If this is the players driver, then update the background color of this box.
             if (snapshot.isPlayer()) {
                 playerDriverId = snapshot.getId();
-                teamMateId = DriverConstants.DRIVER_PAIRS.get(playerDriverId);
+                //Use the driverPairings param to ensure we can accommodate F1/F2/F2 previous year driver lineups.
+                teamMateId = driverPairings.get(playerDriverId);
                 newDashboard.setStyle("-fx-background-color: #3e3e3e;");
                 //If we have already created the teammates view, update the background color
                 if (latestLapDashboard.containsKey(teamMateId)) {
@@ -175,15 +184,15 @@ public class F1DataUI extends Application {
                     //Creates the actual dashboard
                     SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().getSetupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox container = new VBox(3);
-                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot, isF1);
                     Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
                     //calculate the averages and add them as a new dashboard to the end of the list.
-                    RunDataAverage average = new RunDataAverage(info.getLapNum(), snapshot);
+                    RunDataAverage average = new RunDataAverage(info.getLapNum(), snapshot, isF1);
                     RunDataDashboard averages = new RunDataDashboard(average);
                     initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
                     runDataDashboard.put(snapshot.getId(), initial);
                     container.getChildren().add(setupInfo);
-                    RunDataDashboard.createHeaderRow(container);
+                    lapInfoBoard.createHeaderRow(container);
                     container.getChildren().add(lapInfoBoard);
                     container.getChildren().add(averages);
                     driver.getChildren().add(container);

@@ -3,6 +3,8 @@ import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
 import packets.*;
+import packets.enums.DriverPairingsEnum;
+import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
@@ -27,6 +29,9 @@ public class F1DataMain {
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
     private int playerCarIndex = -1;
+    private int gameYear = -1;
+    private DriverPairingsEnum driverPairingsEnum = null;
+    private FormulaTypeEnum formulaType = null;
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
@@ -43,7 +48,11 @@ public class F1DataMain {
                 PacketHeader ph = new PacketHeader(byteBuffer);
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.getPlayerCarIndex();
-                //Swtich to handle the correct logic based on what packet has been sent.
+                if (gameYear < 0) {
+                    gameYear = ph.getGameYear();
+                    driverPairingsEnum = DriverPairingsEnum.fromYear(gameYear);
+                }
+                //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.getPacketId()) {
                     case Constants.MOTION_PACK:
                         break;
@@ -238,9 +247,34 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
-                    //Populates the initial DriverDataDTO consumer for the UI.
-                    driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), i == playerCarIndex));
+                    //this will only be updated once we found a driver that exists in a single series, so we know what driver lineups to use.
+                    if (formulaType == null) {
+                        //In F1 24 no drivers in F1 also exist in either of the F2 lineups. This is not true in F1 25, so would need changing.
+                        if (driverPairingsEnum.getF1DriverPairs().containsKey(pd.getDriverId())) {
+                            formulaType = FormulaTypeEnum.F1;
+                        } else {
+                            boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.getDriverId());
+                            boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.getDriverId());
+                            //If a driver exists in one F2 lineup but not the other then we have found what series we are using.
+                            //TODO: if I ever get F1 25 and want to use this with that game, ensure this logic still works for it.
+                            if (f2Current && !f2Prev) {
+                                formulaType = FormulaTypeEnum.F2;
+                            } else if (!f2Current && f2Prev) {
+                                formulaType = FormulaTypeEnum.F2_PREV;
+                            }
+                        }
+                    }
                 }
+            }
+            assert formulaType != null;
+            //Get the active driver pairings based on what formula we are.
+            Map<Integer, Integer> driverPairing = driverPairingsEnum.getDriverPair(formulaType.getIndex());
+            //Loop over each created TD object to create the DriverDataDTO to update the UI.
+            //Do this outside the loop above to ensure we know what driver lineup we are using for the UI.
+            for (int j = 0; j < participants.size(); j++) {
+                TelemetryData td = participants.get(j);
+                //Populates the initial DriverDataDTO consumer for the UI.
+                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), j == playerCarIndex, driverPairing, formulaType));
             }
         }
     }

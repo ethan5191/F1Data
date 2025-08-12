@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class DriverConstants {
 
-    public static final Map<Integer, Integer> DRIVER_PAIRS = Map.ofEntries(
+    public static final Map<Integer, Integer> F1_24_DRIVER_PAIRS = Map.ofEntries(
             Map.entry(DriverInfo.VERSTAPPEN_ID, DriverInfo.PEREZ_ID),
             Map.entry(DriverInfo.PEREZ_ID, DriverInfo.VERSTAPPEN_ID),
             Map.entry(DriverInfo.HAMILTON_ID, DriverInfo.RUSSELL_ID),
@@ -29,7 +29,7 @@ public class DriverConstants {
 
 
 
-    public static final Map<Integer, Integer> F2_DRIVER_PAIRS =
+    public static final Map<Integer, Integer> F2_24_DRIVER_PAIRS =
             Map.ofEntries(Map.entry(DriverInfo.MARTINS_ID, DriverInfo.OSULLIVAN_ID), Map.entry(DriverInfo.OSULLIVAN_ID, DriverInfo.MARTINS_ID),
             Map.entry(DriverInfo.BEARMAN_ID, DriverInfo.ANTONELLI_ID), Map.entry(DriverInfo.ANTONELLI_ID, DriverInfo.BEARMAN_ID),
             Map.entry(DriverInfo.MALONEY_ID, DriverInfo.MIYATA_ID), Map.entry(DriverInfo.MIYATA_ID, DriverInfo.MALONEY_ID),
@@ -55,7 +55,7 @@ public class DriverConstants {
             Map.entry(DriverInfo.VERSCHOOR_ID, DriverInfo.CORREA_ID), Map.entry(DriverInfo.CORREA_ID, DriverInfo.VERSCHOOR_ID),
             Map.entry(DriverInfo.MAINI_ID, DriverInfo.BOSCHUNG_ID), Map.entry(DriverInfo.BOSCHUNG_ID, DriverInfo.MAINI_ID));
 
-    public static final Map<Integer, String> DRIVER_ID_TO_NAMES = Map.ofEntries(
+    public static final Map<Integer, String> F1_24_DRIVER_ID_NAMES = Map.ofEntries(
             Map.entry(DriverInfo.STROLL_ID, DriverInfo.STROLL),
             Map.entry(DriverInfo.OCON_ID, DriverInfo.OCON),
             Map.entry(DriverInfo.LECLERC_ID, DriverInfo.LECLERC),

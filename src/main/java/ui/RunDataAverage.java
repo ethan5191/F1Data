@@ -7,7 +7,8 @@ public class RunDataAverage {
 
     //Used to create a new average object off of just the DTO and start lap.
     //Either the first lap or a new setup change will cause this.
-    public RunDataAverage(Integer startLap, DriverDataDTO dto) {
+    public RunDataAverage(Integer startLap, DriverDataDTO dto, boolean isF1) {
+        this.isF1 = isF1;
         this.startLap = startLap;
         this.completedLap = dto.getInfo().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
@@ -16,16 +17,19 @@ public class RunDataAverage {
         this.totalTireWear = dto.getInfo().getTireWearThisLap();
         this.totalFuelUsed = dto.getInfo().getFuelUsedThisLap();
         this.totalTrapSpeed = dto.getInfo().getSpeedTrap();
-        this.totalErsStoreEnergy = dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
-        this.totalErsHarvestedThisLapMGUK = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
-        this.totalErsHarvestedThisLapMGUH = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
-        this.totalErsDeployedThisLap = dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
+        if (this.isF1) {
+            this.totalErsStoreEnergy = dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
+            this.totalErsHarvestedThisLapMGUK = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
+            this.totalErsHarvestedThisLapMGUH = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+            this.totalErsDeployedThisLap = dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
+        }
         calculateAvg();
     }
 
     //Used to create a new average object off of the startLap, dto, and existing averages.
     //This will happen anytime a setup has already been used and has laps completed.
     public RunDataAverage(Integer startLap, DriverDataDTO dto, RunDataAverage current) {
+        this.isF1 = current.isF1;
         this.startLap = startLap;
         this.completedLap = dto.getInfo().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
@@ -36,10 +40,12 @@ public class RunDataAverage {
         }
         this.totalFuelUsed = current.totalFuelUsed + dto.getInfo().getFuelUsedThisLap();
         this.totalTrapSpeed = current.getTotalTrapSpeed() + dto.getInfo().getSpeedTrap();
-        this.totalErsStoreEnergy = current.getTotalErsStoreEnergy() + dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
-        this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
-        this.totalErsHarvestedThisLapMGUH = current.getTotalErsHarvestedThisLapMGUH() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
-        this.totalErsDeployedThisLap = current.getTotalErsDeployedThisLap() + dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
+        if (this.isF1) {
+            this.totalErsStoreEnergy = current.getTotalErsStoreEnergy() + dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
+            this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
+            this.totalErsHarvestedThisLapMGUH = current.getTotalErsHarvestedThisLapMGUH() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+            this.totalErsDeployedThisLap = current.getTotalErsDeployedThisLap() + dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
+        }
         calculateAvg();
     }
 
@@ -50,10 +56,12 @@ public class RunDataAverage {
     private float[] totalTireWear = new float[4];
     private final float totalFuelUsed;
     private final float totalTrapSpeed;
-    private final float totalErsStoreEnergy;
-    private final float totalErsHarvestedThisLapMGUK;
-    private final float totalErsHarvestedThisLapMGUH;
-    private final float totalErsDeployedThisLap;
+    private float totalErsStoreEnergy;
+    private float totalErsHarvestedThisLapMGUK;
+    private float totalErsHarvestedThisLapMGUH;
+    private float totalErsDeployedThisLap;
+
+    private final boolean isF1;
 
     private float avgLapTimeInMs;
     private final String[] avgTireWear = new String[4];
@@ -140,6 +148,10 @@ public class RunDataAverage {
         return avgErsDeployed;
     }
 
+    public boolean isF1() {
+        return isF1;
+    }
+
     //Calculates the average for the different data elements.
     private void calculateAvg() {
         this.avgLapTimeInMs = this.totalTimeInMS / this.totalLaps;
@@ -148,9 +160,11 @@ public class RunDataAverage {
         }
         this.avgFuelUsed = DashboardUtils.formatTwoDecimals((this.totalFuelUsed / this.totalLaps));
         this.avgSpeedTrap = DashboardUtils.formatTwoDecimals((this.totalTrapSpeed / this.totalLaps));
-        this.avgErsEnergyStore = this.totalErsStoreEnergy / this.totalLaps;
-        this.avgErsHarvestedMGUK = this.totalErsHarvestedThisLapMGUK / this.totalLaps;
-        this.avgErsHarvestedMGUH = this.totalErsHarvestedThisLapMGUH / this.totalLaps;
-        this.avgErsDeployed = this.totalErsDeployedThisLap / this.totalLaps;
+        if (this.isF1) {
+            this.avgErsEnergyStore = this.totalErsStoreEnergy / this.totalLaps;
+            this.avgErsHarvestedMGUK = this.totalErsHarvestedThisLapMGUK / this.totalLaps;
+            this.avgErsHarvestedMGUH = this.totalErsHarvestedThisLapMGUH / this.totalLaps;
+            this.avgErsDeployed = this.totalErsDeployedThisLap / this.totalLaps;
+        }
     }
 }
