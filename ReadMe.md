@@ -1,5 +1,11 @@
 Project Status: Work in Progress (WIP)
 
+Getting Started
+
+Running from an IDE
+
+    To launch the application, open the project in your IDE and run the Main.java file. This will initiate the application's UI thread and the separate data processing thread.
+
 This project is in active development. While some telemetry data is still printed to the console for debugging, the primary focus has shifted to rendering data in dedicated UI components.
 
 The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.
