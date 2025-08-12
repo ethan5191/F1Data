@@ -4,7 +4,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.home.AppState;
-import utils.Constants;
 
 public class RunDataStage extends AbstractStage<VBox> {
 

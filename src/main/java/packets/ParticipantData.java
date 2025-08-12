@@ -1,6 +1,6 @@
 package packets;
 
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

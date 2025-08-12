@@ -1,7 +1,7 @@
 package packets.events;
 
 import packets.Data;
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 

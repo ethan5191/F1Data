@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import ui.home.AppState;
-import utils.Constants;
+import utils.constants.Constants;
 
 public class SetupStage extends AbstractStage<VBox> {
 

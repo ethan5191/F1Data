@@ -1,6 +1,6 @@
 package ui.dashboards;
 
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.math.BigDecimal;
 

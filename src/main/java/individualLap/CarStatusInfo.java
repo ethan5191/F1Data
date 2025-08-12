@@ -3,7 +3,7 @@ package individualLap;
 import packets.CarStatusData;
 import packets.enums.ActualTireEnum;
 import packets.enums.VisualTireEnum;
-import utils.Constants;
+import utils.constants.Constants;
 
 public class CarStatusInfo {
 

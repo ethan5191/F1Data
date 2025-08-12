@@ -1,7 +1,7 @@
 package individualLap;
 
 import packets.CarDamageData;
-import utils.Constants;
+import utils.constants.Constants;
 
 public class CarDamageInfo {
 
