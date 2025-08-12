@@ -54,3 +54,31 @@ The application uses two primary data consumers to process specific telemetry da
     DriverDataDTO: Used by the lap time and car setup panels.
 
     SpeedTrapDTO: Used by both speed trap panels.
+
+Future Projects
+
+The following features and improvements are planned for upcoming releases:
+
+Bug Fixes
+
+Two known issues are targeted for immediate resolution:
+
+    Car Setup: The displayed car setup is not currently updating to reflect changes in fuel level.
+
+    MGUK Calculation: The average MGUK energy calculation is producing incorrect values.
+
+UI Improvements
+
+    Refined Data Layout: The existing UI will be updated to ensure data is more logically organized and easier to read.
+
+    Dynamic Data Display: Functionality will be added to allow users to show or hide specific data points on select panels (e.g., toggling sector times on the Latest Lap panel or energy information on the Run Data panel).
+
+    Scroll Panel Fixes: The scrolling functionality for both ScrollPane components is currently non-functional and will be repaired.
+
+Core Application Enhancements
+
+    Logging Integration: Implement a robust logging system to replace the current console-based output.
+
+    Code Cleanup: All remaining print statements will be removed from the codebase.
+
+    Packaging: The project will be configured to produce a distributable artifact (e.g., a .jar file) for easy deployment.
