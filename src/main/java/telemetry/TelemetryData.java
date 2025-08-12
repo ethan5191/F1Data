@@ -2,11 +2,9 @@ package telemetry;
 
 import packets.*;
 import packets.enums.DriverStatusEnum;
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TelemetryData {
 

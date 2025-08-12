@@ -6,7 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import ui.RunDataAverage;
 import ui.dto.DriverDataDTO;
-import utils.Constants;
+import utils.constants.Constants;
 import utils.Util;
 
 import java.math.BigDecimal;

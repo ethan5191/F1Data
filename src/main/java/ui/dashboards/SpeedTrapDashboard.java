@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import ui.dto.SpeedTrapDataDTO;
-import utils.Constants;
+import utils.constants.Constants;
 
 
 public class SpeedTrapDashboard extends HBox {

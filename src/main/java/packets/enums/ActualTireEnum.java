@@ -1,6 +1,6 @@
 package packets.enums;
 
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.util.HashMap;
 import java.util.Map;

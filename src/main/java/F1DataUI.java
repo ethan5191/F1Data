@@ -3,7 +3,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ui.RunDataAverage;
@@ -12,7 +11,7 @@ import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
 import ui.home.AppState;
 import ui.stages.*;
-import utils.Constants;
+import utils.constants.DriverConstants;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -109,7 +108,7 @@ public class F1DataUI extends Application {
             //If this is the players driver, then update the background color of this box.
             if (snapshot.isPlayer()) {
                 playerDriverId = snapshot.getId();
-                teamMateId = Constants.DRIVER_PAIRS.get(playerDriverId);
+                teamMateId = DriverConstants.DRIVER_PAIRS.get(playerDriverId);
                 newDashboard.setStyle("-fx-background-color: #3e3e3e;");
                 //If we have already created the teammates view, update the background color
                 if (latestLapDashboard.containsKey(teamMateId)) {

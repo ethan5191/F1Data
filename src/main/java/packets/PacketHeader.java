@@ -1,6 +1,6 @@
 package packets;
 
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;

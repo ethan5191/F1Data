@@ -1,6 +1,4 @@
-package utils;
-
-import java.util.Map;
+package utils.constants;
 
 public class Constants {
 
@@ -57,22 +55,4 @@ public class Constants {
 
     public static final String PERCENT_SIGN = "%";
     public static final String KG = "kg";
-
-    public static final Map<Integer, Integer> DRIVER_PAIRS = Map.ofEntries(Map.entry(9, 14), Map.entry(14, 9),
-            Map.entry(7, 50), Map.entry(50, 7),
-            Map.entry(58, 0), Map.entry(0, 58),
-            Map.entry(54, 112), Map.entry(112, 54),
-            Map.entry(59, 17), Map.entry(17, 59),
-            Map.entry(3, 19), Map.entry(19, 3),
-            Map.entry(2, 94), Map.entry(94, 2),
-            Map.entry(15, 80), Map.entry(80, 15),
-            Map.entry(10, 11), Map.entry(11, 10),
-            Map.entry(62, 132), Map.entry(132, 62));
-
-    public static final Map<Integer, String> DRIVER_ID_TO_NAMES = Map.ofEntries(Map.entry(19, "STROLL"), Map.entry(17, "OCON"),
-            Map.entry(58, "LECLERC"), Map.entry(50, "RUSSELL"), Map.entry(132, "SARGEANT"), Map.entry(59, "GASLY"),
-            Map.entry(62, "ALBON"), Map.entry(0, "SAINZ"), Map.entry(54, "NORRIS"), Map.entry(112, "PIASTRI"),
-            Map.entry(94, "TSUNODA"), Map.entry(7, "HAMILTON"), Map.entry(80, "ZHOU"), Map.entry(14, "PÉREZ"),
-            Map.entry(9, "VERSTAPPEN"), Map.entry(10, "HULKENBERG"), Map.entry(3, "ALONSO"), Map.entry(11, "MAGNUSSEN"),
-            Map.entry(2, "RICCIARDO"), Map.entry(15, "BOTTAS"));
 }

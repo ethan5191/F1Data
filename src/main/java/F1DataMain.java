@@ -8,7 +8,7 @@ import packets.events.SpeedTrapData;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

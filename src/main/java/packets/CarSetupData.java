@@ -2,7 +2,7 @@ package packets;
 
 import javafx.scene.control.Label;
 import ui.dashboards.DashboardUtils;
-import utils.Constants;
+import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
