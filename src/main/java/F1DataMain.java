@@ -68,6 +68,9 @@ public class F1DataMain {
                     case Constants.CAR_DAMAGE_PACK:
                         handleCarDamagePacket(byteBuffer);
                         break;
+                    case Constants.TYRE_SETS_PACK:
+                        handleTireSetsPacket(byteBuffer);
+                        break;
                 }
             }
         } catch (IOException e) {
@@ -140,9 +143,9 @@ public class F1DataMain {
                             td.setSetupChange(false);
                         }
                         //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
-                        if (td.getCurrentVisualTireCompound() != td.getPrevLapVisualTireCompound()) {
+                        if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
                             info.setSetupChange(true);
-                            td.setPrevLapVisualTireCompound(td.getCurrentVisualTireCompound());
+                            td.setPrevLapFittedTireId(td.getFittedTireId());
                         }
                         if (td.getCurrentTelemetry() != null) {
                             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
@@ -207,6 +210,20 @@ public class F1DataMain {
     //Parses the car Damage Packet
     private void handleCarDamagePacket(ByteBuffer byteBuffer) {
         handlePacket(byteBuffer, CarDamageData::new, TelemetryData::setCurrentDamage);
+    }
+
+    private void handleTireSetsPacket(ByteBuffer byteBuffer) {
+        int carId = byteBuffer.get() & Constants.BIT_MASK_8;
+        TelemetryData td = participants.get(carId);
+        TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
+        for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
+            tireSetsData[i] = new TireSetsData(byteBuffer);
+        }
+        td.setTireSetsData(tireSetsData);
+        int fittedId = byteBuffer.get() & Constants.BIT_MASK_8;
+        if (td.getFittedTireId() != fittedId) {
+            td.setFittedTireId(fittedId);
+        }
     }
 
     //Parses the participant packet
