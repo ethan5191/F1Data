@@ -16,6 +16,10 @@ public class RunDataAverage {
         this.totalTireWear = dto.getInfo().getTireWearThisLap();
         this.totalFuelUsed = dto.getInfo().getFuelUsedThisLap();
         this.totalTrapSpeed = dto.getInfo().getSpeedTrap();
+        this.totalErsStoreEnergy = dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
+        this.totalErsHarvestedThisLapMGUK = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
+        this.totalErsHarvestedThisLapMGUH = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+        this.totalErsDeployedThisLap = dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
         calculateAvg();
     }
 
@@ -32,6 +36,10 @@ public class RunDataAverage {
         }
         this.totalFuelUsed = current.totalFuelUsed + dto.getInfo().getFuelUsedThisLap();
         this.totalTrapSpeed = current.getTotalTrapSpeed() + dto.getInfo().getSpeedTrap();
+        this.totalErsStoreEnergy = current.getTotalErsStoreEnergy() + dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
+        this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+        this.totalErsHarvestedThisLapMGUH = current.getTotalErsHarvestedThisLapMGUH() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+        this.totalErsDeployedThisLap = current.getTotalErsDeployedThisLap() + dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
         calculateAvg();
     }
 
@@ -42,11 +50,19 @@ public class RunDataAverage {
     private float[] totalTireWear = new float[4];
     private final float totalFuelUsed;
     private final float totalTrapSpeed;
+    private final float totalErsStoreEnergy;
+    private final float totalErsHarvestedThisLapMGUK;
+    private final float totalErsHarvestedThisLapMGUH;
+    private final float totalErsDeployedThisLap;
 
     private float avgLapTimeInMs;
     private final String[] avgTireWear = new String[4];
     private String avgFuelUsed;
     private String avgSpeedTrap;
+    private float avgErsEnergyStore;
+    private float avgErsHarvestedMGUK;
+    private float avgErsHarvestedMGUH;
+    private float avgErsDeployed;
 
     public int getCompletedLap() {
         return completedLap;
@@ -76,6 +92,22 @@ public class RunDataAverage {
         return totalTrapSpeed;
     }
 
+    public float getTotalErsStoreEnergy() {
+        return totalErsStoreEnergy;
+    }
+
+    public float getTotalErsHarvestedThisLapMGUK() {
+        return totalErsHarvestedThisLapMGUK;
+    }
+
+    public float getTotalErsHarvestedThisLapMGUH() {
+        return totalErsHarvestedThisLapMGUH;
+    }
+
+    public float getTotalErsDeployedThisLap() {
+        return totalErsDeployedThisLap;
+    }
+
     public float getAvgLapTimeInMs() {
         return avgLapTimeInMs;
     }
@@ -92,6 +124,22 @@ public class RunDataAverage {
         return avgSpeedTrap;
     }
 
+    public float getAvgErsEnergyStore() {
+        return avgErsEnergyStore;
+    }
+
+    public float getAvgErsHarvestedMGUK() {
+        return avgErsHarvestedMGUK;
+    }
+
+    public float getAvgErsHarvestedMGUH() {
+        return avgErsHarvestedMGUH;
+    }
+
+    public float getAvgErsDeployed() {
+        return avgErsDeployed;
+    }
+
     //Calculates the average for the different data elements.
     private void calculateAvg() {
         this.avgLapTimeInMs = this.totalTimeInMS / this.totalLaps;
@@ -100,5 +148,9 @@ public class RunDataAverage {
         }
         this.avgFuelUsed = DashboardUtils.formatTwoDecimals((this.totalFuelUsed / this.totalLaps));
         this.avgSpeedTrap = DashboardUtils.formatTwoDecimals((this.totalTrapSpeed / this.totalLaps));
+        this.avgErsEnergyStore = this.totalErsStoreEnergy / this.totalLaps;
+        this.avgErsHarvestedMGUK = this.totalErsHarvestedThisLapMGUK / this.totalLaps;
+        this.avgErsHarvestedMGUH = this.totalErsHarvestedThisLapMGUH / this.totalLaps;
+        this.avgErsDeployed = this.totalErsDeployedThisLap / this.totalLaps;
     }
 }

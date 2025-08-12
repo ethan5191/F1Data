@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 
 public class RunDataDashboard extends HBox {
 
-    public static final String[] HEADERS = {"#", "TIRE", "RL", "RR", "FL", "FR", "Fuel", "Trap"};
-    public static final int[] HEADERS_WIDTH = {50, 100, 75, 75, 75, 75, 75, 75};
+    public static final String[] HEADERS = {"#", "TIME", "RL", "RR", "FL", "FR", "Fuel", "Trap", "Store", "MGUK", "MGUH", "Deployed"};
+    public static final int[] HEADERS_WIDTH = {50, 100, 65, 65, 65, 65, 75, 75, 75, 75, 75, 75};
 
     //Used to create a new lap record.
     public RunDataDashboard(DriverDataDTO dto) {
@@ -43,8 +43,21 @@ public class RunDataDashboard extends HBox {
         this.speedTrap = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getSpeedTrap()));
         this.speedTrap.setTextFill(Color.WHITE);
         this.speedTrap.setMinWidth(HEADERS_WIDTH[7]);
+        this.energyStore = new Label(String.valueOf(dto.getInfo().getCarStatusInfo().getErsStoreEnergy()));
+        this.energyStore.setTextFill(Color.WHITE);
+        this.energyStore.setMinWidth(HEADERS_WIDTH[8]);
+        this.mgukHarvested = new Label(String.valueOf(dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK()));
+        this.mgukHarvested.setTextFill(Color.WHITE);
+        this.mgukHarvested.setMinWidth(HEADERS_WIDTH[9]);
+        this.mguhHarvested = new Label(String.valueOf(dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH()));
+        this.mguhHarvested.setTextFill(Color.WHITE);
+        this.mguhHarvested.setMinWidth(HEADERS_WIDTH[10]);
+        this.ersDeployed = new Label(String.valueOf(dto.getInfo().getCarStatusInfo().getErsDeployedThisLap()));
+        this.ersDeployed.setTextFill(Color.WHITE);
+        this.ersDeployed.setMinWidth(HEADERS_WIDTH[11]);
 
-        this.getChildren().addAll(this.lapNum, this.lapTime, this.rearLeftWear, this.rearRightWear, this.frontLeftWear, this.frontRightWear, this.fuelUsed, this.speedTrap);
+        this.getChildren().addAll(this.lapNum, this.lapTime, this.rearLeftWear, this.rearRightWear, this.frontLeftWear, this.frontRightWear,
+                this.fuelUsed, this.speedTrap, this.energyStore, this.mgukHarvested, this.mguhHarvested, this.ersDeployed);
     }
 
     //Used to create the average lap box.
@@ -75,8 +88,21 @@ public class RunDataDashboard extends HBox {
         this.speedTrap = new Label(average.getAvgSpeedTrap());
         this.speedTrap.setTextFill(Color.WHITE);
         this.speedTrap.setMinWidth(HEADERS_WIDTH[7]);
+        this.energyStore = new Label(String.valueOf(average.getAvgErsEnergyStore()));
+        this.energyStore.setTextFill(Color.WHITE);
+        this.energyStore.setMinWidth(HEADERS_WIDTH[8]);
+        this.mgukHarvested = new Label(String.valueOf(average.getAvgErsHarvestedMGUK()));
+        this.mgukHarvested.setTextFill(Color.WHITE);
+        this.mgukHarvested.setMinWidth(HEADERS_WIDTH[9]);
+        this.mguhHarvested = new Label(String.valueOf(average.getAvgErsHarvestedMGUH()));
+        this.mguhHarvested.setTextFill(Color.WHITE);
+        this.mguhHarvested.setMinWidth(HEADERS_WIDTH[10]);
+        this.ersDeployed = new Label(String.valueOf(average.getAvgErsDeployed()));
+        this.ersDeployed.setTextFill(Color.WHITE);
+        this.ersDeployed.setMinWidth(HEADERS_WIDTH[11]);
 
-        this.getChildren().addAll(this.lapNum, this.lapTime, this.rearLeftWear, this.rearRightWear, this.frontLeftWear, this.frontRightWear, this.fuelUsed, this.speedTrap);
+        this.getChildren().addAll(this.lapNum, this.lapTime, this.rearLeftWear, this.rearRightWear, this.frontLeftWear, this.frontRightWear,
+                this.fuelUsed, this.speedTrap, this.energyStore, this.mgukHarvested, this.mguhHarvested, this.ersDeployed);
     }
 
     private final Label lapNum;
@@ -87,6 +113,10 @@ public class RunDataDashboard extends HBox {
     private final Label frontRightWear;
     private final Label fuelUsed;
     private final Label speedTrap;
+    private final Label energyStore;
+    private final Label mgukHarvested;
+    private final Label mguhHarvested;
+    private final Label ersDeployed;
 
     private DriverDataDTO dto;
     private RunDataAverage average;
@@ -130,5 +160,9 @@ public class RunDataDashboard extends HBox {
         this.frontRightWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[3]) + Constants.PERCENT_SIGN);
         this.fuelUsed.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getFuelUsedThisLap()) + Constants.KG);
         this.speedTrap.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getSpeedTrap()));
+        this.energyStore.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsStoreEnergy()));
+        this.mgukHarvested.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK()));
+        this.mguhHarvested.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH()));
+        this.ersDeployed.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsDeployedThisLap()));
     }
 }
