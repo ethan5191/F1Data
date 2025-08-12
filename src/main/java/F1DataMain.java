@@ -181,10 +181,11 @@ public class F1DataMain {
             if (validKey(i)) {
                 TelemetryData td = participants.get(i);
                 csd.setSetupName(td.getParticipantData().getLastName());
-                if (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup())) {
+                boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
+                if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
 //                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
                     td.setCurrentSetup(csd);
-                    td.setSetupChange(true);
+                    if (isNullOrChanged) td.setSetupChange(true);
                 }
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
             }

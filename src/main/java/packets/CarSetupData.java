@@ -195,6 +195,10 @@ public class CarSetupData extends Data {
         this.setupName = setupName;
     }
 
+    public boolean isSameFuelLoad(CarSetupData csd) {
+        return csd.fuelLoad == this.fuelLoad;
+    }
+
     public Label[][] getSetupDashboardData() {
         return new Label[][]{{new Label(" Fuel Load ")}, {new Label(DashboardUtils.formatTwoDecimals(this.fuelLoad) + Constants.KG)},
                 {new Label(" Front Wing "), new Label(" Rear Wing ")},
