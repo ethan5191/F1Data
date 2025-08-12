@@ -2,6 +2,7 @@ package telemetry;
 
 import packets.*;
 import packets.enums.DriverStatusEnum;
+import utils.Constants;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,14 +25,15 @@ public class TelemetryData {
     private float[] startOfLapTireWear = {-1, -1, -1, -1};
     private float currentFuelInTank;
     private float startOfLapFuelInTank = -1;
-    private int currentVisualTireCompound = -1;
-    private int prevLapVisualTireCompound = -1;
+    private int fittedTireId;
+    private int prevLapFittedTireId;
     private boolean isSetupChange;
 
     private LapData currentLap;
     private CarTelemetryData currentTelemetry;
     private CarStatusData currentStatus;
     private CarDamageData currentDamage;
+    private TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -97,16 +99,20 @@ public class TelemetryData {
         this.startOfLapFuelInTank = startOfLapFuelInTank;
     }
 
-    public int getCurrentVisualTireCompound() {
-        return currentVisualTireCompound;
+    public int getFittedTireId() {
+        return fittedTireId;
     }
 
-    public int getPrevLapVisualTireCompound() {
-        return prevLapVisualTireCompound;
+    public void setFittedTireId(int fittedTireId) {
+        this.fittedTireId = fittedTireId;
     }
 
-    public void setPrevLapVisualTireCompound(int prevLapVisualTireCompound) {
-        this.prevLapVisualTireCompound = prevLapVisualTireCompound;
+    public int getPrevLapFittedTireId() {
+        return prevLapFittedTireId;
+    }
+
+    public void setPrevLapFittedTireId(int prevLapFittedTireId) {
+        this.prevLapFittedTireId = prevLapFittedTireId;
     }
 
     public boolean isSetupChange() {
@@ -139,9 +145,6 @@ public class TelemetryData {
 
     public void setCurrentStatus(CarStatusData currentStatus) {
         this.currentStatus = currentStatus;
-        //Only update this value if the incoming value is different. We get these packets every second.
-        if (this.currentVisualTireCompound != currentStatus.getVisualTireCompound())
-            this.currentVisualTireCompound = currentStatus.getVisualTireCompound();
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
             if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
@@ -174,5 +177,13 @@ public class TelemetryData {
                 this.startOfLapTireWear = new float[]{-1, -1, -1, -1};
             }
         }
+    }
+
+    public TireSetsData[] getTireSetsData() {
+        return tireSetsData;
+    }
+
+    public void setTireSetsData(TireSetsData[] tireSetsData) {
+        this.tireSetsData = tireSetsData;
     }
 }

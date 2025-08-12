@@ -12,6 +12,7 @@ public class Constants {
     public static final String TWO_DECIMAL = "%.2f";
 
     public static final int PACKET_CAR_COUNT = 22;
+    public static final int TIRE_SETS_PACKET_COUNT = 20;
 
     public static final int PORT_NUM = 20777;
 
