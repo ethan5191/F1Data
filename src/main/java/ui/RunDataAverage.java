@@ -37,7 +37,7 @@ public class RunDataAverage {
         this.totalFuelUsed = current.totalFuelUsed + dto.getInfo().getFuelUsedThisLap();
         this.totalTrapSpeed = current.getTotalTrapSpeed() + dto.getInfo().getSpeedTrap();
         this.totalErsStoreEnergy = current.getTotalErsStoreEnergy() + dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
-        this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
+        this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
         this.totalErsHarvestedThisLapMGUH = current.getTotalErsHarvestedThisLapMGUH() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUH();
         this.totalErsDeployedThisLap = current.getTotalErsDeployedThisLap() + dto.getInfo().getCarStatusInfo().getErsDeployedThisLap();
         calculateAvg();
