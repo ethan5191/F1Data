@@ -1,34 +1,56 @@
 Project Status: Work in Progress (WIP)
 
-This project is currently in an early development stage. At the moment, it prints telemetry data directly to the console of an IDE. Logging functionality has not yet been implemented, and the project is not yet packaged (e.g., no .jar or .war build available).
+This project is in active development. While some telemetry data is still printed to the console for debugging, the primary focus has shifted to rendering data in dedicated UI components.
+
+The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.
+
 Current Features
 
-    Lap Completion Output
-    When any driver completes a lap, the project prints detailed lap information. This data is sourced from the IndividualLapInfo object and uses its built-in print methods.
+The application currently supports six separate data panels:
 
-    Pause-Based Data Output
-    Setup and lap time data are printed when the pause button is pressed.
+    Latest Lap: Displays the most recent lap time and details for all drivers on the track.
 
-        Two pause button values are currently supported.
+    All Laps: Provides a detailed breakdown of every lap for all drivers.
 
-        Both values are mapped specifically for the McLaren GT3 Fanatec wheel.
+    Car Setup: Shows the current vehicle setup (e.g., wing settings, camber, toe) for all drivers.
 
-        Future plans include:
+    Fastest Speed Trap: Ranks the fastest speed trap times for each individual driver.
 
-            Making the pause button mapping configurable.
+    All Speed Traps: Records and displays every speed trap time for both the player and their teammate.
 
-            Possibly removing this trigger once UI components are implemented.
-
-    F1 24 UDP Telemetry Support
-    Constants exist for all F1 24 UDP telemetry packet types, though the project currently only processes a subset of them.
+    Run Data: Tracks and presents run-specific data for both the player and their teammate.
 
 Architecture Overview
 
-    F1DataMain
-    This is the main class responsible for:
+F1DataMain
 
-        Receiving UDP telemetry data.
+This is the core class of the application. It is responsible for:
 
-        Parsing the data packets.
+    Receiving and processing raw UDP telemetry data packets.
 
-        Building and managing the internal data structures.
+    Parsing and interpreting the received data.
+
+    Building and managing the internal data structures that hold the state of the session.
+
+F1DataUI
+
+This class manages the user interface. It is responsible for:
+
+    Handling the UI thread.
+
+    Running the F1DataMain class on a separate, dedicated thread to ensure the UI remains responsive.
+
+Panel Structure
+
+Each UI panel follows a consistent architecture:
+
+    Stage: Each panel is managed by its own Stage class, which extends the abstractStage parent.
+
+    Dashboard: Each panel's visual content is a custom Dashboard class that extends the HBox object. 
+Data Consumers
+
+The application uses two primary data consumers to process specific telemetry data types:
+
+    DriverDataDTO: Used by the lap time and car setup panels.
+
+    SpeedTrapDTO: Used by both speed trap panels.
