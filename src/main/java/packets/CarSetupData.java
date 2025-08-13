@@ -262,100 +262,124 @@ public class CarSetupData {
         private float fuelLoad;
         private String setupName;
 
-        public void setFrontWing(int frontWing) {
+        public Builder setFrontWing(int frontWing) {
             this.frontWing = frontWing;
+            return this;
         }
 
-        public void setRearWing(int rearWing) {
+        public Builder setRearWing(int rearWing) {
             this.rearWing = rearWing;
+            return this;
         }
 
-        public void setOnThrottle(int onThrottle) {
+        public Builder setOnThrottle(int onThrottle) {
             this.onThrottle = onThrottle;
+            return this;
         }
 
-        public void setOffThrottle(int offThrottle) {
+        public Builder setOffThrottle(int offThrottle) {
             this.offThrottle = offThrottle;
+            return this;
         }
 
-        public void setFrontCamber(float frontCamber) {
+        public Builder setFrontCamber(float frontCamber) {
             this.frontCamber = frontCamber;
+            return this;
         }
 
-        public void setRearCamber(float rearCamber) {
+        public Builder setRearCamber(float rearCamber) {
             this.rearCamber = rearCamber;
+            return this;
         }
 
-        public void setFrontToe(float frontToe) {
+        public Builder setFrontToe(float frontToe) {
             this.frontToe = frontToe;
+            return this;
         }
 
-        public void setRearToe(float rearToe) {
+        public Builder setRearToe(float rearToe) {
             this.rearToe = rearToe;
+            return this;
         }
 
-        public void setFrontSusp(int frontSusp) {
+        public Builder setFrontSusp(int frontSusp) {
             this.frontSusp = frontSusp;
+            return this;
         }
 
-        public void setRearSusp(int rearSusp) {
+        public Builder setRearSusp(int rearSusp) {
             this.rearSusp = rearSusp;
+            return this;
         }
 
-        public void setFrontARB(int frontARB) {
+        public Builder setFrontARB(int frontARB) {
             this.frontARB = frontARB;
+            return this;
         }
 
-        public void setRearARB(int rearARB) {
+        public Builder setRearARB(int rearARB) {
             this.rearARB = rearARB;
+            return this;
         }
 
-        public void setFrontHeight(int frontHeight) {
+        public Builder setFrontHeight(int frontHeight) {
             this.frontHeight = frontHeight;
+            return this;
         }
 
-        public void setRearHeight(int rearHeight) {
+        public Builder setRearHeight(int rearHeight) {
             this.rearHeight = rearHeight;
+            return this;
         }
 
-        public void setBrakePressure(int brakePressure) {
+        public Builder setBrakePressure(int brakePressure) {
             this.brakePressure = brakePressure;
+            return this;
         }
 
-        public void setBrakeBias(int brakeBias) {
+        public Builder setBrakeBias(int brakeBias) {
             this.brakeBias = brakeBias;
+            return this;
         }
 
-        public void setEngineBraking(Integer engineBraking) {
+        public Builder setEngineBraking(Integer engineBraking) {
             this.engineBraking = engineBraking;
+            return this;
         }
 
-        public void setRearLeftPressure(float rearLeftPressure) {
+        public Builder setRearLeftPressure(float rearLeftPressure) {
             this.rearLeftPressure = rearLeftPressure;
+            return this;
         }
 
-        public void setRearRightPressure(float rearRightPressure) {
+        public Builder setRearRightPressure(float rearRightPressure) {
             this.rearRightPressure = rearRightPressure;
+            return this;
         }
 
-        public void setFrontLeftPressure(float frontLeftPressure) {
+        public Builder setFrontLeftPressure(float frontLeftPressure) {
             this.frontLeftPressure = frontLeftPressure;
+            return this;
         }
 
-        public void setFrontRightPressure(float frontRightPressure) {
+        public Builder setFrontRightPressure(float frontRightPressure) {
             this.frontRightPressure = frontRightPressure;
+            return this;
         }
 
-        public void setBallast(int ballast) {
+        public Builder setBallast(int ballast) {
             this.ballast = ballast;
+            return this;
         }
 
-        public void setFuelLoad(float fuelLoad) {
+        public Builder setFuelLoad(float fuelLoad) {
             this.fuelLoad = fuelLoad;
+            return this;
         }
 
-        public void setSetupName(String setupName) {
+        public Builder setSetupName(String setupName) {
             this.setupName = setupName;
+            return this;
         }
 
         public CarSetupData build() {

@@ -124,52 +124,64 @@ public class PacketHeader {
         private int playerCarIndex;
         private int secondaryPlayerCarIndex;
 
-        public void setPacketFormat(int packetFormat) {
+        public Builder setPacketFormat(int packetFormat) {
             this.packetFormat = packetFormat;
+            return this;
         }
 
-        public void setGameYear(Integer gameYear) {
+        public Builder setGameYear(Integer gameYear) {
             this.gameYear = gameYear;
+            return this;
         }
 
-        public void setMajorVersion(int majorVersion) {
+        public Builder setMajorVersion(int majorVersion) {
             this.majorVersion = majorVersion;
+            return this;
         }
 
-        public void setMinorVersion(int minorVersion) {
+        public Builder setMinorVersion(int minorVersion) {
             this.minorVersion = minorVersion;
+            return this;
         }
 
-        public void setPacketVersion(int packetVersion) {
+        public Builder setPacketVersion(int packetVersion) {
             this.packetVersion = packetVersion;
+            return this;
         }
 
-        public void setPacketId(int packetId) {
+        public Builder setPacketId(int packetId) {
             this.packetId = packetId;
+            return this;
         }
 
-        public void setSessionUID(BigInteger sessionUID) {
+        public Builder setSessionUID(BigInteger sessionUID) {
             this.sessionUID = sessionUID;
+            return this;
         }
 
-        public void setSessionTime(float sessionTime) {
+        public Builder setSessionTime(float sessionTime) {
             this.sessionTime = sessionTime;
+            return this;
         }
 
-        public void setFrameID(long frameID) {
+        public Builder setFrameID(long frameID) {
             this.frameID = frameID;
+            return this;
         }
 
-        public void setOverallFrameID(Long overallFrameID) {
+        public Builder setOverallFrameID(Long overallFrameID) {
             this.overallFrameID = overallFrameID;
+            return this;
         }
 
-        public void setPlayerCarIndex(int playerCarIndex) {
+        public Builder setPlayerCarIndex(int playerCarIndex) {
             this.playerCarIndex = playerCarIndex;
+            return this;
         }
 
-        public void setSecondaryPlayerCarIndex(int secondaryPlayerCarIndex) {
+        public Builder setSecondaryPlayerCarIndex(int secondaryPlayerCarIndex) {
             this.secondaryPlayerCarIndex = secondaryPlayerCarIndex;
+            return this;
         }
 
         public PacketHeader build() {

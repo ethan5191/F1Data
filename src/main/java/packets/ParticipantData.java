@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
  * - F1 2023 Length: 58 bytes
  * - F1 2024 Length: 60 bytes
  *  TODO: Look at how this is sent in 2025.
- /*
+ * /*
  * PacketParticipantsData
  * ----------------------
  * Member Name               | Data Type          | Size (bytes) | First Appeared | Notes
@@ -22,18 +22,18 @@ import java.nio.charset.StandardCharsets;
  * m_header                  | PacketHeader      | ...          | 2020           | Full packet header
  * m_numActiveCars            | uint8             | 1            | 2020           | Number of active cars on HUD
  * m_participants[22]         | ParticipantData   | ...          | 2020           | Array for each participant
- *   - m_aiControlled         | uint8             | 1            | 2020           | AI or human
- *   - m_driverId             | uint8             | 1            | 2020           | 255 if network human
- *   - m_networkId            | uint8             | 1            | 2021           | Unique network ID
- *   - m_teamId               | uint8             | 1            | 2020           |
- *   - m_myTeam               | uint8             | 1            | 2021           | 1 = My Team, 0 = otherwise
- *   - m_raceNumber           | uint8             | 1            | 2020           |
- *   - m_nationality          | uint8             | 1            | 2020           |
- *   - m_name[48]             | char[48]          | 48           | 2020           | UTF-8, null-terminated
- *   - m_yourTelemetry        | uint8             | 1            | 2020           | 0 = restricted, 1 = public
- *   - m_showOnlineNames      | uint8             | 1            | 2023           | 0 = off, 1 = on
- *   - m_techLevel            | uint16            | 2            | 2024           | F1 World tech level
- *   - m_platform             | uint8             | 1            | 2023           | 1=Steam,3=PS,4=Xbox,6=Origin,255=unknown
+ * - m_aiControlled         | uint8             | 1            | 2020           | AI or human
+ * - m_driverId             | uint8             | 1            | 2020           | 255 if network human
+ * - m_networkId            | uint8             | 1            | 2021           | Unique network ID
+ * - m_teamId               | uint8             | 1            | 2020           |
+ * - m_myTeam               | uint8             | 1            | 2021           | 1 = My Team, 0 = otherwise
+ * - m_raceNumber           | uint8             | 1            | 2020           |
+ * - m_nationality          | uint8             | 1            | 2020           |
+ * - m_name[48]             | char[48]          | 48           | 2020           | UTF-8, null-terminated
+ * - m_yourTelemetry        | uint8             | 1            | 2020           | 0 = restricted, 1 = public
+ * - m_showOnlineNames      | uint8             | 1            | 2023           | 0 = off, 1 = on
+ * - m_techLevel            | uint16            | 2            | 2024           | F1 World tech level
+ * - m_platform             | uint8             | 1            | 2023           | 1=Steam,3=PS,4=Xbox,6=Origin,255=unknown
  * * Note:
  * - uint8 and uint16 types should be read as unsigned integers.
  * - m_name is a fixed-size char array that should be read into a String.
@@ -151,52 +151,64 @@ public class ParticipantData {
         private Integer techLevel;
         private Integer platform;
 
-        public void setAiControlled(int aiControlled) {
+        public Builder setAiControlled(int aiControlled) {
             this.aiControlled = aiControlled;
+            return this;
         }
 
-        public void setDriverId(int driverId) {
+        public Builder setDriverId(int driverId) {
             this.driverId = driverId;
+            return this;
         }
 
-        public void setNetworkId(Integer networkId) {
+        public Builder setNetworkId(Integer networkId) {
             this.networkId = networkId;
+            return this;
         }
 
-        public void setTeamId(int teamId) {
+        public Builder setTeamId(int teamId) {
             this.teamId = teamId;
+            return this;
         }
 
-        public void setMyTeam(Integer myTeam) {
+        public Builder setMyTeam(Integer myTeam) {
             this.myTeam = myTeam;
+            return this;
         }
 
-        public void setRaceNumber(int raceNumber) {
+        public Builder setRaceNumber(int raceNumber) {
             this.raceNumber = raceNumber;
+            return this;
         }
 
-        public void setNationality(int nationality) {
+        public Builder setNationality(int nationality) {
             this.nationality = nationality;
+            return this;
         }
 
-        public void setName(byte[] name) {
+        public Builder setName(byte[] name) {
             this.name = name;
+            return this;
         }
 
-        public void setYourTelemetry(int yourTelemetry) {
+        public Builder setYourTelemetry(int yourTelemetry) {
             this.yourTelemetry = yourTelemetry;
+            return this;
         }
 
-        public void setShowOnlineNames(Integer showOnlineNames) {
+        public Builder setShowOnlineNames(Integer showOnlineNames) {
             this.showOnlineNames = showOnlineNames;
+            return this;
         }
 
-        public void setTechLevel(Integer techLevel) {
+        public Builder setTechLevel(Integer techLevel) {
             this.techLevel = techLevel;
+            return this;
         }
 
-        public void setPlatform(Integer platform) {
+        public Builder setPlatform(Integer platform) {
             this.platform = platform;
+            return this;
         }
 
         public ParticipantData build() {
