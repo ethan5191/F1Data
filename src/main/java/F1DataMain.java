@@ -7,6 +7,9 @@ import packets.enums.DriverPairingsEnum;
 import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
+import packets.parsers.CarSetupPacketParser;
+import packets.parsers.PacketHeaderParser;
+import packets.parsers.ParticipantPacketParser;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
@@ -29,7 +32,7 @@ public class F1DataMain {
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
     private int playerCarIndex = -1;
-    private int gameYear = -1;
+    private int packetFormat = -1;
     private DriverPairingsEnum driverPairingsEnum = null;
     private FormulaTypeEnum formulaType = null;
 
@@ -45,13 +48,13 @@ public class F1DataMain {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOfRange(buffer, 0, length));
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
-                PacketHeader ph = new PacketHeader(byteBuffer);
+                PacketHeader ph = PacketHeaderParser.parsePacket(byteBuffer);
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.getPlayerCarIndex();
-                if (gameYear < 0) {
+                if (packetFormat < 0) {
                     //packet format is constantly the year (2020, 2024) game year changes from year to year it seems.
-                    gameYear = ph.getPacketFormat();
-                    driverPairingsEnum = DriverPairingsEnum.fromYear(gameYear);
+                    packetFormat = ph.getPacketFormat();
+                    driverPairingsEnum = DriverPairingsEnum.fromYear(packetFormat);
                 }
                 //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.getPacketId()) {
@@ -187,10 +190,13 @@ public class F1DataMain {
     //Parses the car setup packet.
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            CarSetupData csd = new CarSetupData(byteBuffer);
-            if (validKey(i)) {
+            boolean isValidKey = validKey(i);
+            //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
+            //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
+            String setupName = (isValidKey) ? participants.get(i).getParticipantData().getLastName() : "";
+            CarSetupData csd = CarSetupPacketParser.parsePacket(packetFormat, byteBuffer, setupName);
+            if (isValidKey) {
                 TelemetryData td = participants.get(i);
-                csd.setSetupName(td.getParticipantData().getLastName());
                 boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
                 if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
 //                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
@@ -201,7 +207,10 @@ public class F1DataMain {
             }
         }
         //Trailing value, must be here to ensure the packet is fully parsed.
-        float nextFronWingVal = byteBuffer.getFloat();
+        //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
+         if (packetFormat >= 2024) {
+             float nextFronWingVal = byteBuffer.getFloat();
+         }
     }
 
     //Parses the Car Telemetry packet.
@@ -243,7 +252,7 @@ public class F1DataMain {
             //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
             int numActiveCars = byteBuffer.get();
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                ParticipantData pd = new ParticipantData(byteBuffer);
+                ParticipantData pd = ParticipantPacketParser.parsePacket(packetFormat, byteBuffer);
                 if (pd.getRaceNumber() > 0) {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);

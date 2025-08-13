@@ -1,6 +1,6 @@
 package packets.events;
 
-import packets.Data;
+import packets.PacketData;
 import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
  * each bit represents a specific button being pressed.
  */
 
-public class ButtonsData extends Data {
+public class ButtonsData extends PacketData {
 
     public ButtonsData(ByteBuffer byteBuffer) {
 //        printMessage("Buttons Event ", byteBuffer.array().length);

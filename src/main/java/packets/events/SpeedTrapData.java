@@ -1,6 +1,6 @@
 package packets.events;
 
-import packets.Data;
+import packets.PacketData;
 import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
  * fastestSpeedInSession             | float     | 4            | 8
  *
  */
-public class SpeedTrapData extends Data {
+public class SpeedTrapData extends PacketData {
 
     public SpeedTrapData(ByteBuffer byteBuffer) {
         //        printMessage("Speed Trap Event ", byteBuffer.array().length);

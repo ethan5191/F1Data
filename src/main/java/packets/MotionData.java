@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
  * m_roll                         | float     | 4            | 56
  */
 
-public class MotionData extends Data {
+public class MotionData extends PacketData {
 
     private static final float DIVISOR = 32767.0f;
     private static final int PACK_SIZE = 60;

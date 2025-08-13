@@ -48,7 +48,7 @@ import java.nio.ByteBuffer;
  * m_speedTrapFastestLap                   | uint8     | 1            | 56
  */
 
-public class LapData extends Data {
+public class LapData extends PacketData {
 
     public LapData(ByteBuffer byteBuffer) {
 //        printMessage("Lap Data ", byteBuffer.array().length);

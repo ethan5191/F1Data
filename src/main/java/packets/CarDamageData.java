@@ -41,7 +41,7 @@ import java.nio.ByteBuffer;
  * - float maps directly to a Java 'float'.
  * - Arrays must be read in a loop for proper data conversion.
  */
-public class CarDamageData extends Data {
+public class CarDamageData extends PacketData {
 
     public CarDamageData(ByteBuffer byteBuffer) {
         //        printMessage("Car Damage ", byteBuffer.array().length);

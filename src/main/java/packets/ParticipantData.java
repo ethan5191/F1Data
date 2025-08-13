@@ -1,71 +1,79 @@
 package packets;
 
-import utils.constants.Constants;
-
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 /**
  * F1 24 ParticipantData Breakdown (Little Endian)
- *
- * This struct is 60 bytes long and contains data about a single participant.
- * It is repeated for each participant in the PacketParticipantsData packet.
+ * <p>
+ * This struct contains details for a single participant (driver).
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
- *
- * Member Name              | Data Type      | Size (bytes) | Starting Offset
- * -------------------------|----------------|--------------|-----------------
- * m_aiControlled           | uint8          | 1            | 0
- * m_driverId               | uint8          | 1            | 1
- * m_networkId              | uint8          | 1            | 2
- * m_teamId                 | uint8          | 1            | 3
- * m_myTeam                 | uint8          | 1            | 4
- * m_raceNumber             | uint8          | 1            | 5
- * m_nationality            | uint8          | 1            | 6
- * m_name                   | char[48]       | 48           | 7
- * m_yourTelemetry          | uint8          | 1            | 55
- * m_showOnlineNames        | uint8          | 1            | 56
- * m_techLevel              | uint16         | 2            | 57
- * m_platform               | uint8          | 1            | 59
+ * <p>
+ * * **Note:** The header length and some fields vary by game year.
+ * - F1 2020 Length: 54 bytes
+ * - F1 2021/2022 Length: 56 bytes
+ * - F1 2023 Length: 58 bytes
+ * - F1 2024 Length: 60 bytes
+ *  TODO: Look at how this is sent in 2025.
+ /*
+ * PacketParticipantsData
+ * ----------------------
+ * Member Name               | Data Type          | Size (bytes) | First Appeared | Notes
+ * --------------------------|------------------|--------------|----------------|-------------------------
+ * m_header                  | PacketHeader      | ...          | 2020           | Full packet header
+ * m_numActiveCars            | uint8             | 1            | 2020           | Number of active cars on HUD
+ * m_participants[22]         | ParticipantData   | ...          | 2020           | Array for each participant
+ *   - m_aiControlled         | uint8             | 1            | 2020           | AI or human
+ *   - m_driverId             | uint8             | 1            | 2020           | 255 if network human
+ *   - m_networkId            | uint8             | 1            | 2021           | Unique network ID
+ *   - m_teamId               | uint8             | 1            | 2020           |
+ *   - m_myTeam               | uint8             | 1            | 2021           | 1 = My Team, 0 = otherwise
+ *   - m_raceNumber           | uint8             | 1            | 2020           |
+ *   - m_nationality          | uint8             | 1            | 2020           |
+ *   - m_name[48]             | char[48]          | 48           | 2020           | UTF-8, null-terminated
+ *   - m_yourTelemetry        | uint8             | 1            | 2020           | 0 = restricted, 1 = public
+ *   - m_showOnlineNames      | uint8             | 1            | 2023           | 0 = off, 1 = on
+ *   - m_techLevel            | uint16            | 2            | 2024           | F1 World tech level
+ *   - m_platform             | uint8             | 1            | 2023           | 1=Steam,3=PS,4=Xbox,6=Origin,255=unknown
+ * * Note:
+ * - uint8 and uint16 types should be read as unsigned integers.
+ * - m_name is a fixed-size char array that should be read into a String.
  */
 
-public class ParticipantData extends Data {
+public class ParticipantData {
 
-    public ParticipantData(ByteBuffer byteBuffer) {
-//        printMessage("Participant packets.Data ", byteBuffer.array().length);
-        this.aiControlled = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.driverId = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.networkId = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.teamId = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.myTeam = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.raceNumber = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.nationality = byteBuffer.get() & Constants.BIT_MASK_8;
-        byte[] tempName = new byte[48];
-        byteBuffer.get(tempName, 0, 48);
-        this.name = tempName;
-        this.yourTelemetry = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.showOnlineNames = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.techLevel = byteBuffer.getShort() & Constants.BIT_MASK_16;
-        this.platform = byteBuffer.get() & Constants.BIT_MASK_8;
+    public ParticipantData(Builder builder) {
+        this.aiControlled = builder.aiControlled;
+        this.driverId = builder.driverId;
+        this.networkId = builder.networkId;
+        this.teamId = builder.teamId;
+        this.myTeam = builder.myTeam;
+        this.raceNumber = builder.raceNumber;
+        this.nationality = builder.nationality;
+        this.name = builder.name;
+        this.yourTelemetry = builder.yourTelemetry;
+        this.showOnlineNames = builder.showOnlineNames;
+        this.techLevel = builder.techLevel;
+        this.platform = builder.platform;
+
         int length = 0;
         while (length < this.name.length && name[length] != 0) {
             length++;
         }
         this.lastName = new String(this.name, 0, length, StandardCharsets.UTF_8);
-
     }
 
     private final int aiControlled;
     private final int driverId;
-    private final int networkId;
+    private final Integer networkId;
     private final int teamId;
-    private final int myTeam;
+    private final Integer myTeam;
     private final int raceNumber;
     private final int nationality;
     private final byte[] name;
     private final int yourTelemetry;
-    private final int showOnlineNames;
-    private final int techLevel;
-    private final int platform;
+    private final Integer showOnlineNames;
+    private final Integer techLevel;
+    private final Integer platform;
 
     private final String lastName;
 
@@ -77,7 +85,7 @@ public class ParticipantData extends Data {
         return driverId;
     }
 
-    public int getNetworkId() {
+    public Integer getNetworkId() {
         return networkId;
     }
 
@@ -85,7 +93,7 @@ public class ParticipantData extends Data {
         return teamId;
     }
 
-    public int getMyTeam() {
+    public Integer getMyTeam() {
         return myTeam;
     }
 
@@ -105,15 +113,15 @@ public class ParticipantData extends Data {
         return yourTelemetry;
     }
 
-    public int getShowOnlineNames() {
+    public Integer getShowOnlineNames() {
         return showOnlineNames;
     }
 
-    public int getTechLevel() {
+    public Integer getTechLevel() {
         return techLevel;
     }
 
-    public int getPlatform() {
+    public Integer getPlatform() {
         return platform;
     }
 
@@ -125,7 +133,74 @@ public class ParticipantData extends Data {
         if (this.aiControlled == 1) {
             System.out.println(this.lastName);
         } else {
-            System.out.println(this.lastName + " (Human Player)" );
+            System.out.println(this.lastName + " (Human Player)");
+        }
+    }
+
+    public static class Builder {
+        private int aiControlled;
+        private int driverId;
+        private Integer networkId;
+        private int teamId;
+        private Integer myTeam;
+        private int raceNumber;
+        private int nationality;
+        private byte[] name;
+        private int yourTelemetry;
+        private Integer showOnlineNames;
+        private Integer techLevel;
+        private Integer platform;
+
+        public void setAiControlled(int aiControlled) {
+            this.aiControlled = aiControlled;
+        }
+
+        public void setDriverId(int driverId) {
+            this.driverId = driverId;
+        }
+
+        public void setNetworkId(Integer networkId) {
+            this.networkId = networkId;
+        }
+
+        public void setTeamId(int teamId) {
+            this.teamId = teamId;
+        }
+
+        public void setMyTeam(Integer myTeam) {
+            this.myTeam = myTeam;
+        }
+
+        public void setRaceNumber(int raceNumber) {
+            this.raceNumber = raceNumber;
+        }
+
+        public void setNationality(int nationality) {
+            this.nationality = nationality;
+        }
+
+        public void setName(byte[] name) {
+            this.name = name;
+        }
+
+        public void setYourTelemetry(int yourTelemetry) {
+            this.yourTelemetry = yourTelemetry;
+        }
+
+        public void setShowOnlineNames(Integer showOnlineNames) {
+            this.showOnlineNames = showOnlineNames;
+        }
+
+        public void setTechLevel(Integer techLevel) {
+            this.techLevel = techLevel;
+        }
+
+        public void setPlatform(Integer platform) {
+            this.platform = platform;
+        }
+
+        public ParticipantData build() {
+            return new ParticipantData(this);
         }
     }
 }

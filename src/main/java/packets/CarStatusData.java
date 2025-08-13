@@ -45,7 +45,7 @@ import java.nio.ByteBuffer;
  * - int8 and float map directly to their Java counterparts.
  */
 
-public class CarStatusData extends Data {
+public class CarStatusData extends PacketData {
 
     public CarStatusData(ByteBuffer byteBuffer) {
         //        printMessage("Car Status ", byteBuffer.array().length);

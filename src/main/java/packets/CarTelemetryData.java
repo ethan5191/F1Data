@@ -36,7 +36,7 @@ import java.nio.ByteBuffer;
  * - float and int8 map directly.
  * - Arrays must be read by looping or using get() with a destination array.
  */
-public class CarTelemetryData extends Data {
+public class CarTelemetryData extends PacketData {
 
     public CarTelemetryData(ByteBuffer byteBuffer) {
         //        printMessage("Car Telemetry ", byteBuffer.array().length);
