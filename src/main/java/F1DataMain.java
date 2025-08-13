@@ -7,6 +7,7 @@ import packets.enums.DriverPairingsEnum;
 import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
+import packets.parsers.CarDamagePacketParser;
 import packets.parsers.CarSetupPacketParser;
 import packets.parsers.PacketHeaderParser;
 import packets.parsers.ParticipantPacketParser;
@@ -208,9 +209,9 @@ public class F1DataMain {
         }
         //Trailing value, must be here to ensure the packet is fully parsed.
         //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
-         if (packetFormat >= 2024) {
-             float nextFronWingVal = byteBuffer.getFloat();
-         }
+        if (packetFormat >= 2024) {
+            float nextFronWingVal = byteBuffer.getFloat();
+        }
     }
 
     //Parses the Car Telemetry packet.
@@ -229,7 +230,14 @@ public class F1DataMain {
 
     //Parses the car Damage Packet
     private void handleCarDamagePacket(ByteBuffer byteBuffer) {
-        handlePacket(byteBuffer, CarDamageData::new, TelemetryData::setCurrentDamage);
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarDamageData cdd = CarDamagePacketParser.parsePacket(packetFormat, byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentDamage(cdd);
+                }
+            }
+        }
     }
 
     private void handleTireSetsPacket(ByteBuffer byteBuffer) {
