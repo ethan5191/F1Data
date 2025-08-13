@@ -49,7 +49,8 @@ public class F1DataMain {
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.getPlayerCarIndex();
                 if (gameYear < 0) {
-                    gameYear = ph.getGameYear();
+                    //packet format is constantly the year (2020, 2024) game year changes from year to year it seems.
+                    gameYear = ph.getPacketFormat();
                     driverPairingsEnum = DriverPairingsEnum.fromYear(gameYear);
                 }
                 //Switch to handle the correct logic based on what packet has been sent.

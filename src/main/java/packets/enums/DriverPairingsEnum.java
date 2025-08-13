@@ -11,7 +11,8 @@ import java.util.Map;
 //this is based on F1 24 where they only have F1, F2 '23, and F2 '24. I may have to update this if I go for older years.
 public enum DriverPairingsEnum {
     //Game year (first element) is a 2 digit integer, at least in F1 24 it is.
-    TWENTY_FOUR(24, DriverConstants.F1_24_DRIVER_PAIRS, DriverConstants.F2_24_DRIVER_PAIRS, DriverConstants.F2_23_DRIVER_PAIRS);
+    TWENTY(2020, DriverConstants.F1_20_DRIVER_PAIRS, DriverConstants.F2_20_DRIVER_PARIS, DriverConstants.F2_19_DRIVER_PAIRS),
+    TWENTY_FOUR(2024, DriverConstants.F1_24_DRIVER_PAIRS, DriverConstants.F2_24_DRIVER_PAIRS, DriverConstants.F2_23_DRIVER_PAIRS);
 
     private final Integer gameYear;
     private final Map<Integer, Integer> f1DriverPairs;
