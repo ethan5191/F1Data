@@ -65,4 +65,6 @@ public class Constants {
 
     public static final String PERCENT_SIGN = "%";
     public static final String KG = "kg";
+
+    public static final float DIVISOR = 32767.0f;
 }

@@ -56,6 +56,7 @@ public class F1DataMain {
                 //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.getPacketId()) {
                     case Constants.MOTION_PACK:
+                        handleMotionPacket(byteBuffer);
                         break;
                     case Constants.EVENT_PACK:
                         handleEventPacket(byteBuffer, speedTrapDataDTO);
@@ -91,6 +92,31 @@ public class F1DataMain {
     //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
     private boolean validKey(int i) {
         return participants.containsKey(i);
+    }
+
+    private void handleMotionPacket(ByteBuffer byteBuffer) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                MotionData md = MotionDataPacketParser.parsePacket(byteBuffer);
+            }
+            //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
+            if (packetFormat <= Constants.YEAR_2022) {
+                float[] suspPosition = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float[] suspVelocity = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float[] suspAcceleration = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float[] wheelSpin = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float[] wheelSlip = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float localVelocityX = byteBuffer.getFloat();
+                float localVelocityY = byteBuffer.getFloat();
+                float angularVelocityX = byteBuffer.getFloat();
+                float angularVelocityY = byteBuffer.getFloat();
+                float angularVelocityZ = byteBuffer.getFloat();
+                float angularAccelerationX = byteBuffer.getFloat();
+                float angularAccelerationY = byteBuffer.getFloat();
+                float angularAccelerationZ = byteBuffer.getFloat();
+                float frontWheelsAngle =byteBuffer.getFloat();
+            }
+        }
     }
 
     //Handles the event packet. This one is different from the others as the packet changes based on what event has happened.
