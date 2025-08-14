@@ -265,6 +265,7 @@ public class F1DataMain {
     private void handleCarStatusPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                System.out.println(participants.get(i).getParticipantData().getLastName() + " " + packetFormat);
                 CarStatusData csd = CarStatusPacketParser.parsePacket(packetFormat, byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentStatus(csd);
@@ -295,7 +296,7 @@ public class F1DataMain {
             TelemetryData td = participants.get(carId);
             TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
             for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
-                tireSetsData[i] = new TireSetsData(byteBuffer);
+                tireSetsData[i] = TireSetsPacketParser.parsePacket(byteBuffer);
             }
             td.setTireSetsData(tireSetsData);
             int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
