@@ -11,6 +11,7 @@ import packets.parsers.*;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
+import utils.BitMaskUtils;
 import utils.constants.Constants;
 
 import java.io.IOException;
@@ -181,8 +182,8 @@ public class F1DataMain {
             }
         }
         //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-        int timeTrailPBCarId = byteBuffer.get() & Constants.BIT_MASK_8;
-        int timeTrailRivalPdCarId = byteBuffer.get() & Constants.BIT_MASK_8;
+        int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
+        int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
     }
 
     //Parses the car setup packet.
@@ -213,10 +214,20 @@ public class F1DataMain {
 
     //Parses the Car Telemetry packet.
     private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
-        handlePacket(byteBuffer, CarTelemetryData::new, TelemetryData::setCurrentTelemetry);
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarTelemetryData ctd = CarTelemetryPacketParser.parsePacket(packetFormat, byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentTelemetry(ctd);
+                }
+            }
+        }
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
-        int mfdPanelIdx = byteBuffer.get() & Constants.BIT_MASK_8;
-        int mfdPanelIdxSecondPlayer = byteBuffer.get() & Constants.BIT_MASK_8;
+        if (packetFormat <= Constants.YEAR_2020) {
+            long buttonEvent = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        }
+        int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
+        int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
         int suggestedGear = byteBuffer.get();
     }
 
@@ -249,14 +260,14 @@ public class F1DataMain {
     }
 
     private void handleTireSetsPacket(ByteBuffer byteBuffer) {
-        int carId = byteBuffer.get() & Constants.BIT_MASK_8;
+        int carId = BitMaskUtils.bitMask8(byteBuffer.get());
         TelemetryData td = participants.get(carId);
         TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
         for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
             tireSetsData[i] = new TireSetsData(byteBuffer);
         }
         td.setTireSetsData(tireSetsData);
-        int fittedId = byteBuffer.get() & Constants.BIT_MASK_8;
+        int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
         if (td.getFittedTireId() != fittedId) {
             td.setFittedTireId(fittedId);
         }
@@ -301,18 +312,6 @@ public class F1DataMain {
                 TelemetryData td = participants.get(j);
                 //Populates the initial DriverDataDTO consumer for the UI.
                 driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), j == playerCarIndex, driverPairing, formulaType));
-            }
-        }
-    }
-
-    //Using Generics to condense the common logic as a decent chunk of the packets have the same logic flow
-    private <T> void handlePacket(ByteBuffer byteBuffer, Function<ByteBuffer, T> packetCreator, BiConsumer<TelemetryData, T> dataSetter) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                T packet = packetCreator.apply(byteBuffer);
-                if (validKey(i)) {
-                    dataSetter.accept(participants.get(i), packet);
-                }
             }
         }
     }
