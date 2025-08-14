@@ -1,19 +1,18 @@
 package packets.events;
 
-import packets.PacketData;
 import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
 /**
  * F1 24 SpeedTrap Breakdown (Little Endian)
- *
+ * <p>
  * This struct is 12 bytes long and contains data about a speed trap event,
  * including the fastest speeds recorded in the session.
  * It is a member of the PacketEventData packet.
- *
+ * <p>
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
- *
+ * <p>
  * Member Name                       | Data Type | Size (bytes) | Starting Offset
  * ----------------------------------|-----------|--------------|-----------------
  * vehicleIdx                        | uint8     | 1            | 0
@@ -22,12 +21,10 @@ import java.nio.ByteBuffer;
  * isDriverFastestInSession          | uint8     | 1            | 6
  * fastestVehicleIdxInSession        | uint8     | 1            | 7
  * fastestSpeedInSession             | float     | 4            | 8
- *
  */
-public class SpeedTrapData extends PacketData {
+public class SpeedTrapData {
 
     public SpeedTrapData(ByteBuffer byteBuffer) {
-        //        printMessage("Speed Trap Event ", byteBuffer.array().length);
         this.vehicleId = byteBuffer.get() & Constants.BIT_MASK_8;
         this.speed = byteBuffer.getFloat();
         this.isOverallFastest = byteBuffer.get() & Constants.BIT_MASK_8;
