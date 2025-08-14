@@ -1,6 +1,7 @@
 package packets.parsers;
 
 import packets.CarSetupData;
+import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
@@ -24,7 +25,7 @@ public class CarSetupPacketParser {
                 .setRearHeight(ParserUtils.bitMask8(byteBuffer.get()))
                 .setBrakePressure(ParserUtils.bitMask8(byteBuffer.get()))
                 .setBrakeBias(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2024) builder.setEngineBraking(ParserUtils.bitMask8(byteBuffer.get()));
+        if (packetFormat >= Constants.YEAR_2024) builder.setEngineBraking(ParserUtils.bitMask8(byteBuffer.get()));
         builder.setRearLeftPressure(byteBuffer.getFloat())
                 .setRearRightPressure(byteBuffer.getFloat())
                 .setFrontLeftPressure(byteBuffer.getFloat())

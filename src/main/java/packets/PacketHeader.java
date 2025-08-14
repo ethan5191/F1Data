@@ -45,7 +45,7 @@ public class PacketHeader {
     }
 
     private final int packetFormat;
-    private final Integer gameYear;
+    private final int gameYear;
     private final int majorVersion;
     private final int minorVersion;
     private final int packetVersion;
@@ -53,7 +53,7 @@ public class PacketHeader {
     private final BigInteger sessionUID;
     private final float sessionTime;
     private final long frameID;
-    private final Long overallFrameID;
+    private final long overallFrameID;
     private final int playerCarIndex;
     private final int secondaryPlayerCarIndex;
 
@@ -61,7 +61,7 @@ public class PacketHeader {
         return packetFormat;
     }
 
-    public Integer getGameYear() {
+    public int getGameYear() {
         return gameYear;
     }
 
@@ -93,7 +93,7 @@ public class PacketHeader {
         return frameID;
     }
 
-    public Long getOverallFrameID() {
+    public long getOverallFrameID() {
         return overallFrameID;
     }
 
@@ -112,7 +112,7 @@ public class PacketHeader {
 
     public static class Builder {
         private int packetFormat;
-        private Integer gameYear;
+        private int gameYear;
         private int majorVersion;
         private int minorVersion;
         private int packetVersion;
@@ -120,7 +120,7 @@ public class PacketHeader {
         private BigInteger sessionUID;
         private float sessionTime;
         private long frameID;
-        private Long overallFrameID;
+        private long overallFrameID;
         private int playerCarIndex;
         private int secondaryPlayerCarIndex;
 
@@ -129,7 +129,7 @@ public class PacketHeader {
             return this;
         }
 
-        public Builder setGameYear(Integer gameYear) {
+        public Builder setGameYear(int gameYear) {
             this.gameYear = gameYear;
             return this;
         }
@@ -169,7 +169,7 @@ public class PacketHeader {
             return this;
         }
 
-        public Builder setOverallFrameID(Long overallFrameID) {
+        public Builder setOverallFrameID(long overallFrameID) {
             this.overallFrameID = overallFrameID;
             return this;
         }

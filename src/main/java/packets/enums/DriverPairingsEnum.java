@@ -1,5 +1,6 @@
 package packets.enums;
 
+import utils.constants.Constants;
 import utils.constants.DriverConstants;
 
 import java.util.ArrayList;
@@ -11,8 +12,8 @@ import java.util.Map;
 //this is based on F1 24 where they only have F1, F2 '23, and F2 '24. I may have to update this if I go for older years.
 public enum DriverPairingsEnum {
     //Game year (first element) is a 2 digit integer, at least in F1 24 it is.
-    TWENTY(2020, DriverConstants.F1_20_DRIVER_PAIRS, DriverConstants.F2_20_DRIVER_PARIS, DriverConstants.F2_19_DRIVER_PAIRS),
-    TWENTY_FOUR(2024, DriverConstants.F1_24_DRIVER_PAIRS, DriverConstants.F2_24_DRIVER_PAIRS, DriverConstants.F2_23_DRIVER_PAIRS);
+    TWENTY(Constants.YEAR_2020, DriverConstants.F1_20_DRIVER_PAIRS, DriverConstants.F2_20_DRIVER_PARIS, DriverConstants.F2_19_DRIVER_PAIRS),
+    TWENTY_FOUR(Constants.YEAR_2024, DriverConstants.F1_24_DRIVER_PAIRS, DriverConstants.F2_24_DRIVER_PAIRS, DriverConstants.F2_23_DRIVER_PAIRS);
 
     private final Integer gameYear;
     private final Map<Integer, Integer> f1DriverPairs;
@@ -21,6 +22,7 @@ public enum DriverPairingsEnum {
 
     private static final Map<Integer, DriverPairingsEnum> LOOKUP = new HashMap<>();
     private final List<Map<Integer, Integer>> driverPairingLists = new ArrayList<>(3);
+
     static {
         for (DriverPairingsEnum e : DriverPairingsEnum.values()) {
             LOOKUP.put(e.gameYear, e);

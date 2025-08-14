@@ -92,7 +92,7 @@ public class CarSetupData {
     private final int rearHeight;
     private final int brakePressure;
     private final int brakeBias;
-    private final Integer engineBraking;
+    private final int engineBraking;
     private final float rearLeftPressure;
     private final float rearRightPressure;
     private final float frontLeftPressure;
@@ -166,7 +166,7 @@ public class CarSetupData {
         return brakeBias;
     }
 
-    public Integer getEngineBraking() {
+    public int getEngineBraking() {
         return engineBraking;
     }
 
@@ -253,7 +253,7 @@ public class CarSetupData {
         private int rearHeight;
         private int brakePressure;
         private int brakeBias;
-        private Integer engineBraking = 0;
+        private int engineBraking = 0;
         private float rearLeftPressure;
         private float rearRightPressure;
         private float frontLeftPressure;
@@ -342,7 +342,7 @@ public class CarSetupData {
             return this;
         }
 
-        public Builder setEngineBraking(Integer engineBraking) {
+        public Builder setEngineBraking(int engineBraking) {
             this.engineBraking = engineBraking;
             return this;
         }

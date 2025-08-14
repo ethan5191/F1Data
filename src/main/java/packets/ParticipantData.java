@@ -64,16 +64,16 @@ public class ParticipantData {
 
     private final int aiControlled;
     private final int driverId;
-    private final Integer networkId;
+    private final int networkId;
     private final int teamId;
-    private final Integer myTeam;
+    private final int myTeam;
     private final int raceNumber;
     private final int nationality;
     private final byte[] name;
     private final int yourTelemetry;
-    private final Integer showOnlineNames;
-    private final Integer techLevel;
-    private final Integer platform;
+    private final int showOnlineNames;
+    private final int techLevel;
+    private final int platform;
 
     private final String lastName;
 
@@ -85,7 +85,7 @@ public class ParticipantData {
         return driverId;
     }
 
-    public Integer getNetworkId() {
+    public int getNetworkId() {
         return networkId;
     }
 
@@ -93,7 +93,7 @@ public class ParticipantData {
         return teamId;
     }
 
-    public Integer getMyTeam() {
+    public int getMyTeam() {
         return myTeam;
     }
 
@@ -113,15 +113,15 @@ public class ParticipantData {
         return yourTelemetry;
     }
 
-    public Integer getShowOnlineNames() {
+    public int getShowOnlineNames() {
         return showOnlineNames;
     }
 
-    public Integer getTechLevel() {
+    public int getTechLevel() {
         return techLevel;
     }
 
-    public Integer getPlatform() {
+    public int getPlatform() {
         return platform;
     }
 
@@ -140,16 +140,16 @@ public class ParticipantData {
     public static class Builder {
         private int aiControlled;
         private int driverId;
-        private Integer networkId;
+        private int networkId;
         private int teamId;
-        private Integer myTeam;
+        private int myTeam;
         private int raceNumber;
         private int nationality;
         private byte[] name;
         private int yourTelemetry;
-        private Integer showOnlineNames;
-        private Integer techLevel;
-        private Integer platform;
+        private int showOnlineNames;
+        private int techLevel;
+        private int platform;
 
         public Builder setAiControlled(int aiControlled) {
             this.aiControlled = aiControlled;
@@ -161,7 +161,7 @@ public class ParticipantData {
             return this;
         }
 
-        public Builder setNetworkId(Integer networkId) {
+        public Builder setNetworkId(int networkId) {
             this.networkId = networkId;
             return this;
         }
@@ -171,7 +171,7 @@ public class ParticipantData {
             return this;
         }
 
-        public Builder setMyTeam(Integer myTeam) {
+        public Builder setMyTeam(int myTeam) {
             this.myTeam = myTeam;
             return this;
         }
@@ -196,17 +196,17 @@ public class ParticipantData {
             return this;
         }
 
-        public Builder setShowOnlineNames(Integer showOnlineNames) {
+        public Builder setShowOnlineNames(int showOnlineNames) {
             this.showOnlineNames = showOnlineNames;
             return this;
         }
 
-        public Builder setTechLevel(Integer techLevel) {
+        public Builder setTechLevel(int techLevel) {
             this.techLevel = techLevel;
             return this;
         }
 
-        public Builder setPlatform(Integer platform) {
+        public Builder setPlatform(int platform) {
             this.platform = platform;
             return this;
         }

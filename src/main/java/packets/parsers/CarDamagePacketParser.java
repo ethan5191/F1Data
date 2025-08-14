@@ -1,6 +1,7 @@
 package packets.parsers;
 
 import packets.CarDamageData;
+import utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
@@ -24,7 +25,7 @@ public class CarDamagePacketParser {
                 .setDiffuserDamage(ParserUtils.bitMask8(byteBuffer.get()))
                 .setSidepodDamage(ParserUtils.bitMask8(byteBuffer.get()))
                 .setDrsFault(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2022) builder.setErsFault(ParserUtils.bitMask8(byteBuffer.get()));
+        if (packetFormat >= Constants.YEAR_2022) builder.setErsFault(ParserUtils.bitMask8(byteBuffer.get()));
         builder.setGearBoxDamage(ParserUtils.bitMask8(byteBuffer.get()))
                 .setEngineDamage(ParserUtils.bitMask8(byteBuffer.get()))
                 .setEngineMGUHWear(ParserUtils.bitMask8(byteBuffer.get()))
@@ -33,7 +34,7 @@ public class CarDamagePacketParser {
                 .setEngineICEWear(ParserUtils.bitMask8(byteBuffer.get()))
                 .setEngineMGUKWear(ParserUtils.bitMask8(byteBuffer.get()))
                 .setEngineTCWear(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2022) {
+        if (packetFormat >= Constants.YEAR_2022) {
             builder.setEngineBlown(ParserUtils.bitMask8(byteBuffer.get()))
                     .setEngineSeized(ParserUtils.bitMask8(byteBuffer.get()));
         }

@@ -2,6 +2,16 @@ package utils.constants;
 
 public class Constants {
 
+    public static final int YEAR_2018 = 2018;
+    public static final int YEAR_2019 = 2019;
+    public static final int YEAR_2020 = 2020;
+    public static final int YEAR_2021 = 2021;
+    public static final int YEAR_2022 = 2022;
+    public static final int YEAR_2023 = 2023;
+    public static final int YEAR_2024 = 2024;
+    public static final int YEAR_2025 = 2025;
+    public static final int YEAR_2026 = 2026;
+
     public static final int BIT_MASK_8 = 0xFF;
     public static final int BIT_MASK_16 = 0xFFFF;
     public static final long BIT_MASK_32 = 0xFFFFFFFFL;

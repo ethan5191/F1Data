@@ -11,22 +11,23 @@ public class ParticipantPacketParser {
         ParticipantData.Builder builder = new ParticipantData.Builder().
                 setAiControlled(ParserUtils.bitMask8(byteBuffer.get()))
                 .setDriverId(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2021) builder.setNetworkId(ParserUtils.bitMask8(byteBuffer.get()))
+        if (packetFormat >= Constants.YEAR_2021) builder.setNetworkId(ParserUtils.bitMask8(byteBuffer.get()))
                 .setTeamId(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2021) builder.setMyTeam(ParserUtils.bitMask8(byteBuffer.get()))
+        if (packetFormat >= Constants.YEAR_2021) builder.setMyTeam(ParserUtils.bitMask8(byteBuffer.get()))
                 .setRaceNumber(ParserUtils.bitMask8(byteBuffer.get()))
                 .setNationality(ParserUtils.bitMask8(byteBuffer.get()));
-        int nameMaxLength = (packetFormat < 2025) ? 48 : 32;
+        int nameMaxLength = (packetFormat < Constants.YEAR_2025) ? 48 : 32;
         byte[] tempName = new byte[nameMaxLength];
         byteBuffer.get(tempName, 0, nameMaxLength);
         builder.setName(tempName)
                 .setYourTelemetry(ParserUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= 2023) {
+        if (packetFormat >= Constants.YEAR_2023) {
             builder.setShowOnlineNames(ParserUtils.bitMask8(byteBuffer.get()));
-            if (packetFormat >= 2024) builder.setTechLevel(byteBuffer.getShort() & Constants.BIT_MASK_16);
+            if (packetFormat >= Constants.YEAR_2024)
+                builder.setTechLevel(byteBuffer.getShort() & Constants.BIT_MASK_16);
             builder.setPlatform(ParserUtils.bitMask8(byteBuffer.get()));
         }
-        if (packetFormat >= 2025) {
+        if (packetFormat >= Constants.YEAR_2025) {
             //num colors and LiveryColor will be here, they were added in 2025, along with shrinking the name.
         }
         return builder.build();

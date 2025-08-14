@@ -130,7 +130,7 @@ public class CarDamageData {
         return drsFault;
     }
 
-    public Integer getErsFault() {
+    public int getErsFault() {
         return ersFault;
     }
 
@@ -166,11 +166,11 @@ public class CarDamageData {
         return engineTCWear;
     }
 
-    public Integer getEngineBlown() {
+    public int getEngineBlown() {
         return engineBlown;
     }
 
-    public Integer getEngineSeized() {
+    public int getEngineSeized() {
         return engineSeized;
     }
 
@@ -186,7 +186,7 @@ public class CarDamageData {
         private int diffuserDamage;
         private int sidepodDamage;
         private int drsFault;
-        private Integer ersFault;
+        private int ersFault;
         private int gearBoxDamage;
         private int engineDamage;
         private int engineMGUHWear;
@@ -195,8 +195,8 @@ public class CarDamageData {
         private int engineICEWear;
         private int engineMGUKWear;
         private int engineTCWear;
-        private Integer engineBlown;
-        private Integer engineSeized;
+        private int engineBlown;
+        private int engineSeized;
 
         public Builder setTyresWear(float[] tyresWear) {
             this.tyresWear = tyresWear;
@@ -248,7 +248,7 @@ public class CarDamageData {
             return this;
         }
 
-        public Builder setErsFault(Integer ersFault) {
+        public Builder setErsFault(int ersFault) {
             this.ersFault = ersFault;
             return this;
         }
@@ -293,18 +293,31 @@ public class CarDamageData {
             return this;
         }
 
-        public Builder setEngineBlown(Integer engineBlown) {
+        public Builder setEngineBlown(int engineBlown) {
             this.engineBlown = engineBlown;
             return this;
         }
 
-        public Builder setEngineSeized(Integer engineSeized) {
+        public Builder setEngineSeized(int engineSeized) {
             this.engineSeized = engineSeized;
             return this;
         }
 
         public CarDamageData build() {
             return new CarDamageData(this);
+        }
+
+        public static CarDamageData fromStatus(CarStatusData status) {
+            return new Builder()
+                    .setTyresWear(status.getTyresWear())
+                    .setTyresDamage(status.getTyresDamage())
+                    .setFrontLeftWingDamage(status.getFrontLeftWingDamage())
+                    .setFrontRightWingDamage(status.getFrontRightWingDamage())
+                    .setRearWingDamage(status.getRearWingDamage())
+                    .setDrsFault(status.getDrsFault())
+                    .setEngineDamage(status.getEngineDamage())
+                    .setGearBoxDamage(status.getGearBoxDamage())
+                    .build();
         }
     }
 }

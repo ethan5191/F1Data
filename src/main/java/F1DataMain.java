@@ -7,10 +7,7 @@ import packets.enums.DriverPairingsEnum;
 import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
-import packets.parsers.CarDamagePacketParser;
-import packets.parsers.CarSetupPacketParser;
-import packets.parsers.PacketHeaderParser;
-import packets.parsers.ParticipantPacketParser;
+import packets.parsers.*;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
@@ -209,7 +206,7 @@ public class F1DataMain {
         }
         //Trailing value, must be here to ensure the packet is fully parsed.
         //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
-        if (packetFormat >= 2024) {
+        if (packetFormat >= Constants.YEAR_2024) {
             float nextFronWingVal = byteBuffer.getFloat();
         }
     }
@@ -225,7 +222,18 @@ public class F1DataMain {
 
     //Parses the car status packet.
     private void handleCarStatusPacket(ByteBuffer byteBuffer) {
-        handlePacket(byteBuffer, CarStatusData::new, TelemetryData::setCurrentStatus);
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                CarStatusData csd = CarStatusPacketParser.parsePacket(packetFormat, byteBuffer);
+                if (validKey(i)) {
+                    participants.get(i).setCurrentStatus(csd);
+                    if (packetFormat <= Constants.YEAR_2020) {
+                        CarDamageData cdd = CarDamageData.Builder.fromStatus(csd);
+                        participants.get(i).setCurrentDamage(cdd);
+                    }
+                }
+            }
+        }
     }
 
     //Parses the car Damage Packet
