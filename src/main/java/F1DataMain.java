@@ -23,9 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class F1DataMain {
 
@@ -130,7 +128,7 @@ public class F1DataMain {
     //Parses the lap data packet.
     private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
         for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            LapData ld = new LapData(byteBuffer);
+            LapData ld = LapDataPacketParser.parsePacket(packetFormat, byteBuffer);
             //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
             if (validKey(i)) {
                 TelemetryData td = participants.get(i);
