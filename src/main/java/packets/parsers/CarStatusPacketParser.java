@@ -25,7 +25,7 @@ public class CarStatusPacketParser {
                 .setDrsActivationDistance(BitMaskUtils.bitMask16(byteBuffer.getShort()));
         if (packetFormat <= Constants.YEAR_2020) {
             float[] tireWear = new float[4];
-            for (int i = 0; i < 4; i++) tireWear[i] = byteBuffer.getFloat();
+            for (int i = 0; i < 4; i++) tireWear[i] = BitMaskUtils.bitMask8(byteBuffer.get());
             builder.setTyresWear(tireWear);
         }
         builder.setActualTireCompound(BitMaskUtils.bitMask8(byteBuffer.get()))

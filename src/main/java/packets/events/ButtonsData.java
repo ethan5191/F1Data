@@ -1,6 +1,6 @@
 package packets.events;
 
-import utils.constants.Constants;
+import utils.BitMaskUtils;
 
 import java.nio.ByteBuffer;
 
@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 public class ButtonsData {
 
     public ButtonsData(ByteBuffer byteBuffer) {
-        this.buttonsStatus = byteBuffer.getInt() & Constants.BIT_MASK_32;
+        this.buttonsStatus = BitMaskUtils.bitMask32(byteBuffer.getInt());
     }
 
     private final long buttonsStatus;

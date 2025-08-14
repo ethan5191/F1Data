@@ -269,101 +269,17 @@ public class LapData {
         return legacyLapData;
     }
 
-    public static class LegacyLapData {
+    /**
+     * @param lastLapTime20 Params that changed datatype in 2021 packet updates.
+     * @param bestLapTime   Params that where removed in the 2021 packet updates.
+     * @param warnings      Replaced in 2023 by the totalWarnings and cornerCuttingWarnings params.
+     */
+    public record LegacyLapData(float lastLapTime20, float currentLapTime20, float bestLapTime, int bestLapNum,
+                                int bestLapSector1InMS, int bestLapSector2InMS, int bestLapSector3InMS,
+                                int bestOverallSector1InMS, int bestOverallSector1LapNum, int bestOverallSector2InMS,
+                                int bestOverallSector2LapNum, int bestOverallSector3InMS, int bestOverallSector3LapNum,
+                                int warnings) {
 
-        public LegacyLapData(float lastLapTime20, float currentLapTime20, float bestLapTime, int bestLapNum, int bestLapSector1InMS,
-                             int bestLapSector2InMS, int bestLapSector3InMS, int bestOverallSector1InMS, int bestOverallSector1LapNum,
-                             int bestOverallSector2InMS, int bestOverallSector2LapNum, int bestOverallSector3InMS,
-                             int bestOverallSector3LapNum, int warnings) {
-            this.lastLapTime20 = lastLapTime20;
-            this.currentLapTime20 = currentLapTime20;
-            this.bestLapTime = bestLapTime;
-            this.bestLapNum = bestLapNum;
-            this.bestLapSector1InMS = bestLapSector1InMS;
-            this.bestLapSector2InMS = bestLapSector2InMS;
-            this.bestLapSector3InMS = bestLapSector3InMS;
-            this.bestOverallSector1InMS = bestOverallSector1InMS;
-            this.bestOverallSector1LapNum = bestOverallSector1LapNum;
-            this.bestOverallSector2InMS = bestOverallSector2InMS;
-            this.bestOverallSector2LapNum = bestOverallSector2LapNum;
-            this.bestOverallSector3InMS = bestOverallSector3InMS;
-            this.bestOverallSector3LapNum = bestOverallSector3LapNum;
-            this.warnings = warnings;
-        }
-
-        //Params that changed datatype in 2021 packet updates.
-        private final float lastLapTime20;
-        private final float currentLapTime20;
-        //Params that where removed in the 2021 packet updates.
-        private final float bestLapTime;
-        private final int bestLapNum;
-        private final int bestLapSector1InMS;
-        private final int bestLapSector2InMS;
-        private final int bestLapSector3InMS;
-        private final int bestOverallSector1InMS;
-        private final int bestOverallSector1LapNum;
-        private final int bestOverallSector2InMS;
-        private final int bestOverallSector2LapNum;
-        private final int bestOverallSector3InMS;
-        private final int bestOverallSector3LapNum;
-        //Replaced in 2023 by the totalWarnings and cornerCuttingWarnings params.
-        private final int warnings;
-
-        public float getLastLapTime20() {
-            return lastLapTime20;
-        }
-
-        public float getCurrentLapTime20() {
-            return currentLapTime20;
-        }
-
-        public float getBestLapTime() {
-            return bestLapTime;
-        }
-
-        public int getBestLapNum() {
-            return bestLapNum;
-        }
-
-        public int getBestLapSector1InMS() {
-            return bestLapSector1InMS;
-        }
-
-        public int getBestLapSector2InMS() {
-            return bestLapSector2InMS;
-        }
-
-        public int getBestLapSector3InMS() {
-            return bestLapSector3InMS;
-        }
-
-        public int getBestOverallSector1InMS() {
-            return bestOverallSector1InMS;
-        }
-
-        public int getBestOverallSector1LapNum() {
-            return bestOverallSector1LapNum;
-        }
-
-        public int getBestOverallSector2InMS() {
-            return bestOverallSector2InMS;
-        }
-
-        public int getBestOverallSector2LapNum() {
-            return bestOverallSector2LapNum;
-        }
-
-        public int getBestOverallSector3InMS() {
-            return bestOverallSector3InMS;
-        }
-
-        public int getBestOverallSector3LapNum() {
-            return bestOverallSector3LapNum;
-        }
-
-        public int getWarnings() {
-            return warnings;
-        }
     }
 
     public static class Builder {

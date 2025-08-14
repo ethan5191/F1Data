@@ -38,7 +38,7 @@ public class LapDataPacketParser {
         if (packetFormat >= Constants.YEAR_2023) builder.setSector1TimeMinutesPart(BitMaskUtils.bitMask8(byteBuffer.get()));
         builder.setSector2TimeMsPart(BitMaskUtils.bitMask16(byteBuffer.getShort()));
         if (packetFormat >= Constants.YEAR_2023) {
-            builder.setSector1TimeMinutesPart(BitMaskUtils.bitMask8(byteBuffer.get()))
+            builder.setSector2TimeMinutesPart(BitMaskUtils.bitMask8(byteBuffer.get()))
                     .setDeltaCarInFrontMsPart(BitMaskUtils.bitMask16(byteBuffer.getShort()));
             if (packetFormat >= Constants.YEAR_2024) builder.setDeltaCarInFrontMinutesPart(BitMaskUtils.bitMask8(byteBuffer.get()));
             builder.setDeltaRaceLeaderMsPart(BitMaskUtils.bitMask16(byteBuffer.getShort()));

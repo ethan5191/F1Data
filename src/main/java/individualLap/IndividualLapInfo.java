@@ -6,6 +6,7 @@ import packets.enums.TireBrakesOrderEnum;
 import utils.Util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 //Used to represent an individual laps data for an individual car. Idea is this will be populated at the end of the lap.
 public class IndividualLapInfo {
@@ -14,8 +15,14 @@ public class IndividualLapInfo {
     //prevLap is the last LapData from the telemetry object, which has the sector 1 and 2 times in it.
     public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap) {
         this.lapNum = prevLap.getCurrentLapNum();
-        this.nonRoundedLapTime = ld.getLastLapTimeMs();
-        this.lapTimeInMs = Util.roundDecimal(new BigDecimal(ld.getLastLapTimeMs()));
+        this.useLegacy = (ld.getLastLapTimeMs() == 0 && ld.getLegacyLapData().lastLapTime20() > 0);
+        if (this.useLegacy) {
+            this.nonRoundedLapTime = ld.getLegacyLapData().lastLapTime20();
+            this.lapTimeInMs = new BigDecimal(this.nonRoundedLapTime).setScale(3, RoundingMode.HALF_UP);
+        } else {
+            this.nonRoundedLapTime = ld.getLastLapTimeMs();
+            this.lapTimeInMs = Util.roundDecimal(BigDecimal.valueOf(this.nonRoundedLapTime));
+        }
         int sector1MinPart = prevLap.getSector1TimeMinutesPart() * 60;
         int s1 = prevLap.getSector1TimeMsPart() + sector1MinPart;
         this.sector1InMs = Util.roundDecimal(new BigDecimal(s1));
@@ -37,6 +44,9 @@ public class IndividualLapInfo {
     private final BigDecimal sector2InMs;
     //Calculated from lapTimeMs - (sector2InMs + sector1InMs)
     private final BigDecimal sector3InMs;
+
+    //Indicates this is from 2020 or earlier, which doesn't require a division to determine full lap time.
+    private final boolean useLegacy;
 
     //From SpeedTrap event
     private final float speedTrap;
@@ -75,6 +85,10 @@ public class IndividualLapInfo {
 
     public BigDecimal getSector3InMs() {
         return sector3InMs;
+    }
+
+    public boolean isUseLegacy() {
+        return useLegacy;
     }
 
     public float getSpeedTrap() {

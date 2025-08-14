@@ -9,13 +9,13 @@ import java.nio.ByteBuffer;
 public class ParticipantPacketParser {
 
     public static ParticipantData parsePacket(int packetFormat, ByteBuffer byteBuffer) {
-        ParticipantData.Builder builder = new ParticipantData.Builder().
-                setAiControlled(BitMaskUtils.bitMask8(byteBuffer.get()))
+        ParticipantData.Builder builder = new ParticipantData.Builder()
+                .setAiControlled(BitMaskUtils.bitMask8(byteBuffer.get()))
                 .setDriverId(BitMaskUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= Constants.YEAR_2021) builder.setNetworkId(BitMaskUtils.bitMask8(byteBuffer.get()))
-                .setTeamId(BitMaskUtils.bitMask8(byteBuffer.get()));
-        if (packetFormat >= Constants.YEAR_2021) builder.setMyTeam(BitMaskUtils.bitMask8(byteBuffer.get()))
-                .setRaceNumber(BitMaskUtils.bitMask8(byteBuffer.get()))
+        if (packetFormat >= Constants.YEAR_2021) builder.setNetworkId(BitMaskUtils.bitMask8(byteBuffer.get()));
+        builder.setTeamId(BitMaskUtils.bitMask8(byteBuffer.get()));
+        if (packetFormat >= Constants.YEAR_2021) builder.setMyTeam(BitMaskUtils.bitMask8(byteBuffer.get()));
+        builder.setRaceNumber(BitMaskUtils.bitMask8(byteBuffer.get()))
                 .setNationality(BitMaskUtils.bitMask8(byteBuffer.get()));
         int nameMaxLength = (packetFormat < Constants.YEAR_2025) ? 48 : 32;
         byte[] tempName = new byte[nameMaxLength];

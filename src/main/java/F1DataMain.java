@@ -114,7 +114,7 @@ public class F1DataMain {
                 float angularAccelerationX = byteBuffer.getFloat();
                 float angularAccelerationY = byteBuffer.getFloat();
                 float angularAccelerationZ = byteBuffer.getFloat();
-                float frontWheelsAngle =byteBuffer.getFloat();
+                float frontWheelsAngle = byteBuffer.getFloat();
             }
         }
     }
@@ -143,7 +143,7 @@ public class F1DataMain {
                     }
                 }
             } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
-                SpeedTrapData trap = new SpeedTrapData(byteBuffer);
+                SpeedTrapData trap = SpeedTrapEventParser.parseEventPacket(packetFormat, byteBuffer);
                 //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
                 TelemetryData td = participants.get(trap.getVehicleId());
                 td.setSpeedTrap(trap.getSpeed());
@@ -208,9 +208,11 @@ public class F1DataMain {
                     }
                 }
             }
-            //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-            int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
-            int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
+            if (packetFormat >= Constants.YEAR_2022) {
+                //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
+                int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
+                int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
+            }
         }
     }
 
@@ -265,7 +267,6 @@ public class F1DataMain {
     private void handleCarStatusPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                System.out.println(participants.get(i).getParticipantData().getLastName() + " " + packetFormat);
                 CarStatusData csd = CarStatusPacketParser.parsePacket(packetFormat, byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentStatus(csd);
@@ -336,7 +337,6 @@ public class F1DataMain {
                     }
                 }
             }
-            assert formulaType != null;
             //Get the active driver pairings based on what formula we are.
             Map<Integer, Integer> driverPairing = driverPairingsEnum.getDriverPair(formulaType.getIndex());
             //Loop over each created TD object to create the DriverDataDTO to update the UI.
