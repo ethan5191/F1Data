@@ -96,117 +96,123 @@ public class F1DataMain {
     //Handles the event packet. This one is different from the others as the packet changes based on what event has happened.
     //Currently I only care about the button event and the speed trap triggered event.
     private void handleEventPacket(ByteBuffer byteBuffer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
-        byte[] codeArray = new byte[4];
-        byteBuffer.get(codeArray, 0, 4);
-        String value = new String(codeArray, StandardCharsets.US_ASCII);
-        if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
-            ButtonsData bd = new ButtonsData(byteBuffer);
-            //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
-            if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()
-                    || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.getButtonsStatus()) {
-                //On pause I am printing lap data to the console and other information for each car.
-                for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
-                    Integer key = entry.getKey();
-                    TelemetryData td = entry.getValue();
-                    System.out.println();
-                    System.out.println("ID " + key);
-                    td.getParticipantData().printName();
-                    System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
-                    System.out.println("-------------------------------------------");
+        if (!participants.isEmpty()) {
+            byte[] codeArray = new byte[4];
+            byteBuffer.get(codeArray, 0, 4);
+            String value = new String(codeArray, StandardCharsets.US_ASCII);
+            if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
+                ButtonsData bd = new ButtonsData(byteBuffer);
+                //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
+                if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()
+                        || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.getButtonsStatus()) {
+                    //On pause I am printing lap data to the console and other information for each car.
+                    for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
+                        Integer key = entry.getKey();
+                        TelemetryData td = entry.getValue();
+                        System.out.println();
+                        System.out.println("ID " + key);
+                        td.getParticipantData().printName();
+                        System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
+                        System.out.println("-------------------------------------------");
+                    }
                 }
+            } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
+                SpeedTrapData trap = new SpeedTrapData(byteBuffer);
+                //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
+                TelemetryData td = participants.get(trap.getVehicleId());
+                td.setSpeedTrap(trap.getSpeed());
+                //Populate the speedTrap consumer so that the panels get updated with the latest data.
+                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
             }
-        } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
-            SpeedTrapData trap = new SpeedTrapData(byteBuffer);
-            //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
-            TelemetryData td = participants.get(trap.getVehicleId());
-            td.setSpeedTrap(trap.getSpeed());
-            //Populate the speedTrap consumer so that the panels get updated with the latest data.
-            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
         }
     }
 
     //Parses the lap data packet.
     private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
-        for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            LapData ld = LapDataPacketParser.parsePacket(packetFormat, byteBuffer);
-            //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
-            if (validKey(i)) {
-                TelemetryData td = participants.get(i);
-                if (td.getCurrentLap() != null) {
-                    //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
-                    if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
-                        //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
-                        //then update the start params so that next laps calculations use this laps ending values as there start values.
-                        float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
-                        td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
-                        float[] tireWearThisLap = new float[4];
-                        for (int j = 0; j < tireWearThisLap.length; j++) {
-                            tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                LapData ld = LapDataPacketParser.parsePacket(packetFormat, byteBuffer);
+                //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
+                if (validKey(i)) {
+                    TelemetryData td = participants.get(i);
+                    if (td.getCurrentLap() != null) {
+                        //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
+                        if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
+                            //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
+                            //then update the start params so that next laps calculations use this laps ending values as there start values.
+                            float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
+                            td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
+                            float[] tireWearThisLap = new float[4];
+                            for (int j = 0; j < tireWearThisLap.length; j++) {
+                                tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
+                            }
+                            td.setStartOfLapTireWear(td.getCurrentTireWear());
+                            IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
+                            td.setLastLapNum(info.getLapNum());
+                            td.setLastLapTimeInMs(info.getLapTimeInMs());
+                            if (td.getCurrentSetup() != null) {
+                                info.setCarSetupData(td.getCurrentSetup());
+                                info.setSetupChange(td.isSetupChange());
+                                td.setSetupChange(false);
+                            }
+                            //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
+                            if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
+                                info.setSetupChange(true);
+                                td.setPrevLapFittedTireId(td.getFittedTireId());
+                            }
+                            if (td.getCurrentTelemetry() != null) {
+                                info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
+                            }
+                            if (td.getCurrentStatus() != null) {
+                                info.setCarStatusInfo(new CarStatusInfo(td.getCurrentStatus()));
+                            }
+                            if (td.getCurrentDamage() != null) {
+                                info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
+                            }
+                            //Print info when the lap is completed.
+                            info.printInfo(td.getParticipantData().getLastName());
+                            info.printStatus(td.getParticipantData().getLastName());
+                            info.printDamage(td.getParticipantData().getLastName());
+                            //Populate the DriverDataDTO to populate the panels.
+                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), info, i == playerCarIndex));
                         }
-                        td.setStartOfLapTireWear(td.getCurrentTireWear());
-                        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
-                        td.setLastLapNum(info.getLapNum());
-                        td.setLastLapTimeInMs(info.getLapTimeInMs());
-                        if (td.getCurrentSetup() != null) {
-                            info.setCarSetupData(td.getCurrentSetup());
-                            info.setSetupChange(td.isSetupChange());
-                            td.setSetupChange(false);
-                        }
-                        //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
-                        if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
-                            info.setSetupChange(true);
-                            td.setPrevLapFittedTireId(td.getFittedTireId());
-                        }
-                        if (td.getCurrentTelemetry() != null) {
-                            info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
-                        }
-                        if (td.getCurrentStatus() != null) {
-                            info.setCarStatusInfo(new CarStatusInfo(td.getCurrentStatus()));
-                        }
-                        if (td.getCurrentDamage() != null) {
-                            info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
-                        }
-                        //Print info when the lap is completed.
-                        info.printInfo(td.getParticipantData().getLastName());
-                        info.printStatus(td.getParticipantData().getLastName());
-                        info.printDamage(td.getParticipantData().getLastName());
-                        //Populate the DriverDataDTO to populate the panels.
-                        driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), info, i == playerCarIndex));
+                        td.setCurrentLap(ld);
+                    } else {
+                        td.setCurrentLap(ld);
                     }
-                    td.setCurrentLap(ld);
-                } else {
-                    td.setCurrentLap(ld);
                 }
             }
+            //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
+            int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
+            int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
         }
-        //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-        int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
-        int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
     }
 
     //Parses the car setup packet.
     private void handleCarSetupPacket(ByteBuffer byteBuffer) {
-        for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-            boolean isValidKey = validKey(i);
-            //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
-            //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
-            String setupName = (isValidKey) ? participants.get(i).getParticipantData().getLastName() : "";
-            CarSetupData csd = CarSetupPacketParser.parsePacket(packetFormat, byteBuffer, setupName);
-            if (isValidKey) {
-                TelemetryData td = participants.get(i);
-                boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
-                if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
+        if (!participants.isEmpty()) {
+            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+                boolean isValidKey = validKey(i);
+                //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
+                //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
+                String setupName = (isValidKey) ? participants.get(i).getParticipantData().getLastName() : "";
+                CarSetupData csd = CarSetupPacketParser.parsePacket(packetFormat, byteBuffer, setupName);
+                if (isValidKey) {
+                    TelemetryData td = participants.get(i);
+                    boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
+                    if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
 //                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
-                    td.setCurrentSetup(csd);
-                    if (isNullOrChanged) td.setSetupChange(true);
-                }
+                        td.setCurrentSetup(csd);
+                        if (isNullOrChanged) td.setSetupChange(true);
+                    }
 //                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
+                }
             }
-        }
-        //Trailing value, must be here to ensure the packet is fully parsed.
-        //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
-        if (packetFormat >= Constants.YEAR_2024) {
-            float nextFronWingVal = byteBuffer.getFloat();
+            //Trailing value, must be here to ensure the packet is fully parsed.
+            //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
+            if (packetFormat >= Constants.YEAR_2024) {
+                float nextFronWingVal = byteBuffer.getFloat();
+            }
         }
     }
 
@@ -222,7 +228,7 @@ public class F1DataMain {
         }
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
         if (packetFormat <= Constants.YEAR_2020) {
-            long buttonEvent = byteBuffer.getInt() & Constants.BIT_MASK_32;
+            long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
         }
         int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
         int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
@@ -258,16 +264,18 @@ public class F1DataMain {
     }
 
     private void handleTireSetsPacket(ByteBuffer byteBuffer) {
-        int carId = BitMaskUtils.bitMask8(byteBuffer.get());
-        TelemetryData td = participants.get(carId);
-        TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
-        for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
-            tireSetsData[i] = new TireSetsData(byteBuffer);
-        }
-        td.setTireSetsData(tireSetsData);
-        int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
-        if (td.getFittedTireId() != fittedId) {
-            td.setFittedTireId(fittedId);
+        if (!participants.isEmpty()) {
+            int carId = BitMaskUtils.bitMask8(byteBuffer.get());
+            TelemetryData td = participants.get(carId);
+            TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
+            for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
+                tireSetsData[i] = new TireSetsData(byteBuffer);
+            }
+            td.setTireSetsData(tireSetsData);
+            int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
+            if (td.getFittedTireId() != fittedId) {
+                td.setFittedTireId(fittedId);
+            }
         }
     }
 
