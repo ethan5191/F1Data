@@ -1,5 +1,10 @@
 package packets;
 
+import utils.BitMaskUtils;
+import utils.ParseUtils;
+
+import java.nio.ByteBuffer;
+
 /**
  * F1 24 CarStatusData Breakdown (Little Endian)
  * <p>
@@ -48,419 +53,143 @@ package packets;
  * Note:
  * - uint8 and uint16 types must be read with bitmasking to get positive integer values.
  * - int8 and float map directly to their Java counterparts.
+ *
+ * @param tyresWear Params where part of the CarStatus packet in 2020, moved to their own packet in 2021.
  */
 
-public class CarStatusData {
+public record CarStatusData(int tractionControl, int antiLockBrakes, int fuelMix, int frontBrakeBias,
+                            int pitLimitStatus, float fuelInTank, float fuelCapacity, float fuelRemainingLaps,
+                            int maxRPM, int idleRPM, int maxGears, int drsAllowed, int drsActivationDistance,
+                            int actualTireCompound, int visualTireCompound, int tiresAgeLaps, int vehicleFiaFlags,
+                            float ersStoreEnergy, int ersDeployMode, float ersHarvestedThisLapMGUK,
+                            float ersHarvestedThisLapMGUH, float ersDeployedThisLap, int networkPaused,
+                            float enginePowerICE, float enginePowerMGUK, float[] tyresWear, int[] tyresDamage,
+                            int frontLeftWingDamage, int frontRightWingDamage, int rearWingDamage, int drsFault,
+                            int engineDamage, int gearBoxDamage) {
 
-    public CarStatusData(Builder builder) {
-        this.tractionControl = builder.tractionControl;
-        this.antiLockBrakes = builder.antiLockBrakes;
-        this.fuelMix = builder.fuelMix;
-        this.frontBrakeBias = builder.frontBrakeBias;
-        this.pitLimitStatus = builder.pitLimitStatus;
-        this.fuelInTank = builder.fuelInTank;
-        this.fuelCapacity = builder.fuelCapacity;
-        this.fuelRemainingLaps = builder.fuelRemainingLaps;
-        this.maxRPM = builder.maxRPM;
-        this.idleRPM = builder.idleRPM;
-        this.maxGears = builder.maxGears;
-        this.drsAllowed = builder.drsAllowed;
-        this.drsActivationDistance = builder.drsActivationDistance;
-        this.actualTireCompound = builder.actualTireCompound;
-        this.visualTireCompound = builder.visualTireCompound;
-        this.tiresAgeLaps = builder.tiresAgeLaps;
-        this.vehicleFiaFlags = builder.vehicleFiaFlags;
-        this.enginePowerICE = builder.enginePowerICE;
-        this.enginePowerMGUK = builder.enginePowerMGUK;
-        this.ersStoreEnergy = builder.ersStoreEnergy;
-        this.ersDeployMode = builder.ersDeployMode;
-        this.ersHarvestedThisLapMGUK = builder.ersHarvestedThisLapMGUK;
-        this.ersHarvestedThisLapMGUH = builder.ersHarvestedThisLapMGUH;
-        this.ersDeployedThisLap = builder.ersDeployedThisLap;
-        this.networkPaused = builder.networkPaused;
-
-        this.tyresWear = builder.tyresWear;
-        this.tyresDamage = builder.tyresDamage;
-        this.frontLeftWingDamage = builder.frontLeftWingDamage;
-        this.frontRightWingDamage = builder.frontRightWingDamage;
-        this.rearWingDamage = builder.rearWingDamage;
-        this.drsFault = builder.drsFault;
-        this.engineDamage = builder.engineDamage;
-        this.gearBoxDamage = builder.gearBoxDamage;
-    }
-
-    private final int tractionControl;
-    private final int antiLockBrakes;
-    private final int fuelMix;
-    private final int frontBrakeBias;
-    private final int pitLimitStatus;
-    private final float fuelInTank;
-    private final float fuelCapacity;
-    private final float fuelRemainingLaps;
-    private final int maxRPM;
-    private final int idleRPM;
-    private final int maxGears;
-    private final int drsAllowed;
-    private final int drsActivationDistance;
-    private final int actualTireCompound;
-    private final int visualTireCompound;
-    private final int tiresAgeLaps;
-    private final int vehicleFiaFlags;
-    private final float enginePowerICE;
-    private final float enginePowerMGUK;
-    private final float ersStoreEnergy;
-    private final int ersDeployMode;
-    private final float ersHarvestedThisLapMGUK;
-    private final float ersHarvestedThisLapMGUH;
-    private final float ersDeployedThisLap;
-    private final int networkPaused;
-
-    //Params where part of the CarStatus packet in 2020, moved to their own packet in 2021.
-    private final float[] tyresWear;
-    private final int[] tyresDamage;
-    private final int frontLeftWingDamage;
-    private final int frontRightWingDamage;
-    private final int rearWingDamage;
-    private final int drsFault;
-    private final int engineDamage;
-    private final int gearBoxDamage;
-
-    public int getTractionControl() {
-        return tractionControl;
-    }
-
-    public int getAntiLockBrakes() {
-        return antiLockBrakes;
-    }
-
-    public int getFuelMix() {
-        return fuelMix;
-    }
-
-    public int getFrontBrakeBias() {
-        return frontBrakeBias;
-    }
-
-    public int getPitLimitStatus() {
-        return pitLimitStatus;
-    }
-
-    public float getFuelInTank() {
-        return fuelInTank;
-    }
-
-    public float getFuelCapacity() {
-        return fuelCapacity;
-    }
-
-    public float getFuelRemainingLaps() {
-        return fuelRemainingLaps;
-    }
-
-    public int getMaxRPM() {
-        return maxRPM;
-    }
-
-    public int getIdleRPM() {
-        return idleRPM;
-    }
-
-    public int getMaxGears() {
-        return maxGears;
-    }
-
-    public int getDrsAllowed() {
-        return drsAllowed;
-    }
-
-    public int getDrsActivationDistance() {
-        return drsActivationDistance;
-    }
-
-    public int getActualTireCompound() {
-        return actualTireCompound;
-    }
-
-    public int getVisualTireCompound() {
-        return visualTireCompound;
-    }
-
-    public int getTiresAgeLaps() {
-        return tiresAgeLaps;
-    }
-
-    public int getVehicleFiaFlags() {
-        return vehicleFiaFlags;
-    }
-
-    public float getEnginePowerICE() {
-        return enginePowerICE;
-    }
-
-    public float getEnginePowerMGUK() {
-        return enginePowerMGUK;
-    }
-
-    public float getErsStoreEnergy() {
-        return ersStoreEnergy;
-    }
-
-    public int getErsDeployMode() {
-        return ersDeployMode;
-    }
-
-    public float getErsHarvestedThisLapMGUK() {
-        return ersHarvestedThisLapMGUK;
-    }
-
-    public float getErsHarvestedThisLapMGUH() {
-        return ersHarvestedThisLapMGUH;
-    }
-
-    public float getErsDeployedThisLap() {
-        return ersDeployedThisLap;
-    }
-
-    public int getNetworkPaused() {
-        return networkPaused;
-    }
-
-    public float[] getTyresWear() {
-        return tyresWear;
-    }
-
-    public int[] getTyresDamage() {
-        return tyresDamage;
-    }
-
-    public int getFrontLeftWingDamage() {
-        return frontLeftWingDamage;
-    }
-
-    public int getFrontRightWingDamage() {
-        return frontRightWingDamage;
-    }
-
-    public int getRearWingDamage() {
-        return rearWingDamage;
-    }
-
-    public int getDrsFault() {
-        return drsFault;
-    }
-
-    public int getEngineDamage() {
-        return engineDamage;
-    }
-
-    public int getGearBoxDamage() {
-        return gearBoxDamage;
-    }
-
-    public static class Builder {
-
-        private int tractionControl;
-        private int antiLockBrakes;
-        private int fuelMix;
-        private int frontBrakeBias;
-        private int pitLimitStatus;
-        private float fuelInTank;
-        private float fuelCapacity;
-        private float fuelRemainingLaps;
-        private int maxRPM;
-        private int idleRPM;
-        private int maxGears;
-        private int drsAllowed;
-        private int drsActivationDistance;
-        private int actualTireCompound;
-        private int visualTireCompound;
-        private int tiresAgeLaps;
-        private int vehicleFiaFlags;
-        private float enginePowerICE;
-        private float enginePowerMGUK;
-        private float ersStoreEnergy;
-        private int ersDeployMode;
-        private float ersHarvestedThisLapMGUK;
-        private float ersHarvestedThisLapMGUH;
-        private float ersDeployedThisLap;
-        private int networkPaused;
-
-        private float[] tyresWear = new float[4];
-        private int[] tyresDamage = new int[4];
-        private int frontLeftWingDamage;
-        private int frontRightWingDamage;
-        private int rearWingDamage;
-        private int drsFault;
-        private int engineDamage;
-        private int gearBoxDamage;
-
-        public Builder setTractionControl(int tractionControl) {
-            this.tractionControl = tractionControl;
-            return this;
+    private static float[] parseLegacyTireWear(ByteBuffer byteBuffer) {
+        float[] legacyTireWear = new float[4];
+        for (int i = 0; i < legacyTireWear.length; i++) {
+            legacyTireWear[i] = BitMaskUtils.bitMask8(byteBuffer.get());
         }
+        return legacyTireWear;
+    }
 
-        public Builder setAntiLockBrakes(int antiLockBrakes) {
-            this.antiLockBrakes = antiLockBrakes;
-            return this;
+    record CarStatusData20(int tractionControl, int antiLockBrakes, int fuelMix, int frontBrakeBias, int pitLimitStatus,
+                           float fuelInTank, float fuelCapacity, float fuelRemainingLaps, int maxRPM, int idleRPM,
+                           int maxGears, int drsAllowed, int drsActivationDistance, float[] tyresWear,
+                           int actualTireCompound, int visualTireCompound, int tiresAgeLaps,
+                           int[] tyresDamage, int frontLeftWingDamage, int frontRightWingDamage, int rearWingDamage,
+                           int drsFault, int engineDamage, int gearBoxDamage, int vehicleFiaFlags, float ersStoreEnergy,
+                           int ersDeployMode, float ersHarvestedThisLapMGUK, float ersHarvestedThisLapMGUH,
+                           float ersDeployedThisLap) {
+        public CarStatusData20(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    parseLegacyTireWear(byteBuffer),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat()
+            );
         }
+    }
 
-        public Builder setFuelMix(int fuelMix) {
-            this.fuelMix = fuelMix;
-            return this;
+    record CarStatusData21(int tractionControl, int antiLockBrakes, int fuelMix, int frontBrakeBias, int pitLimitStatus,
+                           float fuelInTank, float fuelCapacity, float fuelRemainingLaps, int maxRPM, int idleRPM,
+                           int maxGears, int drsAllowed, int drsActivationDistance, int actualTireCompound,
+                           int visualTireCompound, int tiresAgeLaps, int vehicleFiaFlags, float ersStoreEnergy,
+                           int ersDeployMode, float ersHarvestedThisLapMGUK, float ersHarvestedThisLapMGUH,
+                           float ersDeployedThisLap, int networkPaused) {
+        public CarStatusData21(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setFrontBrakeBias(int frontBrakeBias) {
-            this.frontBrakeBias = frontBrakeBias;
-            return this;
-        }
-
-        public Builder setPitLimitStatus(int pitLimitStatus) {
-            this.pitLimitStatus = pitLimitStatus;
-            return this;
-        }
-
-        public Builder setFuelInTank(float fuelInTank) {
-            this.fuelInTank = fuelInTank;
-            return this;
-        }
-
-        public Builder setFuelCapacity(float fuelCapacity) {
-            this.fuelCapacity = fuelCapacity;
-            return this;
-        }
-
-        public Builder setFuelRemainingLaps(float fuelRemainingLaps) {
-            this.fuelRemainingLaps = fuelRemainingLaps;
-            return this;
-        }
-
-        public Builder setMaxRPM(int maxRPM) {
-            this.maxRPM = maxRPM;
-            return this;
-        }
-
-        public Builder setIdleRPM(int idleRPM) {
-            this.idleRPM = idleRPM;
-            return this;
-        }
-
-        public Builder setMaxGears(int maxGears) {
-            this.maxGears = maxGears;
-            return this;
-        }
-
-        public Builder setDrsAllowed(int drsAllowed) {
-            this.drsAllowed = drsAllowed;
-            return this;
-        }
-
-        public Builder setDrsActivationDistance(int drsActivationDistance) {
-            this.drsActivationDistance = drsActivationDistance;
-            return this;
-        }
-
-        public Builder setActualTireCompound(int actualTireCompound) {
-            this.actualTireCompound = actualTireCompound;
-            return this;
-        }
-
-        public Builder setVisualTireCompound(int visualTireCompound) {
-            this.visualTireCompound = visualTireCompound;
-            return this;
-        }
-
-        public Builder setTiresAgeLaps(int tiresAgeLaps) {
-            this.tiresAgeLaps = tiresAgeLaps;
-            return this;
-        }
-
-        public Builder setVehicleFiaFlags(int vehicleFiaFlags) {
-            this.vehicleFiaFlags = vehicleFiaFlags;
-            return this;
-        }
-
-        public Builder setEnginePowerICE(float enginePowerICE) {
-            this.enginePowerICE = enginePowerICE;
-            return this;
-        }
-
-        public Builder setEnginePowerMGUK(float enginePowerMGUK) {
-            this.enginePowerMGUK = enginePowerMGUK;
-            return this;
-        }
-
-        public Builder setErsStoreEnergy(float ersStoreEnergy) {
-            this.ersStoreEnergy = ersStoreEnergy;
-            return this;
-        }
-
-        public Builder setErsDeployMode(int ersDeployMode) {
-            this.ersDeployMode = ersDeployMode;
-            return this;
-        }
-
-        public Builder setErsHarvestedThisLapMGUK(float ersHarvestedThisLapMGUK) {
-            this.ersHarvestedThisLapMGUK = ersHarvestedThisLapMGUK;
-            return this;
-        }
-
-        public Builder setErsHarvestedThisLapMGUH(float ersHarvestedThisLapMGUH) {
-            this.ersHarvestedThisLapMGUH = ersHarvestedThisLapMGUH;
-            return this;
-        }
-
-        public Builder setErsDeployedThisLap(float ersDeployedThisLap) {
-            this.ersDeployedThisLap = ersDeployedThisLap;
-            return this;
-        }
-
-        public Builder setNetworkPaused(int networkPaused) {
-            this.networkPaused = networkPaused;
-            return this;
-        }
-
-        public Builder setTyresWear(float[] tyresWear) {
-            this.tyresWear = tyresWear;
-            return this;
-        }
-
-        public Builder setTyresDamage(int[] tyresDamage) {
-            this.tyresDamage = tyresDamage;
-            return this;
-        }
-
-        public Builder setFrontLeftWingDamage(int frontLeftWingDamage) {
-            this.frontLeftWingDamage = frontLeftWingDamage;
-            return this;
-        }
-
-        public Builder setFrontRightWingDamage(int frontRightWingDamage) {
-            this.frontRightWingDamage = frontRightWingDamage;
-            return this;
-        }
-
-        public Builder setRearWingDamage(int rearWingDamage) {
-            this.rearWingDamage = rearWingDamage;
-            return this;
-        }
-
-        public Builder setDrsFault(int drsFault) {
-            this.drsFault = drsFault;
-            return this;
-        }
-
-        public Builder setEngineDamage(int engineDamage) {
-            this.engineDamage = engineDamage;
-            return this;
-        }
-
-        public Builder setGearBoxDamage(int gearBoxDamage) {
-            this.gearBoxDamage = gearBoxDamage;
-            return this;
-        }
-
-        public CarStatusData build() {
-            return new CarStatusData(this);
+    record CarStatusData23(int tractionControl, int antiLockBrakes, int fuelMix, int frontBrakeBias, int pitLimitStatus,
+                           float fuelInTank, float fuelCapacity, float fuelRemainingLaps, int maxRPM, int idleRPM,
+                           int maxGears, int drsAllowed, int drsActivationDistance, int actualTireCompound,
+                           int visualTireCompound, int tiresAgeLaps, int vehicleFiaFlags, float enginePowerICE,
+                           float enginePowerMGUK, float ersStoreEnergy, int ersDeployMode,
+                           float ersHarvestedThisLapMGUK, float ersHarvestedThisLapMGUH, float ersDeployedThisLap,
+                           int networkPaused
+    ) {
+        public CarStatusData23(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
     }
 }

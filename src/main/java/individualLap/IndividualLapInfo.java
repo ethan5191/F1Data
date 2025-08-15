@@ -14,20 +14,20 @@ public class IndividualLapInfo {
     //ld is the current lap, which should be a newly started lap.
     //prevLap is the last LapData from the telemetry object, which has the sector 1 and 2 times in it.
     public IndividualLapInfo(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap) {
-        this.lapNum = prevLap.getCurrentLapNum();
-        this.useLegacy = (ld.getLastLapTimeMs() == 0 && ld.getLegacyLapData().lastLapTime20() > 0);
+        this.lapNum = prevLap.currentLapNum();
+        this.useLegacy = (ld.lastLapTimeMs() == 0 && ld.lastLapTime20() > 0);
         if (this.useLegacy) {
-            this.nonRoundedLapTime = ld.getLegacyLapData().lastLapTime20();
+            this.nonRoundedLapTime = ld.lastLapTime20();
             this.lapTimeInMs = new BigDecimal(this.nonRoundedLapTime).setScale(3, RoundingMode.HALF_UP);
         } else {
-            this.nonRoundedLapTime = ld.getLastLapTimeMs();
+            this.nonRoundedLapTime = ld.lastLapTimeMs();
             this.lapTimeInMs = Util.roundDecimal(BigDecimal.valueOf(this.nonRoundedLapTime));
         }
-        int sector1MinPart = prevLap.getSector1TimeMinutesPart() * 60;
-        int s1 = prevLap.getSector1TimeMsPart() + sector1MinPart;
+        int sector1MinPart = prevLap.sector1TimeMinutesPart() * 60;
+        int s1 = prevLap.sector1TimeMsPart() + sector1MinPart;
         this.sector1InMs = Util.roundDecimal(new BigDecimal(s1));
-        int sector2MinPart = prevLap.getSector2TimeMinutesPart() * 60;
-        int s2 = prevLap.getSector2TimeMsPart() + sector2MinPart;
+        int sector2MinPart = prevLap.sector2TimeMinutesPart() * 60;
+        int s2 = prevLap.sector2TimeMsPart() + sector2MinPart;
         this.sector2InMs = Util.roundDecimal(new BigDecimal(s2));
         BigDecimal sumSectors = this.sector1InMs.add(this.sector2InMs);
         this.sector3InMs = this.lapTimeInMs.subtract(sumSectors);

@@ -1,5 +1,10 @@
 package packets;
 
+import utils.BitMaskUtils;
+import utils.ParseUtils;
+
+import java.nio.ByteBuffer;
+
 /**
  * F1 24 CarTelemetryData Breakdown (Little Endian)
  * - F1 2020 Length: 58 bytes
@@ -38,209 +43,58 @@ package packets;
  * - float and int8 map directly.
  * - Arrays must be read by looping or using get() with a destination array.
  */
-public class CarTelemetryData {
+public record CarTelemetryData(int speed, float throttle, float steer, float brake, int clutch, int gear, int engineRPM,
+                               int drs, int revLightPercent, int[] brakeTemps, int[] tireSurfaceTemps,
+                               int[] tireInnerTemps, int engineTemp, float[] tirePressure, int[] surfaceType,
+                               int revLightBitVal) {
 
-    public CarTelemetryData(Builder builder) {
-        this.speed = builder.speed;
-        this.throttle = builder.throttle;
-        this.steer = builder.steer;
-        this.brake = builder.brake;
-        this.clutch = builder.clutch;
-        this.gear = builder.gear;
-        this.engineRPM = builder.engineRPM;
-        this.drs = builder.drs;
-        this.revLightPercent = builder.revLightPercent;
-        this.revLightBitVal = builder.revLightBitVal;
-        this.brakeTemps = builder.brakeTemps;
-        this.tireSurfaceTemps = builder.tireSurfaceTemps;
-        this.tireInnerTemps = builder.tireInnerTemps;
-        this.engineTemp = builder.engineTemp;
-        this.tirePressure = builder.tirePressure;
-        this.surfaceType = builder.surfaceType;
-    }
-
-    private final int speed;
-    private final float throttle;
-    private final float steer;
-    private final float brake;
-    private final int clutch;
-    private final int gear;
-    private final int engineRPM;
-    private final int drs;
-    private final int revLightPercent;
-    private final int revLightBitVal;
-    private final int[] brakeTemps;
-    private final int[] tireSurfaceTemps;
-    private final int[] tireInnerTemps;
-    private final int engineTemp;
-    private final float[] tirePressure;
-    private final int[] surfaceType;
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public float getThrottle() {
-        return throttle;
-    }
-
-    public float getSteer() {
-        return steer;
-    }
-
-    public float getBrake() {
-        return brake;
-    }
-
-    public int getClutch() {
-        return clutch;
-    }
-
-    public int getGear() {
-        return gear;
-    }
-
-    public int getEngineRPM() {
-        return engineRPM;
-    }
-
-    public int getDrs() {
-        return drs;
-    }
-
-    public int getRevLightPercent() {
-        return revLightPercent;
-    }
-
-    public int getRevLightBitVal() {
-        return revLightBitVal;
-    }
-
-    public int[] getBrakeTemps() {
-        return brakeTemps;
-    }
-
-    public int[] getTireSurfaceTemps() {
-        return tireSurfaceTemps;
-    }
-
-    public int[] getTireInnerTemps() {
-        return tireInnerTemps;
-    }
-
-    public int getEngineTemp() {
-        return engineTemp;
-    }
-
-    public float[] getTirePressure() {
-        return tirePressure;
-    }
-
-    public int[] getSurfaceType() {
-        return surfaceType;
-    }
-
-    public static class Builder {
-
-        private int speed;
-        private float throttle;
-        private float steer;
-        private float brake;
-        private int clutch;
-        private int gear;
-        private int engineRPM;
-        private int drs;
-        private int revLightPercent;
-        private int revLightBitVal;
-        private int[] brakeTemps = new int[4];
-        private int[] tireSurfaceTemps = new int[4];
-        private int[] tireInnerTemps = new int[4];
-        private int engineTemp;
-        private float[] tirePressure = new float[4];
-        private int[] surfaceType = new int[4];
-
-        public Builder setSpeed(int speed) {
-            this.speed = speed;
-            return this;
+    record CarTelemetryData20(int speed, float throttle, float steer, float brake, int clutch, int gear, int engineRPM,
+                              int drs, int revLightPercent, int[] brakeTemps, int[] tireSurfaceTemps,
+                              int[] tireInnerTemps, int engineTemp, float[] tirePressure, int[] surfaceType) {
+        public CarTelemetryData20(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    ParseUtils.parseShortArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4)
+            );
         }
+    }
 
-        public Builder setThrottle(float throttle) {
-            this.throttle = throttle;
-            return this;
-        }
-
-        public Builder setSteer(float steer) {
-            this.steer = steer;
-            return this;
-        }
-
-        public Builder setBrake(float brake) {
-            this.brake = brake;
-            return this;
-        }
-
-        public Builder setClutch(int clutch) {
-            this.clutch = clutch;
-            return this;
-        }
-
-        public Builder setGear(int gear) {
-            this.gear = gear;
-            return this;
-        }
-
-        public Builder setEngineRPM(int engineRPM) {
-            this.engineRPM = engineRPM;
-            return this;
-        }
-
-        public Builder setDrs(int drs) {
-            this.drs = drs;
-            return this;
-        }
-
-        public Builder setRevLightPercent(int revLightPercent) {
-            this.revLightPercent = revLightPercent;
-            return this;
-        }
-
-        public Builder setRevLightBitVal(int revLightBitVal) {
-            this.revLightBitVal = revLightBitVal;
-            return this;
-        }
-
-        public Builder setBrakeTemps(int[] brakeTemps) {
-            this.brakeTemps = brakeTemps;
-            return this;
-        }
-
-        public Builder setTireSurfaceTemps(int[] tireSurfaceTemps) {
-            this.tireSurfaceTemps = tireSurfaceTemps;
-            return this;
-        }
-
-        public Builder setTireInnerTemps(int[] tireInnerTemps) {
-            this.tireInnerTemps = tireInnerTemps;
-            return this;
-        }
-
-        public Builder setEngineTemp(int engineTemp) {
-            this.engineTemp = engineTemp;
-            return this;
-        }
-
-        public Builder setTirePressure(float[] tirePressure) {
-            this.tirePressure = tirePressure;
-            return this;
-        }
-
-        public Builder setSurfaceType(int[] surfaceType) {
-            this.surfaceType = surfaceType;
-            return this;
-        }
-
-        public CarTelemetryData build() {
-            return new CarTelemetryData(this);
+    record CarTelemetryData21(int speed, float throttle, float steer, float brake, int clutch, int gear, int engineRPM,
+                              int drs, int revLightPercent, int revLightBitVal, int[] brakeTemps,
+                              int[] tireSurfaceTemps, int[] tireInnerTemps, int engineTemp, float[] tirePressure,
+                              int[] surfaceType) {
+        public CarTelemetryData21(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    ParseUtils.parseShortArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4)
+            );
         }
     }
 }

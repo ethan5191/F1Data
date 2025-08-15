@@ -1,6 +1,9 @@
 package packets;
 
+import utils.BitMaskUtils;
+
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 
 /**
  * F1 24 packets.PacketHeader Breakdown (Little Endian)
@@ -27,165 +30,66 @@ import java.math.BigInteger;
  * m_secondaryPlayerCarIndex      | uint8     | 1            | 28              | 2020
  */
 
-public class PacketHeader {
+public record PacketHeader(int packetFormat, int majorVersion, int minorVersion, int packetVersion, int packetId,
+                           BigInteger sessionUID, float sessionTime, long frameID, int playerCarIndex,
+                           int secondaryPlayerCarIndex, int gameYear, long overallFrameID) {
 
-    public PacketHeader(Builder builder) {
-        this.packetFormat = builder.packetFormat;
-        this.gameYear = builder.gameYear;
-        this.majorVersion = builder.majorVersion;
-        this.minorVersion = builder.minorVersion;
-        this.packetVersion = builder.packetVersion;
-        this.packetId = builder.packetId;
-        this.sessionUID = builder.sessionUID;
-        this.sessionTime = builder.sessionTime;
-        this.frameID = builder.frameID;
-        this.overallFrameID = builder.overallFrameID;
-        this.playerCarIndex = builder.playerCarIndex;
-        this.secondaryPlayerCarIndex = builder.secondaryPlayerCarIndex;
-    }
-
-    private final int packetFormat;
-    private final int gameYear;
-    private final int majorVersion;
-    private final int minorVersion;
-    private final int packetVersion;
-    private final int packetId;
-    private final BigInteger sessionUID;
-    private final float sessionTime;
-    private final long frameID;
-    private final long overallFrameID;
-    private final int playerCarIndex;
-    private final int secondaryPlayerCarIndex;
-
-    public int getPacketFormat() {
-        return packetFormat;
-    }
-
-    public int getGameYear() {
-        return gameYear;
-    }
-
-    public int getMajorVersion() {
-        return majorVersion;
-    }
-
-    public int getMinorVersion() {
-        return minorVersion;
-    }
-
-    public int getPacketVersion() {
-        return packetVersion;
-    }
-
-    public int getPacketId() {
-        return packetId;
-    }
-
-    public BigInteger getSessionUID() {
-        return sessionUID;
-    }
-
-    public float getSessionTime() {
-        return sessionTime;
-    }
-
-    public long getFrameID() {
-        return frameID;
-    }
-
-    public long getOverallFrameID() {
-        return overallFrameID;
-    }
-
-    public int getPlayerCarIndex() {
-        return playerCarIndex;
-    }
-
-    public int getSecondaryPlayerCarIndex() {
-        return secondaryPlayerCarIndex;
-    }
-
-    protected void print() {
-        System.out.println("Packed ID " + this.packetId + " Version " + this.packetVersion + " Frame ID " + this.frameID +
-                " Overall Frame ID " + this.overallFrameID + " Player Car " + this.playerCarIndex);
-    }
-
-    public static class Builder {
-        private int packetFormat;
-        private int gameYear;
-        private int majorVersion;
-        private int minorVersion;
-        private int packetVersion;
-        private int packetId;
-        private BigInteger sessionUID;
-        private float sessionTime;
-        private long frameID;
-        private long overallFrameID;
-        private int playerCarIndex;
-        private int secondaryPlayerCarIndex;
-
-        public Builder setPacketFormat(int packetFormat) {
-            this.packetFormat = packetFormat;
-            return this;
+    record PacketHeader20(int packetFormat,
+                          int majorVersion,
+                          int minorVersion,
+                          int packetVersion,
+                          int packetId,
+                          BigInteger sessionUID,
+                          float sessionTime,
+                          long frameID,
+                          int playerCarIndex,
+                          int secondaryPlayerCarIndex
+    ) {
+        public PacketHeader20(int packetFormat, ByteBuffer byteBuffer) {
+            this(
+                    packetFormat,
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask64(byteBuffer.getLong()),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setGameYear(int gameYear) {
-            this.gameYear = gameYear;
-            return this;
-        }
+    record PacketHeader23(int packetFormat,
+                          int gameYear,
+                          int majorVersion,
+                          int minorVersion,
+                          int packetVersion,
+                          int packetId,
+                          BigInteger sessionUID,
+                          float sessionTime,
+                          long frameID,
+                          long overallFrameID,
+                          int playerCarIndex,
+                          int secondaryPlayerCarIndex
 
-        public Builder setMajorVersion(int majorVersion) {
-            this.majorVersion = majorVersion;
-            return this;
-        }
-
-        public Builder setMinorVersion(int minorVersion) {
-            this.minorVersion = minorVersion;
-            return this;
-        }
-
-        public Builder setPacketVersion(int packetVersion) {
-            this.packetVersion = packetVersion;
-            return this;
-        }
-
-        public Builder setPacketId(int packetId) {
-            this.packetId = packetId;
-            return this;
-        }
-
-        public Builder setSessionUID(BigInteger sessionUID) {
-            this.sessionUID = sessionUID;
-            return this;
-        }
-
-        public Builder setSessionTime(float sessionTime) {
-            this.sessionTime = sessionTime;
-            return this;
-        }
-
-        public Builder setFrameID(long frameID) {
-            this.frameID = frameID;
-            return this;
-        }
-
-        public Builder setOverallFrameID(long overallFrameID) {
-            this.overallFrameID = overallFrameID;
-            return this;
-        }
-
-        public Builder setPlayerCarIndex(int playerCarIndex) {
-            this.playerCarIndex = playerCarIndex;
-            return this;
-        }
-
-        public Builder setSecondaryPlayerCarIndex(int secondaryPlayerCarIndex) {
-            this.secondaryPlayerCarIndex = secondaryPlayerCarIndex;
-            return this;
-        }
-
-        public PacketHeader build() {
-            return new PacketHeader(this);
+    ) {
+        public PacketHeader23(int packetFormat, ByteBuffer byteBuffer) {
+            this(
+                    packetFormat,
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask64(byteBuffer.getLong()),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
     }
 }

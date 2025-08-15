@@ -8,18 +8,18 @@ import utils.constants.Constants;
 public class CarStatusInfo {
 
     public CarStatusInfo(CarStatusData csd) {
-        this.fuelInTank = String.format(Constants.TWO_DECIMAL, csd.getFuelInTank());
-        this.fuelRemainingLaps = String.format(Constants.TWO_DECIMAL, csd.getFuelRemainingLaps());
-        this.actualTireCompound = csd.getActualTireCompound();
-        this.visualTireCompound = csd.getVisualTireCompound();
-        this.tiresAgeLaps = csd.getTiresAgeLaps();
-        this.enginePowerICE = csd.getEnginePowerICE();
-        this.enginePowerMGUK = csd.getEnginePowerMGUK();
-        this.ersStoreEnergy = csd.getErsStoreEnergy();
-        this.ersDeployMode = csd.getErsDeployMode();
-        this.ersHarvestedThisLapMGUK = csd.getErsHarvestedThisLapMGUK();
-        this.ersHarvestedThisLapMGUH = csd.getErsHarvestedThisLapMGUH();
-        this.ersDeployedThisLap = csd.getErsDeployedThisLap();
+        this.fuelInTank = String.format(Constants.TWO_DECIMAL, csd.fuelInTank());
+        this.fuelRemainingLaps = String.format(Constants.TWO_DECIMAL, csd.fuelRemainingLaps());
+        this.actualTireCompound = csd.actualTireCompound();
+        this.visualTireCompound = csd.visualTireCompound();
+        this.tiresAgeLaps = csd.tiresAgeLaps();
+        this.enginePowerICE = csd.enginePowerICE();
+        this.enginePowerMGUK = csd.enginePowerMGUK();
+        this.ersStoreEnergy = csd.ersStoreEnergy();
+        this.ersDeployMode = csd.ersDeployMode();
+        this.ersHarvestedThisLapMGUK = csd.ersHarvestedThisLapMGUK();
+        this.ersHarvestedThisLapMGUH = csd.ersHarvestedThisLapMGUH();
+        this.ersDeployedThisLap = csd.ersDeployedThisLap();
     }
 
     private final String fuelInTank;

@@ -1,6 +1,8 @@
 package packets;
 
-import java.nio.charset.StandardCharsets;
+import utils.BitMaskUtils;
+
+import java.nio.ByteBuffer;
 
 /**
  * F1 24 ParticipantData Breakdown (Little Endian)
@@ -39,95 +41,9 @@ import java.nio.charset.StandardCharsets;
  * - m_name is a fixed-size char array that should be read into a String.
  */
 
-public class ParticipantData {
-
-    public ParticipantData(Builder builder) {
-        this.aiControlled = builder.aiControlled;
-        this.driverId = builder.driverId;
-        this.networkId = builder.networkId;
-        this.teamId = builder.teamId;
-        this.myTeam = builder.myTeam;
-        this.raceNumber = builder.raceNumber;
-        this.nationality = builder.nationality;
-        this.name = builder.name;
-        this.yourTelemetry = builder.yourTelemetry;
-        this.showOnlineNames = builder.showOnlineNames;
-        this.techLevel = builder.techLevel;
-        this.platform = builder.platform;
-
-        int length = 0;
-        while (length < this.name.length && name[length] != 0) {
-            length++;
-        }
-        this.lastName = new String(this.name, 0, length, StandardCharsets.UTF_8);
-    }
-
-    private final int aiControlled;
-    private final int driverId;
-    private final int networkId;
-    private final int teamId;
-    private final int myTeam;
-    private final int raceNumber;
-    private final int nationality;
-    private final byte[] name;
-    private final int yourTelemetry;
-    private final int showOnlineNames;
-    private final int techLevel;
-    private final int platform;
-
-    private final String lastName;
-
-    public int getAiControlled() {
-        return aiControlled;
-    }
-
-    public int getDriverId() {
-        return driverId;
-    }
-
-    public int getNetworkId() {
-        return networkId;
-    }
-
-    public int getTeamId() {
-        return teamId;
-    }
-
-    public int getMyTeam() {
-        return myTeam;
-    }
-
-    public int getRaceNumber() {
-        return raceNumber;
-    }
-
-    public int getNationality() {
-        return nationality;
-    }
-
-    public byte[] getName() {
-        return name;
-    }
-
-    public int getYourTelemetry() {
-        return yourTelemetry;
-    }
-
-    public int getShowOnlineNames() {
-        return showOnlineNames;
-    }
-
-    public int getTechLevel() {
-        return techLevel;
-    }
-
-    public int getPlatform() {
-        return platform;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
+public record ParticipantData(int aiControlled, int driverId, int teamId, int raceNumber, int nationality, byte[] name,
+                              int yourTelemetry, int networkId, int myTeam, int showOnlineNames, int platform,
+                              int techLevel, String lastName) {
 
     public void printName() {
         if (this.aiControlled == 1) {
@@ -137,82 +53,98 @@ public class ParticipantData {
         }
     }
 
-    public static class Builder {
-        private int aiControlled;
-        private int driverId;
-        private int networkId;
-        private int teamId;
-        private int myTeam;
-        private int raceNumber;
-        private int nationality;
-        private byte[] name;
-        private int yourTelemetry;
-        private int showOnlineNames;
-        private int techLevel;
-        private int platform;
+    private static byte[] formatName(ByteBuffer byteBuffer, int nameLength) {
+        byte[] tempName = new byte[nameLength];
+        byteBuffer.get(tempName, 0, nameLength);
+        return tempName;
+    }
 
-        public Builder setAiControlled(int aiControlled) {
-            this.aiControlled = aiControlled;
-            return this;
+    record ParticipantData20(int aiControlled, int driverId, int teamId, int raceNumber, int nationality, byte[] name,
+                             int yourTelemetry) {
+        public ParticipantData20(int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setDriverId(int driverId) {
-            this.driverId = driverId;
-            return this;
+    record ParticipantData21(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
+                             int nationality, byte[] name, int yourTelemetry) {
+        public ParticipantData21(int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setNetworkId(int networkId) {
-            this.networkId = networkId;
-            return this;
+    record ParticipantData23(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
+                             int nationality, byte[] name, int yourTelemetry, int showOnlineNames, int platform) {
+        public ParticipantData23(int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setTeamId(int teamId) {
-            this.teamId = teamId;
-            return this;
+    record ParticipantData24(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
+                             int nationality, byte[] name, int yourTelemetry, int showOnlineNames, int techLevel,
+                             int platform) {
+        public ParticipantData24(int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setMyTeam(int myTeam) {
-            this.myTeam = myTeam;
-            return this;
-        }
-
-        public Builder setRaceNumber(int raceNumber) {
-            this.raceNumber = raceNumber;
-            return this;
-        }
-
-        public Builder setNationality(int nationality) {
-            this.nationality = nationality;
-            return this;
-        }
-
-        public Builder setName(byte[] name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setYourTelemetry(int yourTelemetry) {
-            this.yourTelemetry = yourTelemetry;
-            return this;
-        }
-
-        public Builder setShowOnlineNames(int showOnlineNames) {
-            this.showOnlineNames = showOnlineNames;
-            return this;
-        }
-
-        public Builder setTechLevel(int techLevel) {
-            this.techLevel = techLevel;
-            return this;
-        }
-
-        public Builder setPlatform(int platform) {
-            this.platform = platform;
-            return this;
-        }
-
-        public ParticipantData build() {
-            return new ParticipantData(this);
+    record ParticipantData25(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
+                             int nationality, byte[] name, int yourTelemetry, int showOnlineNames, int techLevel,
+                             int platform) {
+        public ParticipantData25(int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+                    //TODO add new params for 2025 participantData
+            );
         }
     }
 }

@@ -19,15 +19,9 @@ import java.nio.ByteBuffer;
  * each bit represents a specific button being pressed.
  */
 
-public class ButtonsData {
+public record ButtonsData(long buttonsStatus) {
 
     public ButtonsData(ByteBuffer byteBuffer) {
-        this.buttonsStatus = BitMaskUtils.bitMask32(byteBuffer.getInt());
-    }
-
-    private final long buttonsStatus;
-
-    public long getButtonsStatus() {
-        return buttonsStatus;
+        this(BitMaskUtils.bitMask32(byteBuffer.getInt()));
     }
 }

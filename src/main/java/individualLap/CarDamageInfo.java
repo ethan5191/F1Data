@@ -7,12 +7,12 @@ public class CarDamageInfo {
 
     public CarDamageInfo(CarDamageData cdd) {
         String[] temp = new String[4];
-        for (int i = 0; i < cdd.getTyresWear().length; i++) {
-            temp[i] = String.format(Constants.TWO_DECIMAL, cdd.getTyresWear()[i]);
+        for (int i = 0; i < cdd.tyresWear().length; i++) {
+            temp[i] = String.format(Constants.TWO_DECIMAL, cdd.tyresWear()[i]);
         }
         this.tyresWear = temp;
-        this.floorDamage = cdd.getFloorDamage();
-        this.diffuserDamage = cdd.getDiffuserDamage();
+        this.floorDamage = cdd.floorDamage();
+        this.diffuserDamage = cdd.diffuserDamage();
     }
 
     private final String[] tyresWear;

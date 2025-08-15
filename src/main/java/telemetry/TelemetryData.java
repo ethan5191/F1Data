@@ -145,13 +145,13 @@ public class TelemetryData {
         this.currentStatus = currentStatus;
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
-            if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-                this.currentFuelInTank = currentStatus.getFuelInTank();
+            if (this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
+                this.currentFuelInTank = currentStatus.fuelInTank();
                 //default value is -1, if it is that then we need to seed the initial with the current fuel in the tank.
                 if (this.startOfLapFuelInTank == -1) {
                     this.startOfLapFuelInTank = this.currentFuelInTank;
                 }
-            } else if (this.currentLap.getDriverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.getDriverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
+            } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
                 this.startOfLapFuelInTank = -1;
             }
         }
@@ -165,13 +165,13 @@ public class TelemetryData {
         this.currentDamage = currentDamage;
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
-            if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-                this.currentTireWear = currentDamage.getTyresWear();
+            if (this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
+                this.currentTireWear = currentDamage.tyresWear();
                 //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
                 if (this.startOfLapTireWear[0] == -1) {
                     this.startOfLapTireWear = this.currentTireWear;
                 }
-            } else if (this.currentLap.getDriverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.getDriverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
+            } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
                 this.startOfLapTireWear = new float[]{-1, -1, -1, -1};
             }
         }
