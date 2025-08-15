@@ -140,7 +140,7 @@ public class F1DataMain {
                         System.out.println();
                         System.out.println("ID " + key);
                         td.getParticipantData().printName();
-                        System.out.println("Setup: " + td.getCurrentSetup().getSetupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
+                        System.out.println("Setup: " + td.getCurrentSetup().setupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
                         System.out.println("-------------------------------------------");
                     }
                 }
@@ -226,7 +226,7 @@ public class F1DataMain {
                 //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
                 //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
                 String setupName = (isValidKey) ? participants.get(i).getParticipantData().lastName() : "";
-                CarSetupData csd = CarSetupPacketParser.parsePacket(packetFormat, byteBuffer, setupName);
+                CarSetupData csd = CarSetupDataFactory.build(packetFormat, byteBuffer, setupName);
                 if (isValidKey) {
                     TelemetryData td = participants.get(i);
                     boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));

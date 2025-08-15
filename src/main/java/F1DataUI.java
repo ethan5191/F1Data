@@ -162,10 +162,10 @@ public class F1DataUI extends Application {
         if (snapshot.getInfo() != null) {
             //Ensures we don't duplicate records, as we only want 1 record per driver.
             if (!setupDataDashboard.containsKey(snapshot.getId())) {
-                commonSetupLogic(snapshot, setupData, new HashMap<>(), snapshot.getInfo().getCarSetupData().getSetupName());
+                commonSetupLogic(snapshot, setupData, new HashMap<>(), snapshot.getInfo().getCarSetupData().setupName());
                 //If this driver has already completed a lap with a different setup, we are adding this new setup to the map and using the lap # in the name.
             } else if (snapshot.getInfo().isSetupChange()) {
-                String setupName = snapshot.getInfo().getCarSetupData().getSetupName() + " Lap #" + snapshot.getInfo().getLapNum();
+                String setupName = snapshot.getInfo().getCarSetupData().setupName() + " Lap #" + snapshot.getInfo().getLapNum();
                 Map<Integer, VBox> existingSetups = setupDataDashboard.get(snapshot.getId());
                 commonSetupLogic(snapshot, setupData, existingSetups, setupName);
             }
@@ -182,7 +182,7 @@ public class F1DataUI extends Application {
                     VBox driver = new VBox();
                     runData.getChildren().add(driver);
                     //Creates the actual dashboard
-                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().getSetupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
+                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().setupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox container = new VBox(3);
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot, isF1);
                     Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
