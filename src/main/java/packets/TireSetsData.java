@@ -1,5 +1,9 @@
 package packets;
 
+import utils.BitMaskUtils;
+
+import java.nio.ByteBuffer;
+
 /**
  * F1 24 TyreSetData Breakdown (Little Endian)
  * Packet didn't exist prior to 2023's version of the game.
@@ -29,125 +33,24 @@ package packets;
  * - The uint8 type must be read with bitmasking (e.g., byteBuffer.get() & Constants.BIT_MASK_8).
  * - The int16 type maps directly to a Java 'short'.
  */
-public class TireSetsData {
-
-    public TireSetsData(Builder builder) {
-        this.actualTireCompound = builder.actualTireCompound;
-        this.visualTireCompound = builder.visualTireCompound;
-        this.wear = builder.wear;
-        this.available = builder.available;
-        this.recommendedSession = builder.recommendedSession;
-        this.lifeSpan = builder.lifeSpan;
-        this.usableLife = builder.usableLife;
-        this.lapDeltaTime = builder.lapDeltaTime;
-        this.fitted = builder.fitted;
-    }
-
-    private final int actualTireCompound;
-    private final int visualTireCompound;
-    private final int wear;
-    private final int available;
-    private final int recommendedSession;
-    private final int lifeSpan;
-    private final int usableLife;
-    private final short lapDeltaTime;
-    private final int fitted;
-
-    public int getActualTireCompound() {
-        return actualTireCompound;
-    }
-
-    public int getVisualTireCompound() {
-        return visualTireCompound;
-    }
-
-    public int getWear() {
-        return wear;
-    }
-
-    public int getAvailable() {
-        return available;
-    }
-
-    public int getRecommendedSession() {
-        return recommendedSession;
-    }
-
-    public int getLifeSpan() {
-        return lifeSpan;
-    }
-
-    public int getUsableLife() {
-        return usableLife;
-    }
-
-    public short getLapDeltaTime() {
-        return lapDeltaTime;
-    }
-
-    public int getFitted() {
-        return fitted;
-    }
-
-    public static class Builder {
-
-        private int actualTireCompound;
-        private int visualTireCompound;
-        private int wear;
-        private int available;
-        private int recommendedSession;
-        private int lifeSpan;
-        private int usableLife;
-        private short lapDeltaTime;
-        private int fitted;
-
-        public Builder setActualTireCompound(int actualTireCompound) {
-            this.actualTireCompound = actualTireCompound;
-            return this;
-        }
-
-        public Builder setVisualTireCompound(int visualTireCompound) {
-            this.visualTireCompound = visualTireCompound;
-            return this;
-        }
-
-        public Builder setWear(int wear) {
-            this.wear = wear;
-            return this;
-        }
-
-        public Builder setAvailable(int available) {
-            this.available = available;
-            return this;
-        }
-
-        public Builder setRecommendedSession(int recommendedSession) {
-            this.recommendedSession = recommendedSession;
-            return this;
-        }
-
-        public Builder setLifeSpan(int lifeSpan) {
-            this.lifeSpan = lifeSpan;
-            return this;
-        }
-
-        public Builder setUsableLife(int usableLife) {
-            this.usableLife = usableLife;
-            return this;
-        }
-
-        public Builder setLapDeltaTime(short lapDeltaTime) {
-            this.lapDeltaTime = lapDeltaTime;
-            return this;
-        }
-
-        public Builder setFitted(int fitted) {
-            this.fitted = fitted;
-            return this;
-        }
-
-        public TireSetsData build() {
-            return new TireSetsData(this);
-        }
+public record TireSetsData(int actualTireCompound,
+                           int visualTireCompound,
+                           int wear,
+                           int available,
+                           int recommendedSession,
+                           int lifeSpan,
+                           int usableLife,
+                           short lapDeltaTime,
+                           int fitted) {
+    public TireSetsData(ByteBuffer byteBuffer) {
+        this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                BitMaskUtils.bitMask8(byteBuffer.get()),
+                byteBuffer.getShort(),
+                BitMaskUtils.bitMask8(byteBuffer.get()));
     }
 }

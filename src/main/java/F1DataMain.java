@@ -299,7 +299,7 @@ public class F1DataMain {
             TelemetryData td = participants.get(carId);
             TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
             for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
-                tireSetsData[i] = TireSetsPacketParser.parsePacket(byteBuffer);
+                tireSetsData[i] = new TireSetsData(byteBuffer);
             }
             td.setTireSetsData(tireSetsData);
             int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
