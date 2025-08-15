@@ -269,7 +269,7 @@ public class F1DataMain {
     private void handleCarStatusPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarStatusData csd = CarStatusPacketParser.parsePacket(packetFormat, byteBuffer);
+                CarStatusData csd = CarStatusDataFactory.build(packetFormat, byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentStatus(csd);
                     if (packetFormat <= Constants.YEAR_2020) {

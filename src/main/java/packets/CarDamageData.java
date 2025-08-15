@@ -55,9 +55,9 @@ public record CarDamageData(float[] tyresWear, int[] tyresDamage, int[] brakesDa
                             int engineTCWear, int ersFault, int engineBlown, int engineSeized) {
 
     public static CarDamageData fromStatus(CarStatusData status) {
-        return new CarDamageData(status.getTyresWear(), status.getTyresDamage(), new int[4], status.getFrontLeftWingDamage(),
-                status.getFrontRightWingDamage(), status.getRearWingDamage(), 0, 0, 0,
-                status.getDrsFault(), status.getGearBoxDamage(), status.getEngineDamage(), 0, 0,
+        return new CarDamageData(status.tyresWear(), status.tyresDamage(), new int[4], status.frontLeftWingDamage(),
+                status.frontRightWingDamage(), status.rearWingDamage(), 0, 0, 0,
+                status.drsFault(), status.gearBoxDamage(), status.engineDamage(), 0, 0,
                 0, 0, 0, 0, 0, 0, 0);
     }
 

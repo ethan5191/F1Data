@@ -146,7 +146,7 @@ public class TelemetryData {
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
             if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-                this.currentFuelInTank = currentStatus.getFuelInTank();
+                this.currentFuelInTank = currentStatus.fuelInTank();
                 //default value is -1, if it is that then we need to seed the initial with the current fuel in the tank.
                 if (this.startOfLapFuelInTank == -1) {
                     this.startOfLapFuelInTank = this.currentFuelInTank;
