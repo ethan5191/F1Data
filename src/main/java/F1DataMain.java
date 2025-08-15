@@ -46,16 +46,16 @@ public class F1DataMain {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOfRange(buffer, 0, length));
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
-                PacketHeader ph = PacketHeaderParser.parsePacket(byteBuffer);
+                PacketHeader ph = PacketHeaderFactory.buildHeader(byteBuffer);
                 //Only update this on the first pass, as the value will never change once its set.
-                if (playerCarIndex < 0) playerCarIndex = ph.getPlayerCarIndex();
+                if (playerCarIndex < 0) playerCarIndex = ph.playerCarIndex();
                 if (packetFormat < 0) {
                     //packet format is constantly the year (2020, 2024) game year changes from year to year it seems.
-                    packetFormat = ph.getPacketFormat();
+                    packetFormat = ph.packetFormat();
                     driverPairingsEnum = DriverPairingsEnum.fromYear(packetFormat);
                 }
                 //Switch to handle the correct logic based on what packet has been sent.
-                switch (ph.getPacketId()) {
+                switch (ph.packetId()) {
                     case Constants.MOTION_PACK:
                         handleMotionPacket(byteBuffer);
                         break;
