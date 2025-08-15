@@ -12,6 +12,7 @@ import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
 import utils.BitMaskUtils;
+import utils.ParseUtils;
 import utils.constants.Constants;
 
 import java.io.IOException;
@@ -97,17 +98,18 @@ public class F1DataMain {
     private void handleMotionPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                MotionData md = MotionDataPacketParser.parsePacket(byteBuffer);
+                MotionData md = new MotionData(byteBuffer);
             }
             //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
             if (packetFormat <= Constants.YEAR_2022) {
-                float[] suspPosition = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspVelocity = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspAcceleration = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSpin = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSlip = MotionDataPacketParser.parseFloatArray(byteBuffer, new float[4]);
+                float[] suspPosition = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
+                float[] suspVelocity = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
+                float[] suspAcceleration = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
+                float[] wheelSpin = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
+                float[] wheelSlip = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
                 float localVelocityX = byteBuffer.getFloat();
                 float localVelocityY = byteBuffer.getFloat();
+                float localVelocityZ = byteBuffer.getFloat();
                 float angularVelocityX = byteBuffer.getFloat();
                 float angularVelocityY = byteBuffer.getFloat();
                 float angularVelocityZ = byteBuffer.getFloat();
