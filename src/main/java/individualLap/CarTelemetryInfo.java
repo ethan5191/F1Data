@@ -5,11 +5,11 @@ import packets.CarTelemetryData;
 public class CarTelemetryInfo {
 
     public CarTelemetryInfo(CarTelemetryData ctd) {
-        this.brakeTemps = ctd.getBrakeTemps();
-        this.tireSurfaceTemps = ctd.getTireSurfaceTemps();
-        this.tireInnerTemps = ctd.getTireInnerTemps();
-        this.engineTemp = ctd.getEngineTemp();
-        this.tirePressures = ctd.getTirePressure();
+        this.brakeTemps = ctd.brakeTemps();
+        this.tireSurfaceTemps = ctd.tireSurfaceTemps();
+        this.tireInnerTemps = ctd.tireInnerTemps();
+        this.engineTemp = ctd.engineTemp();
+        this.tirePressures = ctd.tirePressure();
     }
 
     private final int[] brakeTemps;

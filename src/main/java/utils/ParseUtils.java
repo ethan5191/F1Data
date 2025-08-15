@@ -22,4 +22,12 @@ public class ParseUtils {
         for (int i = 0; i < length; i++) intArray[i] = BitMaskUtils.bitMask8(byteBuffer.get());
         return intArray;
     }
+
+    public static int[] parseShortArray(ByteBuffer byteBuffer, int length) {
+        int[] result = new int[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = BitMaskUtils.bitMask16(byteBuffer.getShort());
+        }
+        return result;
+    }
 }

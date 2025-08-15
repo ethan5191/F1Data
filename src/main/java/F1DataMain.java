@@ -8,7 +8,7 @@ import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import packets.events.SpeedTrapDataFactory;
-import packets.parsers.*;
+import packets.parsers.LapDataPacketParser;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
@@ -251,7 +251,7 @@ public class F1DataMain {
     private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarTelemetryData ctd = CarTelemetryPacketParser.parsePacket(packetFormat, byteBuffer);
+                CarTelemetryData ctd = CarTelemetryDataFactory.build(packetFormat, byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentTelemetry(ctd);
                 }
