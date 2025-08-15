@@ -8,7 +8,6 @@ import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
 import packets.events.SpeedTrapDataFactory;
-import packets.parsers.LapDataPacketParser;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
 import ui.dto.SpeedTrapDataDTO;
@@ -151,7 +150,7 @@ public class F1DataMain {
                 TelemetryData td = participants.get(trap.vehicleId());
                 td.setSpeedTrap(trap.speed());
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
+                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
             }
         }
     }
@@ -160,13 +159,13 @@ public class F1DataMain {
     private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                LapData ld = LapDataPacketParser.parsePacket(packetFormat, byteBuffer);
+                LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
                 //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
                 if (validKey(i)) {
                     TelemetryData td = participants.get(i);
                     if (td.getCurrentLap() != null) {
                         //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
-                        if (ld.getCurrentLapNum() > td.getCurrentLap().getCurrentLapNum()) {
+                        if (ld.currentLapNum() > td.getCurrentLap().currentLapNum()) {
                             //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
                             //then update the start params so that next laps calculations use this laps ending values as there start values.
                             float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
