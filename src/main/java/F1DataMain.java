@@ -150,7 +150,7 @@ public class F1DataMain {
                 TelemetryData td = participants.get(trap.getVehicleId());
                 td.setSpeedTrap(trap.getSpeed());
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
+                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
             }
         }
     }
@@ -198,11 +198,11 @@ public class F1DataMain {
                                 info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
                             }
                             //Print info when the lap is completed.
-                            info.printInfo(td.getParticipantData().getLastName());
-                            info.printStatus(td.getParticipantData().getLastName());
-                            info.printDamage(td.getParticipantData().getLastName());
+                            info.printInfo(td.getParticipantData().lastName());
+                            info.printStatus(td.getParticipantData().lastName());
+                            info.printDamage(td.getParticipantData().lastName());
                             //Populate the DriverDataDTO to populate the panels.
-                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), info, i == playerCarIndex));
+                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info, i == playerCarIndex));
                         }
                         td.setCurrentLap(ld);
                     } else {
@@ -225,7 +225,7 @@ public class F1DataMain {
                 boolean isValidKey = validKey(i);
                 //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
                 //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
-                String setupName = (isValidKey) ? participants.get(i).getParticipantData().getLastName() : "";
+                String setupName = (isValidKey) ? participants.get(i).getParticipantData().lastName() : "";
                 CarSetupData csd = CarSetupPacketParser.parsePacket(packetFormat, byteBuffer, setupName);
                 if (isValidKey) {
                     TelemetryData td = participants.get(i);
@@ -315,19 +315,19 @@ public class F1DataMain {
             //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
             int numActiveCars = byteBuffer.get();
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                ParticipantData pd = ParticipantPacketParser.parsePacket(packetFormat, byteBuffer);
-                if (pd.getRaceNumber() > 0) {
+                ParticipantData pd = ParticipantDataFactory.buildParticipant(packetFormat, byteBuffer);
+                if (pd.raceNumber() > 0) {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
                     //this will only be updated once we found a driver that exists in a single series, so we know what driver lineups to use.
                     if (formulaType == null) {
                         //In F1 24 no drivers in F1 also exist in either of the F2 lineups. This is not true in F1 25, so would need changing.
-                        if (driverPairingsEnum.getF1DriverPairs().containsKey(pd.getDriverId())) {
+                        if (driverPairingsEnum.getF1DriverPairs().containsKey(pd.driverId())) {
                             formulaType = FormulaTypeEnum.F1;
                         } else {
-                            boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.getDriverId());
-                            boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.getDriverId());
+                            boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.driverId());
+                            boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.driverId());
                             //If a driver exists in one F2 lineup but not the other then we have found what series we are using.
                             //TODO: if I ever get F1 25 and want to use this with that game, ensure this logic still works for it.
                             if (f2Current && !f2Prev) {
@@ -346,7 +346,7 @@ public class F1DataMain {
             for (int j = 0; j < participants.size(); j++) {
                 TelemetryData td = participants.get(j);
                 //Populates the initial DriverDataDTO consumer for the UI.
-                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().getDriverId(), td.getParticipantData().getLastName(), j == playerCarIndex, driverPairing, formulaType));
+                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), j == playerCarIndex, driverPairing, formulaType));
             }
         }
     }
