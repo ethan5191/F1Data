@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ParticipantDataFactory {
 
-    public static ParticipantData buildParticipant(int packetFormat, ByteBuffer byteBuffer) {
+    public static ParticipantData build(int packetFormat, ByteBuffer byteBuffer) {
         int nameLength = (packetFormat < Constants.YEAR_2025) ? 48 : 32;
         return switch (packetFormat) {
             case Constants.YEAR_2020:

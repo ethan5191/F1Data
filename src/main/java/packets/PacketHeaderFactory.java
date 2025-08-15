@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 
 public class PacketHeaderFactory {
 
-    public static PacketHeader buildHeader(ByteBuffer byteBuffer) {
+    public static PacketHeader build(ByteBuffer byteBuffer) {
         int packetFormat = BitMaskUtils.bitMask16(byteBuffer.getShort());
         return switch (packetFormat) {
             case Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022:

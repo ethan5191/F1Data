@@ -46,7 +46,7 @@ public class F1DataMain {
                 ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOfRange(buffer, 0, length));
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
-                PacketHeader ph = PacketHeaderFactory.buildHeader(byteBuffer);
+                PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.playerCarIndex();
                 if (packetFormat < 0) {
@@ -273,7 +273,7 @@ public class F1DataMain {
                 if (validKey(i)) {
                     participants.get(i).setCurrentStatus(csd);
                     if (packetFormat <= Constants.YEAR_2020) {
-                        CarDamageData cdd = CarDamageData.Builder.fromStatus(csd);
+                        CarDamageData cdd = CarDamageData.fromStatus(csd);
                         participants.get(i).setCurrentDamage(cdd);
                     }
                 }
@@ -285,7 +285,7 @@ public class F1DataMain {
     private void handleCarDamagePacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarDamageData cdd = CarDamagePacketParser.parsePacket(packetFormat, byteBuffer);
+                CarDamageData cdd = CarDamageDataFactory.build(packetFormat, byteBuffer);
                 if (validKey(i)) {
                     participants.get(i).setCurrentDamage(cdd);
                 }
@@ -315,7 +315,7 @@ public class F1DataMain {
             //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
             int numActiveCars = byteBuffer.get();
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                ParticipantData pd = ParticipantDataFactory.buildParticipant(packetFormat, byteBuffer);
+                ParticipantData pd = ParticipantDataFactory.build(packetFormat, byteBuffer);
                 if (pd.raceNumber() > 0) {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);

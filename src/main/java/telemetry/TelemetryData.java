@@ -166,7 +166,7 @@ public class TelemetryData {
         //Only update these values when we are on an actual flying lap.
         if (this.currentLap != null) {
             if (this.currentLap.getDriverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
-                this.currentTireWear = currentDamage.getTyresWear();
+                this.currentTireWear = currentDamage.tyresWear();
                 //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
                 if (this.startOfLapTireWear[0] == -1) {
                     this.startOfLapTireWear = this.currentTireWear;
