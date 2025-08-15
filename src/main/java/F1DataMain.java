@@ -131,8 +131,9 @@ public class F1DataMain {
             if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
                 ButtonsData bd = new ButtonsData(byteBuffer);
                 //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
-                if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.getButtonsStatus()
-                        || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.getButtonsStatus()) {
+                if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
+                        || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
+                ) {
                     //On pause I am printing lap data to the console and other information for each car.
                     for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
                         Integer key = entry.getKey();
