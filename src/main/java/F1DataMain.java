@@ -7,6 +7,7 @@ import packets.enums.DriverPairingsEnum;
 import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
+import packets.events.SpeedTrapDataFactory;
 import packets.parsers.*;
 import telemetry.TelemetryData;
 import ui.dto.DriverDataDTO;
@@ -145,12 +146,12 @@ public class F1DataMain {
                     }
                 }
             } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
-                SpeedTrapData trap = SpeedTrapEventParser.parseEventPacket(packetFormat, byteBuffer);
+                SpeedTrapData trap = SpeedTrapDataFactory.build(packetFormat, byteBuffer);
                 //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
-                TelemetryData td = participants.get(trap.getVehicleId());
-                td.setSpeedTrap(trap.getSpeed());
+                TelemetryData td = participants.get(trap.vehicleId());
+                td.setSpeedTrap(trap.speed());
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.getSpeed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
+                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().getCurrentLapNum(), td.getNumActiveCars()));
             }
         }
     }

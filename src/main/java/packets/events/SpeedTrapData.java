@@ -1,5 +1,9 @@
 package packets.events;
 
+import utils.BitMaskUtils;
+
+import java.nio.ByteBuffer;
+
 /**
  * F1 24 SpeedTrap Breakdown (Little Endian)
  * - F1 2020 Length: 5 bytes
@@ -24,89 +28,40 @@ package packets.events;
  * - fastestVehicleIdxInSession    | uint8           | 1            | 2022           | Vehicle index of the fastest in this session
  * - fastestSpeedInSession         | float           | 4            | 2022           | Speed of the fastest vehicle in this session
  */
-public class SpeedTrapData {
+public record SpeedTrapData(int vehicleId, float speed, int isOverallFastest, int isDriverFastest, int fastestVehicleId,
+                            float fastestSpeed) {
 
-    public SpeedTrapData(Builder builder) {
-        this.vehicleId = builder.vehicleId;
-        this.speed = builder.speed;
-        this.isOverallFastest = builder.isOverallFastest;
-        this.isDriverFastest = builder.isDriverFastest;
-        this.fastestVehicleId = builder.fastestVehicleId;
-        this.fastestSpeed = builder.fastestSpeed;
-    }
-
-    private final int vehicleId;
-    private final float speed;
-    private final int isOverallFastest;
-    private final int isDriverFastest;
-    private final int fastestVehicleId;
-    private final float fastestSpeed;
-
-    public int getVehicleId() {
-        return vehicleId;
-    }
-
-    public float getSpeed() {
-        return speed;
-    }
-
-    public int getIsOverallFastest() {
-        return isOverallFastest;
-    }
-
-    public int getIsDriverFastest() {
-        return isDriverFastest;
-    }
-
-    public int getFastestVehicleId() {
-        return fastestVehicleId;
-    }
-
-    public float getFastestSpeed() {
-        return fastestSpeed;
-    }
-
-    public static class Builder {
-
-        private int vehicleId;
-        private float speed;
-        private int isOverallFastest;
-        private int isDriverFastest;
-        private int fastestVehicleId;
-        private float fastestSpeed;
-
-        public Builder setVehicleId(int vehicleId) {
-            this.vehicleId = vehicleId;
-            return this;
+    record SpeedTrapData20(int vehicleId, float speed) {
+        public SpeedTrapData20(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat()
+            );
         }
+    }
 
-        public Builder setSpeed(float speed) {
-            this.speed = speed;
-            return this;
+    record SpeedTrapData21(int vehicleId, float speed, int isOverallFastest, int isDriverFastest) {
+        public SpeedTrapData21(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
         }
+    }
 
-        public Builder setIsOverallFastest(int isOverallFastest) {
-            this.isOverallFastest = isOverallFastest;
-            return this;
-        }
-
-        public Builder setIsDriverFastest(int isDriverFastest) {
-            this.isDriverFastest = isDriverFastest;
-            return this;
-        }
-
-        public Builder setFastestVehicleId(int fastestVehicleId) {
-            this.fastestVehicleId = fastestVehicleId;
-            return this;
-        }
-
-        public Builder setFastestSpeed(float fastestSpeed) {
-            this.fastestSpeed = fastestSpeed;
-            return this;
-        }
-
-        public SpeedTrapData build() {
-            return new SpeedTrapData(this);
+    record SpeedTrapData22(int vehicleId, float speed, int isOverallFastest, int isDriverFastest, int fastestVehicleId,
+                           float fastestSpeed) {
+        public SpeedTrapData22(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat()
+            );
         }
     }
 }
