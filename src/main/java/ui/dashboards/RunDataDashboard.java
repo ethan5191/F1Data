@@ -70,14 +70,15 @@ public class RunDataDashboard extends HBox {
     }
 
     //Used to create the average lap box.
-    public RunDataDashboard(RunDataAverage average) {
+    public RunDataDashboard(RunDataAverage average, boolean useLegacy) {
         this.average = average;
         this.isF1 = average.isF1();
         this.lapNum = new Label(average.getTotalLaps() + " Laps");
         this.lapNum.setTextFill(Color.WHITE);
         this.lapNum.setMinWidth(HEADERS_WIDTH[0]);
         BigDecimal avgTimeBd = BigDecimal.valueOf(average.getAvgLapTimeInMs());
-        this.lapTime = new Label(DashboardUtils.buildTimeText(Util.roundDecimal(avgTimeBd)));
+        BigDecimal timeToDisplay = (useLegacy) ? avgTimeBd : Util.roundDecimal(avgTimeBd);
+        this.lapTime = new Label(DashboardUtils.buildTimeText(timeToDisplay));
         this.lapTime.setTextFill(Color.WHITE);
         this.lapTime.setMinWidth(HEADERS_WIDTH[1]);
         this.rearLeftWear = new Label(average.getAvgTireWear()[0] + Constants.PERCENT_SIGN);

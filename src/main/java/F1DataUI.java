@@ -188,7 +188,7 @@ public class F1DataUI extends Application {
                     Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
                     //calculate the averages and add them as a new dashboard to the end of the list.
                     RunDataAverage average = new RunDataAverage(info.getLapNum(), snapshot, isF1);
-                    RunDataDashboard averages = new RunDataDashboard(average);
+                    RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
                     initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
                     runDataDashboard.put(snapshot.getId(), initial);
                     container.getChildren().add(setupInfo);
@@ -208,7 +208,7 @@ public class F1DataUI extends Application {
                     //get the current averages and use it to update the averages to account for a new lap completed.
                     RunDataDashboard currentAverages = lapsForSetupCopy.get(lapsForSetupCopy.size() - 1);
                     RunDataAverage updatedAverages = new RunDataAverage(maxLap, snapshot, currentAverages.getAverage());
-                    RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages);
+                    RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages, info.isUseLegacy());
                     lapsForSetupCopy.add(newAvgDash);
                     //Update the previous averages line to have the new laps data in it instead of averages.
                     currentAverages.updateValues(snapshot);

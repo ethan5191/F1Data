@@ -4,69 +4,76 @@ import javafx.scene.control.Label;
 import ui.dashboards.DashboardUtils;
 import utils.constants.Constants;
 
-import java.nio.ByteBuffer;
-
 /**
  * F1 24 CarSetupData Breakdown (Little Endian)
- *
+ * <p>
+ * - F1 2020-2023 Length: 49 bytes
+ * - F1 2024/2025 Length: 50 bytes
  * This struct is 50 bytes long and contains data about a single car's setup.
  * It is repeated for each car in the PacketCarSetupData packet.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
- *
- * Member Name                       | Data Type | Size (bytes) | Starting Offset
- * ----------------------------------|-----------|--------------|-----------------
- * m_frontWing                       | uint8     | 1            | 0
- * m_rearWing                        | uint8     | 1            | 1
- * m_onThrottle                      | uint8     | 1            | 2
- * m_offThrottle                     | uint8     | 1            | 3
- * m_frontCamber                     | float     | 4            | 4
- * m_rearCamber                      | float     | 4            | 8
- * m_frontToe                        | float     | 4            | 12
- * m_rearToe                         | float     | 4            | 16
- * m_frontSuspension                 | uint8     | 1            | 20
- * m_rearSuspension                  | uint8     | 1            | 21
- * m_frontAntiRollBar                | uint8     | 1            | 22
- * m_rearAntiRollBar                 | uint8     | 1            | 23
- * m_frontSuspensionHeight           | uint8     | 1            | 24
- * m_rearSuspensionHeight            | uint8     | 1            | 25
- * m_brakePressure                   | uint8     | 1            | 26
- * m_brakeBias                       | uint8     | 1            | 27
- * m_engineBraking                   | uint8     | 1            | 28
- * m_rearLeftTyrePressure            | float     | 4            | 29
- * m_rearRightTyrePressure           | float     | 4            | 33
- * m_frontLeftTyrePressure           | float     | 4            | 37
- * m_frontRightTyrePressure          | float     | 4            | 41
- * m_ballast                         | uint8     | 1            | 45
- * m_fuelLoad                        | float     | 4            | 46
+ * <p>
+ * /*
+ * PacketCarSetupData
+ * ------------------
+ * Member Name               | Data Type       | Size (bytes) | First Appeared | Notes
+ * --------------------------|----------------|--------------|----------------|-------------------------
+ * m_header                  | PacketHeader    | ...          | 2020           | Full packet header
+ * m_carSetups[22]           | CarSetupData    | ...          | 2020           | Array for each car
+ * - m_frontWing            | uint8           | 1            | 2020           |
+ * - m_rearWing             | uint8           | 1            | 2020           |
+ * - m_onThrottle           | uint8           | 1            | 2020           |
+ * - m_offThrottle          | uint8           | 1            | 2020           |
+ * - m_frontCamber          | float           | 4            | 2020           |
+ * - m_rearCamber           | float           | 4            | 2020           |
+ * - m_frontToe             | float           | 4            | 2020           |
+ * - m_rearToe              | float           | 4            | 2020           |
+ * - m_frontSuspension      | uint8           | 1            | 2020           |
+ * - m_rearSuspension       | uint8           | 1            | 2020           |
+ * - m_frontAntiRollBar     | uint8           | 1            | 2020           |
+ * - m_rearAntiRollBar      | uint8           | 1            | 2020           |
+ * - m_frontSuspensionHeight| uint8           | 1            | 2020           |
+ * - m_rearSuspensionHeight | uint8           | 1            | 2020           |
+ * - m_brakePressure        | uint8           | 1            | 2020           |
+ * - m_brakeBias            | uint8           | 1            | 2020           |
+ * - m_engineBraking        | uint8           | 1            | 2024           | New in 2024
+ * - m_rearLeftTyrePressure | float           | 4            | 2020           |
+ * - m_rearRightTyrePressure| float           | 4            | 2020           |
+ * - m_frontLeftTyrePressure| float           | 4            | 2020           |
+ * - m_frontRightTyrePressure| float          | 4            | 2020           |
+ * - m_ballast              | uint8           | 1            | 2020           |
+ * - m_fuelLoad             | float           | 4            | 2020           |
+ * m_nextFrontWingValue     | float           | 4            | 2024           | Player-only, value after next pit stop
  */
 
-public class CarSetupData extends Data {
+public class CarSetupData {
 
-    public CarSetupData(ByteBuffer byteBuffer) {
-//        printMessage("Car Setup ", byteBuffer.array().length);
-        this.frontWing = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.rearWing = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.onThrottle = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.offThrottle = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.frontCamber = byteBuffer.getFloat();
-        this.rearCamber = byteBuffer.getFloat();
-        this.frontToe = byteBuffer.getFloat();
-        this.rearToe = byteBuffer.getFloat();
-        this.frontSusp = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.rearSusp = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.frontARB = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.rearARB = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.frontHeight = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.rearHeight = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.brakePressure = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.brakeBias = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.engineBreaking = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.rearLeftPressure = byteBuffer.getFloat();
-        this.rearRightPressure = byteBuffer.getFloat();
-        this.frontLeftPressure = byteBuffer.getFloat();
-        this.frontRightPressure = byteBuffer.getFloat();
-        this.ballast = byteBuffer.get() & Constants.BIT_MASK_8;
-        this.fuelLoad = byteBuffer.getFloat();
+    public CarSetupData(Builder builder) {
+        this.frontWing = builder.frontWing;
+        this.rearWing = builder.rearWing;
+        this.onThrottle = builder.onThrottle;
+        this.offThrottle = builder.offThrottle;
+        this.frontCamber = builder.frontCamber;
+        this.rearCamber = builder.rearCamber;
+        this.frontToe = builder.frontToe;
+        this.rearToe = builder.rearToe;
+        this.frontSusp = builder.frontSusp;
+        this.rearSusp = builder.rearSusp;
+        this.frontARB = builder.frontARB;
+        this.rearARB = builder.rearARB;
+        this.frontHeight = builder.frontHeight;
+        this.rearHeight = builder.rearHeight;
+        this.brakePressure = builder.brakePressure;
+        this.brakeBias = builder.brakeBias;
+        this.engineBraking = builder.engineBraking;
+        this.rearLeftPressure = builder.rearLeftPressure;
+        this.rearRightPressure = builder.rearRightPressure;
+        this.frontLeftPressure = builder.frontLeftPressure;
+        this.frontRightPressure = builder.frontRightPressure;
+        this.ballast = builder.ballast;
+        this.fuelLoad = builder.fuelLoad;
+
+        this.setupName = builder.setupName;
     }
 
     private final int frontWing;
@@ -85,7 +92,7 @@ public class CarSetupData extends Data {
     private final int rearHeight;
     private final int brakePressure;
     private final int brakeBias;
-    private final int engineBreaking;
+    private final int engineBraking;
     private final float rearLeftPressure;
     private final float rearRightPressure;
     private final float frontLeftPressure;
@@ -93,7 +100,7 @@ public class CarSetupData extends Data {
     private final int ballast;
     private final float fuelLoad;
 
-    private String setupName;
+    private final String setupName;
 
     public int getFrontWing() {
         return frontWing;
@@ -159,8 +166,8 @@ public class CarSetupData extends Data {
         return brakeBias;
     }
 
-    public int getEngineBreaking() {
-        return engineBreaking;
+    public int getEngineBraking() {
+        return engineBraking;
     }
 
     public float getRearLeftPressure() {
@@ -191,10 +198,6 @@ public class CarSetupData extends Data {
         return setupName;
     }
 
-    public void setSetupName(String setupName) {
-        this.setupName = setupName;
-    }
-
     public boolean isSameFuelLoad(CarSetupData csd) {
         return csd.fuelLoad == this.fuelLoad;
     }
@@ -203,8 +206,8 @@ public class CarSetupData extends Data {
         return new Label[][]{{new Label(" Fuel Load ")}, {new Label(DashboardUtils.formatTwoDecimals(this.fuelLoad) + Constants.KG)},
                 {new Label(" Front Wing "), new Label(" Rear Wing ")},
                 {new Label(String.valueOf(this.frontWing)), new Label(String.valueOf(this.rearWing))},
-                {new Label(" On Throttle "), new Label(" Off Throttle "), new Label(" Engine Breaking ")},
-                {new Label(String.valueOf(this.onThrottle)), new Label(String.valueOf(this.offThrottle)), new Label(String.valueOf(this.engineBreaking))},
+                {new Label(" On Throttle "), new Label(" Off Throttle "), new Label(" Engine Braking ")},
+                {new Label(String.valueOf(this.onThrottle)), new Label(String.valueOf(this.offThrottle)), new Label(String.valueOf(this.engineBraking))},
                 {new Label(" Front Camber "), new Label(" Rear Camber "), new Label(" Front Toe-out "), new Label(" Rear Toe-in ")},
                 {new Label(DashboardUtils.formatTwoDecimals(this.frontCamber)), new Label(DashboardUtils.formatTwoDecimals(this.rearCamber)),
                         new Label(DashboardUtils.formatTwoDecimals(this.frontToe)), new Label(DashboardUtils.formatTwoDecimals(this.rearToe))},
@@ -231,5 +234,156 @@ public class CarSetupData extends Data {
                 && csd.getFrontRightPressure() == this.frontRightPressure && csd.getFrontLeftPressure() == this.frontLeftPressure
                 && csd.getRearRightPressure() == this.rearRightPressure && csd.getRearLeftPressure() == this.rearLeftPressure
         );
+    }
+
+    public static class Builder {
+        private int frontWing;
+        private int rearWing;
+        private int onThrottle;
+        private int offThrottle;
+        private float frontCamber;
+        private float rearCamber;
+        private float frontToe;
+        private float rearToe;
+        private int frontSusp;
+        private int rearSusp;
+        private int frontARB;
+        private int rearARB;
+        private int frontHeight;
+        private int rearHeight;
+        private int brakePressure;
+        private int brakeBias;
+        private int engineBraking = 0;
+        private float rearLeftPressure;
+        private float rearRightPressure;
+        private float frontLeftPressure;
+        private float frontRightPressure;
+        private int ballast;
+        private float fuelLoad;
+        private String setupName;
+
+        public Builder setFrontWing(int frontWing) {
+            this.frontWing = frontWing;
+            return this;
+        }
+
+        public Builder setRearWing(int rearWing) {
+            this.rearWing = rearWing;
+            return this;
+        }
+
+        public Builder setOnThrottle(int onThrottle) {
+            this.onThrottle = onThrottle;
+            return this;
+        }
+
+        public Builder setOffThrottle(int offThrottle) {
+            this.offThrottle = offThrottle;
+            return this;
+        }
+
+        public Builder setFrontCamber(float frontCamber) {
+            this.frontCamber = frontCamber;
+            return this;
+        }
+
+        public Builder setRearCamber(float rearCamber) {
+            this.rearCamber = rearCamber;
+            return this;
+        }
+
+        public Builder setFrontToe(float frontToe) {
+            this.frontToe = frontToe;
+            return this;
+        }
+
+        public Builder setRearToe(float rearToe) {
+            this.rearToe = rearToe;
+            return this;
+        }
+
+        public Builder setFrontSusp(int frontSusp) {
+            this.frontSusp = frontSusp;
+            return this;
+        }
+
+        public Builder setRearSusp(int rearSusp) {
+            this.rearSusp = rearSusp;
+            return this;
+        }
+
+        public Builder setFrontARB(int frontARB) {
+            this.frontARB = frontARB;
+            return this;
+        }
+
+        public Builder setRearARB(int rearARB) {
+            this.rearARB = rearARB;
+            return this;
+        }
+
+        public Builder setFrontHeight(int frontHeight) {
+            this.frontHeight = frontHeight;
+            return this;
+        }
+
+        public Builder setRearHeight(int rearHeight) {
+            this.rearHeight = rearHeight;
+            return this;
+        }
+
+        public Builder setBrakePressure(int brakePressure) {
+            this.brakePressure = brakePressure;
+            return this;
+        }
+
+        public Builder setBrakeBias(int brakeBias) {
+            this.brakeBias = brakeBias;
+            return this;
+        }
+
+        public Builder setEngineBraking(int engineBraking) {
+            this.engineBraking = engineBraking;
+            return this;
+        }
+
+        public Builder setRearLeftPressure(float rearLeftPressure) {
+            this.rearLeftPressure = rearLeftPressure;
+            return this;
+        }
+
+        public Builder setRearRightPressure(float rearRightPressure) {
+            this.rearRightPressure = rearRightPressure;
+            return this;
+        }
+
+        public Builder setFrontLeftPressure(float frontLeftPressure) {
+            this.frontLeftPressure = frontLeftPressure;
+            return this;
+        }
+
+        public Builder setFrontRightPressure(float frontRightPressure) {
+            this.frontRightPressure = frontRightPressure;
+            return this;
+        }
+
+        public Builder setBallast(int ballast) {
+            this.ballast = ballast;
+            return this;
+        }
+
+        public Builder setFuelLoad(float fuelLoad) {
+            this.fuelLoad = fuelLoad;
+            return this;
+        }
+
+        public Builder setSetupName(String setupName) {
+            this.setupName = setupName;
+            return this;
+        }
+
+        public CarSetupData build() {
+            return new CarSetupData(this);
+        }
     }
 }
