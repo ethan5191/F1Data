@@ -52,6 +52,18 @@ The application uses two primary data consumers to process specific telemetry da
     DriverDataDTO: Used by the lap time and car setup panels.
     SpeedTrapDTO: Used by both speed trap panels.
 
+Game Compatibility Matrix
+
+| Game Version | Tested         | Speed Trap Data                        | Tyre Wear Precision  | Tyre Set Identification        | Notes                                            |
+|--------------|----------------|----------------------------------------|----------------------|--------------------------------|--------------------------------------------------|
+| **F1 2020**  | ✔              | Limited (only when new fastest is set) | Whole numbers only   | Compound only (Soft/Med/Hard)  | Workarounds implemented for traps & wear         |
+| **F1 2021**  | ✖ (untested)   | Expected same as 2020                  | Likely with decimals | Compound only                  | Untested, but should function                    |
+| **F1 2022**  | ✖ (untested)   | Expected same as 2020/2021             | With decimals        | Compound only                  | Untested, but should function                    |
+| **F1 2023**  | ✖ (untested)   | Full                                   | With decimals        | Full tyre set via fitted index | Should function, not yet validated               |
+| **F1 2024**  | ✔              | Full                                   | With decimals        | Full tyre set via fitted index | Development baseline, known accelerated-time bug |
+| **F1 2025**  | ✖ (not tested) | Expected full                          | With decimals        | Full tyre set via fitted index | Pending release/testing                          |
+
+
 Game-Specific Notes
 
     The application has been tested with F1 2020 and F1 2024.
