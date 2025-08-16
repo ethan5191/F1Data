@@ -1,6 +1,26 @@
 Project Status: Work in Progress (WIP)
 
-Getting Started
+Table of Contents
+
+- [Getting Started](#getting-started)  
+- [Current Features](#current-features)  
+- [Architecture Overview](#architecture-overview)  
+  - [F1 Data Main](#f1datamain)  
+  - [F1 Data UI](#f1dataui)
+  - [Panel Structure](#panel-structure)
+  - [Data Consumers](#data-consumers)
+- [Compatibility Matrix](#game-compatibility-matrix)
+- [Game Specific Notes](#game-specific-notes)
+  - [F1 2020](#f1-2020)
+  - [F1 2020-2022](#f1-20202022)
+  - [F1 2024](#f1-2024)
+- [Future Projects](#future-projects)
+  - [UI Improvements](#ui-improvements)
+  - [Enhancements](#core-application-enhancements)
+
+___
+
+## Getting Started
 
 Running from an IDE
 
@@ -10,7 +30,9 @@ This project is in active development. While some telemetry data is still printe
 
 The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.
 
-Current Features
+___
+
+## Current Features
 
 The application currently supports six separate data panels:
 
@@ -21,39 +43,37 @@ The application currently supports six separate data panels:
     All Speed Traps: Records and displays every speed trap time for both the player and their teammate.
     Run Data: Tracks and presents run-specific data for both the player and their teammate.
 
-Architecture Overview
+___
 
-F1DataMain
-
-This is the core class of the application. It is responsible for:
+## Architecture Overview
+### F1DataMain
+This is the core class of the application. It is responsible for:  
 
     Receiving and processing raw UDP telemetry data packets.
     Parsing and interpreting the received data.
     Building and managing the internal data structures that hold the state of the session.
 
-F1DataUI
-
+### F1DataUI
 This class manages the user interface. It is responsible for:
 
     Handling the UI thread.
     Running the F1DataMain class on a separate, dedicated thread to ensure the UI remains responsive.
 
-Panel Structure
-
+### Panel Structure
 Each UI panel follows a consistent architecture:
 
     Stage: Each panel is managed by its own Stage class, which extends the abstractStage parent.
     Dashboard: Each panel's visual content is a custom Dashboard class that extends the HBox object. 
 
-Data Consumers
-
+### Data Consumers
 The application uses two primary data consumers to process specific telemetry data types:
 
     DriverDataDTO: Used by the lap time and car setup panels.
     SpeedTrapDTO: Used by both speed trap panels.
 
-Game Compatibility Matrix
+___
 
+## Game Compatibility Matrix
 | Game Version | Tested         | Speed Trap Data                        | Tyre Wear Precision  | Tyre Set Identification        | Notes                                            |
 |--------------|----------------|----------------------------------------|----------------------|--------------------------------|--------------------------------------------------|
 | **F1 2020**  | ✔              | Limited (only when new fastest is set) | Whole numbers only   | Compound only (Soft/Med/Hard)  | Workarounds implemented for traps & wear         |
@@ -63,13 +83,14 @@ Game Compatibility Matrix
 | **F1 2024**  | ✔              | Full                                   | With decimals        | Full tyre set via fitted index | Development baseline, known accelerated-time bug |
 | **F1 2025**  | ✖ (not tested) | Expected full                          | With decimals        | Full tyre set via fitted index | Pending release/testing                          |
 
+___
 
-Game-Specific Notes
+## Game-Specific Notes
 
     The application has been tested with F1 2020 and F1 2024.
     In theory, it should work with all titles from F1 2020 through F1 2025, but F1 2021–2023 have not been fully verified, and F1 2025 has not been tested.
 
-F1 2020
+### F1 2020
 
 Speed Trap Data
 
@@ -82,7 +103,7 @@ Tyre Wear Precision
 
     Tyre wear was only transmitted as whole numbers (e.g., 2.00, 3.00). Decimal precision was added in later games.
 
-F1 2020–2022
+### F1 2020–2022
 
 Tyre Set Identification
 
@@ -94,7 +115,7 @@ The tyreSets packet did not exist until F1 2023.
 
 Work is in progress to improve handling for pre-2023 games.
 
-F1 2024
+### F1 2024
 
 Development Baseline
     
@@ -110,17 +131,19 @@ Practice Session "Accelerated Time" Issue
     This occurs when a lap ends while the game is running in accelerated time.
     Workaround: Switch back to normal speed before the car of interest completes its lap.
 
-Future Projects
+___
+
+## Future Projects
 
 The following features and improvements are planned for upcoming releases:
 
-UI Improvements
+### UI Improvements
 
     Refined Data Layout: The existing UI will be updated to ensure data is more logically organized and easier to read.
     Dynamic Data Display: Functionality will be added to allow users to show or hide specific data points on select panels (e.g., toggling sector times on the Latest Lap panel or energy information on the Run Data panel).
     Scroll Panel Fixes: The scrolling functionality for both ScrollPane components is currently non-functional and will be repaired.
 
-Core Application Enhancements
+### Core Application Enhancements
 
     Logging Integration: Implement a robust logging system to replace the current console-based output.
     Code Cleanup: All remaining print statements will be removed from the codebase.
