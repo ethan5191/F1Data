@@ -1,6 +1,4 @@
-Project Status: Work in Progress (WIP)
-
-Table of Contents
+## Table of Contents
 
 - [Getting Started](#getting-started)  
 - [Current Features](#current-features)  
@@ -19,6 +17,7 @@ Table of Contents
   - [Enhancements](#core-application-enhancements)
 
 ___
+# Project Status: Work in Progress (WIP)
 
 ## Getting Started
 
@@ -28,8 +27,8 @@ Running from an IDE
 
 This project is in active development. While some telemetry data is still printed to the console for debugging, the primary focus has shifted to rendering data in dedicated UI components.
 
-The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.
-
+The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.  
+[Back to top](#table-of-contents)
 ___
 
 ## Current Features
@@ -42,7 +41,7 @@ The application currently supports six separate data panels:
     Fastest Speed Trap: Ranks the fastest speed trap times for each individual driver.
     All Speed Traps: Records and displays every speed trap time for both the player and their teammate.
     Run Data: Tracks and presents run-specific data for both the player and their teammate.
-
+[Back to top](#table-of-contents)
 ___
 
 ## Architecture Overview
@@ -70,7 +69,7 @@ The application uses two primary data consumers to process specific telemetry da
 
     DriverDataDTO: Used by the lap time and car setup panels.
     SpeedTrapDTO: Used by both speed trap panels.
-
+[Back to top](#table-of-contents)
 ___
 
 ## Game Compatibility Matrix
@@ -82,7 +81,7 @@ ___
 | **F1 2023**  | ✖ (untested)   | Full                                   | With decimals        | Full tyre set via fitted index | Should function, not yet validated               |
 | **F1 2024**  | ✔              | Full                                   | With decimals        | Full tyre set via fitted index | Development baseline, known accelerated-time bug |
 | **F1 2025**  | ✖ (not tested) | Expected full                          | With decimals        | Full tyre set via fitted index | Pending release/testing                          |
-
+[Back to top](#table-of-contents)
 ___
 
 ## Game-Specific Notes
@@ -130,7 +129,7 @@ Practice Session "Accelerated Time" Issue
         Harvested and deployed values stuck at 0.0.
     This occurs when a lap ends while the game is running in accelerated time.
     Workaround: Switch back to normal speed before the car of interest completes its lap.
-
+[Back to top](#table-of-contents)
 ___
 
 ## Future Projects
@@ -148,3 +147,4 @@ The following features and improvements are planned for upcoming releases:
     Logging Integration: Implement a robust logging system to replace the current console-based output.
     Code Cleanup: All remaining print statements will be removed from the codebase.
     Packaging: The project will be configured to produce a distributable artifact (e.g., a .jar file) for easy deployment.
+[Back to top](#table-of-contents)
