@@ -81,6 +81,7 @@ ___
 | **F1 2023**  | ✖ (untested)   | Full                                   | With decimals        | Full tyre set via fitted index | Should function, not yet validated               |
 | **F1 2024**  | ✔              | Full                                   | With decimals        | Full tyre set via fitted index | Development baseline, known accelerated-time bug |
 | **F1 2025**  | ✖ (not tested) | Expected full                          | With decimals        | Full tyre set via fitted index | Pending release/testing                          |
+  
 [Back to top](#table-of-contents)
 ___
 
