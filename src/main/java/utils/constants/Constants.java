@@ -43,6 +43,7 @@ public class Constants {
     public static final int TYRE_SETS_PACK = 12;
     public static final int MOTION_EX_PACK = 13;
     public static final int TIME_TRIAL_PACK = 14;
+    public static final int LAP_POSITIONS_PACK = 15;
 
     public static final String BUTTON_PRESSED_EVENT = "BUTN";
     public static final String SPEED_TRAP_TRIGGERED_EVENT = "SPTP";
