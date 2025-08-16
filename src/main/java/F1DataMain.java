@@ -2,6 +2,8 @@ import individualLap.CarDamageInfo;
 import individualLap.CarStatusInfo;
 import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import packets.*;
 import packets.enums.DriverPairingsEnum;
 import packets.enums.DriverStatusEnum;
@@ -29,12 +31,16 @@ import java.util.function.Consumer;
 
 public class F1DataMain {
 
+    private static final Logger logger = LoggerFactory.getLogger(F1DataMain.class);
+
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
     private int playerCarIndex = -1;
     private int packetFormat = -1;
     private DriverPairingsEnum driverPairingsEnum = null;
     private FormulaTypeEnum formulaType = null;
     private float speedTrapDistance = -50;
+
+    private int[][] packetCounts = new int[15][1];
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
@@ -60,34 +66,44 @@ public class F1DataMain {
                 switch (ph.packetId()) {
                     case Constants.MOTION_PACK:
                         handleMotionPacket(byteBuffer);
+                        packetCounts[Constants.MOTION_PACK][0]++;
                         break;
                     case Constants.EVENT_PACK:
                         handleEventPacket(byteBuffer, speedTrapDataDTO);
+                        packetCounts[Constants.EVENT_PACK][0]++;
                         break;
                     case Constants.LAP_DATA_PACK:
                         handleLapDataPacket(byteBuffer, driverDataDTO, speedTrapDataDTO);
+                        packetCounts[Constants.LAP_DATA_PACK][0]++;
                         break;
                     case Constants.CAR_SETUP_PACK:
                         handleCarSetupPacket(byteBuffer);
+                        packetCounts[Constants.CAR_SETUP_PACK][0]++;
                         break;
                     case Constants.PARTICIPANTS_PACK:
                         handleParticipantsPacket(byteBuffer, driverDataDTO);
+                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
                         break;
                     case Constants.CAR_TELEMETRY_PACK:
                         handleCarTelemetryPacket(byteBuffer);
+                        packetCounts[Constants.CAR_TELEMETRY_PACK][0]++;
                         break;
                     case Constants.CAR_STATUS_PACK:
                         handleCarStatusPacket(byteBuffer);
+                        packetCounts[Constants.CAR_STATUS_PACK][0]++;
                         break;
                     case Constants.CAR_DAMAGE_PACK:
                         handleCarDamagePacket(byteBuffer);
+                        packetCounts[Constants.CAR_DAMAGE_PACK][0]++;
                         break;
                     case Constants.TYRE_SETS_PACK:
                         handleTireSetsPacket(byteBuffer);
+                        packetCounts[Constants.TYRE_SETS_PACK][0]++;
                         break;
                 }
             }
         } catch (IOException e) {
+            logger.error("e ", e);
             throw new RuntimeException(e);
         }
     }
@@ -279,6 +295,12 @@ public class F1DataMain {
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
         if (packetFormat <= Constants.YEAR_2020) {
             long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
+            //2020 special button press mapped to button 9 on the McLaren wheel. Used to log the # of packets recieved.
+//            if (buttonEvent == 8192) {
+//                for (int i = 0; i < packetCounts.length; i++) {
+//                    logger.info("Packet # {} Count {}", PacketTypeEnum.findByValue(i).name(), packetCounts[i][0]);
+//                }
+//            }
         }
         int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
         int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
