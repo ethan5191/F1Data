@@ -61,6 +61,47 @@ The application uses two primary data consumers to process specific telemetry da
 
     SpeedTrapDTO: Used by both speed trap panels.
 
+Compatibility
+
+    The application has been tested with F1 2020 and F1 2024.
+    In theory, it should work with all titles from F1 2020 through F1 2025, but support for 2021–2023 is unverified, and testing has not yet been performed with F1 2025.
+
+Notes on F1 2020
+
+Speed Trap Data
+
+In F1 2020, speed trap data was only transmitted when a new fastest overall trap speed was set for the session.
+To address this limitation, the application uses the distance of the first recorded trap and queries all drivers’ speeds within a ±1.75 unit threshold around that distance.
+
+This can result in small discrepancies between in-game values and those shown in the panel.
+
+    Example: The in-game HUD may show 314.8 kph, but if that was not the session’s fastest trap, the UDP stream would not include it. The panel might instead display 314 kph.
+
+    In rare cases, if no LapData packet is received within the distance threshold, the trap speed may appear as 0.0.
+
+Tyre Wear Data
+
+Tyre wear values in 2020 were only transmitted as whole numbers.
+
+    Example: 2.00, 3.00, etc.
+
+    Decimal precision for tyre wear was introduced in F1 2021 and is supported in newer games.
+
+Notes on F1 2020–2022
+
+Tyre Set Identification
+
+The tireSets packet was introduced in F1 2023.
+
+    For earlier games (2020–2022), the app cannot uniquely identify tyre sets. Runs are grouped only by compound (Soft, Medium, Hard).
+
+    This means multiple runs on the same compound with the same setup will appear in a single RunData section, even if a fresh tyre set was actually fitted.
+
+    In F1 2023 and later, the app uses the fitted tyre index, allowing it to distinguish between different sets of the same compound.
+
+Work is ongoing to improve handling for older games.
+
+
 Future Projects
 
 The following features and improvements are planned for upcoming releases:
