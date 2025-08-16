@@ -4,6 +4,7 @@ import individualLap.CarTelemetryInfo;
 import individualLap.IndividualLapInfo;
 import packets.*;
 import packets.enums.DriverPairingsEnum;
+import packets.enums.DriverStatusEnum;
 import packets.enums.FormulaTypeEnum;
 import packets.events.ButtonsData;
 import packets.events.SpeedTrapData;
@@ -33,6 +34,7 @@ public class F1DataMain {
     private int packetFormat = -1;
     private DriverPairingsEnum driverPairingsEnum = null;
     private FormulaTypeEnum formulaType = null;
+    private float speedTrapDistance = -50;
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
@@ -63,7 +65,7 @@ public class F1DataMain {
                         handleEventPacket(byteBuffer, speedTrapDataDTO);
                         break;
                     case Constants.LAP_DATA_PACK:
-                        handleLapDataPacket(byteBuffer, driverDataDTO);
+                        handleLapDataPacket(byteBuffer, driverDataDTO, speedTrapDataDTO);
                         break;
                     case Constants.CAR_SETUP_PACK:
                         handleCarSetupPacket(byteBuffer);
@@ -150,6 +152,9 @@ public class F1DataMain {
                 //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
                 TelemetryData td = participants.get(trap.vehicleId());
                 td.setSpeedTrap(trap.speed());
+                if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance < 0) {
+                    speedTrapDistance = td.getCurrentLap().lapDistance();
+                }
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
                 speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
             }
@@ -157,7 +162,7 @@ public class F1DataMain {
     }
 
     //Parses the lap data packet.
-    private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
+    private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
                 LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
@@ -204,10 +209,24 @@ public class F1DataMain {
                             info.printDamage(td.getParticipantData().lastName());
                             //Populate the DriverDataDTO to populate the panels.
                             driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info, i == playerCarIndex));
+                            System.out.println(participants.get(i).getParticipantData().lastName() + " " + speedTrapDistance + " " + td.getSpeedTrap());
+                            //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
+                            td.setSpeedTrap(0.0F);
                         }
                         td.setCurrentLap(ld);
                     } else {
                         td.setCurrentLap(ld);
+                    }
+                    //F1 2020 only sent a speed trap event when a new fastest speed was set in the session.
+                    //So for that game, if the lap distance is within a certain amount of the distance when the first speed trap was registered
+                    //We get the cars current speed. I have it within a certain distance each way, this should catch the majority of cars.
+                    if (packetFormat <= Constants.YEAR_2020) {
+                        if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() &&
+                                (td.getCurrentLap().lapDistance() >= (speedTrapDistance - 1.75) && td.getCurrentLap().lapDistance() <= (speedTrapDistance + 1.75))) {
+                            if (td.getCurrentTelemetry() != null) td.setSpeedTrap(td.getCurrentTelemetry().speed());
+                            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
+                            System.out.println(participants.get(i).getParticipantData().lastName() + " " + speedTrapDistance + " " + td.getCurrentLap().lapDistance() + " " + td.getSpeedTrap());
+                        }
                     }
                 }
             }
