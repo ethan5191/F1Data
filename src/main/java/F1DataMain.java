@@ -40,7 +40,7 @@ public class F1DataMain {
     private FormulaTypeEnum formulaType = null;
     private float speedTrapDistance = -50;
 
-    private int[][] packetCounts = new int[15][1];
+    private final int[][] packetCounts = new int[15][1];
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         int port = Constants.PORT_NUM;
@@ -267,11 +267,9 @@ public class F1DataMain {
                     TelemetryData td = participants.get(i);
                     boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
                     if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
-//                    System.out.println("i " + i + " Name " + csd.getSetupName() + " Inside td.getCurrentSetup == null. Current Setup Val " + td.getCurrentSetup());
                         td.setCurrentSetup(csd);
                         if (isNullOrChanged) td.setSetupChange(true);
                     }
-//                System.out.println("I " + i + " Front Wing " + csd.getFrontWing() + " Rear " + csd.getRearWing());
                 }
             }
             //Trailing value, must be here to ensure the packet is fully parsed.
