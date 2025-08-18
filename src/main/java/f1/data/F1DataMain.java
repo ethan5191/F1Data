@@ -72,6 +72,9 @@ public class F1DataMain {
                         handleMotionPacket(byteBuffer);
                         packetCounts[Constants.MOTION_PACK][0]++;
                         break;
+                    case Constants.SESSION_PACK:
+                        packetCounts[Constants.SESSION_PACK][0]++;
+                        break;
                     case Constants.EVENT_PACK:
                         handleEventPacket(byteBuffer, speedTrapDataDTO);
                         packetCounts[Constants.EVENT_PACK][0]++;
@@ -141,6 +144,10 @@ public class F1DataMain {
                 float frontWheelsAngle = byteBuffer.getFloat();
             }
         }
+    }
+
+    private void handleSessionPacket(ByteBuffer byteBuffer) {
+
     }
 
     //Handles the event packet. This one is different from the others as the packet changes based on what event has happened.
