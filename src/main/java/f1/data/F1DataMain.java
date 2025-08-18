@@ -7,10 +7,13 @@ import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.*;
 import f1.data.packets.enums.DriverPairingsEnum;
 import f1.data.packets.enums.DriverStatusEnum;
+import f1.data.packets.enums.FormulaEnum;
 import f1.data.packets.enums.FormulaTypeEnum;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
+import f1.data.packets.session.SessionData;
+import f1.data.packets.session.SessionDataFactory;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
@@ -71,6 +74,10 @@ public class F1DataMain {
                     case Constants.MOTION_PACK:
                         handleMotionPacket(byteBuffer);
                         packetCounts[Constants.MOTION_PACK][0]++;
+                        break;
+                    case Constants.SESSION_PACK:
+                        handleSessionPacket(byteBuffer);
+                        packetCounts[Constants.SESSION_PACK][0]++;
                         break;
                     case Constants.EVENT_PACK:
                         handleEventPacket(byteBuffer, speedTrapDataDTO);
@@ -140,6 +147,13 @@ public class F1DataMain {
                 float angularAccelerationZ = byteBuffer.getFloat();
                 float frontWheelsAngle = byteBuffer.getFloat();
             }
+        }
+    }
+
+    private void handleSessionPacket(ByteBuffer byteBuffer) {
+        if (packetFormat > 0) {
+            SessionData sessionData = SessionDataFactory.build(packetFormat, byteBuffer);
+            logger.info("{} {}", System.currentTimeMillis(), FormulaEnum.fromValue(sessionData.formula()));
         }
     }
 
