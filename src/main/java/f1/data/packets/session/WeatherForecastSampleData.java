@@ -22,6 +22,12 @@ import java.nio.ByteBuffer;
  * m_rainPercentage       | uint8     | 1            | 2021           | Rain percentage (0-100)
  */
 
+/**
+ *  Represents an element in an array in the SessionData packet.
+ * - F1 2020 Length: 20
+ * - F1 2021 - 2023 Length: 56
+ * - F1 2024/2025 Length: 64
+ */
 public record WeatherForecastSampleData(int sessionType, int timeOffset, int weather, int trackTemperature, int trackTemperatureChange,
                                         int airTemperature, int airTemperatureChange, int rainPercentage) {
 

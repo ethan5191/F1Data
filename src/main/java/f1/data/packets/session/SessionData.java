@@ -93,5 +93,81 @@ package f1.data.packets.session;
  * - m_sector3LapDistanceStart    | float     | 4            | 2024           | Distance in m around track where sector 3 starts
  */
 
-public class SessionData {
+public record SessionData(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                          int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                          int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                          int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                          int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                          WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
+                          long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
+                          int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
+                          AssistData assistData, int gameMode, int ruleSet, long timeOfDay, int sessionLength,
+                          int speedUnitsLeadPlayer, int tempUnitsLeadPlayer, int speedUnitsSecondaryPlayer,
+                          int tempUnitsSecondaryPlayer, int numSafetyCarPeriods, int numVirtualSafetyCarPeriods,
+                          int numRedFlagPeriods, GameModeData gameModeData, float sector2LapDistanceStart,
+                          float sector3LapDistanceStart) {
+
+    public record SessionData20(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples) {
+
+    }
+
+    public record SessionData21(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
+                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
+                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
+                                AssistData assistData) {
+
+    }
+
+    public record SessionData22(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
+                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
+                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
+                                AssistData assistData, int gameMode, int ruleSet, long timeOfDay, int sessionLength) {
+
+    }
+
+    public record SessionData23(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
+                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
+                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
+                                AssistData assistData, int gameMode, int ruleSet, long timeOfDay, int sessionLength,
+                                int speedUnitsLeadPlayer, int tempUnitsLeadPlayer, int speedUnitsSecondaryPlayer,
+                                int tempUnitsSecondaryPlayer, int numSafetyCarPeriods, int numVirtualSafetyCarPeriods,
+                                int numRedFlagPeriods) {
+
+    }
+
+    public record SessionData24(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy,
+                                int aiDifficulty, long seasonLinkIdentifier, long weekendLinkIdentifier,
+                                long sessionLinkIdentifier, int pitStopWindowIdealLap, int pitStopWindowLatestLap,
+                                int pitStopRejoinPosition, AssistData assistData, int gameMode, int ruleSet,
+                                long timeOfDay, int sessionLength, int speedUnitsLeadPlayer, int tempUnitsLeadPlayer,
+                                int speedUnitsSecondaryPlayer, int tempUnitsSecondaryPlayer, int numSafetyCarPeriods,
+                                int numVirtualSafetyCarPeriods, int numRedFlagPeriods, GameModeData gameModeData,
+                                float sector2LapDistanceStart, float sector3LapDistanceStart) {
+
+    }
 }
