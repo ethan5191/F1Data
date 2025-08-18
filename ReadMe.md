@@ -1,6 +1,8 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)  
+  - [Running from an IDE](#running-from-an-ide)
+  - [Building and Running](#building-and-running-the-application)
 - [Current Features](#current-features)  
 - [Architecture Overview](#architecture-overview)  
   - [F1 Data Main](#f1datamain)  
@@ -21,9 +23,22 @@ ___
 
 ## Getting Started
 
-Running from an IDE
+### Running from an IDE
 
     To launch the application, open the project in your IDE and run the Main.java file. This will initiate the application's UI thread and the separate data processing thread.
+
+### Building and Running the Application
+
+To build a standalone, executable version of this application, use the Maven command line tool.
+
+    Open your terminal or command prompt and navigate to the project's root directory.
+    Run the following command to build the .jar file:
+         mvn clean package
+    Once the build is complete, you will find the executable .jar file in the target/ directory.
+
+You can then run the application from the command line using the following command:
+  
+    java -jar your-app-name.jar
 
 This project is in active development. While some telemetry data is still printed to the console for debugging, the primary focus has shifted to rendering data in dedicated UI components.
 
