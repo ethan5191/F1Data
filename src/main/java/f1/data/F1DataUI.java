@@ -14,11 +14,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
+
+    private final static Logger logger = LoggerFactory.getLogger(F1DataUI.class);
 
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
@@ -100,6 +104,7 @@ public class F1DataUI extends Application {
         Stage panel = new Stage();
         panel.setScene(scene);
         panel.setOnCloseRequest(e -> {
+            logger.info("Shutting Down");
             Platform.exit();
         });
         panel.show();
@@ -329,6 +334,7 @@ public class F1DataUI extends Application {
     }
 
     public void run(String[] args) {
+        logger.info("Starting");
         launch(args);
     }
 }

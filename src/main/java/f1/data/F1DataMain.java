@@ -45,6 +45,7 @@ public class F1DataMain {
     private final int[][] packetCounts = new int[15][1];
 
     public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+        logger.info("In DataMain");
         int port = Constants.PORT_NUM;
         byte[] buffer = new byte[2048];
         try {
@@ -57,6 +58,7 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
+                logger.info("Packet {} Length {}", ph.packetId(), length);
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.playerCarIndex();
                 if (packetFormat < 0) {
