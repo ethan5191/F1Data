@@ -99,6 +99,9 @@ public class F1DataUI extends Application {
         Scene scene = new Scene(statePanel, 200, 200);
         Stage panel = new Stage();
         panel.setScene(scene);
+        panel.setOnCloseRequest(e -> {
+            Platform.exit();
+        });
         panel.show();
     }
 
