@@ -7,8 +7,8 @@ import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.*;
 import f1.data.packets.enums.DriverPairingsEnum;
 import f1.data.packets.enums.DriverStatusEnum;
+import f1.data.packets.enums.Formula2Enum;
 import f1.data.packets.enums.FormulaEnum;
-import f1.data.packets.enums.FormulaTypeEnum;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
@@ -42,7 +42,10 @@ public class F1DataMain {
     private int playerCarIndex = -1;
     private int packetFormat = -1;
     private DriverPairingsEnum driverPairingsEnum = null;
-    private FormulaTypeEnum formulaType = null;
+    private FormulaEnum formulaEnum = null;
+    //Used to determine if we are getting current or previous driver lineups for the game for F2.
+    private Formula2Enum formula2Enum = null;
+
     private float speedTrapDistance = -50;
 
     private final int[][] packetCounts = new int[15][1];
@@ -153,6 +156,9 @@ public class F1DataMain {
     private void handleSessionPacket(ByteBuffer byteBuffer) {
         if (packetFormat > 0) {
             SessionData sessionData = SessionDataFactory.build(packetFormat, byteBuffer);
+            if (formulaEnum == null) {
+                formulaEnum = FormulaEnum.fromValue(sessionData.formula());
+            }
             logger.info("{} {}", System.currentTimeMillis(), FormulaEnum.fromValue(sessionData.formula()));
         }
     }
@@ -378,33 +384,47 @@ public class F1DataMain {
                     pd.printName();
                     TelemetryData td = new TelemetryData(pd, numActiveCars);
                     participants.put(i, td);
-                    //this will only be updated once we found a driver that exists in a single series, so we know what driver lineups to use.
-                    if (formulaType == null) {
-                        //In F1 24 no drivers in F1 also exist in either of the F2 lineups. This is not true in F1 25, so would need changing.
-                        if (driverPairingsEnum.getF1DriverPairs().containsKey(pd.driverId())) {
-                            formulaType = FormulaTypeEnum.F1;
-                        } else {
-                            boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.driverId());
-                            boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.driverId());
-                            //If a driver exists in one F2 lineup but not the other then we have found what series we are using.
-                            //TODO: if I ever get F1 25 and want to use this with that game, ensure this logic still works for it.
-                            if (f2Current && !f2Prev) {
-                                formulaType = FormulaTypeEnum.F2;
-                            } else if (!f2Current && f2Prev) {
-                                formulaType = FormulaTypeEnum.F2_PREV;
-                            }
+                    //SessionPacket now sets what Formula we are using. F2 is the only one that has this special block.
+                    //Only step into this if we haven't already figured out what F2 to use.
+                    if (formulaEnum == FormulaEnum.F2 && formula2Enum == null) {
+                        boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.driverId());
+                        boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.driverId());
+                        //If a driver exists in one F2 lineup but not the other than we have found what series we are using.
+                        //to date, there has never been 2 F2 seasons back to back with the same driver lineup.
+                        //If that happens, code masters will have to send an update for which F2 its using in that game, as there will be no way to distinguish it.
+                        if (f2Current && !f2Prev) {
+                            formula2Enum = Formula2Enum.CURRENT;
+                        } else if (!f2Current && f2Prev) {
+                            formula2Enum = Formula2Enum.PREVIOUS;
                         }
                     }
                 }
             }
             //Get the active driver pairings based on what formula we are.
-            Map<Integer, Integer> driverPairing = driverPairingsEnum.getDriverPair(formulaType.getIndex());
+            Map<Integer, Integer> driverPairing = findDriverPairings();
             //Loop over each created TD object to create the DriverDataDTO to update the UI.
             //Do this outside the loop above to ensure we know what driver lineup we are using for the UI.
             for (int j = 0; j < participants.size(); j++) {
                 TelemetryData td = participants.get(j);
                 //Populates the initial DriverDataDTO consumer for the UI.
-                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), j == playerCarIndex, driverPairing, formulaType));
+                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), j == playerCarIndex, driverPairing, formulaEnum));
+            }
+        }
+    }
+
+    //Based on the enum params that have been set return the driver pairings, if it exists.
+    private Map<Integer, Integer> findDriverPairings() {
+        //I haven't created any driver pairings for non-F1 and non-F2 lineups. Not sure I ever will, so return an empty Map.
+        if (!formulaEnum.equals(FormulaEnum.F1) && !formulaEnum.equals(FormulaEnum.F2)) {
+            return new HashMap<>(0);
+        } else if (formulaEnum.equals(FormulaEnum.F1)) {
+            return driverPairingsEnum.getF1DriverPairs();
+        } else {
+            //If F2 enum is current get the current F2 drivers, else get previous.
+            if (formula2Enum.equals(Formula2Enum.CURRENT)) {
+                return driverPairingsEnum.getF2DriverPairs();
+            } else {
+                return driverPairingsEnum.getF2PrevYearDriverPairs();
             }
         }
     }

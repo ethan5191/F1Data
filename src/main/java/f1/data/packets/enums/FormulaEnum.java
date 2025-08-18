@@ -1,9 +1,9 @@
 package f1.data.packets.enums;
 
-import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 
+//Enum matches to the Session values for the 'formula' param.
 public enum FormulaEnum {
 
     F1(0),
@@ -34,5 +34,9 @@ public enum FormulaEnum {
 
     public static FormulaEnum fromValue(int value) {
         return LOOKUP.get(value);
+    }
+
+    public static boolean isF1(FormulaEnum formulaEnum) {
+        return FormulaEnum.F1.equals(formulaEnum);
     }
 }

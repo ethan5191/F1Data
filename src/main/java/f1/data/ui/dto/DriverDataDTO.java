@@ -1,20 +1,20 @@
 package f1.data.ui.dto;
 
 import f1.data.individualLap.IndividualLapInfo;
-import f1.data.packets.enums.FormulaTypeEnum;
+import f1.data.packets.enums.FormulaEnum;
 
 import java.util.Map;
 
 public class DriverDataDTO {
 
     //Used by the participants packet, only passed one time per driver. Responsible for setting up initial data.
-    public DriverDataDTO(Integer id, String lastName, boolean isPlayer, Map<Integer, Integer> driverPairings, FormulaTypeEnum formulaTypeEnum) {
+    public DriverDataDTO(Integer id, String lastName, boolean isPlayer, Map<Integer, Integer> driverPairings, FormulaEnum formulaEnum) {
         this.id = id;
         this.lastName = lastName;
         this.info = null;
         this.isPlayer = isPlayer;
         this.driverPairings = driverPairings;
-        this.formulaTypeEnum = formulaTypeEnum;
+        this.formulaEnum = formulaEnum;
     }
 
     //Used by the lapData packet, passed each time a car completes a new timed lap.
@@ -24,7 +24,7 @@ public class DriverDataDTO {
         this.info = info;
         this.isPlayer = isPlayer;
         this.driverPairings = null;
-        this.formulaTypeEnum = null;
+        this.formulaEnum = null;
     }
 
     private final Integer id;
@@ -32,7 +32,7 @@ public class DriverDataDTO {
     private final IndividualLapInfo info;
     private final boolean isPlayer;
     private final Map<Integer, Integer> driverPairings;
-    private final FormulaTypeEnum formulaTypeEnum;
+    private final FormulaEnum formulaEnum;
 
     public Integer getId() {
         return id;
@@ -54,7 +54,7 @@ public class DriverDataDTO {
         return driverPairings;
     }
 
-    public FormulaTypeEnum getFormulaTypeEnum() {
-        return formulaTypeEnum;
+    public FormulaEnum getFormulaEnum() {
+        return formulaEnum;
     }
 }

@@ -1,7 +1,7 @@
 package f1.data;
 
 import f1.data.individualLap.IndividualLapInfo;
-import f1.data.packets.enums.FormulaTypeEnum;
+import f1.data.packets.enums.FormulaEnum;
 import f1.data.ui.RunDataAverage;
 import f1.data.ui.dashboards.*;
 import f1.data.ui.dto.DriverDataDTO;
@@ -116,7 +116,7 @@ public class F1DataUI extends Application {
         //if driver pairings is empty then we haven't populated the formulaType either.
         if (driverPairings.isEmpty()) {
             driverPairings = snapshot.getDriverPairings();
-            isF1 = FormulaTypeEnum.isF1(snapshot.getFormulaTypeEnum());
+            isF1 = FormulaEnum.isF1(snapshot.getFormulaEnum());
         }
         LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
             //Creates the new dashboard
