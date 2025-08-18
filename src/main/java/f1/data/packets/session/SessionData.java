@@ -1,5 +1,9 @@
 package f1.data.packets.session;
 
+import f1.data.utils.BitMaskUtils;
+
+import java.nio.ByteBuffer;
+
 /**
  * - F1 2020 Length: 227 bytes
  * - F1 2021 Length: 601 bytes
@@ -107,13 +111,50 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                           int numRedFlagPeriods, GameModeData gameModeData, float sector2LapDistanceStart,
                           float sector3LapDistanceStart) {
 
+    private static final int MARSHAL_ZONE_SIZE = 21;
+
+    private static final int WEATHER_FORECAST_20_SIZE = 20;
+    private static final int WEATHER_FORECAST_21_TO_23_SIZE = 56;
+    private static final int WEATHER_FORECAST_24_NEWER_SIZE = 64;
+
+    //Used to build the MarshalZone objects
+    private static MarshalZoneData[] buildMarshalZones(ByteBuffer byteBuffer) {
+        MarshalZoneData[] results = new MarshalZoneData[MARSHAL_ZONE_SIZE];
+        for (int i = 0; i < results.length; i++) {
+            results[i] = new MarshalZoneData(byteBuffer);
+        }
+        return results;
+    }
+
+    //Used to build the WeatherForecastSamples array for F1 2020. It was a much smaller array back then.
+    private static WeatherForecastSampleData[] buildWeatherForecastSamples20(ByteBuffer byteBuffer) {
+        WeatherForecastSampleData[] results = new WeatherForecastSampleData[WEATHER_FORECAST_20_SIZE];
+        for (int i = 0; i < results.length; i++) {
+            WeatherForecastSampleData.WeatherForecastSampleData20 w20 = new WeatherForecastSampleData.WeatherForecastSampleData20(byteBuffer);
+            results[i] = new WeatherForecastSampleData(w20.sessionType(), w20.timeOffset(), w20.weather(), w20.trackTemperature(), 0, w20.airTemperature(), 0, 0);
+        }
+        return results;
+    }
+
+    //Used to build the WeatherForecastSamples array for F1 2021 and beyond. The object is the same, but the size changed in 2024
+    private static WeatherForecastSampleData[] buildWeatherForecastSamples21(ByteBuffer byteBuffer, int size) {
+        WeatherForecastSampleData[] results = new WeatherForecastSampleData[size];
+        for (int i = 0; i < results.length; i++) {
+            WeatherForecastSampleData.WeatherForecastSampleData21 w21 = new WeatherForecastSampleData.WeatherForecastSampleData21(byteBuffer);
+            results[i] = new WeatherForecastSampleData(w21.sessionType(), w21.timeOffset(), w21.weather(), w21.trackTemperature(), w21.trackTemperatureChange(), w21.airTemperature(), w21.airTemperatureChange(), w21.rainPercentage());
+        }
+        return results;
+    }
+
     public record SessionData20(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
                                 int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
                                 int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
                                 int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
                                 int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
                                 WeatherForecastSampleData[] weatherForecastSamples) {
-
+        public SessionData20(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples20(byteBuffer));
+        }
     }
 
     public record SessionData21(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
@@ -121,11 +162,13 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                                 int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
                                 int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
                                 int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
-                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
-                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
-                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
-                                AssistData assistData) {
-
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy,
+                                int aiDifficulty, long seasonLinkIdentifier, long weekendLinkIdentifier,
+                                long sessionLinkIdentifier, int pitStopWindowIdealLap, int pitStopWindowLatestLap,
+                                int pitStopRejoinPosition, AssistData assistData) {
+        public SessionData21(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(byteBuffer, WEATHER_FORECAST_21_TO_23_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer));
+        }
     }
 
     public record SessionData22(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
@@ -133,11 +176,14 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                                 int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
                                 int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
                                 int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
-                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
-                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
-                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
-                                AssistData assistData, int gameMode, int ruleSet, long timeOfDay, int sessionLength) {
-
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy,
+                                int aiDifficulty, long seasonLinkIdentifier, long weekendLinkIdentifier,
+                                long sessionLinkIdentifier, int pitStopWindowIdealLap, int pitStopWindowLatestLap,
+                                int pitStopRejoinPosition, AssistData assistData, int gameMode, int ruleSet,
+                                long timeOfDay, int sessionLength) {
+        public SessionData22(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(byteBuffer, WEATHER_FORECAST_21_TO_23_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()));
+        }
     }
 
     public record SessionData23(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
@@ -145,14 +191,16 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                                 int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
                                 int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
                                 int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
-                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy, int aiDifficulty,
-                                long seasonLinkIdentifier, long weekendLinkIdentifier, long sessionLinkIdentifier,
-                                int pitStopWindowIdealLap, int pitStopWindowLatestLap, int pitStopRejoinPosition,
-                                AssistData assistData, int gameMode, int ruleSet, long timeOfDay, int sessionLength,
-                                int speedUnitsLeadPlayer, int tempUnitsLeadPlayer, int speedUnitsSecondaryPlayer,
-                                int tempUnitsSecondaryPlayer, int numSafetyCarPeriods, int numVirtualSafetyCarPeriods,
-                                int numRedFlagPeriods) {
-
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy,
+                                int aiDifficulty, long seasonLinkIdentifier, long weekendLinkIdentifier,
+                                long sessionLinkIdentifier, int pitStopWindowIdealLap, int pitStopWindowLatestLap,
+                                int pitStopRejoinPosition, AssistData assistData, int gameMode, int ruleSet,
+                                long timeOfDay, int sessionLength, int speedUnitsLeadPlayer, int tempUnitsLeadPlayer,
+                                int speedUnitsSecondaryPlayer, int tempUnitsSecondaryPlayer, int numSafetyCarPeriods,
+                                int numVirtualSafetyCarPeriods, int numRedFlagPeriods) {
+        public SessionData23(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(byteBuffer, WEATHER_FORECAST_21_TO_23_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()));
+        }
     }
 
     public record SessionData24(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
@@ -168,6 +216,8 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                                 int speedUnitsSecondaryPlayer, int tempUnitsSecondaryPlayer, int numSafetyCarPeriods,
                                 int numVirtualSafetyCarPeriods, int numRedFlagPeriods, GameModeData gameModeData,
                                 float sector2LapDistanceStart, float sector3LapDistanceStart) {
-
+        public SessionData24(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(byteBuffer, WEATHER_FORECAST_24_NEWER_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new GameModeData(byteBuffer), byteBuffer.getFloat(), byteBuffer.getFloat());
+        }
     }
 }
