@@ -1,18 +1,17 @@
 package f1.data;
 
 import f1.data.individualLap.IndividualLapInfo;
-import f1.data.packets.enums.FormulaEnum;
 import f1.data.ui.RunDataAverage;
 import f1.data.ui.dashboards.*;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
-import f1.data.ui.home.AppState;
+import f1.data.ui.home.HomePanel;
 import f1.data.ui.stages.*;
+import f1.data.ui.stages.managers.AllLapStageManager;
+import f1.data.ui.stages.managers.LatestLapStageManager;
 import f1.data.utils.constants.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ public class F1DataUI extends Application {
 
     private F1PacketProcessor packetProcessor;
 
-    private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, List<RunDataDashboard>>> runDataDashboard = new HashMap<>();
@@ -38,17 +36,16 @@ public class F1DataUI extends Application {
 
     private int playerDriverId = -1;
     private int teamMateId = -1;
-    private Map<Integer, Integer> driverPairings = new HashMap<>();
     private boolean isF1 = false;
 
     @Override
     public void start(Stage stage) throws Exception {
-        //Creates the panel that allows you to show/hide different data panels.
-        createTogglePanel();
+        //creates the initial panel that allows for toggling of other panels.
+        new HomePanel(packetProcessor);
 
         //Main content panels for the different views.
-        VBox latestLap = new VBox(5);
-        VBox allLaps = new VBox(5);
+        LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
+        AllLapStageManager allLaps = new AllLapStageManager(new VBox());
         VBox setupData = new VBox(5);
         VBox speedTrapData = new VBox(5);
         VBox teamSpeedTrapData = new VBox(5);
@@ -58,8 +55,8 @@ public class F1DataUI extends Application {
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
         {
             Platform.runLater(() -> {
-                buildLatestLapBoard(snapshot, latestLap);
-                buildAllLapBoard(snapshot, allLaps);
+                latestLap.updateStage(snapshot);
+                allLaps.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
                 buildSetupBoard(snapshot, setupData);
                 buildRunDataBoard(snapshot, runData);
             });
@@ -74,8 +71,8 @@ public class F1DataUI extends Application {
         };
 
         //Call the different stage constructors.
-        new LatestLapStage(stage, latestLap);
-        new AllLapDataStage(new Stage(), allLaps);
+        new LatestLapStage(stage, latestLap.getContainer());
+        new AllLapDataStage(new Stage(), allLaps.getContainer());
         new SetupStage(new Stage(), setupData);
         new SpeedTrapStage(new Stage(), speedTrapData);
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
@@ -91,93 +88,6 @@ public class F1DataUI extends Application {
 
         //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
-    }
-
-    //Creates the initial toggle panel that allows for showing hiding the individual panels.
-    private void createTogglePanel() {
-        CheckBox latestLapCheckbox = new CheckBox("Show Latest Lap Panel");
-        CheckBox lapsDataCheckbox = new CheckBox("Show Laps Data Panel");
-        CheckBox setupDataCheckbox = new CheckBox("Show Setup Data Panel");
-        CheckBox speedTrapDataCheckbox = new CheckBox("Show All Speed Trap Panel");
-        CheckBox teamSpeedTrapDataCheckbox = new CheckBox("Show Team Speed Trap Panel");
-        CheckBox runDataPanelCheckbox = new CheckBox("Show the Run Data Panel");
-
-        latestLapCheckbox.selectedProperty().bindBidirectional(AppState.latestLapPanelVisible);
-        lapsDataCheckbox.selectedProperty().bindBidirectional(AppState.allLapsDataPanelVisible);
-        setupDataCheckbox.selectedProperty().bindBidirectional(AppState.setupDataPanelVisible);
-        speedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.speedTrapPanelVisible);
-        teamSpeedTrapDataCheckbox.selectedProperty().bindBidirectional(AppState.teamSpeedTrapPanelVisible);
-        runDataPanelCheckbox.selectedProperty().bindBidirectional(AppState.runDataPanelVisible);
-
-        VBox statePanel = new VBox(10, latestLapCheckbox, lapsDataCheckbox, setupDataCheckbox, speedTrapDataCheckbox,
-                teamSpeedTrapDataCheckbox, runDataPanelCheckbox);
-
-        Scene scene = new Scene(statePanel, 200, 200);
-        Stage panel = new Stage();
-        panel.setScene(scene);
-        panel.setOnCloseRequest(e -> {
-            logger.info("Shutting Down");
-            packetProcessor.stop();
-            Platform.exit();
-        });
-        panel.show();
-    }
-
-    //Builds the latest lap panel. This is each cars last lap that they have crossed the start finish line. Not ordered.
-    private void buildLatestLapBoard(DriverDataDTO snapshot, VBox latestLap) {
-        //If the global map of driver pairings is empty, then we need to populate it from the DTO. It should have the map we need.
-        //if driver pairings is empty then we haven't populated the formulaType either.
-        if (driverPairings.isEmpty()) {
-            driverPairings = snapshot.getDriverPairings();
-            isF1 = FormulaEnum.isF1(snapshot.getFormulaEnum());
-        }
-        LatestLapDashboard latestLapDash = latestLapDashboard.computeIfAbsent(snapshot.getId(), id -> {
-            //Creates the new dashboard
-            LatestLapDashboard newDashboard = new LatestLapDashboard(snapshot.getLastName());
-            //add it to the view.
-            latestLap.getChildren().add(newDashboard);
-            //If this is the players driver, then update the background color of this box.
-            if (snapshot.isPlayer()) {
-                playerDriverId = snapshot.getId();
-                //Use the driverPairings param to ensure we can accommodate F1/F2/F2 previous year driver lineups.
-                teamMateId = driverPairings.get(playerDriverId);
-                newDashboard.setStyle("-fx-background-color: #3e3e3e;");
-                //If we have already created the teammates view, update the background color
-                if (latestLapDashboard.containsKey(teamMateId)) {
-                    LatestLapDashboard teamMateDash = latestLapDashboard.get(teamMateId);
-                    teamMateDash.setStyle("-fx-background-color: #3e3e3e;");
-                }
-            }
-            return newDashboard;
-        });
-        //Make sure we have the info object, if we do then we can actually update the dashboard with data.
-        if (snapshot.getInfo() != null) {
-            latestLapDash.updateValues(snapshot.getInfo());
-        }
-    }
-
-    //Builds the all lap panel. This panel groups all the laps each driver does in order of the lapnum.
-    private void buildAllLapBoard(DriverDataDTO snapshot, VBox allLaps) {
-        if (snapshot.getInfo() != null) {
-            //builds out the labels for the lapdata panel (panel 2 at the moment)
-            VBox driver = allLapDataDashboard.computeIfAbsent(snapshot.getId(), id -> {
-                VBox temp = new VBox();
-                //Add the box to the parent view.
-                allLaps.getChildren().add(temp);
-                //If its the driver or there teammate then update the background color.
-                if (id == playerDriverId || id == teamMateId) {
-                    temp.setStyle("-fx-background-color: #3e3e3e;");
-                }
-                return temp;
-            });
-            //Creates the actual dashboard
-            AllLapDataDashboard allLapsDashboard = new AllLapDataDashboard(snapshot.getLastName(), snapshot.getInfo());
-            //container for the laps information
-            VBox lapsContainer = new VBox();
-            lapsContainer.getChildren().add(allLapsDashboard);
-            //add to the overall panel.
-            driver.getChildren().add(lapsContainer);
-        }
     }
 
     //Builds the carsetup panel. Right now it only shows the first setup that the driver finishes a lap with.
