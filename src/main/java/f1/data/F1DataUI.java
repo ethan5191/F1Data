@@ -41,7 +41,7 @@ public class F1DataUI extends Application {
             int teamMateDriverId = initResult.getTeamMateDriverId();
 
             //Main content panels for the different views.
-            LatestLapStageManager latestLap = new LatestLapStageManager();
+            LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId, teamMateDriverId);
             AllLapStageManager allLaps = new AllLapStageManager();
             SetupStageManager setupData = new SetupStageManager();
             RunDataStageManager runData = new RunDataStageManager();
