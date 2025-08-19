@@ -82,7 +82,7 @@ public class TelemetryData {
     }
 
     public void setStartOfLapTireWear(float[] startOfLapTireWear) {
-        this.startOfLapTireWear = startOfLapTireWear;
+        this.startOfLapTireWear = (startOfLapTireWear == null) ? new float[4] : startOfLapTireWear;
     }
 
     public float getCurrentFuelInTank() {
@@ -168,7 +168,7 @@ public class TelemetryData {
             if (this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
                 this.currentTireWear = currentDamage.tyresWear();
                 //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
-                if (this.startOfLapTireWear[0] == -1) {
+                if (this.startOfLapTireWear == null || this.startOfLapTireWear[0] == -1) {
                     this.startOfLapTireWear = this.currentTireWear;
                 }
             } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
