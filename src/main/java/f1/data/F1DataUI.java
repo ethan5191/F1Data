@@ -1,14 +1,15 @@
 package f1.data;
 
-import f1.data.individualLap.IndividualLapInfo;
-import f1.data.ui.RunDataAverage;
-import f1.data.ui.dashboards.*;
+import f1.data.ui.dashboards.SpeedTrapDashboard;
+import f1.data.ui.dashboards.TeamSpeedTrapDashboard;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.ui.home.HomePanel;
 import f1.data.ui.stages.*;
 import f1.data.ui.stages.managers.AllLapStageManager;
 import f1.data.ui.stages.managers.LatestLapStageManager;
+import f1.data.ui.stages.managers.RunDataStageManager;
+import f1.data.ui.stages.managers.SetupStageManager;
 import f1.data.utils.constants.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,7 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -27,9 +31,6 @@ public class F1DataUI extends Application {
 
     private F1PacketProcessor packetProcessor;
 
-    private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
-    private final Map<Integer, Map<Integer, VBox>> setupDataDashboard = new HashMap<>();
-    private final Map<Integer, Map<Integer, List<RunDataDashboard>>> runDataDashboard = new HashMap<>();
     private final Map<Integer, SpeedTrapDashboard> speedTrapDashboard = new HashMap<>();
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> latestTeamSpeedTrapDash = new HashMap<>(2);
     private final List<SpeedTrapDataDTO> speedTrapRankings = new ArrayList<>();
@@ -46,10 +47,10 @@ public class F1DataUI extends Application {
         //Main content panels for the different views.
         LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
         AllLapStageManager allLaps = new AllLapStageManager(new VBox());
-        VBox setupData = new VBox(5);
+        SetupStageManager setupData = new SetupStageManager(new VBox());
+        RunDataStageManager runData = new RunDataStageManager(new VBox());
         VBox speedTrapData = new VBox(5);
         VBox teamSpeedTrapData = new VBox(5);
-        VBox runData = new VBox(5);
 
         //Logic for the Setup, LatestLap, and AllLap panels.
         Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
@@ -57,8 +58,8 @@ public class F1DataUI extends Application {
             Platform.runLater(() -> {
                 latestLap.updateStage(snapshot);
                 allLaps.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
-                buildSetupBoard(snapshot, setupData);
-                buildRunDataBoard(snapshot, runData);
+                setupData.updateStage(snapshot);
+                runData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId(), latestLap.isF1());
             });
         };
         //Logic for the speed trap panels.
@@ -73,10 +74,10 @@ public class F1DataUI extends Application {
         //Call the different stage constructors.
         new LatestLapStage(stage, latestLap.getContainer());
         new AllLapDataStage(new Stage(), allLaps.getContainer());
-        new SetupStage(new Stage(), setupData);
+        new SetupStage(new Stage(), setupData.getContainer());
         new SpeedTrapStage(new Stage(), speedTrapData);
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
-        new RunDataStage(new Stage(), runData);
+        new RunDataStage(new Stage(), runData.getContainer());
 
         try {
             packetProcessor = new F1PacketProcessor(Constants.PORT_NUM, Constants.PACKET_QUEUE_SIZE);
@@ -88,69 +89,6 @@ public class F1DataUI extends Application {
 
         //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
-    }
-
-    //Builds the carsetup panel. Right now it only shows the first setup that the driver finishes a lap with.
-    private void buildSetupBoard(DriverDataDTO snapshot, VBox setupData) {
-        if (snapshot.getInfo() != null) {
-            //Ensures we don't duplicate records, as we only want 1 record per driver.
-            if (!setupDataDashboard.containsKey(snapshot.getId())) {
-                commonSetupLogic(snapshot, setupData, new HashMap<>(), snapshot.getInfo().getCarSetupData().setupName());
-                //If this driver has already completed a lap with a different setup, we are adding this new setup to the map and using the lap # in the name.
-            } else if (snapshot.getInfo().isSetupChange()) {
-                String setupName = snapshot.getInfo().getCarSetupData().setupName() + " Lap #" + snapshot.getInfo().getLapNum();
-                Map<Integer, VBox> existingSetups = setupDataDashboard.get(snapshot.getId());
-                commonSetupLogic(snapshot, setupData, existingSetups, setupName);
-            }
-        }
-    }
-
-    //builds the runData panel. This panel shows the setup, and all laps completed with that setup.
-    private void buildRunDataBoard(DriverDataDTO snapshot, VBox runData) {
-        IndividualLapInfo info = snapshot.getInfo();
-        if (info != null) {
-            if (snapshot.getId() == playerDriverId || snapshot.getId() == teamMateId) {
-                //If this is the first pass through or the setup has changed we need to do all of this.
-                if (!runDataDashboard.containsKey(snapshot.getId()) || info.isSetupChange()) {
-                    VBox driver = new VBox();
-                    runData.getChildren().add(driver);
-                    //Creates the actual dashboard
-                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().setupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
-                    VBox container = new VBox(3);
-                    RunDataDashboard lapInfoBoard = new RunDataDashboard(snapshot, isF1);
-                    Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
-                    //calculate the averages and add them as a new dashboard to the end of the list.
-                    RunDataAverage average = new RunDataAverage(info.getLapNum(), snapshot, isF1);
-                    RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
-                    initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
-                    runDataDashboard.put(snapshot.getId(), initial);
-                    container.getChildren().add(setupInfo);
-                    lapInfoBoard.createHeaderRow(container);
-                    container.getChildren().add(lapInfoBoard);
-                    container.getChildren().add(averages);
-                    driver.getChildren().add(container);
-                    //else we have this setup already done a lap, so we just need to create a new lap info
-                } else {
-                    Map<Integer, List<RunDataDashboard>> currentData = runDataDashboard.get(snapshot.getId());
-                    //The lapnum is the key if a setup change has happened, so get the max key to get the latest setup change.
-                    //a setup change will be handled by the if part of this if/else statement.
-                    Optional<Integer> maxNewSetupLap = currentData.keySet().stream().max(Integer::compare);
-                    Integer maxLap = maxNewSetupLap.get();
-                    //Create a copy of the value in the map for this lapnum so we can add a new dashboard to the end.
-                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(maxLap));
-                    //get the current averages and use it to update the averages to account for a new lap completed.
-                    RunDataDashboard currentAverages = lapsForSetupCopy.get(lapsForSetupCopy.size() - 1);
-                    RunDataAverage updatedAverages = new RunDataAverage(maxLap, snapshot, currentAverages.getAverage());
-                    RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages, info.isUseLegacy());
-                    lapsForSetupCopy.add(newAvgDash);
-                    //Update the previous averages line to have the new laps data in it instead of averages.
-                    currentAverages.updateValues(snapshot);
-                    currentData.put(maxLap, lapsForSetupCopy);
-                    VBox container = (VBox) currentAverages.getParent();
-                    container.getChildren().add(newAvgDash);
-                }
-            }
-        }
     }
 
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
@@ -240,20 +178,6 @@ public class F1DataUI extends Application {
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
-    }
-
-    //Common logic used by the setup panel for both new entries and new setups for drivers who already have a setup listed.
-    private void commonSetupLogic(DriverDataDTO snapshot, VBox setupData, Map<Integer, VBox> mapToUpdate, String setupName) {
-        VBox driver = new VBox();
-        setupData.getChildren().add(driver);
-        //Add the box to the map so we can ensure we don't dupliate it.
-        mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
-        setupDataDashboard.put(snapshot.getId(), mapToUpdate);
-        //Creates the actual dashboard
-        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
-        VBox container = new VBox(3);
-        container.getChildren().add(setupInfo);
-        driver.getChildren().add(container);
     }
 
     public void run(String[] args) {
