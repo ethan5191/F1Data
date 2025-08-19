@@ -1,5 +1,8 @@
 package f1.data.packets.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum SessionTypeEnum {
 
     UNKNOWN(0),
@@ -24,11 +27,23 @@ public enum SessionTypeEnum {
 
     private final int value;
 
+    private static final Map<Integer, SessionTypeEnum> LOOKUP = new HashMap();
+
+    static {
+        for (SessionTypeEnum e : SessionTypeEnum.values()) {
+            LOOKUP.put(e.getValue(), e);
+        }
+    }
+
     SessionTypeEnum(int value) {
         this.value = value;
     }
 
     public int getValue() {
         return value;
+    }
+
+    public static SessionTypeEnum fromId(int id) {
+        return LOOKUP.get(id);
     }
 }

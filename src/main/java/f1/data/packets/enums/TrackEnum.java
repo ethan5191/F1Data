@@ -1,5 +1,8 @@
 package f1.data.packets.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum TrackEnum {
 
     AUSTRALIA(0, "Melbourne"),
@@ -39,6 +42,14 @@ public enum TrackEnum {
     private final int id;
     private final String altName;
 
+    private static final Map<Integer, TrackEnum> LOOKUP = new HashMap<>();
+
+    static {
+        for (TrackEnum e : TrackEnum.values()) {
+            LOOKUP.put(e.id, e);
+        }
+    }
+
     TrackEnum(int id, String altName) {
         this.id = id;
         this.altName = altName;
@@ -50,5 +61,9 @@ public enum TrackEnum {
 
     public String getAltName() {
         return altName;
+    }
+
+    public static TrackEnum fromId(int id) {
+        return LOOKUP.get(id);
     }
 }
