@@ -23,13 +23,10 @@ import f1.data.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -60,7 +57,6 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
-                logger.info("Packet {} Length {}", ph.packetId(), length);
                 //Only update this on the first pass, as the value will never change once its set.
                 if (playerCarIndex < 0) playerCarIndex = ph.playerCarIndex();
                 if (packetFormat < 0) {
@@ -155,7 +151,6 @@ public class F1DataMain {
             if (formulaEnum == null) {
                 formulaEnum = FormulaEnum.fromValue(sessionData.formula());
             }
-            logger.info("{} {}", System.currentTimeMillis(), FormulaEnum.fromValue(sessionData.formula()));
         }
     }
 
@@ -172,16 +167,6 @@ public class F1DataMain {
                 if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
                         || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
                 ) {
-                    //On pause I am printing lap data to the console and other information for each car.
-                    for (Map.Entry<Integer, TelemetryData> entry : participants.entrySet()) {
-                        Integer key = entry.getKey();
-                        TelemetryData td = entry.getValue();
-                        System.out.println();
-                        System.out.println("ID " + key);
-                        td.getParticipantData().printName();
-                        System.out.println("Setup: " + td.getCurrentSetup().setupName() + " Lap #:" + td.getLastLapNum() + " Lap Time " + td.getLastLapTimeInMs());
-                        System.out.println("-------------------------------------------");
-                    }
                 }
             } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
                 SpeedTrapData trap = SpeedTrapDataFactory.build(packetFormat, byteBuffer);
@@ -245,7 +230,6 @@ public class F1DataMain {
                             info.printDamage(td.getParticipantData().lastName());
                             //Populate the DriverDataDTO to populate the panels.
                             driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info, i == playerCarIndex));
-                            System.out.println(participants.get(i).getParticipantData().lastName() + " " + speedTrapDistance + " " + td.getSpeedTrap());
                             //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
                             td.setSpeedTrap(0.0F);
                         }
@@ -258,7 +242,8 @@ public class F1DataMain {
                     //We get the cars current speed. I have it within a certain distance each way, this should catch the majority of cars.
                     if (packetFormat <= Constants.YEAR_2020) {
                         if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() &&
-                                (td.getCurrentLap().lapDistance() >= (speedTrapDistance - 1.75) && td.getCurrentLap().lapDistance() <= (speedTrapDistance + 1.75))) {
+                                (td.getCurrentLap().lapDistance() >= (speedTrapDistance - Constants.TRAP_DISTANCE_BUFFER) &&
+                                        td.getCurrentLap().lapDistance() <= (speedTrapDistance + Constants.TRAP_DISTANCE_BUFFER))) {
                             if (td.getCurrentTelemetry() != null) td.setSpeedTrap(td.getCurrentTelemetry().speed());
                             speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
                             System.out.println(participants.get(i).getParticipantData().lastName() + " " + speedTrapDistance + " " + td.getCurrentLap().lapDistance() + " " + td.getSpeedTrap());
