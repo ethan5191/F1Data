@@ -111,6 +111,9 @@ public class F1DataMain {
         } catch (InterruptedException e) {
             logger.error("e ", e);
             throw new RuntimeException(e);
+        } catch (Exception e) {
+            logger.error("Caught Exception ", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -198,8 +201,10 @@ public class F1DataMain {
                             float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
                             td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
                             float[] tireWearThisLap = new float[4];
-                            for (int j = 0; j < tireWearThisLap.length; j++) {
-                                tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
+                            if (td.getCurrentTireWear() != null && td.getStartOfLapTireWear() != null) {
+                                for (int j = 0; j < tireWearThisLap.length; j++) {
+                                    tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
+                                }
                             }
                             td.setStartOfLapTireWear(td.getCurrentTireWear());
                             IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
