@@ -244,9 +244,12 @@ public class F1DataMain {
                         if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() &&
                                 (td.getCurrentLap().lapDistance() >= (speedTrapDistance - Constants.TRAP_DISTANCE_BUFFER) &&
                                         td.getCurrentLap().lapDistance() <= (speedTrapDistance + Constants.TRAP_DISTANCE_BUFFER))) {
-                            if (td.getCurrentTelemetry() != null) td.setSpeedTrap(td.getCurrentTelemetry().speed());
-                            speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
-                            System.out.println(participants.get(i).getParticipantData().lastName() + " " + speedTrapDistance + " " + td.getCurrentLap().lapDistance() + " " + td.getSpeedTrap());
+                            //If this car triggered a speed trap event, then it will already have a value, so don't replace it.
+                            //the td's speed trap values gets reset to 0.0F at the end of each lap.
+                            if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
+                                td.setSpeedTrap(td.getCurrentTelemetry().speed());
+                                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
+                            }
                         }
                     }
                 }
