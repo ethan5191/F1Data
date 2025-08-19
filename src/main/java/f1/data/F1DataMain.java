@@ -50,17 +50,13 @@ public class F1DataMain {
 
     private final int[][] packetCounts = new int[15][1];
 
-    public void run(Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+    public void run(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         logger.info("In DataMain");
-        int port = Constants.PORT_NUM;
-        byte[] buffer = new byte[2048];
         try {
-            DatagramSocket socket = new DatagramSocket(port);
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
             while (true) {
-                socket.receive(packet);
+                DatagramPacket packet = packetProcessor.getNextPacket();
                 int length = packet.getLength();
-                ByteBuffer byteBuffer = ByteBuffer.wrap(Arrays.copyOfRange(buffer, 0, length));
+                ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData(), 0, length);
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
@@ -116,7 +112,7 @@ public class F1DataMain {
                         break;
                 }
             }
-        } catch (IOException e) {
+        } catch (InterruptedException e) {
             logger.error("e ", e);
             throw new RuntimeException(e);
         }

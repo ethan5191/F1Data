@@ -23,6 +23,7 @@ public class Constants {
     public static final int TIRE_SETS_PACKET_COUNT = 20;
 
     public static final int PORT_NUM = 20777;
+    public static final int PACKET_QUEUE_SIZE = 2000;
 
     //length of the packet header, always present.
     public static final int HEADER_OFFSET = 28;
