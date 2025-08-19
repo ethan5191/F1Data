@@ -16,9 +16,8 @@ public class SpeedTrapDataManager implements Panel {
     private final Map<Integer, SpeedTrapDashboard> dashboards = new HashMap<>();
     private final List<SpeedTrapDataDTO> rankings = new ArrayList<>();
 
-    public SpeedTrapDataManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public SpeedTrapDataManager() {
+        this.container = new VBox(getSpacing());
     }
 
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver

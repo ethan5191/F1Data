@@ -13,9 +13,8 @@ public class AllLapStageManager implements Panel {
     private final VBox container;
     private final Map<Integer, VBox> dashboards = new HashMap<>();
 
-    public AllLapStageManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public AllLapStageManager() {
+        this.container = new VBox(getSpacing());
     }
 
     public void updateStage(DriverDataDTO dto, int playerId, int teamMateId) {

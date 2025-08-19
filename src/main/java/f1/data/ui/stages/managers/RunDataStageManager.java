@@ -15,9 +15,8 @@ public class RunDataStageManager implements Panel {
     private final VBox container;
     private final Map<Integer, Map<Integer, List<RunDataDashboard>>> dashboards = new HashMap<>();
 
-    public RunDataStageManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public RunDataStageManager() {
+        this.container = new VBox(getSpacing());
     }
 
     //builds the runData panel. This panel shows the setup, and all laps completed with that setup.

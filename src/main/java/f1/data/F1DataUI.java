@@ -8,7 +8,6 @@ import f1.data.ui.stages.managers.*;
 import f1.data.utils.constants.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,12 +41,12 @@ public class F1DataUI extends Application {
             int teamMateDriverId = initResult.getTeamMateDriverId();
 
             //Main content panels for the different views.
-            LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
-            AllLapStageManager allLaps = new AllLapStageManager(new VBox());
-            SetupStageManager setupData = new SetupStageManager(new VBox());
-            RunDataStageManager runData = new RunDataStageManager(new VBox());
-            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(new VBox());
-            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(new VBox());
+            LatestLapStageManager latestLap = new LatestLapStageManager();
+            AllLapStageManager allLaps = new AllLapStageManager();
+            SetupStageManager setupData = new SetupStageManager();
+            RunDataStageManager runData = new RunDataStageManager();
+            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager();
+            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager();
 
             //Logic for the Setup, LatestLap, and AllLap panels.
             Consumer<DriverDataDTO> driverDataConsumer = snapshot ->

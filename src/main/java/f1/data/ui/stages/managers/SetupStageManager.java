@@ -13,9 +13,8 @@ public class SetupStageManager implements Panel {
     private final VBox container;
     private final Map<Integer, Map<Integer, VBox>> dashboards = new HashMap<>();
 
-    public SetupStageManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public SetupStageManager() {
+        this.container = new VBox(getSpacing());
     }
 
     public void updateStage(DriverDataDTO dto) {

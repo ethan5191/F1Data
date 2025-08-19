@@ -13,9 +13,8 @@ public class TeamSpeedTrapDataManager implements Panel {
     private final VBox container;
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> dashboards = new HashMap<>(2);
 
-    public TeamSpeedTrapDataManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public TeamSpeedTrapDataManager() {
+        this.container = new VBox(getSpacing());
     }
 
     //Creates the player team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.

@@ -17,9 +17,8 @@ public class LatestLapStageManager implements Panel {
     private int teamMateId = -1;
     private Map<Integer, Integer> driverPairings = new HashMap<>();
 
-    public LatestLapStageManager(VBox container) {
-        this.container = container;
-        this.container.setSpacing(getSpacing());
+    public LatestLapStageManager() {
+        this.container = new VBox(getSpacing());
     }
 
     public void updateStage(DriverDataDTO dto) {
