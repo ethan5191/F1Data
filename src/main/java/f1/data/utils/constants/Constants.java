@@ -25,6 +25,8 @@ public class Constants {
     public static final int PORT_NUM = 20777;
     public static final int PACKET_QUEUE_SIZE = 2000;
 
+    public static final double TRAP_DISTANCE_BUFFER = 1.75;
+
     //length of the packet header, always present.
     public static final int HEADER_OFFSET = 28;
 
