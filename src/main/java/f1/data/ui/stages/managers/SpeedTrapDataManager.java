@@ -15,13 +15,17 @@ public class SpeedTrapDataManager implements Panel {
     private final VBox container;
     private final Map<Integer, SpeedTrapDashboard> dashboards = new HashMap<>();
     private final List<SpeedTrapDataDTO> rankings = new ArrayList<>();
+    private final int playerDriverId;
+    private final int teamMateId;
 
-    public SpeedTrapDataManager() {
+    public SpeedTrapDataManager(int playerDriverId, int teamMateId) {
         this.container = new VBox(getSpacing());
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
     }
 
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
-    public void updateStage(SpeedTrapDataDTO dto, int playerId, int teamMateId) {
+    public void updateStage(SpeedTrapDataDTO dto) {
         //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
         //Based on the number of cars in the session will determine how many dashboards are created.
         if (this.rankings.isEmpty() && this.dashboards.isEmpty()) {
@@ -45,7 +49,7 @@ public class SpeedTrapDataManager implements Panel {
                 this.rankings.add(dto);
                 reSort = true;
             } else {
-                //else he has a speed and we need to see if he went faster, if he did remove the old record and add the new one to the end.
+                //else he has a speed, and we need to see if he went faster, if he did remove the old record and add the new one to the end.
                 SpeedTrapDataDTO currentRanking = this.rankings.get(index);
                 if (currentRanking.getSpeed() < dto.getSpeed()) {
                     this.rankings.remove(currentRanking);
@@ -60,8 +64,8 @@ public class SpeedTrapDataManager implements Panel {
                 for (int n = 0; n < this.rankings.size(); n++) {
                     SpeedTrapDataDTO current = this.rankings.get(n);
                     SpeedTrapDashboard currentDash = this.dashboards.get(n);
-                    //If its the player or there teammate, update the background so they are easy to identify.
-                    if (current.getDriverId() == playerId || current.getDriverId() == teamMateId) {
+                    //If it's the player or there teammate, update the background so they are easy to identify.
+                    if (current.getDriverId() == this.playerDriverId || current.getDriverId() == this.teamMateId) {
                         currentDash.setStyle("-fx-background-color: #3e3e3e;");
                     } else {
                         currentDash.setStyle(null);

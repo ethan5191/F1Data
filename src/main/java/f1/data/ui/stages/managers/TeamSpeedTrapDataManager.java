@@ -12,15 +12,19 @@ public class TeamSpeedTrapDataManager implements Panel {
 
     private final VBox container;
     private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> dashboards = new HashMap<>(2);
+    private final int playerDriverId;
+    private final int teamMateId;
 
-    public TeamSpeedTrapDataManager() {
+    public TeamSpeedTrapDataManager(int playerDriverId, int teamMateId) {
         this.container = new VBox(getSpacing());
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
     }
 
     //Creates the player team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
-    public void updateStage(SpeedTrapDataDTO dto, int playerId, int teamMateId) {
+    public void updateStage(SpeedTrapDataDTO dto) {
         //This panel is only for the player and their teammate.
-        if (dto.getDriverId() == playerId || dto.getDriverId() == teamMateId) {
+        if (dto.getDriverId() == this.playerDriverId || dto.getDriverId() == this.teamMateId) {
             TeamSpeedTrapDashboard dashboard = new TeamSpeedTrapDashboard(dto);
             boolean updated = false;
             //If the map doesn't contain a record for this driver then we are doing an initial create.

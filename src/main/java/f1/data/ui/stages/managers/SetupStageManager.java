@@ -35,7 +35,7 @@ public class SetupStageManager implements Panel {
     private void commonSetupLogic(DriverDataDTO snapshot, VBox setupData, Map<Integer, VBox> mapToUpdate, String setupName) {
         VBox driver = new VBox();
         setupData.getChildren().add(driver);
-        //Add the box to the map so we can ensure we don't dupliate it.
+        //Add the box to the map so we can ensure we don't duplicate it.
         mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
         this.dashboards.put(snapshot.getId(), mapToUpdate);
         //Creates the actual dashboard

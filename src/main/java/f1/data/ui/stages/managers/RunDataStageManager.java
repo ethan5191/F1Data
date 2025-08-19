@@ -14,16 +14,22 @@ public class RunDataStageManager implements Panel {
 
     private final VBox container;
     private final Map<Integer, Map<Integer, List<RunDataDashboard>>> dashboards = new HashMap<>();
+    private final int playerDriverId;
+    private final int teamMateId;
+    private final boolean isF1;
 
-    public RunDataStageManager() {
+    public RunDataStageManager(int playerDriverId, int teamMateId, boolean isF1) {
         this.container = new VBox(getSpacing());
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
+        this.isF1 = isF1;
     }
 
     //builds the runData panel. This panel shows the setup, and all laps completed with that setup.
-    public void updateStage(DriverDataDTO dto, int playerId, int teamMateId, boolean isF1) {
+    public void updateStage(DriverDataDTO dto) {
         IndividualLapInfo info = dto.getInfo();
         if (info != null) {
-            if (dto.getId() == playerId || dto.getId() == teamMateId) {
+            if (dto.getId() == this.playerDriverId || dto.getId() == this.teamMateId) {
                 //If this is the first pass through or the setup has changed we need to do all of this.
                 if (!this.dashboards.containsKey(dto.getId()) || info.isSetupChange()) {
                     VBox driver = new VBox();
@@ -31,10 +37,10 @@ public class RunDataStageManager implements Panel {
                     //Creates the actual dashboard
                     SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().setupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox newBox = new VBox(3);
-                    RunDataDashboard lapInfoBoard = new RunDataDashboard(dto, isF1);
+                    RunDataDashboard lapInfoBoard = new RunDataDashboard(dto, this.isF1);
                     Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
                     //calculate the averages and add them as a new dashboard to the end of the list.
-                    RunDataAverage average = new RunDataAverage(info.getLapNum(), dto, isF1);
+                    RunDataAverage average = new RunDataAverage(info.getLapNum(), dto, this.isF1);
                     RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
                     initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
                     this.dashboards.put(dto.getId(), initial);

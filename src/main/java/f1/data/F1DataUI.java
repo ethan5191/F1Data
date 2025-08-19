@@ -42,28 +42,28 @@ public class F1DataUI extends Application {
 
             //Main content panels for the different views.
             LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId, teamMateDriverId);
-            AllLapStageManager allLaps = new AllLapStageManager();
+            AllLapStageManager allLaps = new AllLapStageManager(playerDriverId, teamMateDriverId);
             SetupStageManager setupData = new SetupStageManager();
-            RunDataStageManager runData = new RunDataStageManager();
-            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager();
-            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager();
+            RunDataStageManager runData = new RunDataStageManager(playerDriverId, teamMateDriverId, isF1);
+            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId, teamMateDriverId);
+            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId, teamMateDriverId);
 
             //Logic for the Setup, LatestLap, and AllLap panels.
             Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
             {
                 Platform.runLater(() -> {
                     latestLap.updateStage(snapshot);
-                    allLaps.updateStage(snapshot, playerDriverId, teamMateDriverId);
+                    allLaps.updateStage(snapshot);
                     setupData.updateStage(snapshot);
-                    runData.updateStage(snapshot, playerDriverId, teamMateDriverId, isF1);
+                    runData.updateStage(snapshot);
                 });
             };
             //Logic for the speed trap panels.
             Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
             {
                 Platform.runLater(() -> {
-                    speedTrapData.updateStage(snapshot, playerDriverId, teamMateDriverId);
-                    teamSpeedTrapData.updateStage(snapshot, playerDriverId, teamMateDriverId);
+                    speedTrapData.updateStage(snapshot);
+                    teamSpeedTrapData.updateStage(snapshot);
                 });
             };
 
