@@ -24,54 +24,59 @@ public class F1DataUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        //creates the initial panel that allows for toggling of other panels.
-        new HomePanel(packetProcessor);
-
-        //Main content panels for the different views.
-        LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
-        AllLapStageManager allLaps = new AllLapStageManager(new VBox());
-        SetupStageManager setupData = new SetupStageManager(new VBox());
-        RunDataStageManager runData = new RunDataStageManager(new VBox());
-        SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(new VBox());
-        TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(new VBox());
-
-        //Logic for the Setup, LatestLap, and AllLap panels.
-        Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
-        {
-            Platform.runLater(() -> {
-                latestLap.updateStage(snapshot);
-                allLaps.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
-                setupData.updateStage(snapshot);
-                runData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId(), latestLap.isF1());
-            });
-        };
-        //Logic for the speed trap panels.
-        Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
-        {
-            Platform.runLater(() -> {
-                speedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
-                teamSpeedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
-            });
-        };
-
-        //Call the different stage constructors.
-        new LatestLapStage(stage, latestLap.getContainer());
-        new AllLapDataStage(new Stage(), allLaps.getContainer());
-        new SetupStage(new Stage(), setupData.getContainer());
-        new SpeedTrapStage(new Stage(), speedTrapData.getContainer());
-        new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData.getContainer());
-        new RunDataStage(new Stage(), runData.getContainer());
-
         try {
             packetProcessor = new F1PacketProcessor(Constants.PORT_NUM, Constants.PACKET_QUEUE_SIZE);
             packetProcessor.start();
         } catch (SocketException e) {
             logger.error("Caught exception ", e);
-            packetProcessor.stop();
+            if (packetProcessor != null) packetProcessor.stop();
         }
 
-        //Calls the data thread.
-        callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
+        //creates the initial panel that allows for toggling of other panels.
+        HomePanel home = new HomePanel(packetProcessor);
+
+        F1SessionInitializer initializer = new F1SessionInitializer(packetProcessor, home);
+        initializer.startInitializationWithCallback(initResult -> {
+            boolean isF1 = initResult.isF1();
+
+            //Main content panels for the different views.
+            LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
+            AllLapStageManager allLaps = new AllLapStageManager(new VBox());
+            SetupStageManager setupData = new SetupStageManager(new VBox());
+            RunDataStageManager runData = new RunDataStageManager(new VBox());
+            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(new VBox());
+            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(new VBox());
+
+            //Logic for the Setup, LatestLap, and AllLap panels.
+            Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
+            {
+                Platform.runLater(() -> {
+                    latestLap.updateStage(snapshot);
+                    allLaps.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
+                    setupData.updateStage(snapshot);
+                    runData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId(), isF1);
+                });
+            };
+            //Logic for the speed trap panels.
+            Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
+            {
+                Platform.runLater(() -> {
+                    speedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
+                    teamSpeedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
+                });
+            };
+
+            //Call the different stage constructors.
+            new LatestLapStage(stage, latestLap.getContainer());
+            new AllLapDataStage(new Stage(), allLaps.getContainer());
+            new SetupStage(new Stage(), setupData.getContainer());
+            new SpeedTrapStage(new Stage(), speedTrapData.getContainer());
+            new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData.getContainer());
+            new RunDataStage(new Stage(), runData.getContainer());
+
+            //Calls the data thread.
+            callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
+        });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
