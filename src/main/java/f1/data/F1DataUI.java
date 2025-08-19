@@ -8,6 +8,7 @@ import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.ui.home.AppState;
 import f1.data.ui.stages.*;
+import f1.data.utils.constants.Constants;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -17,12 +18,15 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketException;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
 
     private final static Logger logger = LoggerFactory.getLogger(F1DataUI.class);
+
+    private F1PacketProcessor packetProcessor;
 
     private final Map<Integer, LatestLapDashboard> latestLapDashboard = new HashMap<>();
     private final Map<Integer, VBox> allLapDataDashboard = new HashMap<>();
@@ -77,6 +81,14 @@ public class F1DataUI extends Application {
         new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData);
         new RunDataStage(new Stage(), runData);
 
+        try {
+            packetProcessor = new F1PacketProcessor(Constants.PORT_NUM, Constants.PACKET_QUEUE_SIZE);
+            packetProcessor.start();
+        } catch (SocketException e) {
+            logger.error("Caught exception ", e);
+            packetProcessor.stop();
+        }
+
         //Calls the data thread.
         callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
     }
@@ -105,6 +117,7 @@ public class F1DataUI extends Application {
         panel.setScene(scene);
         panel.setOnCloseRequest(e -> {
             logger.info("Shutting Down");
+            packetProcessor.stop();
             Platform.exit();
         });
         panel.show();
@@ -313,7 +326,7 @@ public class F1DataUI extends Application {
     //Calls the telemetry thread, which handles parsing the packets.
     private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain().run(driverDataConsumer, speedTrapDataDTO);
+            new F1DataMain().run(packetProcessor, driverDataConsumer, speedTrapDataDTO);
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
