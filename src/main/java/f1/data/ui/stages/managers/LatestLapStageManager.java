@@ -1,6 +1,5 @@
 package f1.data.ui.stages.managers;
 
-import f1.data.packets.enums.FormulaEnum;
 import f1.data.ui.Panel;
 import f1.data.ui.dashboards.LatestLapDashboard;
 import f1.data.ui.dto.DriverDataDTO;
@@ -17,7 +16,6 @@ public class LatestLapStageManager implements Panel {
     private int playerDriverId = -1;
     private int teamMateId = -1;
     private Map<Integer, Integer> driverPairings = new HashMap<>();
-    private boolean isF1 = false;
 
     public LatestLapStageManager(VBox container) {
         this.container = container;
@@ -29,7 +27,6 @@ public class LatestLapStageManager implements Panel {
         //if driver pairings is empty then we haven't populated the formulaType either.
         if (this.driverPairings.isEmpty()) {
             this.driverPairings = dto.getDriverPairings();
-            this.isF1 = FormulaEnum.isF1(dto.getFormulaEnum());
         }
         LatestLapDashboard latestLapDash = this.dashboards.computeIfAbsent(dto.getId(), id -> {
             //Creates the new dashboard
@@ -58,18 +55,6 @@ public class LatestLapStageManager implements Panel {
 
     public VBox getContainer() {
         return container;
-    }
-
-    public int getPlayerDriverId() {
-        return playerDriverId;
-    }
-
-    public int getTeamMateId() {
-        return teamMateId;
-    }
-
-    public boolean isF1() {
-        return isF1;
     }
 
     public double getSpacing() {

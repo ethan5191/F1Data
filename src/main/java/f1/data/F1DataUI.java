@@ -38,6 +38,8 @@ public class F1DataUI extends Application {
         F1SessionInitializer initializer = new F1SessionInitializer(packetProcessor, home);
         initializer.startInitializationWithCallback(initResult -> {
             boolean isF1 = initResult.isF1();
+            int playerDriverId = initResult.getPlayerDriverId();
+            int teamMateDriverId = initResult.getTeamMateDriverId();
 
             //Main content panels for the different views.
             LatestLapStageManager latestLap = new LatestLapStageManager(new VBox());
@@ -52,17 +54,17 @@ public class F1DataUI extends Application {
             {
                 Platform.runLater(() -> {
                     latestLap.updateStage(snapshot);
-                    allLaps.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
+                    allLaps.updateStage(snapshot, playerDriverId, teamMateDriverId);
                     setupData.updateStage(snapshot);
-                    runData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId(), isF1);
+                    runData.updateStage(snapshot, playerDriverId, teamMateDriverId, isF1);
                 });
             };
             //Logic for the speed trap panels.
             Consumer<SpeedTrapDataDTO> speedTrapDataDTO = snapshot ->
             {
                 Platform.runLater(() -> {
-                    speedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
-                    teamSpeedTrapData.updateStage(snapshot, latestLap.getPlayerDriverId(), latestLap.getTeamMateId());
+                    speedTrapData.updateStage(snapshot, playerDriverId, teamMateDriverId);
+                    teamSpeedTrapData.updateStage(snapshot, playerDriverId, teamMateDriverId);
                 });
             };
 
