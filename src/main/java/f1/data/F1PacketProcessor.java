@@ -44,7 +44,7 @@ public class F1PacketProcessor {
                 byte[] data = Arrays.copyOf(packet.getData(), packet.getLength());
                 DatagramPacket queuePacket = new DatagramPacket(data, data.length);
                 if (!packetQueue.offer(queuePacket)) {
-                    System.err.println("Packet queue full! Dropping packet");
+                    logger.warn("Packet queue full! Dropping packet");
                 }
             } catch (IOException e) {
                 if (isRunning) logger.error("Caught exception ", e);
