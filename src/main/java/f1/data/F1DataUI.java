@@ -39,13 +39,14 @@ public class F1DataUI extends Application {
             boolean isF1 = initResult.isF1();
             int playerDriverId = initResult.getPlayerDriverId();
             int teamMateDriverId = initResult.getTeamMateDriverId();
+            int numActiveCars = initResult.getNumActiveCars();
 
             //Main content panels for the different views.
             LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId, teamMateDriverId);
             AllLapStageManager allLaps = new AllLapStageManager(playerDriverId, teamMateDriverId);
             SetupStageManager setupData = new SetupStageManager();
             RunDataStageManager runData = new RunDataStageManager(playerDriverId, teamMateDriverId, isF1);
-            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId, teamMateDriverId);
+            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId, teamMateDriverId, numActiveCars);
             TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId, teamMateDriverId);
 
             //Logic for the Setup, LatestLap, and AllLap panels.
