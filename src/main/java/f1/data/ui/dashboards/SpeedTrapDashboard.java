@@ -51,8 +51,8 @@ public class SpeedTrapDashboard extends HBox {
     }
 
     public void updateRank(SpeedTrapDataDTO dto) {
-        this.name.setText(dto.getName());
-        this.speed.setText(String.format(Constants.TWO_DECIMAL, dto.getSpeed()));
-        this.lapNum.setText(String.valueOf(dto.getLapNum()));
+        this.name.setText(dto.name());
+        this.speed.setText(String.format(Constants.TWO_DECIMAL, dto.speed()));
+        this.lapNum.setText(String.valueOf(dto.lapNum()));
     }
 }

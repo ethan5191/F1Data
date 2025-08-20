@@ -180,7 +180,7 @@ public class F1DataMain {
                     speedTrapDistance = td.getCurrentLap().lapDistance();
                 }
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
+                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
             }
         }
     }
@@ -234,7 +234,7 @@ public class F1DataMain {
                             info.printStatus(td.getParticipantData().lastName());
                             info.printDamage(td.getParticipantData().lastName());
                             //Populate the DriverDataDTO to populate the panels.
-                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info, i == playerCarIndex));
+                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
                             //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
                             td.setSpeedTrap(0.0F);
                         }
@@ -253,7 +253,7 @@ public class F1DataMain {
                             //the td's speed trap values gets reset to 0.0F at the end of each lap.
                             if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
                                 td.setSpeedTrap(td.getCurrentTelemetry().speed());
-                                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum(), td.getNumActiveCars()));
+                                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum()));
                             }
                         }
                     }
@@ -389,14 +389,12 @@ public class F1DataMain {
                     }
                 }
             }
-            //Get the active driver pairings based on what formula we are.
-            Map<Integer, Integer> driverPairing = findDriverPairings();
             //Loop over each created TD object to create the DriverDataDTO to update the UI.
             //Do this outside the loop above to ensure we know what driver lineup we are using for the UI.
             for (int j = 0; j < participants.size(); j++) {
                 TelemetryData td = participants.get(j);
                 //Populates the initial DriverDataDTO consumer for the UI.
-                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), j == playerCarIndex, driverPairing, formulaEnum));
+                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName()));
             }
         }
     }

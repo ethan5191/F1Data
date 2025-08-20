@@ -16,7 +16,11 @@ public enum VisualTireEnum {
     SS(19, Constants.F2, Constants.SUPER, Color.getColor("Purple")),
     S(20, Constants.F2, Constants.SOFT, Color.RED),
     M(21, Constants.F2, Constants.MEDIUM, Color.YELLOW),
-    H(22, Constants.F2, Constants.HARD, Color.WHITE);
+    H(22, Constants.F2, Constants.HARD, Color.WHITE),
+    SS_F2_20(23, Constants.F2, Constants.SUPER, Color.getColor("Purple")),
+    S_F2_20(24, Constants.F2, Constants.SOFT, Color.RED),
+    M_F2_20(25, Constants.F2, Constants.MEDIUM, Color.YELLOW),
+    H_F2_20(26, Constants.F2, Constants.HARD, Color.WHITE);
 
     private final int value;
     private final String series;
