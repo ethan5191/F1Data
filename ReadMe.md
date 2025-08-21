@@ -160,7 +160,9 @@ The following features and improvements are planned for upcoming releases:
 
 ### Core Application Enhancements
 
-    Logging Integration: Implement a robust logging system to replace the current console-based output.
     Code Cleanup: All remaining print statements will be removed from the codebase.
-    Packaging: The project will be configured to produce a distributable artifact (e.g., a .jar file) for easy deployment.
+    Package the application so it can be started by double-clicking the JAR file, instead of requiring the command line.
+    Possibly move towards a standalone installer, though not certain at this time.
+    Reset panels on session change and allow viewing of previous session data after completion. Also, add saving of data once a session has ended.
+
 [Back to top](#table-of-contents)
