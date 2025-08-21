@@ -36,6 +36,8 @@ public class F1DataMain {
     private final TireSetsPacketHandler tireSetsPacketHandler;
     private final LapDataPacketHandler lapDataPacketHandler;
 
+    private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
+
     public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
         final Map<Integer, TelemetryData> participants = new HashMap<>();
@@ -56,6 +58,8 @@ public class F1DataMain {
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
         this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, driverData, speedTrapData, speedTrapDistance);
+
+        initializeHandlerMap();
     }
 
     private final int[][] packetCounts = new int[15][1];
@@ -70,48 +74,9 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
-                //Switch to handle the correct logic based on what packet has been sent.
-                switch (ph.packetId()) {
-                    case Constants.MOTION_PACK:
-                        motionPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.MOTION_PACK][0]++;
-                        break;
-                    case Constants.SESSION_PACK:
-                        sessionPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.SESSION_PACK][0]++;
-                        break;
-                    case Constants.EVENT_PACK:
-                        eventPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.EVENT_PACK][0]++;
-                        break;
-                    case Constants.LAP_DATA_PACK:
-                        lapDataPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.LAP_DATA_PACK][0]++;
-                        break;
-                    case Constants.CAR_SETUP_PACK:
-                        carSetupPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.CAR_SETUP_PACK][0]++;
-                        break;
-                    case Constants.PARTICIPANTS_PACK:
-                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
-                        break;
-                    case Constants.CAR_TELEMETRY_PACK:
-                        carTelemetryPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.CAR_TELEMETRY_PACK][0]++;
-                        break;
-                    case Constants.CAR_STATUS_PACK:
-                        carStatusPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.CAR_STATUS_PACK][0]++;
-                        break;
-                    case Constants.CAR_DAMAGE_PACK:
-                        carDamagePacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.CAR_DAMAGE_PACK][0]++;
-                        break;
-                    case Constants.TYRE_SETS_PACK:
-                        tireSetsPacketHandler.processPacket(byteBuffer);
-                        packetCounts[Constants.TYRE_SETS_PACK][0]++;
-                        break;
-                }
+                PacketHandler handler = handlerMap.get(ph.packetId());
+                if (handler != null) handler.processPacket(byteBuffer);
+                packetCounts[ph.packetId()][0]++;
             }
         } catch (InterruptedException e) {
             logger.error("e ", e);
@@ -120,5 +85,24 @@ public class F1DataMain {
             logger.error("Caught Exception ", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private void initializeHandlerMap() {
+        handlerMap.put(Constants.MOTION_PACK, motionPacketHandler);
+        handlerMap.put(Constants.SESSION_PACK, sessionPacketHandler);
+        handlerMap.put(Constants.LAP_DATA_PACK, lapDataPacketHandler);
+        handlerMap.put(Constants.EVENT_PACK, eventPacketHandler);
+        handlerMap.put(Constants.PARTICIPANTS_PACK, null);
+        handlerMap.put(Constants.CAR_SETUP_PACK, carSetupPacketHandler);
+        handlerMap.put(Constants.CAR_TELEMETRY_PACK, carTelemetryPacketHandler);
+        handlerMap.put(Constants.CAR_STATUS_PACK, carStatusPacketHandler);
+        handlerMap.put(Constants.FINAL_CLASS_PACK, null);
+        handlerMap.put(Constants.LOBBY_INFO_PACK, null);
+        handlerMap.put(Constants.CAR_DAMAGE_PACK, carDamagePacketHandler);
+        handlerMap.put(Constants.SESSION_HIST_PACK, null);
+        handlerMap.put(Constants.TYRE_SETS_PACK, tireSetsPacketHandler);
+        handlerMap.put(Constants.MOTION_EX_PACK, null);
+        handlerMap.put(Constants.TIME_TRIAL_PACK, null);
+        handlerMap.put(Constants.LAP_POSITIONS_PACK, null);
     }
 }
