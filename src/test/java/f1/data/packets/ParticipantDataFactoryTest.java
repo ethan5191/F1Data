@@ -18,7 +18,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2020)
     @DisplayName("Builds the Participant Data for 2020.")
-    void testBuild_carDamage2020(int packetFormat) {
+    void testBuild_participantData2020(int packetFormat) {
         int bitMask8Count = 6;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -43,7 +43,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
     @DisplayName("Builds the Participant Data for 2021 and 2022.")
-    void testBuild_carDamage2021And2022(int packetFormat) {
+    void testBuild_participantData2021And2022(int packetFormat) {
         int bitMask8Count = 8;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -68,7 +68,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2023)
     @DisplayName("Builds the Participant Data for 2023.")
-    void testBuild_carDamage2023(int packetFormat) {
+    void testBuild_participantData2023(int packetFormat) {
         int bitMask8Count = 10;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -93,7 +93,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2024)
     @DisplayName("Builds the Participant Data for 2024.")
-    void testBuild_carDamage2024(int packetFormat) {
+    void testBuild_participantData2024(int packetFormat) {
         int bitMask8Count = 10;
         int bitMask16Count = 1;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
@@ -119,7 +119,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2025)
     @DisplayName("Builds the Participant Data for 2025 to Present.")
-    void testBuild_carDamage2025ToPresent(int packetFormat) {
+    void testBuild_participantData2025ToPresent(int packetFormat) {
         int bitMask8Count = 10;
         int bitMask16Count = 1;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
