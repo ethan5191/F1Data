@@ -17,8 +17,8 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023})
-    @DisplayName("Builds the Car Status Data from 2020 to 2023.")
-    void testBuild_carStatus2020To2023(int packetFormat) {
+    @DisplayName("Builds the Car Setup Data from 2020 to 2023.")
+    void testBuild_carSetup2020To2023(int packetFormat) {
 
         for (int i = 0; i <= 13; i++) {
             when(mockByteBuffer.get()).thenReturn((byte) i);
@@ -60,8 +60,8 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
-    @DisplayName("Builds the Car Status Data from 2024 to Present.")
-    void testBuild_carStatus2024ToPresent(int packetFormat) {
+    @DisplayName("Builds the Car Setup Data from 2024 to Present.")
+    void testBuild_carSetup2024ToPresent(int packetFormat) {
         for (int i = 0; i <= 14; i++) {
             when(mockByteBuffer.get()).thenReturn((byte) i);
         }
