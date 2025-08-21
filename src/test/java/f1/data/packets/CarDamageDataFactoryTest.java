@@ -17,8 +17,10 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021})
     @DisplayName("Builds the Car Damage Data from 2020 and 2021.")
     void testBuild_carDamage2020To2021(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(15);
+        int bitMask8Count = 15;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
 
@@ -52,8 +54,10 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Damage Data from 2022 to Present.")
     void testBuild_carDamage2022ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(18);
+        int bitMask8Count = 18;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
 

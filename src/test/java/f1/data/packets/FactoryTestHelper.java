@@ -1,11 +1,36 @@
 package f1.data.packets;
 
+import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
 import org.mockito.MockedStatic;
 
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.stream.IntStream;
+
+import static org.mockito.AdditionalAnswers.returnsElementsOf;
+import static org.mockito.ArgumentMatchers.anyByte;
+import static org.mockito.ArgumentMatchers.anyShort;
 
 public class FactoryTestHelper {
+
+    protected static void mockBitMask8(MockedStatic<BitMaskUtils> bitMaskUtils, int count) {
+        int bit8Start = 1;
+        List<Integer> integerValues = IntStream.rangeClosed(bit8Start, count)
+                .boxed()
+                .toList();
+        bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte()))
+                .thenAnswer(returnsElementsOf(integerValues));
+    }
+
+    protected static void mockBitMask16(MockedStatic<BitMaskUtils> bitMaskUtils, int count) {
+        int bit16Start = 50;
+        List<Integer> integerValues = IntStream.rangeClosed(bit16Start, (bit16Start + count) - 1)
+                .boxed()
+                .toList();
+        bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort()))
+                .thenAnswer(returnsElementsOf(integerValues));
+    }
 
     protected static void parseFloatArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);

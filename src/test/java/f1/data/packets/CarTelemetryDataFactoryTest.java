@@ -18,8 +18,12 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = Constants.YEAR_2020)
     @DisplayName("Builds the Car Telemetry Data for 2020.")
     void testBuild_carTelemetry2020(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(3, 3);
+        int bitMask8Count = 3;
+        int bitMask16Count = 3;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
@@ -51,8 +55,12 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Telemetry Data for 2021 to Present.")
     void testBuild_carTelemetry2021ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(3, 4);
+        int bitMask8Count = 3;
+        int bitMask16Count = 4;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);

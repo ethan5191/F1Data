@@ -1,6 +1,7 @@
 package f1.data.packets;
 
 import f1.data.utils.BitMaskUtils;
+import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,6 +10,7 @@ import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 public class CarSetupDataFactoryTest extends AbstractFactoryTest {
@@ -17,7 +19,9 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023})
     @DisplayName("Builds the Car Setup Data from 2020 to 2023.")
     void testBuild_carSetup2020To2023(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(13)) {
+        int bitMask8Count = 13;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
             CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
             assertNotNull(result);
@@ -52,7 +56,9 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Setup Data from 2024 to Present.")
     void testBuild_carSetup2024ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(14)) {
+        int bitMask8Count = 14;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
             CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
             assertNotNull(result);

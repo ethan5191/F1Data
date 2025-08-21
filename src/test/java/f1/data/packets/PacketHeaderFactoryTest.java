@@ -19,7 +19,9 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022})
     @DisplayName("Builds Packet Header for 2020 - 2022.")
     void testBuild_header2020To2022(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(6)) {
+        int bitMask8Count = 6;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(packetFormat);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask32(anyInt())).thenReturn(123456L);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask64(anyLong())).thenReturn(BigInteger.valueOf(12345L));
@@ -47,7 +49,9 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds Packet Header for 2023 to Present.")
     void testBuild_header2023ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(7)) {
+        int bitMask8Count = 7;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(packetFormat);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask32(anyInt())).thenReturn(123456L, 1234567L);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask64(anyLong())).thenReturn(BigInteger.valueOf(12345L));
