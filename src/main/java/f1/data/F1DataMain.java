@@ -1,19 +1,13 @@
 package f1.data;
 
-import f1.data.individualLap.CarDamageInfo;
-import f1.data.individualLap.CarStatusInfo;
-import f1.data.individualLap.CarTelemetryInfo;
-import f1.data.individualLap.IndividualLapInfo;
-import f1.data.packets.*;
-import f1.data.packets.enums.DriverPairingsEnum;
-import f1.data.packets.enums.DriverStatusEnum;
-import f1.data.packets.enums.Formula2Enum;
-import f1.data.packets.enums.FormulaEnum;
+import f1.data.packets.PacketHeader;
+import f1.data.packets.PacketHeaderFactory;
+import f1.data.packets.ParticipantData;
+import f1.data.packets.events.SpeedTrapDistance;
 import f1.data.packets.handlers.*;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
-import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +25,6 @@ public class F1DataMain {
     private static final Logger logger = LoggerFactory.getLogger(F1DataMain.class);
 
     private final F1PacketProcessor packetProcessor;
-    private final Consumer<DriverDataDTO> driverData;
-    private final Consumer<SpeedTrapDataDTO> speedTrapData;
-    private final List<ParticipantData> participantDataList;
-    private final int packetFormat;
 
     private final MotionPacketHandler motionPacketHandler;
     private final SessionPacketHandler sessionPacketHandler;
@@ -42,32 +32,32 @@ public class F1DataMain {
     private final CarSetupPacketHandler carSetupPacketHandler;
     private final CarTelemetryPacketHandler carTelemetryPacketHandler;
     private final CarStatusPacketHandler carStatusPacketHandler;
+    private final CarDamagePacketHandler carDamagePacketHandler;
+    private final TireSetsPacketHandler tireSetsPacketHandler;
+    private final LapDataPacketHandler lapDataPacketHandler;
 
     public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
-        this.driverData = driverData;
-        this.speedTrapData = speedTrapData;
-        this.participantDataList = participantDataList;
-        for (int i = 0; i < this.participantDataList.size(); i++) {
-            ParticipantData pd = this.participantDataList.get(i);
+        for (int i = 0; i < participantDataList.size(); i++) {
+            ParticipantData pd = participantDataList.get(i);
             this.participants.put(i, new TelemetryData(pd));
-            this.driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
+            driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
-        this.packetFormat = packetFormat;
 
+        //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
+        SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants);
-        this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, speedTrapData);
+        this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, speedTrapData, speedTrapDistance);
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
+        this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
+        this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
+        this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, driverData, speedTrapData, speedTrapDistance);
     }
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
-    private DriverPairingsEnum driverPairingsEnum = null;
-    private FormulaEnum formulaEnum = null;
-    //Used to determine if we are getting current or previous driver lineups for the game for F2.
-    private Formula2Enum formula2Enum = null;
 
     private final int[][] packetCounts = new int[15][1];
 
@@ -81,11 +71,6 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
-                if (packetFormat < 0) {
-                    //packet format is constantly the year (2020, 2024) game year changes from year to year it seems.
-//                    packetFormat = ph.packetFormat();
-                    driverPairingsEnum = DriverPairingsEnum.fromYear(packetFormat);
-                }
                 //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.packetId()) {
                     case Constants.MOTION_PACK:
@@ -101,7 +86,7 @@ public class F1DataMain {
                         packetCounts[Constants.EVENT_PACK][0]++;
                         break;
                     case Constants.LAP_DATA_PACK:
-                        handleLapDataPacket(byteBuffer);
+                        lapDataPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.LAP_DATA_PACK][0]++;
                         break;
                     case Constants.CAR_SETUP_PACK:
@@ -120,11 +105,11 @@ public class F1DataMain {
                         packetCounts[Constants.CAR_STATUS_PACK][0]++;
                         break;
                     case Constants.CAR_DAMAGE_PACK:
-                        handleCarDamagePacket(byteBuffer);
+                        carDamagePacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.CAR_DAMAGE_PACK][0]++;
                         break;
                     case Constants.TYRE_SETS_PACK:
-                        handleTireSetsPacket(byteBuffer);
+                        tireSetsPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.TYRE_SETS_PACK][0]++;
                         break;
                 }
@@ -135,121 +120,6 @@ public class F1DataMain {
         } catch (Exception e) {
             logger.error("Caught Exception ", e);
             throw new RuntimeException(e);
-        }
-    }
-
-    //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
-    private boolean validKey(int i) {
-        return participants.containsKey(i);
-    }
-
-    //Parses the lap data packet.
-    private void handleLapDataPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
-                //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
-                if (validKey(i)) {
-                    TelemetryData td = participants.get(i);
-                    if (td.getCurrentLap() != null) {
-                        //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
-                        if (ld.currentLapNum() > td.getCurrentLap().currentLapNum()) {
-                            //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
-                            //then update the start params so that next laps calculations use this laps ending values as there start values.
-                            float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
-                            td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
-                            float[] tireWearThisLap = new float[4];
-                            if (td.getCurrentTireWear() != null && td.getStartOfLapTireWear() != null) {
-                                for (int j = 0; j < tireWearThisLap.length; j++) {
-                                    tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
-                                }
-                            }
-                            td.setStartOfLapTireWear(td.getCurrentTireWear());
-                            IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
-                            td.setLastLapNum(info.getLapNum());
-                            td.setLastLapTimeInMs(info.getLapTimeInMs());
-                            if (td.getCurrentSetup() != null) {
-                                info.setCarSetupData(td.getCurrentSetup());
-                                info.setSetupChange(td.isSetupChange());
-                                td.setSetupChange(false);
-                            }
-                            //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
-                            if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
-                                info.setSetupChange(true);
-                                td.setPrevLapFittedTireId(td.getFittedTireId());
-                            }
-                            if (td.getCurrentTelemetry() != null) {
-                                info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
-                            }
-                            if (td.getCurrentStatus() != null) {
-                                info.setCarStatusInfo(new CarStatusInfo(td.getCurrentStatus()));
-                            }
-                            if (td.getCurrentDamage() != null) {
-                                info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
-                            }
-                            //Print info when the lap is completed.
-                            info.printInfo(td.getParticipantData().lastName());
-                            info.printStatus(td.getParticipantData().lastName());
-                            info.printDamage(td.getParticipantData().lastName());
-                            //Populate the DriverDataDTO to populate the panels.
-                            this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
-                            //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
-                            td.setSpeedTrap(0.0F);
-                        }
-                        td.setCurrentLap(ld);
-                    } else {
-                        td.setCurrentLap(ld);
-                    }
-                    //F1 2020 only sent a speed trap event when a new fastest speed was set in the session.
-                    //So for that game, if the lap distance is within a certain amount of the distance when the first speed trap was registered
-                    //We get the cars current speed. I have it within a certain distance each way, this should catch the majority of cars.
-                    if (packetFormat <= Constants.YEAR_2020) {
-                        if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() &&
-                                (td.getCurrentLap().lapDistance() >= (eventPacketHandler.getSpeedTrapDistance() - Constants.TRAP_DISTANCE_BUFFER) &&
-                                        td.getCurrentLap().lapDistance() <= (eventPacketHandler.getSpeedTrapDistance() + Constants.TRAP_DISTANCE_BUFFER))) {
-                            //If this car triggered a speed trap event, then it will already have a value, so don't replace it.
-                            //the td's speed trap values gets reset to 0.0F at the end of each lap.
-                            if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
-                                td.setSpeedTrap(td.getCurrentTelemetry().speed());
-                                this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum()));
-                            }
-                        }
-                    }
-                }
-            }
-            if (packetFormat >= Constants.YEAR_2022) {
-                //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
-                int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
-                int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
-            }
-        }
-    }
-
-    //Parses the car Damage Packet
-    private void handleCarDamagePacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarDamageData cdd = CarDamageDataFactory.build(packetFormat, byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentDamage(cdd);
-                }
-            }
-        }
-    }
-
-    private void handleTireSetsPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            int carId = BitMaskUtils.bitMask8(byteBuffer.get());
-            TelemetryData td = participants.get(carId);
-            TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
-            for (int i = 0; i < Constants.TIRE_SETS_PACKET_COUNT; i++) {
-                tireSetsData[i] = new TireSetsData(byteBuffer);
-            }
-            td.setTireSetsData(tireSetsData);
-            int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
-            if (td.getFittedTireId() != fittedId) {
-                td.setFittedTireId(fittedId);
-            }
         }
     }
 }

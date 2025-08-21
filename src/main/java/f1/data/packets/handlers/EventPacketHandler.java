@@ -3,6 +3,7 @@ package f1.data.packets.handlers;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
+import f1.data.packets.events.SpeedTrapDistance;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.utils.constants.Constants;
@@ -17,13 +18,14 @@ public class EventPacketHandler implements PacketHandler {
     private final int packetFormat;
     private final Map<Integer, TelemetryData> participants;
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
+    private SpeedTrapDistance speedTrapDistance;
 
-    private float speedTrapDistance = -50;
 
-    public EventPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SpeedTrapDataDTO> speedTrapData) {
+    public EventPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SpeedTrapDataDTO> speedTrapData, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
         this.participants = participants;
         this.speedTrapData = speedTrapData;
+        this.speedTrapDistance = speedTrapDistance;
     }
 
     @Override
@@ -54,15 +56,11 @@ public class EventPacketHandler implements PacketHandler {
         //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
         TelemetryData td = participants.get(trap.vehicleId());
         td.setSpeedTrap(trap.speed());
-        if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance < 0) {
-            speedTrapDistance = td.getCurrentLap().lapDistance();
+        if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance.getDistance() < 0) {
+            speedTrapDistance.setDistance(td.getCurrentLap().lapDistance());
         }
         //Populate the speedTrap consumer so that the panels get updated with the latest data.
         this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
 
-    }
-
-    public float getSpeedTrapDistance() {
-        return speedTrapDistance;
     }
 }
