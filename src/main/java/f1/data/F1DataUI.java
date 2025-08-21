@@ -1,5 +1,6 @@
 package f1.data;
 
+import f1.data.packets.ParticipantData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.ui.home.HomePanel;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -77,14 +79,14 @@ public class F1DataUI extends Application {
             new RunDataStage(new Stage(), runData.getContainer());
 
             //Calls the data thread.
-            callTelemetryThread(driverDataConsumer, speedTrapDataDTO);
+            callTelemetryThread(driverDataConsumer, speedTrapDataDTO, initResult.getParticipantData(), initResult.getPacketFormat());
         });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
-    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO, List<ParticipantData> participantDataList, int packetFormat) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain().run(packetProcessor, driverDataConsumer, speedTrapDataDTO);
+            new F1DataMain(packetProcessor, driverDataConsumer, speedTrapDataDTO, participantDataList, packetFormat).run();
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
