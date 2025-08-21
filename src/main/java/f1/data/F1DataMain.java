@@ -28,12 +28,31 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class F1DataMain {
 
     private static final Logger logger = LoggerFactory.getLogger(F1DataMain.class);
+
+    private final F1PacketProcessor packetProcessor;
+    private final Consumer<DriverDataDTO> driverData;
+    private final Consumer<SpeedTrapDataDTO> speedTrapData;
+    private final List<ParticipantData> participantDataList;
+
+    public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList) {
+        this.packetProcessor = packetProcessor;
+        this.driverData = driverData;
+        this.speedTrapData = speedTrapData;
+        this.participantDataList = participantDataList;
+        for (int i = 0; i < this.participantDataList.size(); i++) {
+            ParticipantData pd = this.participantDataList.get(i);
+            this.participants.put(i, new TelemetryData(pd));
+            this.driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
+        }
+        run();
+    }
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
     private int playerCarIndex = -1;
@@ -47,11 +66,11 @@ public class F1DataMain {
 
     private final int[][] packetCounts = new int[15][1];
 
-    public void run(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+    public void run() {
         logger.info("In DataMain");
         try {
             while (true) {
-                DatagramPacket packet = packetProcessor.getNextPacket();
+                DatagramPacket packet = this.packetProcessor.getNextPacket();
                 int length = packet.getLength();
                 ByteBuffer byteBuffer = ByteBuffer.wrap(packet.getData(), 0, length);
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -75,21 +94,21 @@ public class F1DataMain {
                         packetCounts[Constants.SESSION_PACK][0]++;
                         break;
                     case Constants.EVENT_PACK:
-                        handleEventPacket(byteBuffer, speedTrapDataDTO);
+                        handleEventPacket(byteBuffer);
                         packetCounts[Constants.EVENT_PACK][0]++;
                         break;
                     case Constants.LAP_DATA_PACK:
-                        handleLapDataPacket(byteBuffer, driverDataDTO, speedTrapDataDTO);
+                        handleLapDataPacket(byteBuffer);
                         packetCounts[Constants.LAP_DATA_PACK][0]++;
                         break;
                     case Constants.CAR_SETUP_PACK:
                         handleCarSetupPacket(byteBuffer);
                         packetCounts[Constants.CAR_SETUP_PACK][0]++;
                         break;
-                    case Constants.PARTICIPANTS_PACK:
-                        handleParticipantsPacket(byteBuffer, driverDataDTO);
-                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
-                        break;
+//                    case Constants.PARTICIPANTS_PACK:
+//                        handleParticipantsPacket(byteBuffer);
+//                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
+//                        break;
                     case Constants.CAR_TELEMETRY_PACK:
                         handleCarTelemetryPacket(byteBuffer);
                         packetCounts[Constants.CAR_TELEMETRY_PACK][0]++;
@@ -159,7 +178,7 @@ public class F1DataMain {
 
     //Handles the event packet. This one is different from the others as the packet changes based on what event has happened.
     //Currently I only care about the button event and the speed trap triggered event.
-    private void handleEventPacket(ByteBuffer byteBuffer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+    private void handleEventPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             byte[] codeArray = new byte[4];
             byteBuffer.get(codeArray, 0, 4);
@@ -180,13 +199,13 @@ public class F1DataMain {
                     speedTrapDistance = td.getCurrentLap().lapDistance();
                 }
                 //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
+                this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
             }
         }
     }
 
     //Parses the lap data packet.
-    private void handleLapDataPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO, Consumer<SpeedTrapDataDTO> speedTrapDataDTO) {
+    private void handleLapDataPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
                 LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
@@ -234,7 +253,7 @@ public class F1DataMain {
                             info.printStatus(td.getParticipantData().lastName());
                             info.printDamage(td.getParticipantData().lastName());
                             //Populate the DriverDataDTO to populate the panels.
-                            driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
+                            this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
                             //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
                             td.setSpeedTrap(0.0F);
                         }
@@ -253,7 +272,7 @@ public class F1DataMain {
                             //the td's speed trap values gets reset to 0.0F at the end of each lap.
                             if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
                                 td.setSpeedTrap(td.getCurrentTelemetry().speed());
-                                speedTrapDataDTO.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum()));
+                                this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum()));
                             }
                         }
                     }
@@ -363,7 +382,7 @@ public class F1DataMain {
     }
 
     //Parses the participant packet
-    private void handleParticipantsPacket(ByteBuffer byteBuffer, Consumer<DriverDataDTO> driverDataDTO) {
+    private void handleParticipantsPacket(ByteBuffer byteBuffer) {
         if (participants.isEmpty()) {
             //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
             int numActiveCars = byteBuffer.get();
@@ -371,7 +390,7 @@ public class F1DataMain {
                 ParticipantData pd = ParticipantDataFactory.build(packetFormat, byteBuffer);
                 if (pd.raceNumber() > 0) {
                     pd.printName();
-                    TelemetryData td = new TelemetryData(pd, numActiveCars);
+                    TelemetryData td = new TelemetryData(pd);
                     participants.put(i, td);
                     //SessionPacket now sets what Formula we are using. F2 is the only one that has this special block.
                     //Only step into this if we haven't already figured out what F2 to use.
@@ -394,24 +413,7 @@ public class F1DataMain {
             for (int j = 0; j < participants.size(); j++) {
                 TelemetryData td = participants.get(j);
                 //Populates the initial DriverDataDTO consumer for the UI.
-                driverDataDTO.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName()));
-            }
-        }
-    }
-
-    //Based on the enum params that have been set return the driver pairings, if it exists.
-    private Map<Integer, Integer> findDriverPairings() {
-        //I haven't created any driver pairings for non-F1 and non-F2 lineups. Not sure I ever will, so return an empty Map.
-        if (!formulaEnum.equals(FormulaEnum.F1) && !formulaEnum.equals(FormulaEnum.F2)) {
-            return new HashMap<>(0);
-        } else if (formulaEnum.equals(FormulaEnum.F1)) {
-            return driverPairingsEnum.getF1DriverPairs();
-        } else {
-            //If F2 enum is current get the current F2 drivers, else get previous.
-            if (formula2Enum.equals(Formula2Enum.CURRENT)) {
-                return driverPairingsEnum.getF2DriverPairs();
-            } else {
-                return driverPairingsEnum.getF2PrevYearDriverPairs();
+                this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName()));
             }
         }
     }

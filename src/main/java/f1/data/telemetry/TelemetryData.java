@@ -8,13 +8,11 @@ import java.math.BigDecimal;
 
 public class TelemetryData {
 
-    public TelemetryData(ParticipantData participantData, int numActiveCars) {
+    public TelemetryData(ParticipantData participantData) {
         this.participantData = participantData;
-        this.numActiveCars = numActiveCars;
     }
 
     private final ParticipantData participantData;
-    private final int numActiveCars;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
@@ -35,10 +33,6 @@ public class TelemetryData {
 
     public ParticipantData getParticipantData() {
         return participantData;
-    }
-
-    public int getNumActiveCars() {
-        return numActiveCars;
     }
 
     public CarSetupData getCurrentSetup() {
