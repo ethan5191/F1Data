@@ -79,14 +79,14 @@ public class F1DataUI extends Application {
             new RunDataStage(new Stage(), runData.getContainer());
 
             //Calls the data thread.
-            callTelemetryThread(driverDataConsumer, speedTrapDataDTO, initResult.getParticipantData());
+            callTelemetryThread(driverDataConsumer, speedTrapDataDTO, initResult.getParticipantData(), initResult.getPacketFormat());
         });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
-    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO, List<ParticipantData> participantDataList) {
+    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO, List<ParticipantData> participantDataList, int packetFormat) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain(packetProcessor, driverDataConsumer, speedTrapDataDTO, participantDataList);
+            new F1DataMain(packetProcessor, driverDataConsumer, speedTrapDataDTO, participantDataList, packetFormat).run();
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();

@@ -35,6 +35,7 @@ public class F1SessionInitializer {
         AtomicReference<SessionData> sessionRef = new AtomicReference<>();
         AtomicReference<List<ParticipantData>> participantsRef = new AtomicReference<>();
         AtomicReference<Integer> numActiveCars = new AtomicReference<>();
+        AtomicReference<Integer> packetFormat = new AtomicReference<>();
         AtomicReference<Integer> playerCarIndex = new AtomicReference<>();
         AtomicReference<DriverPairingsEnum> driverPairings = new AtomicReference<>();
         showInProgress();
@@ -49,6 +50,7 @@ public class F1SessionInitializer {
                     PacketHeader ph = PacketHeaderFactory.build(buffer);
                     //This data should be on the very first packetHeader that we get regardless of what packet it is.
                     if (playerCarIndex.get() == null) {
+                        packetFormat.set(ph.packetFormat());
                         playerCarIndex.set(ph.playerCarIndex());
                         driverPairings.set(DriverPairingsEnum.fromYear(ph.packetFormat()));
                     }
@@ -76,7 +78,7 @@ public class F1SessionInitializer {
                 }
             }
             //We have both packets we need, build the result object
-            SessionInitializationResult result = new SessionInitializationResult(sessionRef.get(), participantsRef.get(), driverPairings.get(), numActiveCars.get(), playerCarIndex.get());
+            SessionInitializationResult result = new SessionInitializationResult(sessionRef.get(), participantsRef.get(), driverPairings.get(), numActiveCars.get(), playerCarIndex.get(), packetFormat.get());
             //Hides the progress dialog, I might make it post an 'All Packets Loaded' message instead of hiding it.
             Platform.runLater(() -> {
                 packetsLoaded();

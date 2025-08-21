@@ -12,13 +12,13 @@ import f1.data.packets.enums.FormulaEnum;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
+import f1.data.packets.handlers.MotionPacketHandler;
 import f1.data.packets.session.SessionData;
 import f1.data.packets.session.SessionDataFactory;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +40,11 @@ public class F1DataMain {
     private final Consumer<DriverDataDTO> driverData;
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final List<ParticipantData> participantDataList;
+    private final int packetFormat;
 
-    public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList) {
+    private final MotionPacketHandler motion;
+
+    public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
         this.driverData = driverData;
         this.speedTrapData = speedTrapData;
@@ -51,12 +54,11 @@ public class F1DataMain {
             this.participants.put(i, new TelemetryData(pd));
             this.driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
-        run();
+        this.packetFormat = packetFormat;
+        this.motion = new MotionPacketHandler(packetFormat, participants);
     }
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
-    private int playerCarIndex = -1;
-    private int packetFormat = -1;
     private DriverPairingsEnum driverPairingsEnum = null;
     private FormulaEnum formulaEnum = null;
     //Used to determine if we are getting current or previous driver lineups for the game for F2.
@@ -76,17 +78,15 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
-                //Only update this on the first pass, as the value will never change once its set.
-                if (playerCarIndex < 0) playerCarIndex = ph.playerCarIndex();
                 if (packetFormat < 0) {
                     //packet format is constantly the year (2020, 2024) game year changes from year to year it seems.
-                    packetFormat = ph.packetFormat();
+//                    packetFormat = ph.packetFormat();
                     driverPairingsEnum = DriverPairingsEnum.fromYear(packetFormat);
                 }
                 //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.packetId()) {
                     case Constants.MOTION_PACK:
-                        handleMotionPacket(byteBuffer);
+                        motion.processPacket(byteBuffer);
                         packetCounts[Constants.MOTION_PACK][0]++;
                         break;
                     case Constants.SESSION_PACK:
@@ -139,32 +139,6 @@ public class F1DataMain {
     //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
     private boolean validKey(int i) {
         return participants.containsKey(i);
-    }
-
-    private void handleMotionPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                MotionData md = new MotionData(byteBuffer);
-            }
-            //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
-            if (packetFormat <= Constants.YEAR_2022) {
-                float[] suspPosition = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspVelocity = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspAcceleration = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSpin = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSlip = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float localVelocityX = byteBuffer.getFloat();
-                float localVelocityY = byteBuffer.getFloat();
-                float localVelocityZ = byteBuffer.getFloat();
-                float angularVelocityX = byteBuffer.getFloat();
-                float angularVelocityY = byteBuffer.getFloat();
-                float angularVelocityZ = byteBuffer.getFloat();
-                float angularAccelerationX = byteBuffer.getFloat();
-                float angularAccelerationY = byteBuffer.getFloat();
-                float angularAccelerationZ = byteBuffer.getFloat();
-                float frontWheelsAngle = byteBuffer.getFloat();
-            }
-        }
     }
 
     private void handleSessionPacket(ByteBuffer byteBuffer) {

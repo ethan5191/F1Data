@@ -16,15 +16,17 @@ public class SessionInitializationResult {
     private final List<ParticipantData> participantData;
     private final DriverPairingsEnum driverPairingsEnum;
     private final Integer numActiveCars;
+    private final Integer packetFormat;
     private final Integer playerCarIndex;
     private final Integer playerDriverId;
     private final Integer teamMateDriverId;
     private final Map<Integer, Integer> driverPairings;
 
-    public SessionInitializationResult(SessionData sessionData, List<ParticipantData> participantData, DriverPairingsEnum driverPairingsEnum, Integer numActiveCars, Integer playerCarIndex) {
+    public SessionInitializationResult(SessionData sessionData, List<ParticipantData> participantData, DriverPairingsEnum driverPairingsEnum, Integer numActiveCars, Integer playerCarIndex, Integer packetFormat) {
         this.sessionData = sessionData;
         this.participantData = participantData;
         this.driverPairingsEnum = driverPairingsEnum;
+        this.packetFormat = packetFormat;
         this.numActiveCars = numActiveCars;
         this.playerCarIndex = playerCarIndex;
         this.driverPairings = findDriverPairings(determineF2Enum());
@@ -38,6 +40,10 @@ public class SessionInitializationResult {
 
     public Integer getNumActiveCars() {
         return numActiveCars;
+    }
+
+    public Integer getPacketFormat() {
+        return packetFormat;
     }
 
     public Integer getPlayerCarIndex() {
