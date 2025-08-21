@@ -15,6 +15,10 @@ import static org.mockito.Mockito.*;
 public abstract class AbstractFactoryTest {
 
     protected ByteBuffer mockByteBuffer;
+    protected final int BIT_8_START = 1;
+    protected final int BIT_16_START = 50;
+    protected final int BIT_32_START = 200;
+    protected final int FLOAT_START = 100;
 
     @BeforeEach
     void setUp() {

@@ -8,10 +8,10 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.mockito.AdditionalAnswers.returnsElementsOf;
-import static org.mockito.ArgumentMatchers.anyByte;
-import static org.mockito.ArgumentMatchers.anyShort;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 public class FactoryTestHelper {
@@ -34,10 +34,16 @@ public class FactoryTestHelper {
                 .thenAnswer(returnsElementsOf(integerValues));
     }
 
+    protected static void mockBitMask32(MockedStatic<BitMaskUtils> bitMaskUtils, int count) {
+        int bit32Start = 200;
+        List<Long> longValues = LongStream.rangeClosed(bit32Start, (bit32Start + count) - 1).boxed().toList();
+        bitMaskUtils.when(() -> BitMaskUtils.bitMask32(anyInt())).thenAnswer(returnsElementsOf(longValues));
+    }
+
     protected static void mockFloatValues(ByteBuffer mockByteBuffer, int count) {
         int floatStart = 100;
         List<Float> floatValues = new ArrayList<>();
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             floatValues.add((float) floatStart + i);
         }
         when(mockByteBuffer.getFloat()).thenAnswer(returnsElementsOf(floatValues));
