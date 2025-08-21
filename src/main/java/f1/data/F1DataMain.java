@@ -38,9 +38,10 @@ public class F1DataMain {
 
     public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
+        final Map<Integer, TelemetryData> participants = new HashMap<>();
         for (int i = 0; i < participantDataList.size(); i++) {
             ParticipantData pd = participantDataList.get(i);
-            this.participants.put(i, new TelemetryData(pd));
+            participants.put(i, new TelemetryData(pd));
             driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
 
@@ -56,8 +57,6 @@ public class F1DataMain {
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
         this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, driverData, speedTrapData, speedTrapDistance);
     }
-
-    private final Map<Integer, TelemetryData> participants = new HashMap<>();
 
     private final int[][] packetCounts = new int[15][1];
 
