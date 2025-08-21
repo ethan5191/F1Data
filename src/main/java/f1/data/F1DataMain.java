@@ -9,9 +9,7 @@ import f1.data.packets.enums.DriverPairingsEnum;
 import f1.data.packets.enums.DriverStatusEnum;
 import f1.data.packets.enums.Formula2Enum;
 import f1.data.packets.enums.FormulaEnum;
-import f1.data.packets.handlers.EventPacketHandler;
-import f1.data.packets.handlers.MotionPacketHandler;
-import f1.data.packets.handlers.SessionPacketHandler;
+import f1.data.packets.handlers.*;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
@@ -41,6 +39,9 @@ public class F1DataMain {
     private final MotionPacketHandler motionPacketHandler;
     private final SessionPacketHandler sessionPacketHandler;
     private final EventPacketHandler eventPacketHandler;
+    private final CarSetupPacketHandler carSetupPacketHandler;
+    private final CarTelemetryPacketHandler carTelemetryPacketHandler;
+    private final CarStatusPacketHandler carStatusPacketHandler;
 
     public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
@@ -57,6 +58,9 @@ public class F1DataMain {
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, speedTrapData);
+        this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
+        this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
+        this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
     }
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
@@ -101,19 +105,18 @@ public class F1DataMain {
                         packetCounts[Constants.LAP_DATA_PACK][0]++;
                         break;
                     case Constants.CAR_SETUP_PACK:
-                        handleCarSetupPacket(byteBuffer);
+                        carSetupPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.CAR_SETUP_PACK][0]++;
                         break;
-//                    case Constants.PARTICIPANTS_PACK:
-//                        handleParticipantsPacket(byteBuffer);
-//                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
-//                        break;
+                    case Constants.PARTICIPANTS_PACK:
+                        packetCounts[Constants.PARTICIPANTS_PACK][0]++;
+                        break;
                     case Constants.CAR_TELEMETRY_PACK:
-                        handleCarTelemetryPacket(byteBuffer);
+                        carTelemetryPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.CAR_TELEMETRY_PACK][0]++;
                         break;
                     case Constants.CAR_STATUS_PACK:
-                        handleCarStatusPacket(byteBuffer);
+                        carStatusPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.CAR_STATUS_PACK][0]++;
                         break;
                     case Constants.CAR_DAMAGE_PACK:
@@ -222,73 +225,6 @@ public class F1DataMain {
         }
     }
 
-    //Parses the car setup packet.
-    private void handleCarSetupPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                boolean isValidKey = validKey(i);
-                //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
-                //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
-                String setupName = (isValidKey) ? participants.get(i).getParticipantData().lastName() : "";
-                CarSetupData csd = CarSetupDataFactory.build(packetFormat, byteBuffer, setupName);
-                if (isValidKey) {
-                    TelemetryData td = participants.get(i);
-                    boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
-                    if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
-                        td.setCurrentSetup(csd);
-                        if (isNullOrChanged) td.setSetupChange(true);
-                    }
-                }
-            }
-            //Trailing value, must be here to ensure the packet is fully parsed.
-            //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
-            if (packetFormat >= Constants.YEAR_2024) {
-                float nextFronWingVal = byteBuffer.getFloat();
-            }
-        }
-    }
-
-    //Parses the Car Telemetry packet.
-    private void handleCarTelemetryPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarTelemetryData ctd = CarTelemetryDataFactory.build(packetFormat, byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentTelemetry(ctd);
-                }
-            }
-        }
-        //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
-        if (packetFormat <= Constants.YEAR_2020) {
-            long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
-            //2020 special button press mapped to button 9 on the McLaren wheel. Used to log the # of packets recieved.
-//            if (buttonEvent == 8192) {
-//                for (int i = 0; i < packetCounts.length; i++) {
-//                    logger.info("Packet # {} Count {}", PacketTypeEnum.findByValue(i).name(), packetCounts[i][0]);
-//                }
-//            }
-        }
-        int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
-        int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
-        int suggestedGear = byteBuffer.get();
-    }
-
-    //Parses the car status packet.
-    private void handleCarStatusPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                CarStatusData csd = CarStatusDataFactory.build(packetFormat, byteBuffer);
-                if (validKey(i)) {
-                    participants.get(i).setCurrentStatus(csd);
-                    if (packetFormat <= Constants.YEAR_2020) {
-                        CarDamageData cdd = CarDamageData.fromStatus(csd);
-                        participants.get(i).setCurrentDamage(cdd);
-                    }
-                }
-            }
-        }
-    }
-
     //Parses the car Damage Packet
     private void handleCarDamagePacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
@@ -313,43 +249,6 @@ public class F1DataMain {
             int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
             if (td.getFittedTireId() != fittedId) {
                 td.setFittedTireId(fittedId);
-            }
-        }
-    }
-
-    //Parses the participant packet
-    private void handleParticipantsPacket(ByteBuffer byteBuffer) {
-        if (participants.isEmpty()) {
-            //DO NOT DELETE THIS LINE, you will break the logic below it, we have to move the position with the .get() for the logic to work.
-            int numActiveCars = byteBuffer.get();
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
-                ParticipantData pd = ParticipantDataFactory.build(packetFormat, byteBuffer);
-                if (pd.raceNumber() > 0) {
-                    pd.printName();
-                    TelemetryData td = new TelemetryData(pd);
-                    participants.put(i, td);
-                    //SessionPacket now sets what Formula we are using. F2 is the only one that has this special block.
-                    //Only step into this if we haven't already figured out what F2 to use.
-                    if (formulaEnum == FormulaEnum.F2 && formula2Enum == null) {
-                        boolean f2Current = driverPairingsEnum.getF2DriverPairs().containsKey(pd.driverId());
-                        boolean f2Prev = driverPairingsEnum.getF2PrevYearDriverPairs().containsKey(pd.driverId());
-                        //If a driver exists in one F2 lineup but not the other than we have found what series we are using.
-                        //to date, there has never been 2 F2 seasons back to back with the same driver lineup.
-                        //If that happens, code masters will have to send an update for which F2 its using in that game, as there will be no way to distinguish it.
-                        if (f2Current && !f2Prev) {
-                            formula2Enum = Formula2Enum.CURRENT;
-                        } else if (!f2Current && f2Prev) {
-                            formula2Enum = Formula2Enum.PREVIOUS;
-                        }
-                    }
-                }
-            }
-            //Loop over each created TD object to create the DriverDataDTO to update the UI.
-            //Do this outside the loop above to ensure we know what driver lineup we are using for the UI.
-            for (int j = 0; j < participants.size(); j++) {
-                TelemetryData td = participants.get(j);
-                //Populates the initial DriverDataDTO consumer for the UI.
-                this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName()));
             }
         }
     }
