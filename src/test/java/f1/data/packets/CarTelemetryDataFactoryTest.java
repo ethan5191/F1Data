@@ -10,7 +10,6 @@ import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
 
@@ -20,6 +19,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2020(int packetFormat) {
         int bitMask8Count = 3;
         int bitMask16Count = 3;
+        int floatCount = 3;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -28,14 +28,13 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
-
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(50, result.speed());
-            assertEquals(1, result.throttle());
-            assertEquals(2, result.steer());
-            assertEquals(3, result.brake());
+            assertEquals(100, result.throttle());
+            assertEquals(101, result.steer());
+            assertEquals(102, result.brake());
             assertEquals(1, result.clutch());
             assertEquals(4, result.gear());
             assertEquals(51, result.engineRPM());
@@ -57,6 +56,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2021ToPresent(int packetFormat) {
         int bitMask8Count = 3;
         int bitMask16Count = 4;
+        int floatCount = 3;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -65,14 +65,13 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
-
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(50, result.speed());
-            assertEquals(1, result.throttle());
-            assertEquals(2, result.steer());
-            assertEquals(3, result.brake());
+            assertEquals(100, result.throttle());
+            assertEquals(101, result.steer());
+            assertEquals(102, result.brake());
             assertEquals(1, result.clutch());
             assertEquals(4, result.gear());
             assertEquals(51, result.engineRPM());

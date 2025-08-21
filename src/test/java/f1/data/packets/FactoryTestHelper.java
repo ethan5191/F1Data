@@ -5,6 +5,7 @@ import f1.data.utils.ParseUtils;
 import org.mockito.MockedStatic;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -33,6 +34,19 @@ public class FactoryTestHelper {
                 .thenAnswer(returnsElementsOf(integerValues));
     }
 
+    protected static void mockFloatValues(ByteBuffer mockByteBuffer, int count) {
+        int floatStart = 100;
+        List<Float> floatValues = new ArrayList<>();
+        for(int i = 0; i < count; i++) {
+            floatValues.add((float) floatStart + i);
+        }
+        when(mockByteBuffer.getFloat()).thenAnswer(returnsElementsOf(floatValues));
+    }
+
+    protected static void mockSingleGetValue(ByteBuffer mockByteBuffer, int count) {
+        when(mockByteBuffer.get()).thenReturn((byte) ((byte) count + 1));
+    }
+
     protected static void parseFloatArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
     }
@@ -43,9 +57,5 @@ public class FactoryTestHelper {
 
     protected static void parseShortArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseShortArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-    }
-
-    protected static void mockSingleGetValue(ByteBuffer mockByteBuffer, int count) {
-        when(mockByteBuffer.get()).thenReturn((byte) ((byte) count + 1));
     }
 }

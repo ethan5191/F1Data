@@ -10,7 +10,6 @@ import org.mockito.MockedStatic;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 public class CarSetupDataFactoryTest extends AbstractFactoryTest {
 
@@ -19,19 +18,20 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Car Setup Data from 2020 to 2023.")
     void testBuild_carSetup2020To2023(int packetFormat) {
         int bitMask8Count = 13;
+        int floatCount = 9;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
             assertNotNull(result);
             assertEquals(1, result.frontWing());
             assertEquals(2, result.rearWing());
             assertEquals(3, result.onThrottle());
             assertEquals(4, result.offThrottle());
-            assertEquals((float) 1, result.frontCamber());
-            assertEquals((float) 2, result.rearCamber());
-            assertEquals((float) 3, result.frontToe());
-            assertEquals((float) 4, result.rearToe());
+            assertEquals(100, result.frontCamber());
+            assertEquals(101, result.rearCamber());
+            assertEquals(102, result.frontToe());
+            assertEquals(103, result.rearToe());
             assertEquals(5, result.frontSusp());
             assertEquals(6, result.rearSusp());
             assertEquals(7, result.frontARB());
@@ -40,12 +40,12 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
             assertEquals(10, result.rearHeight());
             assertEquals(11, result.brakePressure());
             assertEquals(12, result.brakeBias());
-            assertEquals((float) 5, result.rearLeftPressure());
-            assertEquals((float) 6, result.rearRightPressure());
-            assertEquals((float) 7, result.frontLeftPressure());
-            assertEquals((float) 8, result.frontRightPressure());
+            assertEquals(104, result.rearLeftPressure());
+            assertEquals(105, result.rearRightPressure());
+            assertEquals(106, result.frontLeftPressure());
+            assertEquals(107, result.frontRightPressure());
             assertEquals(13, result.ballast());
-            assertEquals((float) 9, result.fuelLoad());
+            assertEquals(108, result.fuelLoad());
             assertEquals(0, result.engineBraking());
             assertEquals("setUpName", result.setupName());
         }
@@ -56,19 +56,20 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Car Setup Data from 2024 to Present.")
     void testBuild_carSetup2024ToPresent(int packetFormat) {
         int bitMask8Count = 14;
+        int floatCount = 9;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
             assertNotNull(result);
             assertEquals(1, result.frontWing());
             assertEquals(2, result.rearWing());
             assertEquals(3, result.onThrottle());
             assertEquals(4, result.offThrottle());
-            assertEquals((float) 1, result.frontCamber());
-            assertEquals((float) 2, result.rearCamber());
-            assertEquals((float) 3, result.frontToe());
-            assertEquals((float) 4, result.rearToe());
+            assertEquals(100, result.frontCamber());
+            assertEquals(101, result.rearCamber());
+            assertEquals(102, result.frontToe());
+            assertEquals(103, result.rearToe());
             assertEquals(5, result.frontSusp());
             assertEquals(6, result.rearSusp());
             assertEquals(7, result.frontARB());
@@ -78,12 +79,12 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
             assertEquals(11, result.brakePressure());
             assertEquals(12, result.brakeBias());
             assertEquals(13, result.engineBraking());
-            assertEquals((float) 5, result.rearLeftPressure());
-            assertEquals((float) 6, result.rearRightPressure());
-            assertEquals((float) 7, result.frontLeftPressure());
-            assertEquals((float) 8, result.frontRightPressure());
+            assertEquals(104, result.rearLeftPressure());
+            assertEquals(105, result.rearRightPressure());
+            assertEquals(106, result.frontLeftPressure());
+            assertEquals(107, result.frontRightPressure());
             assertEquals(14, result.ballast());
-            assertEquals((float) 9, result.fuelLoad());
+            assertEquals(108, result.fuelLoad());
             assertEquals("setUpName", result.setupName());
         }
     }

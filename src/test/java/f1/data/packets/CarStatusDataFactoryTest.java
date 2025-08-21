@@ -10,7 +10,6 @@ import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 public class CarStatusDataFactoryTest extends AbstractFactoryTest {
 
@@ -21,13 +20,14 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
         float[] mockTireWear = new float[]{8F, 9F, 10F, 11F};
         int bitMask8Count = 21;
         int bitMask16Count = 3;
+        int floatCount = 7;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());
@@ -35,9 +35,9 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(3, result.fuelMix());
             assertEquals(4, result.frontBrakeBias());
             assertEquals(5, result.pitLimitStatus());
-            assertEquals(1, result.fuelInTank());
-            assertEquals(2, result.fuelCapacity());
-            assertEquals(3, result.fuelRemainingLaps());
+            assertEquals(100, result.fuelInTank());
+            assertEquals(101, result.fuelCapacity());
+            assertEquals(102, result.fuelRemainingLaps());
             assertEquals(50, result.maxRPM());
             assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
@@ -55,11 +55,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(19, result.engineDamage());
             assertEquals(20, result.gearBoxDamage());
             assertEquals(22, result.vehicleFiaFlags());
-            assertEquals(4, result.ersStoreEnergy());
+            assertEquals(103, result.ersStoreEnergy());
             assertEquals(21, result.ersDeployMode());
-            assertEquals(5, result.ersHarvestedThisLapMGUK());
-            assertEquals(6, result.ersHarvestedThisLapMGUH());
-            assertEquals(7, result.ersDeployedThisLap());
+            assertEquals(104, result.ersHarvestedThisLapMGUK());
+            assertEquals(105, result.ersHarvestedThisLapMGUH());
+            assertEquals(106, result.ersDeployedThisLap());
             assertEquals(0, result.networkPaused());
             assertEquals(0, result.enginePowerICE());
             assertEquals(0, result.enginePowerMGUK());
@@ -72,12 +72,13 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carStatus2021And2022(int packetFormat) {
         int bitMask8Count = 12;
         int bitMask16Count = 3;
+        int floatCount = 7;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -86,9 +87,9 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(3, result.fuelMix());
             assertEquals(4, result.frontBrakeBias());
             assertEquals(5, result.pitLimitStatus());
-            assertEquals(1, result.fuelInTank());
-            assertEquals(2, result.fuelCapacity());
-            assertEquals(3, result.fuelRemainingLaps());
+            assertEquals(100, result.fuelInTank());
+            assertEquals(101, result.fuelCapacity());
+            assertEquals(102, result.fuelRemainingLaps());
             assertEquals(50, result.maxRPM());
             assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
@@ -98,11 +99,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(9, result.visualTireCompound());
             assertEquals(10, result.tiresAgeLaps());
             assertEquals(13, result.vehicleFiaFlags());
-            assertEquals(4, result.ersStoreEnergy());
+            assertEquals(103, result.ersStoreEnergy());
             assertEquals(11, result.ersDeployMode());
-            assertEquals(5, result.ersHarvestedThisLapMGUK());
-            assertEquals(6, result.ersHarvestedThisLapMGUH());
-            assertEquals(7, result.ersDeployedThisLap());
+            assertEquals(104, result.ersHarvestedThisLapMGUK());
+            assertEquals(105, result.ersHarvestedThisLapMGUH());
+            assertEquals(106, result.ersDeployedThisLap());
             assertEquals(12, result.networkPaused());
             assertEquals(0, result.enginePowerICE());
             assertEquals(0, result.enginePowerMGUK());
@@ -123,12 +124,13 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carStatus2023ToPresent(int packetFormat) {
         int bitMask8Count = 12;
         int bitMask16Count = 3;
+        int floatCount = 9;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
-            when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -137,9 +139,9 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(3, result.fuelMix());
             assertEquals(4, result.frontBrakeBias());
             assertEquals(5, result.pitLimitStatus());
-            assertEquals(1, result.fuelInTank());
-            assertEquals(2, result.fuelCapacity());
-            assertEquals(3, result.fuelRemainingLaps());
+            assertEquals(100, result.fuelInTank());
+            assertEquals(101, result.fuelCapacity());
+            assertEquals(102, result.fuelRemainingLaps());
             assertEquals(50, result.maxRPM());
             assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
@@ -149,13 +151,13 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(9, result.visualTireCompound());
             assertEquals(10, result.tiresAgeLaps());
             assertEquals(13, result.vehicleFiaFlags());
-            assertEquals(4, result.enginePowerICE());
-            assertEquals(5, result.enginePowerMGUK());
-            assertEquals(6, result.ersStoreEnergy());
+            assertEquals(103, result.enginePowerICE());
+            assertEquals(104, result.enginePowerMGUK());
+            assertEquals(105, result.ersStoreEnergy());
             assertEquals(11, result.ersDeployMode());
-            assertEquals(7, result.ersHarvestedThisLapMGUK());
-            assertEquals(8, result.ersHarvestedThisLapMGUH());
-            assertEquals(9, result.ersDeployedThisLap());
+            assertEquals(106, result.ersHarvestedThisLapMGUK());
+            assertEquals(107, result.ersHarvestedThisLapMGUH());
+            assertEquals(108, result.ersDeployedThisLap());
             assertEquals(12, result.networkPaused());
             assertArrayEquals(new float[0], result.tyresWear());
             assertArrayEquals(new int[0], result.tyresDamage());
