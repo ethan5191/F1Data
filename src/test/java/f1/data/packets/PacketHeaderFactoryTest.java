@@ -2,27 +2,18 @@ package f1.data.packets;
 
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-class PacketHeaderFactoryTest {
-
-    private ByteBuffer mockByteBuffer;
-
-    @BeforeEach
-    void setUp() {
-        mockByteBuffer = mock(ByteBuffer.class);
-    }
+class PacketHeaderFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022})
@@ -61,8 +52,8 @@ class PacketHeaderFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
-    @DisplayName("Builds Packet Header for 2023 - 2025.")
-    void testBuild_header2023To2025(int packetFormat) {
+    @DisplayName("Builds Packet Header for 2023 to Present.")
+    void testBuild_header2023ToPresent(int packetFormat) {
         short packetShort = (short) packetFormat;
 
         when(mockByteBuffer.getShort()).thenReturn(packetShort, (short) 1, (short) 2, (short) 3, (short) 4, (short) 5);
@@ -91,25 +82,6 @@ class PacketHeaderFactoryTest {
             assertEquals(7, result.secondaryPlayerCarIndex());
             assertEquals(1, result.gameYear());
             assertEquals(1234567L, result.overallFrameID());
-        }
-    }
-
-    @Test
-    @DisplayName("Should throw IllegalStateException for unsupported packet format")
-    void testBuild_UnsupportedPacketFormat() {
-        int unsupportedFormat = 9999;
-        short shortValue = (short) unsupportedFormat;
-        when(mockByteBuffer.getShort()).thenReturn(shortValue);
-
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask16(shortValue)).thenReturn(unsupportedFormat);
-
-            // Act & Assert
-            IllegalStateException exception = assertThrows(IllegalStateException.class,
-                    () -> PacketHeaderFactory.build(mockByteBuffer));
-
-            assertEquals("Games Packet Format did not match an accepted format (2020 - 2025)",
-                    exception.getMessage());
         }
     }
 }
