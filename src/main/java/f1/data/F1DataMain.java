@@ -9,12 +9,9 @@ import f1.data.packets.enums.DriverPairingsEnum;
 import f1.data.packets.enums.DriverStatusEnum;
 import f1.data.packets.enums.Formula2Enum;
 import f1.data.packets.enums.FormulaEnum;
-import f1.data.packets.events.ButtonsData;
-import f1.data.packets.events.SpeedTrapData;
-import f1.data.packets.events.SpeedTrapDataFactory;
+import f1.data.packets.handlers.EventPacketHandler;
 import f1.data.packets.handlers.MotionPacketHandler;
-import f1.data.packets.session.SessionData;
-import f1.data.packets.session.SessionDataFactory;
+import f1.data.packets.handlers.SessionPacketHandler;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
@@ -26,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +38,9 @@ public class F1DataMain {
     private final List<ParticipantData> participantDataList;
     private final int packetFormat;
 
-    private final MotionPacketHandler motion;
+    private final MotionPacketHandler motionPacketHandler;
+    private final SessionPacketHandler sessionPacketHandler;
+    private final EventPacketHandler eventPacketHandler;
 
     public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
         this.packetProcessor = packetProcessor;
@@ -55,7 +53,10 @@ public class F1DataMain {
             this.driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
         this.packetFormat = packetFormat;
-        this.motion = new MotionPacketHandler(packetFormat, participants);
+
+        this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants);
+        this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, speedTrapData);
     }
 
     private final Map<Integer, TelemetryData> participants = new HashMap<>();
@@ -63,8 +64,6 @@ public class F1DataMain {
     private FormulaEnum formulaEnum = null;
     //Used to determine if we are getting current or previous driver lineups for the game for F2.
     private Formula2Enum formula2Enum = null;
-
-    private float speedTrapDistance = -50;
 
     private final int[][] packetCounts = new int[15][1];
 
@@ -86,15 +85,15 @@ public class F1DataMain {
                 //Switch to handle the correct logic based on what packet has been sent.
                 switch (ph.packetId()) {
                     case Constants.MOTION_PACK:
-                        motion.processPacket(byteBuffer);
+                        motionPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.MOTION_PACK][0]++;
                         break;
                     case Constants.SESSION_PACK:
-                        handleSessionPacket(byteBuffer);
+                        sessionPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.SESSION_PACK][0]++;
                         break;
                     case Constants.EVENT_PACK:
-                        handleEventPacket(byteBuffer);
+                        eventPacketHandler.processPacket(byteBuffer);
                         packetCounts[Constants.EVENT_PACK][0]++;
                         break;
                     case Constants.LAP_DATA_PACK:
@@ -139,43 +138,6 @@ public class F1DataMain {
     //Checks if the map of participants(drivers in session) contains the id we are looking for. Prevents extra ids for custom team from printing stuff when they have no data.
     private boolean validKey(int i) {
         return participants.containsKey(i);
-    }
-
-    private void handleSessionPacket(ByteBuffer byteBuffer) {
-        if (packetFormat > 0) {
-            SessionData sessionData = SessionDataFactory.build(packetFormat, byteBuffer);
-            if (formulaEnum == null) {
-                formulaEnum = FormulaEnum.fromValue(sessionData.formula());
-            }
-        }
-    }
-
-    //Handles the event packet. This one is different from the others as the packet changes based on what event has happened.
-    //Currently I only care about the button event and the speed trap triggered event.
-    private void handleEventPacket(ByteBuffer byteBuffer) {
-        if (!participants.isEmpty()) {
-            byte[] codeArray = new byte[4];
-            byteBuffer.get(codeArray, 0, 4);
-            String value = new String(codeArray, StandardCharsets.US_ASCII);
-            if (Constants.BUTTON_PRESSED_EVENT.equals(value)) {
-                ButtonsData bd = new ButtonsData(byteBuffer);
-                //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
-                if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
-                        || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
-                ) {
-                }
-            } else if (Constants.SPEED_TRAP_TRIGGERED_EVENT.equals(value)) {
-                SpeedTrapData trap = SpeedTrapDataFactory.build(packetFormat, byteBuffer);
-                //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
-                TelemetryData td = participants.get(trap.vehicleId());
-                td.setSpeedTrap(trap.speed());
-                if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance < 0) {
-                    speedTrapDistance = td.getCurrentLap().lapDistance();
-                }
-                //Populate the speedTrap consumer so that the panels get updated with the latest data.
-                this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
-            }
-        }
     }
 
     //Parses the lap data packet.
@@ -240,8 +202,8 @@ public class F1DataMain {
                     //We get the cars current speed. I have it within a certain distance each way, this should catch the majority of cars.
                     if (packetFormat <= Constants.YEAR_2020) {
                         if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() &&
-                                (td.getCurrentLap().lapDistance() >= (speedTrapDistance - Constants.TRAP_DISTANCE_BUFFER) &&
-                                        td.getCurrentLap().lapDistance() <= (speedTrapDistance + Constants.TRAP_DISTANCE_BUFFER))) {
+                                (td.getCurrentLap().lapDistance() >= (eventPacketHandler.getSpeedTrapDistance() - Constants.TRAP_DISTANCE_BUFFER) &&
+                                        td.getCurrentLap().lapDistance() <= (eventPacketHandler.getSpeedTrapDistance() + Constants.TRAP_DISTANCE_BUFFER))) {
                             //If this car triggered a speed trap event, then it will already have a value, so don't replace it.
                             //the td's speed trap values gets reset to 0.0F at the end of each lap.
                             if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
