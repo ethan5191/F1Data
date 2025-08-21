@@ -19,8 +19,8 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carDamage2020To2021(int packetFormat) {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(15);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -54,8 +54,8 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carDamage2022ToPresent(int packetFormat) {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(18);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);

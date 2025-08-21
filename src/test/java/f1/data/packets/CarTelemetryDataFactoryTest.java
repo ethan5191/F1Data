@@ -20,9 +20,9 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2020(int packetFormat) {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(3, 3);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-            parseUtils.when(() -> ParseUtils.parseShortArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             when(mockByteBuffer.get()).thenReturn((byte) 4);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
 
@@ -53,9 +53,9 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2021ToPresent(int packetFormat) {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(3, 4);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-            parseUtils.when(() -> ParseUtils.parseShortArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             when(mockByteBuffer.get()).thenReturn((byte) 4);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
 

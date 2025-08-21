@@ -21,7 +21,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
         float[] mockTireWear = new float[]{8F, 9F, 10F, 11F};
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(21, 3);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             when(mockByteBuffer.get()).thenReturn((byte) 22);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
@@ -70,7 +70,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             when(mockByteBuffer.get()).thenReturn((byte) 13);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());
@@ -117,7 +117,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             when(mockByteBuffer.get()).thenReturn((byte) 13);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());
