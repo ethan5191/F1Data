@@ -11,6 +11,7 @@ import java.util.stream.IntStream;
 import static org.mockito.AdditionalAnswers.returnsElementsOf;
 import static org.mockito.ArgumentMatchers.anyByte;
 import static org.mockito.ArgumentMatchers.anyShort;
+import static org.mockito.Mockito.when;
 
 public class FactoryTestHelper {
 
@@ -36,11 +37,15 @@ public class FactoryTestHelper {
         parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
     }
 
-    protected static void parseIntArray(ByteBuffer mockByteBuffer,MockedStatic<ParseUtils> parseUtils) {
+    protected static void parseIntArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
     }
 
     protected static void parseShortArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseShortArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+    }
+
+    protected static void mockSingleGetValue(ByteBuffer mockByteBuffer, int count) {
+        when(mockByteBuffer.get()).thenReturn((byte) ((byte) count + 1));
     }
 }

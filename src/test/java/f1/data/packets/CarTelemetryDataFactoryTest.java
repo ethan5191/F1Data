@@ -27,7 +27,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
-            when(mockByteBuffer.get()).thenReturn((byte) 4);
+            FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
 
             CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
@@ -64,7 +64,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
-            when(mockByteBuffer.get()).thenReturn((byte) 4);
+            FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3);
 
             CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);

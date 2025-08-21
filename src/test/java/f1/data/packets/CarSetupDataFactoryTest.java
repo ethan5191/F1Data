@@ -1,7 +1,6 @@
 package f1.data.packets;
 
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
