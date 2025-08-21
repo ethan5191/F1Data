@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.anyByte;
 import static org.mockito.Mockito.mockStatic;
 
 public class CarDamageDataFactoryTest extends AbstractFactoryTest {
@@ -18,11 +17,10 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021})
     @DisplayName("Builds the Car Damage Data from 2020 and 2021.")
     void testBuild_carDamage2020To2021(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(15);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
             parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -54,11 +52,10 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Damage Data from 2022 to Present.")
     void testBuild_carDamage2022ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8(18);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
             parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);

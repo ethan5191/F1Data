@@ -9,8 +9,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyByte;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 public class CarStatusDataFactoryTest extends AbstractFactoryTest {
 
@@ -19,12 +19,10 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Car Status Data for 2020.")
     void testBuild_carStatus2020(int packetFormat) {
         float[] mockTireWear = new float[]{8F, 9F, 10F, 11F};
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(21, 3);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
             when(mockByteBuffer.get()).thenReturn((byte) 22);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(1, 2, 3);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -36,11 +34,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(1, result.fuelInTank());
             assertEquals(2, result.fuelCapacity());
             assertEquals(3, result.fuelRemainingLaps());
-            assertEquals(1, result.maxRPM());
-            assertEquals(2, result.idleRPM());
+            assertEquals(50, result.maxRPM());
+            assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
             assertEquals(7, result.drsAllowed());
-            assertEquals(3, result.drsActivationDistance());
+            assertEquals(52, result.drsActivationDistance());
             assertArrayEquals(mockTireWear, result.tyresWear());
             assertEquals(12, result.actualTireCompound());
             assertEquals(13, result.visualTireCompound());
@@ -68,11 +66,9 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
     @DisplayName("Builds the Car Status Data for 2021 and 2022.")
     void testBuild_carStatus2021And2022(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(12, 3);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
             when(mockByteBuffer.get()).thenReturn((byte) 13);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(1, 2, 3);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
             parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
@@ -85,11 +81,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(1, result.fuelInTank());
             assertEquals(2, result.fuelCapacity());
             assertEquals(3, result.fuelRemainingLaps());
-            assertEquals(1, result.maxRPM());
-            assertEquals(2, result.idleRPM());
+            assertEquals(50, result.maxRPM());
+            assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
             assertEquals(7, result.drsAllowed());
-            assertEquals(3, result.drsActivationDistance());
+            assertEquals(52, result.drsActivationDistance());
             assertEquals(8, result.actualTireCompound());
             assertEquals(9, result.visualTireCompound());
             assertEquals(10, result.tiresAgeLaps());
@@ -117,11 +113,9 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Status Data for 2023 to Present.")
     void testBuild_carStatus2023ToPresent(int packetFormat) {
-        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockBitMask8And16(12, 3);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
             when(mockByteBuffer.get()).thenReturn((byte) 13);
-            bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(1, 2, 3);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
             parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
@@ -134,11 +128,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(1, result.fuelInTank());
             assertEquals(2, result.fuelCapacity());
             assertEquals(3, result.fuelRemainingLaps());
-            assertEquals(1, result.maxRPM());
-            assertEquals(2, result.idleRPM());
+            assertEquals(50, result.maxRPM());
+            assertEquals(51, result.idleRPM());
             assertEquals(6, result.maxGears());
             assertEquals(7, result.drsAllowed());
-            assertEquals(3, result.drsActivationDistance());
+            assertEquals(52, result.drsActivationDistance());
             assertEquals(8, result.actualTireCompound());
             assertEquals(9, result.visualTireCompound());
             assertEquals(10, result.tiresAgeLaps());
