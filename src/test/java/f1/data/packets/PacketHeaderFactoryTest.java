@@ -19,18 +19,12 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022})
     @DisplayName("Builds Packet Header for 2020 - 2022.")
     void testBuild_header2020To2022(int packetFormat) {
-        short packetShort = (short) packetFormat;
-
-        when(mockByteBuffer.getShort()).thenReturn(packetShort, (short) 1, (short) 2, (short) 3, (short) 4);
-        when(mockByteBuffer.getLong()).thenReturn(12345L, 123456L);
-        when(mockByteBuffer.getFloat()).thenReturn(1234F);
-        when(mockByteBuffer.get()).thenReturn((byte) 5, (byte) 6);
-
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(packetFormat);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask32(anyInt())).thenReturn(123456L);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask64(anyLong())).thenReturn(BigInteger.valueOf(12345L));
+            when(mockByteBuffer.getFloat()).thenReturn(1234F);
 
             PacketHeader result = PacketHeaderFactory.build(mockByteBuffer);
 
@@ -54,18 +48,12 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds Packet Header for 2023 to Present.")
     void testBuild_header2023ToPresent(int packetFormat) {
-        short packetShort = (short) packetFormat;
-
-        when(mockByteBuffer.getShort()).thenReturn(packetShort, (short) 1, (short) 2, (short) 3, (short) 4, (short) 5);
-        when(mockByteBuffer.getLong()).thenReturn(12345L, 123456L, 1234567L);
-        when(mockByteBuffer.getFloat()).thenReturn(1234F);
-        when(mockByteBuffer.get()).thenReturn((byte) 6, (byte) 7);
-
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(packetFormat);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask32(anyInt())).thenReturn(123456L, 1234567L);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask64(anyLong())).thenReturn(BigInteger.valueOf(12345L));
+            when(mockByteBuffer.getFloat()).thenReturn(1234F);
 
             PacketHeader result = PacketHeaderFactory.build(mockByteBuffer);
 

@@ -19,22 +19,13 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Car Status Data for 2020.")
     void testBuild_carStatus2020(int packetFormat) {
         float[] mockTireWear = new float[]{8F, 9F, 10F, 11F};
-        for (int i = 0; i <= 22; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-        for (int i = 0; i <= 3; i++) {
-            when(mockByteBuffer.getShort()).thenReturn((short) i);
-        }
-        for (int i = 0; i <= 7; i++) {
-            when(mockByteBuffer.getFloat()).thenReturn((float) i);
-        }
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21);
             when(mockByteBuffer.get()).thenReturn((byte) 22);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask16(anyShort())).thenReturn(1, 2, 3);
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7);
-            parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());
@@ -77,15 +68,6 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
     @DisplayName("Builds the Car Status Data for 2021 and 2022.")
     void testBuild_carStatus2021And2022(int packetFormat) {
-        for (int i = 0; i <= 13; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-        for (int i = 0; i <= 3; i++) {
-            when(mockByteBuffer.getShort()).thenReturn((short) i);
-        }
-        for (int i = 0; i <= 7; i++) {
-            when(mockByteBuffer.getFloat()).thenReturn((float) i);
-        }
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
@@ -135,15 +117,6 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Status Data for 2023 to Present.")
     void testBuild_carStatus2023ToPresent(int packetFormat) {
-        for (int i = 0; i <= 13; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-        for (int i = 0; i <= 3; i++) {
-            when(mockByteBuffer.getShort()).thenReturn((short) i);
-        }
-        for (int i = 0; i <= 9; i++) {
-            when(mockByteBuffer.getFloat()).thenReturn((float) i);
-        }
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);

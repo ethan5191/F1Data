@@ -19,13 +19,6 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023})
     @DisplayName("Builds the Car Setup Data from 2020 to 2023.")
     void testBuild_carSetup2020To2023(int packetFormat) {
-
-        for (int i = 0; i <= 13; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-        for (int i = 0; i <= 9; i++) {
-            when(mockByteBuffer.getFloat()).thenReturn((float) i);
-        }
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
@@ -62,12 +55,6 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Setup Data from 2024 to Present.")
     void testBuild_carSetup2024ToPresent(int packetFormat) {
-        for (int i = 0; i <= 14; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-        for (int i = 0; i <= 9; i++) {
-            when(mockByteBuffer.getFloat()).thenReturn((float) i);
-        }
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             when(mockByteBuffer.getFloat()).thenReturn((float) 1, (float) 2, (float) 3, (float) 4, (float) 5, (float) 6, (float) 7, (float) 8, (float) 9);
             bitMaskUtils.when(() -> BitMaskUtils.bitMask8(anyByte())).thenReturn(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14);

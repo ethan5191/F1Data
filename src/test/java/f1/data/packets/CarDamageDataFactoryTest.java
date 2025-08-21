@@ -9,7 +9,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyByte;
+import static org.mockito.Mockito.mockStatic;
 
 public class CarDamageDataFactoryTest extends AbstractFactoryTest {
 
@@ -17,11 +18,6 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021})
     @DisplayName("Builds the Car Damage Data from 2020 and 2021.")
     void testBuild_carDamage2020To2021(int packetFormat) {
-
-        for (int i = 1; i <= 15; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
@@ -58,11 +54,6 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
     @DisplayName("Builds the Car Damage Data from 2022 to Present.")
     void testBuild_carDamage2022ToPresent(int packetFormat) {
-
-        for (int i = 1; i <= 18; i++) {
-            when(mockByteBuffer.get()).thenReturn((byte) i);
-        }
-
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
