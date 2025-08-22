@@ -44,6 +44,7 @@ public class HomePanel implements Panel {
         for (Map.Entry<CheckBox, BooleanProperty> entry : PANEL_CHECKS.entrySet()) {
             CheckBox temp = entry.getKey();
             temp.selectedProperty().bindBidirectional(entry.getValue());
+            temp.setDisable(true);
             this.container.getChildren().add(temp);
         }
         Scene scene = new Scene(this.container, WIDTH, HEIGHT);

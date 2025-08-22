@@ -10,7 +10,9 @@ import f1.data.packets.session.SessionDataFactory;
 import f1.data.ui.home.HomePanel;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
@@ -23,11 +25,11 @@ import java.util.function.Consumer;
 public class F1SessionInitializer {
 
     private final F1PacketProcessor packetProcessor;
-    private final Label infoLabel;
+    private final VBox container;
 
     public F1SessionInitializer(F1PacketProcessor packetProcessor, HomePanel homePanel) {
         this.packetProcessor = packetProcessor;
-        this.infoLabel = (Label) homePanel.getContainer().getChildren().get(0);
+        this.container = homePanel.getContainer();
     }
 
     public void startInitializationWithCallback(Consumer<SessionInitializationResult> callback) {
@@ -91,10 +93,15 @@ public class F1SessionInitializer {
     }
 
     private void showInProgress() {
-        this.infoLabel.setText("Waiting for Session and Participant packets.");
+        ((Label) this.container.getChildren().get(0)).setText("Waiting for Session and Participant packets.");
     }
 
     private void packetsLoaded(Integer packetFormat) {
-        this.infoLabel.setText("F1 " + packetFormat + " Session and Participants packets loaded.");
+        ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
+        for (int i = 1; i < this.container.getChildren().size(); i++) {
+            if (this.container.getChildren().get(i) instanceof CheckBox) {
+                ((CheckBox) this.container.getChildren().get(i)).setDisable(false);
+            }
+        }
     }
 }
