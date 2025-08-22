@@ -22,7 +22,7 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
@@ -59,7 +59,7 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
 
             CarDamageData result = CarDamageDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);

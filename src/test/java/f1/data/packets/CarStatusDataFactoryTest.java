@@ -25,7 +25,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
@@ -79,7 +79,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());
@@ -131,7 +131,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.tractionControl());

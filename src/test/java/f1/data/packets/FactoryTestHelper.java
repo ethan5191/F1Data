@@ -57,7 +57,7 @@ public class FactoryTestHelper {
         parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
     }
 
-    protected static void parseIntArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
+    protected static void parseIntArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils, int length) {
         parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
     }
 

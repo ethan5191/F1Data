@@ -25,7 +25,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
@@ -62,7 +62,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
