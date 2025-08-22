@@ -1,5 +1,6 @@
 package f1.data.ui.stages.managers;
 
+import f1.data.ui.OnSessionReset;
 import f1.data.ui.Panel;
 import f1.data.ui.dashboards.SpeedTrapDashboard;
 import f1.data.ui.dto.SpeedTrapDataDTO;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpeedTrapDataManager implements Panel {
+public class SpeedTrapDataManager implements Panel, OnSessionReset {
 
     private final VBox container;
     private final Map<Integer, SpeedTrapDashboard> dashboards = new HashMap<>();
@@ -76,6 +77,12 @@ public class SpeedTrapDataManager implements Panel {
                 }
             }
         }
+    }
+
+    public void onSessionReset() {
+        this.container.getChildren().clear();
+        this.dashboards.clear();
+        this.rankings.clear();
     }
 
     public VBox getContainer() {

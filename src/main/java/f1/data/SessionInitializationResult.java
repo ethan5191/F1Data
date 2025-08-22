@@ -34,6 +34,10 @@ public class SessionInitializationResult {
         this.teamMateDriverId = this.driverPairings.get(this.playerDriverId);
     }
 
+    public SessionData getSessionData() {
+        return sessionData;
+    }
+
     public List<ParticipantData> getParticipantData() {
         return participantData;
     }

@@ -7,7 +7,7 @@ import f1.data.packets.events.SpeedTrapDistance;
 import f1.data.packets.handlers.*;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
-import f1.data.ui.dto.SpeedTrapDataDTO;
+import f1.data.ui.dto.ParentConsumer;
 import f1.data.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,6 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class F1DataMain {
 
@@ -38,26 +37,26 @@ public class F1DataMain {
 
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
-    public F1DataMain(F1PacketProcessor packetProcessor, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, List<ParticipantData> participantDataList, int packetFormat) {
+    public F1DataMain(F1PacketProcessor packetProcessor, ParentConsumer parent, List<ParticipantData> participantDataList, int packetFormat, String sessionName) {
         this.packetProcessor = packetProcessor;
         final Map<Integer, TelemetryData> participants = new HashMap<>();
         for (int i = 0; i < participantDataList.size(); i++) {
             ParticipantData pd = participantDataList.get(i);
-            participants.put(i, new TelemetryData(pd));
-            driverData.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
+            participants.put(i, new TelemetryData(pd, sessionName));
+            parent.driverDataDTOConsumer().accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
 
         //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
-        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants);
-        this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, speedTrapData, speedTrapDistance);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer());
+        this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
-        this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, driverData, speedTrapData, speedTrapDistance);
+        this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, parent, speedTrapDistance);
 
         initializeHandlerMap();
     }

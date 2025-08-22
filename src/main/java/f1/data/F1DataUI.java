@@ -2,6 +2,8 @@ package f1.data;
 
 import f1.data.packets.ParticipantData;
 import f1.data.ui.dto.DriverDataDTO;
+import f1.data.ui.dto.ParentConsumer;
+import f1.data.ui.dto.SessionResetDTO;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.ui.home.HomePanel;
 import f1.data.ui.stages.*;
@@ -69,6 +71,14 @@ public class F1DataUI extends Application {
                     teamSpeedTrapData.updateStage(snapshot);
                 });
             };
+            Consumer<SessionResetDTO> sessionResetConsumer = snapshot ->
+            {
+                Platform.runLater(() -> {
+                    if (snapshot.newSession()) {
+                        speedTrapData.onSessionReset();
+                    }
+                });
+            };
 
             //Call the different stage constructors.
             new LatestLapStage(stage, latestLap.getContainer());
@@ -78,15 +88,16 @@ public class F1DataUI extends Application {
             new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData.getContainer());
             new RunDataStage(new Stage(), runData.getContainer());
 
+            ParentConsumer parent = new ParentConsumer(driverDataConsumer, speedTrapDataDTO, sessionResetConsumer);
             //Calls the data thread.
-            callTelemetryThread(driverDataConsumer, speedTrapDataDTO, initResult.getParticipantData(), initResult.getPacketFormat());
+            callTelemetryThread(parent, initResult.getParticipantData(), initResult.getPacketFormat(), initResult.getSessionData().buildSessionName());
         });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
-    private void callTelemetryThread(Consumer<DriverDataDTO> driverDataConsumer, Consumer<SpeedTrapDataDTO> speedTrapDataDTO, List<ParticipantData> participantDataList, int packetFormat) {
+    private void callTelemetryThread(ParentConsumer parent, List<ParticipantData> participantDataList, int packetFormat, String sessionName) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain(packetProcessor, driverDataConsumer, speedTrapDataDTO, participantDataList, packetFormat).run();
+            new F1DataMain(packetProcessor, parent, participantDataList, packetFormat, sessionName).run();
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
