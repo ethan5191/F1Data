@@ -1,10 +1,15 @@
 package f1.data.telemetry;
 
+import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.*;
 import f1.data.packets.enums.DriverStatusEnum;
 import f1.data.utils.constants.Constants;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TelemetryData {
 
@@ -33,6 +38,8 @@ public class TelemetryData {
     private CarDamageData currentDamage;
     private TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
 
+    private final Map<CarSetupData, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
+
     public ParticipantData getParticipantData() {
         return participantData;
     }
@@ -46,7 +53,17 @@ public class TelemetryData {
     }
 
     public void setCurrentSetup(CarSetupData currentSetup) {
-        this.currentSetup = currentSetup;
+        //If this setup is already in the map, put that as the 'current setup' so we don't override its data.
+        if (!this.lapsPerSetup.isEmpty()) {
+            for (CarSetupData entry : this.lapsPerSetup.keySet()) {
+                if (entry.equals(currentSetup)) {
+                    this.currentSetup = entry;
+                }
+            }
+        } else {
+            this.currentSetup = currentSetup;
+            this.lapsPerSetup.put(this.currentSetup, new ArrayList<>());
+        }
     }
 
     public Integer getLastLapNum() {
@@ -189,5 +206,9 @@ public class TelemetryData {
 
     public void setTireSetsData(TireSetsData[] tireSetsData) {
         this.tireSetsData = tireSetsData;
+    }
+
+    public Map<CarSetupData, List<IndividualLapInfo>> getLapsPerSetup() {
+        return lapsPerSetup;
     }
 }

@@ -79,6 +79,7 @@ public class LapDataPacketHandler implements PacketHandler {
             info.setCarSetupData(td.getCurrentSetup());
             info.setSetupChange(td.isSetupChange());
             td.setSetupChange(false);
+            td.getLapsPerSetup().get(td.getCurrentSetup()).add(info);
         }
         //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
         if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
