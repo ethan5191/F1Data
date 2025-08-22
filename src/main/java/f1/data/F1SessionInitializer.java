@@ -51,7 +51,9 @@ public class F1SessionInitializer {
                     buffer.order(ByteOrder.LITTLE_ENDIAN);
                     PacketHeader ph = PacketHeaderFactory.build(buffer);
                     //This data should be on the very first packetHeader that we get regardless of what packet it is.
-                    if (playerCarIndex.get() == null) {
+                    //Depending on the order of the packets, player car index can come across as 0, even when that's not its true value.
+                    //So if it gets set to 0, but then the value is different on a subsequent packet, update it. Once it's a non-zero number it doesn't change in a session.
+                    if (playerCarIndex.get() == null || playerCarIndex.get() != ph.playerCarIndex()) {
                         packetFormat.set(ph.packetFormat());
                         playerCarIndex.set(ph.playerCarIndex());
                         driverPairings.set(DriverPairingsEnum.fromYear(ph.packetFormat()));

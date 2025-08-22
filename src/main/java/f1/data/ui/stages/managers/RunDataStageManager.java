@@ -1,6 +1,7 @@
 package f1.data.ui.stages.managers;
 
 import f1.data.individualLap.IndividualLapInfo;
+import f1.data.ui.OnSessionReset;
 import f1.data.ui.Panel;
 import f1.data.ui.RunDataAverage;
 import f1.data.ui.dashboards.RunDataDashboard;
@@ -10,7 +11,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.*;
 
-public class RunDataStageManager implements Panel {
+public class RunDataStageManager implements Panel, OnSessionReset {
 
     private final VBox container;
     private final Map<Integer, Map<Integer, List<RunDataDashboard>>> dashboards = new HashMap<>();
@@ -71,6 +72,11 @@ public class RunDataStageManager implements Panel {
                 }
             }
         }
+    }
+
+    public void onSessionReset() {
+        this.container.getChildren().clear();
+        this.dashboards.clear();
     }
 
     public VBox getContainer() {

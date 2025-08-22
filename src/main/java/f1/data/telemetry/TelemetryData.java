@@ -8,17 +8,19 @@ import java.math.BigDecimal;
 
 public class TelemetryData {
 
-    public TelemetryData(ParticipantData participantData) {
+    public TelemetryData(ParticipantData participantData, String sessionName) {
         this.participantData = participantData;
+        this.sessionName = sessionName;
     }
 
     private final ParticipantData participantData;
+    private final String sessionName;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
     private float speedTrap;
-    private float[] currentTireWear = {0,0,0,0};
-    private float[] startOfLapTireWear = {0,0,0,0};
+    private float[] currentTireWear = {0, 0, 0, 0};
+    private float[] startOfLapTireWear = {0, 0, 0, 0};
     private float currentFuelInTank;
     private float startOfLapFuelInTank = 0;
     private int fittedTireId;
@@ -33,6 +35,10 @@ public class TelemetryData {
 
     public ParticipantData getParticipantData() {
         return participantData;
+    }
+
+    public String getSessionName() {
+        return sessionName;
     }
 
     public CarSetupData getCurrentSetup() {
@@ -167,7 +173,7 @@ public class TelemetryData {
             if (this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
                 this.currentTireWear = currentDamage.tyresWear();
             } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
-                this.startOfLapTireWear = new float[]{0,0,0,0};
+                this.startOfLapTireWear = new float[]{0, 0, 0, 0};
             } else if (this.currentLap.driverStatus() == DriverStatusEnum.OUT_LAP.getValue()) {
                 //while on an out lap, theses two values should remain the same, that way the first 'official'
                 //lap of the run has the proper start fuel value.

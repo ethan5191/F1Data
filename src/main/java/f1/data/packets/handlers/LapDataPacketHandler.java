@@ -11,6 +11,7 @@ import f1.data.packets.enums.DriverStatusEnum;
 import f1.data.packets.events.SpeedTrapDistance;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;
+import f1.data.ui.dto.ParentConsumer;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
@@ -27,11 +28,11 @@ public class LapDataPacketHandler implements PacketHandler {
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
 
-    public LapDataPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<DriverDataDTO> driverData, Consumer<SpeedTrapDataDTO> speedTrapData, SpeedTrapDistance speedTrapDistance) {
+    public LapDataPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, ParentConsumer parent, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
         this.participants = participants;
-        this.driverData = driverData;
-        this.speedTrapData = speedTrapData;
+        this.driverData = parent.driverDataDTOConsumer();
+        this.speedTrapData = parent.speedTrapDataDTOConsumer();
         this.speedTrapDistance = speedTrapDistance;
     }
 
@@ -66,7 +67,7 @@ public class LapDataPacketHandler implements PacketHandler {
     private void handleNewLap(TelemetryData td, LapData ld) {
         float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
         td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
-        float[] tireWearThisLap = {0,0,0,0};
+        float[] tireWearThisLap = {0, 0, 0, 0};
         for (int i = 0; i < tireWearThisLap.length; i++) {
             tireWearThisLap[i] = td.getCurrentTireWear()[i] - td.getStartOfLapTireWear()[i];
         }

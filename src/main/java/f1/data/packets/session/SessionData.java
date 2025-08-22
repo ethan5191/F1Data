@@ -1,5 +1,8 @@
 package f1.data.packets.session;
 
+import f1.data.packets.enums.FormulaEnum;
+import f1.data.packets.enums.SessionTypeEnum;
+import f1.data.packets.enums.TrackEnum;
 import f1.data.utils.BitMaskUtils;
 
 import java.nio.ByteBuffer;
@@ -116,6 +119,13 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
     private static final int WEATHER_FORECAST_20_SIZE = 20;
     private static final int WEATHER_FORECAST_21_TO_23_SIZE = 56;
     private static final int WEATHER_FORECAST_24_NEWER_SIZE = 64;
+
+    public String buildSessionName() {
+        String formula = FormulaEnum.fromValue(this.formula).name();
+        String track = TrackEnum.fromId(this.trackId).name();
+        String session = SessionTypeEnum.fromId(this.sessionType).name();
+        return formula + " " + session + " at " + track;
+    }
 
     //Used to build the MarshalZone objects
     private static MarshalZoneData[] buildMarshalZones(ByteBuffer byteBuffer) {
