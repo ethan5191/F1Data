@@ -64,15 +64,11 @@ public class LapDataPacketHandler implements PacketHandler {
     }
 
     private void handleNewLap(TelemetryData td, LapData ld) {
-        //Calculate the fuel used this lap and tire wear this lap for use in the individual Info object.
-        //then update the start params so that next laps calculations use this laps ending values as there start values.
         float fuelUsedThisLap = td.getStartOfLapFuelInTank() - td.getCurrentFuelInTank();
         td.setStartOfLapFuelInTank(td.getCurrentFuelInTank());
-        float[] tireWearThisLap = new float[4];
-        if (td.getCurrentTireWear() != null && td.getStartOfLapTireWear() != null) {
-            for (int j = 0; j < tireWearThisLap.length; j++) {
-                tireWearThisLap[j] = td.getCurrentTireWear()[j] - td.getStartOfLapTireWear()[j];
-            }
+        float[] tireWearThisLap = {0,0,0,0};
+        for (int i = 0; i < tireWearThisLap.length; i++) {
+            tireWearThisLap[i] = td.getCurrentTireWear()[i] - td.getStartOfLapTireWear()[i];
         }
         td.setStartOfLapTireWear(td.getCurrentTireWear());
         IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
