@@ -75,7 +75,12 @@ public class F1DataUI extends Application {
             {
                 Platform.runLater(() -> {
                     if (snapshot.newSession()) {
+                        latestLap.onSessionReset();
+                        allLaps.onSessionReset();
+                        setupData.onSessionReset();
+                        runData.onSessionReset();
                         speedTrapData.onSessionReset();
+                        teamSpeedTrapData.onSessionReset();
                     }
                 });
             };

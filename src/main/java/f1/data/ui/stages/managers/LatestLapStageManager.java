@@ -1,5 +1,6 @@
 package f1.data.ui.stages.managers;
 
+import f1.data.ui.OnSessionReset;
 import f1.data.ui.Panel;
 import f1.data.ui.dashboards.LatestLapDashboard;
 import f1.data.ui.dto.DriverDataDTO;
@@ -8,11 +9,10 @@ import javafx.scene.layout.VBox;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LatestLapStageManager implements Panel {
+public class LatestLapStageManager implements Panel, OnSessionReset {
 
     private final VBox container;
     private final Map<Integer, LatestLapDashboard> dashboards = new HashMap<>();
-
     private final int playerDriverId;
     private final int teamMateId;
 
@@ -38,6 +38,11 @@ public class LatestLapStageManager implements Panel {
         if (dto.getInfo() != null) {
             latestLapDash.updateValues(dto.getInfo());
         }
+    }
+
+    public void onSessionReset() {
+        this.container.getChildren().clear();
+        this.dashboards.clear();
     }
 
     public VBox getContainer() {

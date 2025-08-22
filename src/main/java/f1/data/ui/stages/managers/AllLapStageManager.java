@@ -1,5 +1,6 @@
 package f1.data.ui.stages.managers;
 
+import f1.data.ui.OnSessionReset;
 import f1.data.ui.Panel;
 import f1.data.ui.dashboards.AllLapDataDashboard;
 import f1.data.ui.dto.DriverDataDTO;
@@ -8,7 +9,7 @@ import javafx.scene.layout.VBox;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AllLapStageManager implements Panel {
+public class AllLapStageManager implements Panel, OnSessionReset {
 
     private final VBox container;
     private final Map<Integer, VBox> dashboards = new HashMap<>();
@@ -42,6 +43,11 @@ public class AllLapStageManager implements Panel {
             //add to the overall panel.
             driver.getChildren().add(lapsContainer);
         }
+    }
+
+    public void onSessionReset() {
+        this.container.getChildren().clear();
+        this.dashboards.clear();
     }
 
     public VBox getContainer() {
