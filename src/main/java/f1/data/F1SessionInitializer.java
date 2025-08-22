@@ -81,7 +81,7 @@ public class F1SessionInitializer {
             SessionInitializationResult result = new SessionInitializationResult(sessionRef.get(), participantsRef.get(), driverPairings.get(), numActiveCars.get(), playerCarIndex.get(), packetFormat.get());
             //Hides the progress dialog, I might make it post an 'All Packets Loaded' message instead of hiding it.
             Platform.runLater(() -> {
-                packetsLoaded();
+                packetsLoaded(packetFormat.get());
                 callback.accept(result);
             });
         });
@@ -94,7 +94,7 @@ public class F1SessionInitializer {
         this.infoLabel.setText("Waiting for Session and Participant packets.");
     }
 
-    private void packetsLoaded() {
-        this.infoLabel.setText("Session and Participants packets loaded.");
+    private void packetsLoaded(Integer packetFormat) {
+        this.infoLabel.setText("F1 " + packetFormat + " Session and Participants packets loaded.");
     }
 }
