@@ -17,10 +17,10 @@ public class TelemetryData {
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
     private float speedTrap;
-    private float[] currentTireWear;
-    private float[] startOfLapTireWear = {-1, -1, -1, -1};
+    private float[] currentTireWear = {0,0,0,0};
+    private float[] startOfLapTireWear = {0,0,0,0};
     private float currentFuelInTank;
-    private float startOfLapFuelInTank = -1;
+    private float startOfLapFuelInTank = 0;
     private int fittedTireId;
     private int prevLapFittedTireId;
     private boolean isSetupChange;
@@ -146,7 +146,12 @@ public class TelemetryData {
                     this.startOfLapFuelInTank = this.currentFuelInTank;
                 }
             } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
-                this.startOfLapFuelInTank = -1;
+                this.startOfLapFuelInTank = 0;
+            } else if (this.currentLap.driverStatus() == DriverStatusEnum.OUT_LAP.getValue()) {
+                //while on an out lap, theses two values should remain the same, that way the first 'official'
+                //lap of the run has the proper start fuel value.
+                this.startOfLapFuelInTank = currentStatus.fuelInTank();
+                this.currentFuelInTank = currentStatus.fuelInTank();
             }
         }
     }
@@ -161,12 +166,13 @@ public class TelemetryData {
         if (this.currentLap != null) {
             if (this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
                 this.currentTireWear = currentDamage.tyresWear();
-                //Default values are -1, so if they are that then this is the first pass, so seed the current tire wear as the initial values.
-                if (this.startOfLapTireWear == null || this.startOfLapTireWear[0] == -1) {
-                    this.startOfLapTireWear = this.currentTireWear;
-                }
             } else if (this.currentLap.driverStatus() == DriverStatusEnum.IN_GARAGE.getValue() || this.currentLap.driverStatus() == DriverStatusEnum.IN_LAP.getValue()) {
-                this.startOfLapTireWear = new float[]{-1, -1, -1, -1};
+                this.startOfLapTireWear = new float[]{0,0,0,0};
+            } else if (this.currentLap.driverStatus() == DriverStatusEnum.OUT_LAP.getValue()) {
+                //while on an out lap, theses two values should remain the same, that way the first 'official'
+                //lap of the run has the proper start fuel value.
+                this.startOfLapTireWear = currentDamage.tyresWear();
+                this.currentTireWear = currentDamage.tyresWear();
             }
         }
     }
