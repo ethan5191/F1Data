@@ -7,12 +7,12 @@ public class RunDataAverage {
 
     //Used to create a new average object off of just the DTO and start lap.
     //Either the first lap or a new setup change will cause this.
-    public RunDataAverage(Integer startLap, DriverDataDTO dto, boolean isF1) {
+    public RunDataAverage(Integer startLap, Integer totalLaps, DriverDataDTO dto, boolean isF1) {
         this.isF1 = isF1;
         this.startLap = startLap;
         this.completedLap = dto.getInfo().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
-        this.totalLaps = (this.completedLap - this.startLap) + 1;
+        this.totalLaps = totalLaps;
         this.totalTimeInMS = dto.getInfo().getNonRoundedLapTime();
         this.totalTireWear = dto.getInfo().getTireWearThisLap();
         this.totalFuelUsed = dto.getInfo().getFuelUsedThisLap();
@@ -28,12 +28,12 @@ public class RunDataAverage {
 
     //Used to create a new average object off of the startLap, dto, and existing averages.
     //This will happen anytime a setup has already been used and has laps completed.
-    public RunDataAverage(Integer startLap, DriverDataDTO dto, RunDataAverage current) {
+    public RunDataAverage(Integer startLap, Integer totalLaps, DriverDataDTO dto, RunDataAverage current) {
         this.isF1 = current.isF1;
         this.startLap = startLap;
         this.completedLap = dto.getInfo().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
-        this.totalLaps = (this.completedLap - this.startLap) + 1;
+        this.totalLaps = totalLaps;
         this.totalTimeInMS = dto.getInfo().getNonRoundedLapTime() + current.totalTimeInMS;
         for (int i = 0; i < current.totalTireWear.length; i++) {
             this.totalTireWear[i] = current.totalTireWear[i] + dto.getInfo().getTireWearThisLap()[i];
