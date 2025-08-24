@@ -77,6 +77,7 @@ public class LapDataPacketHandler implements PacketHandler {
         td.setLastLapTimeInMs(info.getLapTimeInMs());
         if (td.getCurrentSetup() != null) {
             info.setCarSetupData(td.getCurrentSetup());
+            info.setCurrentSetupNumber(td.getCurrentSetupNumber());
             info.setSetupChange(td.isSetupChange());
             td.setSetupChange(false);
             td.getLapsPerSetup().get(td.getCurrentSetupNumber()).add(info);

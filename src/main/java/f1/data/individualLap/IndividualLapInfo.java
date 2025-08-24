@@ -54,6 +54,7 @@ public class IndividualLapInfo {
     private final float fuelUsedThisLap;
     private final float[] tireWearThisLap;
 
+    private int currentSetupNumber;
     private CarSetupData carSetupData;
     private CarTelemetryInfo carTelemetryInfo;
 
@@ -101,6 +102,14 @@ public class IndividualLapInfo {
 
     public float[] getTireWearThisLap() {
         return tireWearThisLap;
+    }
+
+    public int getCurrentSetupNumber() {
+        return currentSetupNumber;
+    }
+
+    public void setCurrentSetupNumber(int currentSetupNumber) {
+        this.currentSetupNumber = currentSetupNumber;
     }
 
     public CarSetupData getCarSetupData() {
