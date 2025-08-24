@@ -31,8 +31,10 @@ public class RunDataStageManager implements Panel, OnSessionReset {
         IndividualLapInfo info = dto.getInfo();
         if (info != null) {
             if (dto.getId() == this.playerDriverId || dto.getId() == this.teamMateId) {
-                //If this is the first pass through or the setup has changed we need to do all of this.
-                if (!this.dashboards.containsKey(dto.getId()) || info.isSetupChange()) {
+                boolean containsKey = this.dashboards.containsKey(dto.getId());
+                boolean setupAlreadyUsed = isSetupUsed(containsKey, dto.getId(), dto.getInfo().getCurrentSetupNumber());
+                //If this is the first pass through or (the setup has changed, and we haven't used this setup) we need to do all of this.
+                if (!containsKey || (info.isSetupChange() && !setupAlreadyUsed)) {
                     VBox driver = new VBox();
                     this.container.getChildren().add(driver);
                     //Creates the actual dashboard
@@ -41,9 +43,9 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(dto, this.isF1);
                     Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
                     //calculate the averages and add them as a new dashboard to the end of the list.
-                    RunDataAverage average = new RunDataAverage(info.getLapNum(), dto, this.isF1);
+                    RunDataAverage average = new RunDataAverage(info.getLapNum(), info.getTotalLapsThisSetup(), dto, this.isF1);
                     RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
-                    initial.put(info.getLapNum(), List.of(lapInfoBoard, averages));
+                    initial.put(info.getCurrentSetupNumber(), List.of(lapInfoBoard, averages));
                     this.dashboards.put(dto.getId(), initial);
                     newBox.getChildren().add(setupInfo);
                     lapInfoBoard.createHeaderRow(newBox);
@@ -53,25 +55,30 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     //else we have this setup already done a lap, so we just need to create a new lap info
                 } else {
                     Map<Integer, List<RunDataDashboard>> currentData = this.dashboards.get(dto.getId());
-                    //The lapnum is the key if a setup change has happened, so get the max key to get the latest setup change.
-                    //a setup change will be handled by the if part of this if/else statement.
-                    Optional<Integer> maxNewSetupLap = currentData.keySet().stream().max(Integer::compare);
-                    Integer maxLap = maxNewSetupLap.get();
-                    //Create a copy of the value in the map for this lapnum so we can add a new dashboard to the end.
-                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(maxLap));
+                    Integer currentSetupNumber = dto.getInfo().getCurrentSetupNumber();
+                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(currentSetupNumber));
                     //get the current averages and use it to update the averages to account for a new lap completed.
                     RunDataDashboard currentAverages = lapsForSetupCopy.get(lapsForSetupCopy.size() - 1);
-                    RunDataAverage updatedAverages = new RunDataAverage(maxLap, dto, currentAverages.getAverage());
+                    RunDataAverage updatedAverages = new RunDataAverage(currentSetupNumber, info.getTotalLapsThisSetup(), dto, currentAverages.getAverage());
                     RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages, info.isUseLegacy());
                     lapsForSetupCopy.add(newAvgDash);
                     //Update the previous averages line to have the new laps data in it instead of averages.
                     currentAverages.updateValues(dto);
-                    currentData.put(maxLap, lapsForSetupCopy);
+                    currentData.put(currentSetupNumber, lapsForSetupCopy);
                     VBox parent = (VBox) currentAverages.getParent();
                     parent.getChildren().add(newAvgDash);
                 }
             }
         }
+    }
+
+    //Returns true if the setup we are using, has already completed at least one lap in practice.
+    private boolean isSetupUsed(boolean containsKey, int driverId, int currentSetupNumber) {
+        if (containsKey) {
+            Map<Integer, List<RunDataDashboard>> setupWithDashboards = this.dashboards.get(driverId);
+            return setupWithDashboards.containsKey(currentSetupNumber);
+        }
+        return false;
     }
 
     public void onSessionReset() {
