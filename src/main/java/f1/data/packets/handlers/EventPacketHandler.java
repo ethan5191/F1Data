@@ -1,5 +1,7 @@
 package f1.data.packets.handlers;
 
+import f1.data.individualLap.IndividualLapInfo;
+import f1.data.packets.CarSetupData;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
@@ -10,6 +12,7 @@ import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -48,6 +51,21 @@ public class EventPacketHandler implements PacketHandler {
         if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
                 || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
         ) {
+            for (Map.Entry<Integer, TelemetryData> id : this.participants.entrySet()) {
+                TelemetryData td = id.getValue();
+                System.out.println(td.getParticipantData().lastName());
+                if (td.getCurrentSetup() != null) System.out.println(td.getCurrentSetup());
+                if (!td.getLapsPerSetup().isEmpty()) {
+                    for (Map.Entry<Integer, List<IndividualLapInfo>> laps : td.getLapsPerSetup().entrySet()) {
+                        System.out.println(td.getSetups().get(laps.getKey()));
+                        if (!laps.getValue().isEmpty()) {
+                            for (IndividualLapInfo lap : laps.getValue()) {
+                                System.out.println("#" + lap.getLapNum() + " " + lap.getLapTimeInMs());
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

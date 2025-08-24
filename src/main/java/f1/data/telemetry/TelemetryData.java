@@ -20,6 +20,7 @@ public class TelemetryData {
 
     private final ParticipantData participantData;
     private final String sessionName;
+    private Integer currentSetupNumber = 0;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
@@ -38,7 +39,8 @@ public class TelemetryData {
     private CarDamageData currentDamage;
     private TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
 
-    private final Map<CarSetupData, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
+    private final List<CarSetupData> setups = new ArrayList<>();
+    private final Map<Integer, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -48,21 +50,42 @@ public class TelemetryData {
         return sessionName;
     }
 
+    public Integer getCurrentSetupNumber() {
+        return currentSetupNumber;
+    }
+
     public CarSetupData getCurrentSetup() {
         return currentSetup;
     }
 
     public void setCurrentSetup(CarSetupData currentSetup) {
-        //If this setup is already in the map, put that as the 'current setup' so we don't override its data.
-        if (!this.lapsPerSetup.isEmpty()) {
-            for (CarSetupData entry : this.lapsPerSetup.keySet()) {
-                if (entry.equals(currentSetup)) {
-                    this.currentSetup = entry;
+        //Only do the setup logic when the car is on a flying lap. Otherwise, you can end up with a bunch of different setups saved with no data.
+        if (this.currentLap != null && this.currentLap.driverStatus() == DriverStatusEnum.FLYING_LAP.getValue()) {
+            //If we haven't saved a setup yet, then save it to the list and the map.
+            if (this.setups.isEmpty()) {
+                this.setups.add(currentSetup);
+                this.currentSetup = currentSetup;
+                this.getLapsPerSetup().put(this.currentSetupNumber, new ArrayList<>());
+            } else {
+                boolean foundSetup = false;
+                //We have saved setups, make sure this one isn't one fo them. If it is, update the setupNumber and set that setup as current.
+                for (int i = 0; i < setups.size(); i++) {
+                    if (setups.get(i).equals(currentSetup)) {
+                        this.currentSetupNumber = i;
+                        this.currentSetup = setups.get(i);
+                        foundSetup = true;
+                        break;
+                    }
+                }
+                //If we didn't find a setup, then we need to set the number = to the size of the array, ensuring we don't overwrite ourselves.
+                //Then add this new setup to the list, create a record in the amp, and set it as the active setup.
+                if (!foundSetup) {
+                   this.currentSetupNumber = this.setups.size();
+                   this.setups.add(currentSetup);
+                   this.currentSetup = currentSetup;
+                   this.getLapsPerSetup().put(this.currentSetupNumber, new ArrayList<>());
                 }
             }
-        } else {
-            this.currentSetup = currentSetup;
-            this.lapsPerSetup.put(this.currentSetup, new ArrayList<>());
         }
     }
 
@@ -208,7 +231,11 @@ public class TelemetryData {
         this.tireSetsData = tireSetsData;
     }
 
-    public Map<CarSetupData, List<IndividualLapInfo>> getLapsPerSetup() {
+    public List<CarSetupData> getSetups() {
+        return setups;
+    }
+
+    public Map<Integer, List<IndividualLapInfo>> getLapsPerSetup() {
         return lapsPerSetup;
     }
 }
