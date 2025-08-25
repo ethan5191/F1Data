@@ -2,7 +2,7 @@ package f1.data.telemetry;
 
 import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.*;
-import f1.data.packets.enums.DriverStatusEnum;
+import f1.data.enums.DriverStatusEnum;
 import f1.data.utils.constants.Constants;
 
 import java.math.BigDecimal;

@@ -1,15 +1,14 @@
-package f1.data.packets.enums;
+package f1.data.enums;
 
-public enum SafetyCarEnum {
+public enum PitStatusEnum {
 
     NONE(0),
-    FULL(1),
-    VIRTUAL(2),
-    FORMATION(3);
+    PITTING(1),
+    PIT_AREA(2);
 
     private final int value;
 
-    SafetyCarEnum(int value) {
+    PitStatusEnum(int value) {
         this.value = value;
     }
 

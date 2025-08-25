@@ -1,8 +1,8 @@
 package f1.data.individualLap;
 
 import f1.data.packets.CarStatusData;
-import f1.data.packets.enums.ActualTireEnum;
-import f1.data.packets.enums.VisualTireEnum;
+import f1.data.enums.ActualTireEnum;
+import f1.data.enums.VisualTireEnum;
 import f1.data.utils.constants.Constants;
 
 public class CarStatusInfo {

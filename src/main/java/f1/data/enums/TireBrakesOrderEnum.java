@@ -1,4 +1,4 @@
-package f1.data.packets.enums;
+package f1.data.enums;
 
 public enum TireBrakesOrderEnum {
     REAR_LEFT(0),

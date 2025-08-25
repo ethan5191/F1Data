@@ -4,7 +4,7 @@ import f1.data.packets.PacketHeader;
 import f1.data.packets.PacketHeaderFactory;
 import f1.data.packets.ParticipantData;
 import f1.data.packets.ParticipantDataFactory;
-import f1.data.packets.enums.DriverPairingsEnum;
+import f1.data.enums.DriverPairingsEnum;
 import f1.data.packets.session.SessionData;
 import f1.data.packets.session.SessionDataFactory;
 import f1.data.ui.home.HomePanel;
