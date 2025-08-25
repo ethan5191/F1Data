@@ -1,6 +1,7 @@
 package f1.data;
 
 import f1.data.packets.ParticipantData;
+import f1.data.packets.session.SessionData;
 import f1.data.ui.dto.DriverDataDTO;
 import f1.data.ui.dto.ParentConsumer;
 import f1.data.ui.dto.SessionResetDTO;
@@ -95,14 +96,14 @@ public class F1DataUI extends Application {
 
             ParentConsumer parent = new ParentConsumer(driverDataConsumer, speedTrapDataDTO, sessionResetConsumer);
             //Calls the data thread.
-            callTelemetryThread(parent, initResult.getParticipantData(), initResult.getPacketFormat(), initResult.getSessionData().buildSessionName());
+            callTelemetryThread(parent, initResult.getSessionData(), initResult.getParticipantData(), initResult.getPacketFormat());
         });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
-    private void callTelemetryThread(ParentConsumer parent, List<ParticipantData> participantDataList, int packetFormat, String sessionName) {
+    private void callTelemetryThread(ParentConsumer parent, SessionData initialSession, List<ParticipantData> participantDataList, int packetFormat) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain(packetProcessor, parent, participantDataList, packetFormat, sessionName).run();
+            new F1DataMain(packetProcessor, parent, initialSession, participantDataList, packetFormat).run();
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
