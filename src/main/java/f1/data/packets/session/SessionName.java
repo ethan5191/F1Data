@@ -1,8 +1,8 @@
 package f1.data.packets.session;
 
-import f1.data.packets.enums.FormulaEnum;
-import f1.data.packets.enums.SessionTypeEnum;
-import f1.data.packets.enums.TrackEnum;
+import f1.data.enums.FormulaEnum;
+import f1.data.enums.SessionTypeEnum;
+import f1.data.enums.TrackEnum;
 
 public class SessionName {
 

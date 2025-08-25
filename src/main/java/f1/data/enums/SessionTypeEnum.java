@@ -1,4 +1,4 @@
-package f1.data.packets.enums;
+package f1.data.enums;
 
 import java.util.HashMap;
 import java.util.Map;

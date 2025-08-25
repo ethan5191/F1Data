@@ -1,4 +1,4 @@
-package f1.data.packets.enums;
+package f1.data.enums;
 
 import f1.data.utils.constants.Constants;
 

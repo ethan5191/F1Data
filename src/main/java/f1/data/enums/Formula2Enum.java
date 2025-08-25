@@ -1,4 +1,4 @@
-package f1.data.packets.enums;
+package f1.data.enums;
 
 //Current means we will use the latest driver lineup based on the game year.
 //Previous means we will use the earlier driver lineup.

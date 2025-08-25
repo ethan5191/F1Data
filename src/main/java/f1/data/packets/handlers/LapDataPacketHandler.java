@@ -7,7 +7,7 @@ import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.LapData;
 import f1.data.packets.LapDataFactory;
 import f1.data.packets.PacketUtils;
-import f1.data.packets.enums.DriverStatusEnum;
+import f1.data.enums.DriverStatusEnum;
 import f1.data.packets.events.SpeedTrapDistance;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.DriverDataDTO;

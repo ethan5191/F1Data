@@ -5,7 +5,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import f1.data.packets.CarSetupData;
-import f1.data.packets.enums.VisualTireEnum;
+import f1.data.enums.VisualTireEnum;
 
 
 public class SetupInfoDashboard extends VBox {

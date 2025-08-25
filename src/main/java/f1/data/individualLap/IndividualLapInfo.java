@@ -2,7 +2,7 @@ package f1.data.individualLap;
 
 import f1.data.packets.CarSetupData;
 import f1.data.packets.LapData;
-import f1.data.packets.enums.TireBrakesOrderEnum;
+import f1.data.enums.TireBrakesOrderEnum;
 import f1.data.utils.Util;
 
 import java.math.BigDecimal;
