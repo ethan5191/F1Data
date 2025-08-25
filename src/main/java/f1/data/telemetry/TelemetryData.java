@@ -13,13 +13,11 @@ import java.util.Map;
 
 public class TelemetryData {
 
-    public TelemetryData(ParticipantData participantData, String sessionName) {
+    public TelemetryData(ParticipantData participantData) {
         this.participantData = participantData;
-        this.sessionName = sessionName;
     }
 
     private final ParticipantData participantData;
-    private final String sessionName;
     private Integer currentSetupNumber = 0;
     private CarSetupData currentSetup;
     private Integer lastLapNum;
@@ -44,10 +42,6 @@ public class TelemetryData {
 
     public ParticipantData getParticipantData() {
         return participantData;
-    }
-
-    public String getSessionName() {
-        return sessionName;
     }
 
     public Integer getCurrentSetupNumber() {
