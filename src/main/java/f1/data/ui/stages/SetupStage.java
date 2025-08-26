@@ -1,41 +1,29 @@
 package f1.data.ui.stages;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 import f1.data.ui.home.AppState;
 import f1.data.utils.constants.Constants;
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class SetupStage extends AbstractStage<VBox> {
+public class SetupStage extends AbstractScrollPaneStage {
 
-    public SetupStage(Stage stage, VBox setupData) {
-        super(stage, null, null);
-        this.setupData = setupData;
-        init();
+    public SetupStage(Stage stage, VBox content) {
+        super(stage, content, null, null);
     }
-
-    private final VBox setupData;
 
     @Override
-    protected VBox createParentContent() {
-        return createParentVbox();
+    protected double getSceneWidth() {
+        return Constants.SETUP_PANEL_WIDTH;
     }
 
+    @Override
+    protected double getSceneHeight() {
+        return useFullScreenHeight();
+    }
+
+    @Override
     protected BooleanProperty getAppState() {
         return AppState.setupDataPanelVisible;
-    }
-
-    @Override
-    protected void init() {
-        this.content.getChildren().add(setupData);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(Constants.SETUP_PANEL_WIDTH);
-        stage.setHeight(bounds.getHeight());
-        setScene(this.stage.getWidth(), this.stage.getHeight());
     }
 }

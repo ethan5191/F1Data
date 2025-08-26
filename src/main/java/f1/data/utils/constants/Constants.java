@@ -65,7 +65,7 @@ public class Constants {
     public static final String SOFT = "Soft";
     public static final String SUPER = "Super Soft";
 
-    public static final int SETUP_PANEL_WIDTH = 800;
+    public static final int SETUP_PANEL_WIDTH = 730;
 
     public static final String PERCENT_SIGN = "%";
     public static final String KG = "kg";

@@ -1,33 +1,25 @@
 package f1.data.ui.stages;
 
+import f1.data.ui.dashboards.TeamSpeedTrapDashboard;
+import f1.data.ui.home.AppState;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import f1.data.ui.dashboards.TeamSpeedTrapDashboard;
-import f1.data.ui.home.AppState;
 
-public class TeamSpeedTrapStage extends AbstractStage<VBox> {
+public class TeamSpeedTrapStage extends AbstractScrollPaneStage {
 
-    public TeamSpeedTrapStage(Stage stage, VBox teamSpeedTrapData) {
-        super(stage, TeamSpeedTrapDashboard.HEADERS, TeamSpeedTrapDashboard.HEADERS_WIDTH);
-        this.teamSpeedTrapData = teamSpeedTrapData;
-        init();
+    public TeamSpeedTrapStage(Stage stage, VBox content) {
+        super(stage, content, TeamSpeedTrapDashboard.HEADERS, TeamSpeedTrapDashboard.HEADERS_WIDTH);
     }
 
-    private final VBox teamSpeedTrapData;
-
-    @Override
-    protected VBox createParentContent() {
-        return createParentVbox();
+    protected double getSceneWidth() {
+        return 250;
     }
 
-    @Override
-    protected void init() {
-        this.content.getChildren().add(teamSpeedTrapData);
-        setFullHeightScene(250);
+    protected double getSceneHeight() {
+        return useFullScreenHeight();
     }
 
-    @Override
     protected BooleanProperty getAppState() {
         return AppState.teamSpeedTrapPanelVisible;
     }
