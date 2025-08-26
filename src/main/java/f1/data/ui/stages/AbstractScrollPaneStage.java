@@ -3,6 +3,7 @@ package f1.data.ui.stages;
 import f1.data.ui.stages.helper.Delta;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -78,6 +79,12 @@ public abstract class AbstractScrollPaneStage {
             headersBox.getChildren().add(header);
             header.setTextFill(Color.WHITE);
         }
+        headersBox.setOnMouseEntered(e -> {
+            headersBox.getScene().setCursor(Cursor.MOVE);
+        });
+        headersBox.setOnMouseExited(e -> {
+            headersBox.getScene().setCursor(Cursor.DEFAULT);
+        });
         container.getChildren().add(headersBox);
     }
 
