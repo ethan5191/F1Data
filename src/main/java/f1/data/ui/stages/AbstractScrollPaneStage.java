@@ -32,13 +32,13 @@ public abstract class AbstractScrollPaneStage {
     }
 
     private void init() {
-        addDragAndDrop(this.content);
         int spacing = 3;
         VBox container = new VBox(spacing);
         buildHeaders(container);
         double height = getSceneHeight();
         container.getChildren().add(createScrollPane(height));
         container.setStyle("-fx-background-color: rgba(0, 0, 0, 0.33);");
+        addDragAndDrop(container);
         createScene(container, getSceneWidth(), height);
     }
 
@@ -65,7 +65,6 @@ public abstract class AbstractScrollPaneStage {
                         "-fx-border-color: transparent;"
         );
         pane.setContent(this.content);
-        pane.setPannable(true);
         pane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         pane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         return pane;
