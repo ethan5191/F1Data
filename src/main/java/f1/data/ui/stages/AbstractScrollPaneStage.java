@@ -45,6 +45,7 @@ public abstract class AbstractScrollPaneStage {
         createScene(container, getSceneWidth(), height);
     }
 
+    //Adds drag and drop to the element passed in. Currently only the parent container for the scroll pane is passed in.
     private void addDragAndDrop(Pane element) {
         Delta dragDelta = new Delta();
         element.setOnMousePressed(e -> {
@@ -57,6 +58,7 @@ public abstract class AbstractScrollPaneStage {
         });
     }
 
+    //Creates the scroll pane, ensuring that it is transparent, instead of having a white background.
     private ScrollPane createScrollPane(double height) {
         ScrollPane pane = new ScrollPane();
         pane.setMinHeight(height);
@@ -73,6 +75,8 @@ public abstract class AbstractScrollPaneStage {
         return pane;
     }
 
+    //If the stage we are building has passed us headers then we are building them here.
+    //Regardless of if we have headers, we still want to create and add the header box as it has the Cursor.Move logic on it.
     private void buildHeaders(VBox container) {
         HBox headersBox = new HBox(SPACING);
         if (this.headers != null) {
@@ -92,11 +96,13 @@ public abstract class AbstractScrollPaneStage {
         container.getChildren().add(headersBox);
     }
 
+    //Creates the actual scene, with the container, width, and height passed in.
     private void createScene(Pane container, double width, double height) {
         Scene scene = new Scene(container, width, height);
         scene.setFill(Color.TRANSPARENT);
         this.stage.setScene(scene);
         this.stage.initStyle(StageStyle.TRANSPARENT);
+        //allows for toggling of the panel via the checkboxes on the home screen.
         getAppState().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 this.stage.show();
@@ -106,6 +112,7 @@ public abstract class AbstractScrollPaneStage {
         });
     }
 
+    //Default logic to use the full screen height based on the screen it is being displayed on.
     protected double useFullScreenHeight() {
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();

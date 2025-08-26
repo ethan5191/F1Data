@@ -85,19 +85,4 @@ public abstract class AbstractStage<T extends Pane> {
             }
         });
     }
-
-    //Creates a full height scene, that uses the screens height and the width passed in.
-    protected void setFullHeightScene(int width) {
-        ScrollPane scroll = new ScrollPane();
-        scroll.setContent(this.content);
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(width);
-        stage.setHeight(bounds.getHeight());
-        setScene(this.stage.getWidth(), this.stage.getHeight());
-    }
 }
