@@ -22,6 +22,9 @@ public abstract class AbstractScrollPaneStage {
     private final String[] headers;
     private final int[] headersWidth;
 
+    private final int SPACING = 5;
+
+
     public AbstractScrollPaneStage(Stage stage, VBox content, String[] headers, int[] headersWidth) {
         this.stage = stage;
         this.stage.setAlwaysOnTop(true);
@@ -33,8 +36,7 @@ public abstract class AbstractScrollPaneStage {
     }
 
     private void init() {
-        int spacing = 3;
-        VBox container = new VBox(spacing);
+        VBox container = new VBox(SPACING);
         buildHeaders(container);
         double height = getSceneHeight();
         container.getChildren().add(createScrollPane(height));
@@ -72,12 +74,14 @@ public abstract class AbstractScrollPaneStage {
     }
 
     private void buildHeaders(VBox container) {
-        HBox headersBox = new HBox(3);
-        for (int i = 0; i < this.headers.length; i++) {
-            Label header = new Label(this.headers[i]);
-            header.setMinWidth(this.headersWidth[i]);
-            headersBox.getChildren().add(header);
-            header.setTextFill(Color.WHITE);
+        HBox headersBox = new HBox(SPACING);
+        if (this.headers != null) {
+            for (int i = 0; i < this.headers.length; i++) {
+                Label header = new Label(this.headers[i]);
+                header.setMinWidth(this.headersWidth[i]);
+                headersBox.getChildren().add(header);
+                header.setTextFill(Color.WHITE);
+            }
         }
         headersBox.setOnMouseEntered(e -> {
             headersBox.getScene().setCursor(Cursor.MOVE);

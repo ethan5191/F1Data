@@ -48,7 +48,7 @@ public class SetupStageManager implements Panel, OnSessionReset {
         this.dashboards.put(snapshot.getId(), mapToUpdate);
         //Creates the actual dashboard
         SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
-        VBox container = new VBox(3);
+        VBox container = new VBox(5);
         //Add the current setupNumber to the map of <DriverID, Set<SetupNumbers>>
         setupIds.add(snapshot.getInfo().getCurrentSetupNumber());
         this.driversSetupsIds.put(snapshot.getId(), setupIds);

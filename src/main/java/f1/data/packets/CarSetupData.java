@@ -89,7 +89,7 @@ public record CarSetupData(int frontWing, int rearWing, int onThrottle, int offT
     }
 
     public Label[][] getSetupDashboardData() {
-        return new Label[][]{{new Label(" Fuel Load ")}, {new Label(DashboardUtils.formatTwoDecimals(this.fuelLoad) + Constants.KG)},
+        return new Label[][]{{new Label("Fuel Load ")}, {new Label(DashboardUtils.formatTwoDecimals(this.fuelLoad) + Constants.KG)},
                 {new Label(" Front Wing "), new Label(" Rear Wing ")},
                 {new Label(String.valueOf(this.frontWing)), new Label(String.valueOf(this.rearWing))},
                 {new Label(" On Throttle "), new Label(" Off Throttle "), new Label(" Engine Braking ")},
