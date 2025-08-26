@@ -1,29 +1,24 @@
 package f1.data.ui.stages;
 
+import f1.data.ui.home.AppState;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import f1.data.ui.home.AppState;
 
-public class RunDataStage extends AbstractStage<VBox> {
+public class RunDataStage extends AbstractScrollPaneStage {
 
-    public RunDataStage(Stage stage, VBox runData) {
-        super(stage, null, null);
-        this.runData = runData;
-        init();
-    }
-
-    private final VBox runData;
-
-    @Override
-    protected VBox createParentContent() {
-        return createParentVbox();
+    public RunDataStage(Stage stage, VBox content) {
+        super(stage, content, null, null);
     }
 
     @Override
-    protected void init() {
-        this.content.getChildren().add(runData);
-        setFullHeightScene(950);
+    protected double getSceneWidth() {
+        return 950;
+    }
+
+    @Override
+    protected double getSceneHeight() {
+        return useFullScreenHeight();
     }
 
     @Override
