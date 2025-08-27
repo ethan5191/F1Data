@@ -22,7 +22,7 @@ public class CarSetupPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
                 boolean isValidKey = PacketUtils.validKey(participants, i);
                 //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
                 //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.

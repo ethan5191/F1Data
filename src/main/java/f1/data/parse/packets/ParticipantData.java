@@ -45,14 +45,6 @@ public record ParticipantData(int aiControlled, int driverId, int teamId, int ra
                               int yourTelemetry, int networkId, int myTeam, int showOnlineNames, int platform,
                               int techLevel, String lastName) {
 
-    public void printName() {
-        if (this.aiControlled == 1) {
-            System.out.println(this.lastName);
-        } else {
-            System.out.println(this.lastName + " (Human Player)");
-        }
-    }
-
     private static byte[] formatName(ByteBuffer byteBuffer, int nameLength) {
         byte[] tempName = new byte[nameLength];
         byteBuffer.get(tempName, 0, nameLength);

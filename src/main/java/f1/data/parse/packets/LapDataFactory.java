@@ -35,7 +35,7 @@ public class LapDataFactory {
                         l23.totalDistance(), l23.safetyCarDelta(), l23.carPosition(), l23.currentLapNum(), l23.pitStatus(),
                         l23.numPitStops(), l23.sector(), l23.currentLapInvalid(), l23.penalties(), l23.totalWarnings(), l23.cornerCuttingWarnings(), l23.numUnservedDriveThroughPens(),
                         l23.numUnservedStopGoPens(), l23.gridPosition(), l23.driverStatus(), l23.resultStatus(), l23.pitLaneTimeActive(),
-                        l23.pitLaneTimerInLaneInMs(), l23.pitStopTimerInMS(), l23.pitStopShouldServePen(), l23.speedTrapFastestSpeed(), l23.speedTrapFastestLap(),
+                        l23.pitLaneTimerInLaneInMs(), l23.pitStopTimerInMS(), l23.pitStopShouldServePen(), 0, 0,
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             case Constants.YEAR_2024, Constants.YEAR_2025:
                 LapData.LapData24 l24 = new LapData.LapData24(byteBuffer);
