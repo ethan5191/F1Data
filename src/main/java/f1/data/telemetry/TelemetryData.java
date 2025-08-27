@@ -1,8 +1,8 @@
 package f1.data.telemetry;
 
+import f1.data.enums.DriverStatusEnum;
 import f1.data.individualLap.IndividualLapInfo;
 import f1.data.packets.*;
-import f1.data.enums.DriverStatusEnum;
 import f1.data.utils.constants.Constants;
 
 import java.math.BigDecimal;
@@ -28,7 +28,6 @@ public class TelemetryData {
     private float currentFuelInTank;
     private float startOfLapFuelInTank = 0;
     private int fittedTireId;
-    private int prevLapFittedTireId;
     private boolean isSetupChange;
 
     private LapData currentLap;
@@ -38,7 +37,8 @@ public class TelemetryData {
     private TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
 
     private final List<CarSetupData> setups = new ArrayList<>();
-    private final Map<Integer, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
+    private SetupTireKey currentLapsPerSetupKey;
+    private final Map<SetupTireKey, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -59,25 +59,39 @@ public class TelemetryData {
             if (this.setups.isEmpty()) {
                 this.setups.add(currentSetup);
                 this.currentSetup = currentSetup;
-                this.getLapsPerSetup().put(this.currentSetupNumber, new ArrayList<>());
+                this.currentLapsPerSetupKey = new SetupTireKey(this.currentSetupNumber, this.fittedTireId);
+                this.getLapsPerSetup().put(this.currentLapsPerSetupKey, new ArrayList<>());
             } else {
                 boolean foundSetup = false;
+                boolean sameTire = false;
                 //We have saved setups, make sure this one isn't one fo them. If it is, update the setupNumber and set that setup as current.
                 for (int i = 0; i < setups.size(); i++) {
                     if (setups.get(i).equals(currentSetup)) {
                         this.currentSetupNumber = i;
                         this.currentSetup = setups.get(i);
+                        //create a new map key.
+                        SetupTireKey temp = new SetupTireKey(this.currentSetupNumber, this.fittedTireId);
+                        //If that map key is in the map already, then set it to the object param and flip the boolean.
+                        if (this.lapsPerSetup.containsKey(temp)) {
+                            sameTire = true;
+                            this.currentLapsPerSetupKey = temp;
+                        }
                         foundSetup = true;
                         break;
                     }
                 }
                 //If we didn't find a setup, then we need to set the number = to the size of the array, ensuring we don't overwrite ourselves.
                 //Then add this new setup to the list, create a record in the amp, and set it as the active setup.
-                if (!foundSetup) {
-                   this.currentSetupNumber = this.setups.size();
-                   this.setups.add(currentSetup);
-                   this.currentSetup = currentSetup;
-                   this.getLapsPerSetup().put(this.currentSetupNumber, new ArrayList<>());
+                if (!foundSetup || !sameTire) {
+                    //If we didn't find a setup then we need to update the setupNumber and add this setup to the list.
+                    if (!foundSetup) {
+                        this.currentSetupNumber = this.setups.size();
+                        this.setups.add(currentSetup);
+                    }
+                    //if either of those booleans are false, we always do these 3 lines.
+                    this.currentSetup = currentSetup;
+                    this.currentLapsPerSetupKey = new SetupTireKey(this.currentSetupNumber, this.fittedTireId);
+                    this.getLapsPerSetup().put(this.currentLapsPerSetupKey, new ArrayList<>());
                 }
             }
         }
@@ -137,14 +151,6 @@ public class TelemetryData {
 
     public void setFittedTireId(int fittedTireId) {
         this.fittedTireId = fittedTireId;
-    }
-
-    public int getPrevLapFittedTireId() {
-        return prevLapFittedTireId;
-    }
-
-    public void setPrevLapFittedTireId(int prevLapFittedTireId) {
-        this.prevLapFittedTireId = prevLapFittedTireId;
     }
 
     public boolean isSetupChange() {
@@ -229,7 +235,11 @@ public class TelemetryData {
         return setups;
     }
 
-    public Map<Integer, List<IndividualLapInfo>> getLapsPerSetup() {
+    public SetupTireKey getCurrentLapsPerSetupKey() {
+        return currentLapsPerSetupKey;
+    }
+
+    public Map<SetupTireKey, List<IndividualLapInfo>> getLapsPerSetup() {
         return lapsPerSetup;
     }
 }

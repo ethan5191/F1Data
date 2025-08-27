@@ -1,11 +1,11 @@
 package f1.data.packets.handlers;
 
 import f1.data.individualLap.IndividualLapInfo;
-import f1.data.packets.CarSetupData;
 import f1.data.packets.events.ButtonsData;
 import f1.data.packets.events.SpeedTrapData;
 import f1.data.packets.events.SpeedTrapDataFactory;
 import f1.data.packets.events.SpeedTrapDistance;
+import f1.data.telemetry.SetupTireKey;
 import f1.data.telemetry.TelemetryData;
 import f1.data.ui.dto.SpeedTrapDataDTO;
 import f1.data.utils.constants.Constants;
@@ -56,8 +56,8 @@ public class EventPacketHandler implements PacketHandler {
                 System.out.println(td.getParticipantData().lastName());
                 if (td.getCurrentSetup() != null) System.out.println(td.getCurrentSetup());
                 if (!td.getLapsPerSetup().isEmpty()) {
-                    for (Map.Entry<Integer, List<IndividualLapInfo>> laps : td.getLapsPerSetup().entrySet()) {
-                        System.out.println(td.getSetups().get(laps.getKey()));
+                    for (Map.Entry<SetupTireKey, List<IndividualLapInfo>> laps : td.getLapsPerSetup().entrySet()) {
+                        System.out.println(td.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
                         if (!laps.getValue().isEmpty()) {
                             for (IndividualLapInfo lap : laps.getValue()) {
                                 System.out.println("#" + lap.getLapNum() + " " + lap.getLapTimeInMs());
