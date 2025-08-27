@@ -53,7 +53,7 @@ public record CarSetupData(int frontWing, int rearWing, int onThrottle, int offT
                            float rearCamber, float frontToe, float rearToe, int frontSusp, int rearSusp, int frontARB,
                            int rearARB, int frontHeight, int rearHeight, int brakePressure, int brakeBias,
                            float rearLeftPressure, float rearRightPressure, float frontLeftPressure,
-                           float frontRightPressure, int ballast, float fuelLoad, int engineBraking, String setupName) {
+                           float frontRightPressure, int ballast, float fuelLoad, int engineBraking) {
 
     record CarSetupData20(int frontWing, int rearWing, int onThrottle, int offThrottle, float frontCamber,
                           float rearCamber, float frontToe, float rearToe, int frontSusp, int rearSusp, int frontARB,

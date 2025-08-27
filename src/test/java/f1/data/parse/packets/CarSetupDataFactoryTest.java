@@ -22,7 +22,7 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
+            CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.frontWing());
             assertEquals(2, result.rearWing());
@@ -47,7 +47,6 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
             assertEquals(13, result.ballast());
             assertEquals(108, result.fuelLoad());
             assertEquals(0, result.engineBraking());
-            assertEquals("setUpName", result.setupName());
         }
     }
 
@@ -60,7 +59,7 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer, "setUpName");
+            CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer);
             assertNotNull(result);
             assertEquals(1, result.frontWing());
             assertEquals(2, result.rearWing());
@@ -85,7 +84,6 @@ public class CarSetupDataFactoryTest extends AbstractFactoryTest {
             assertEquals(107, result.frontRightPressure());
             assertEquals(14, result.ballast());
             assertEquals(108, result.fuelLoad());
-            assertEquals("setUpName", result.setupName());
         }
     }
 }

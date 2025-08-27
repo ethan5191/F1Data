@@ -25,13 +25,13 @@ public class SetupStageManager implements Panel, OnSessionReset {
         if (dto.getInfo() != null) {
             //Ensures we don't duplicate records, as we only want 1 record per driver.
             if (!this.dashboards.containsKey(dto.getId())) {
-                commonSetupLogic(dto, this.container, new HashMap<>(), new HashSet<>(), dto.getInfo().getCarSetupData().setupName());
+                commonSetupLogic(dto, this.container, new HashMap<>(), new HashSet<>(), dto.getLastName());
                 //If this driver has already completed a lap with a different setup, we are adding this new setup to the map and using the lap # in the name.
             } else if (dto.getInfo().isSetupChange()) {
                 //If this setupNumber doesn't exist in the map, then we need to actually update the UI.
                 Set<Integer> setupIds = this.driversSetupsIds.get(dto.getId());
                 if (!setupIds.contains(dto.getInfo().getCurrentSetupNumber())) {
-                    String setupName = dto.getInfo().getCarSetupData().setupName() + " Lap #" + dto.getInfo().getLapNum();
+                    String setupName = dto.getLastName() + " Lap #" + dto.getInfo().getLapNum();
                     Map<Integer, VBox> existingSetups = this.dashboards.get(dto.getId());
                     commonSetupLogic(dto, this.container, existingSetups, setupIds, setupName);
                 }
