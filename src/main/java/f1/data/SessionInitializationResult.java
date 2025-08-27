@@ -1,10 +1,10 @@
 package f1.data;
 
-import f1.data.packets.ParticipantData;
+import f1.data.parse.packets.ParticipantData;
 import f1.data.enums.DriverPairingsEnum;
 import f1.data.enums.Formula2Enum;
 import f1.data.enums.FormulaEnum;
-import f1.data.packets.session.SessionData;
+import f1.data.parse.packets.session.SessionData;
 
 import java.util.HashMap;
 import java.util.List;
