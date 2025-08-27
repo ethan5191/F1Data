@@ -136,10 +136,10 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = Constants.YEAR_2023)
     @DisplayName("Builds the Lap Data for 2023.")
     void testBuild_lapData2023(int packetFormat) {
-        int bitMask8Count = 19;
+        int bitMask8Count = 18;
         int bitMask16Count = 6;
         int bitMask32Count = 2;
-        int floatCount = 4;
+        int floatCount = 3;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
@@ -176,12 +176,11 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_16_START + 4, result.pitLaneTimerInLaneInMs());
             assertEquals(BIT_16_START + 5, result.pitStopTimerInMS());
             assertEquals(BIT_8_START + 17, result.pitStopShouldServePen());
-            assertEquals(FLOAT_START + 3, result.speedTrapFastestSpeed());
-            assertEquals(BIT_8_START + 18, result.speedTrapFastestLap());
-
 
             assertEquals(0, result.deltaCarInFrontMinutesPart());
             assertEquals(0, result.deltaRaceLeaderMinutesPart());
+            assertEquals(0, result.speedTrapFastestSpeed());
+            assertEquals(0, result.speedTrapFastestLap());
             assertEquals(0, result.warnings());
             lapData2020(result);
         }

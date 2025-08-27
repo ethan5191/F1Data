@@ -53,8 +53,8 @@ import java.nio.ByteBuffer;
  * - m_pitLaneTimeInLaneInMS        | uint16          | 2            | 2021           | Time spent in pit lane (ms)
  * - m_pitStopTimerInMS             | uint16          | 2            | 2021           | Time of actual pit stop (ms)
  * - m_pitStopShouldServePen        | uint8           | 1            | 2021           | Serve penalty at pit stop (0 = no, 1 = yes)
- * - m_speedTrapFastestSpeed        | float           | 4            | 2023           | Fastest speed in speed trap (km/h)
- * - m_speedTrapFastestLap          | uint8           | 1            | 2023           | Lap number of fastest trap speed (255 = not set)
+ * - m_speedTrapFastestSpeed        | float           | 4            | 2024           | Fastest speed in speed trap (km/h)
+ * - m_speedTrapFastestLap          | uint8           | 1            | 2024           | Lap number of fastest trap speed (255 = not set)
  * m_timeTrialPBCarIdx              | uint8           | 1            | 2022           | PB car index in time trial (255 = invalid)
  * m_timeTrialRivalCarIdx           | uint8           | 1            | 2022           | Rival car index in time trial (255 = invalid)
  *
@@ -161,7 +161,7 @@ public record LapData(long lastLapTimeMs, long currentLapTimeMs, int sector1Time
                      int currentLapInvalid, int penalties, int totalWarnings, int cornerCuttingWarnings,
                      int numUnservedDriveThroughPens, int numUnservedStopGoPens, int gridPosition, int driverStatus,
                      int resultStatus, int pitLaneTimeActive, int pitLaneTimerInLaneInMs, int pitStopTimerInMS,
-                     int pitStopShouldServePen, float speedTrapFastestSpeed, int speedTrapFastestLap) {
+                     int pitStopShouldServePen) {
         public LapData23(ByteBuffer byteBuffer) {
             this(
                     BitMaskUtils.bitMask32(byteBuffer.getInt()),
@@ -192,8 +192,6 @@ public record LapData(long lastLapTimeMs, long currentLapTimeMs, int sector1Time
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                    BitMaskUtils.bitMask8(byteBuffer.get()),
-                    byteBuffer.getFloat(),
                     BitMaskUtils.bitMask8(byteBuffer.get())
             );
         }

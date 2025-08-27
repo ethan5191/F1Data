@@ -22,7 +22,7 @@ public class CarDamagePacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.PACKET_CAR_COUNT; i++) {
+            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
                 CarDamageData cdd = CarDamageDataFactory.build(packetFormat, byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentDamage(cdd);
