@@ -64,7 +64,7 @@ public class F1DataMain {
         initializeHandlerMap();
     }
 
-    private final int[][] packetCounts = new int[15][1];
+    private final int[][] packetCounts = new int[16][1];
 
     public void run() {
         logger.info("In DataMain");
