@@ -31,14 +31,9 @@ public class CarTelemetryPacketHandler implements PacketHandler {
             }
         }
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
+        //For 2020 the button event was attached at the end of the telemetry packet, not the event packet.
         if (packetFormat <= Constants.YEAR_2020) {
-            long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
-            //2020 special button press mapped to button 9 on the McLaren wheel. Used to log the # of packets recieved.
-//            if (buttonEvent == 8192) {
-//                for (int i = 0; i < packetCounts.length; i++) {
-//                    logger.info("Packet # {} Count {}", PacketTypeEnum.findByValue(i).name(), packetCounts[i][0]);
-//                }
-//            }
+            EventPacketHandler.handle2020ButtonEvent(byteBuffer, participants);
         }
         int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
         int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
