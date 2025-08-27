@@ -52,7 +52,7 @@ public class F1DataMain {
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         SessionName sessionName = new SessionName(initialSession.sessionType(), initialSession.trackId(), initialSession.formula());
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
-        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, parent.sessionResetDTOConsumer(), sessionName);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
