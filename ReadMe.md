@@ -131,6 +131,12 @@ Tyre Wear Precision
 
     Tyre wear was only transmitted as whole numbers (e.g., 2.00, 3.00). Decimal precision was added in later games.
 
+F2 Throttle Parameters
+
+    In F1 2020, the on-throttle and off-throttle values for F2 cars are not transmitted as the actual setup values. 
+    Because of this, changing these parameters does not register as a setup change. 
+    The reported value remains constant for each parameter.
+
 ### F1 2020–2022
 
 Tyre Set Identification
