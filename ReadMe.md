@@ -1,6 +1,8 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)  
+  - [Java Version](#java-version)
+  - [Telemetry Setup](#telemetry-setup) 
   - [Running from an IDE](#running-from-an-ide)
   - [Building and Running](#building-and-running-the-application)
 - [Current Features](#current-features)  
@@ -22,6 +24,16 @@ ___
 # Project Status: Work in Progress (WIP)
 
 ## Getting Started
+
+### Java Version
+Requires Java 17 or later to run the application.
+
+### Telemetry Setup
+Make sure the game is configured to send telemetry data:
+
+    Go to Settings → Telemetry Settings and set UDP Telemetry to ON.
+    The app currently only supports the default port (20777).
+    UDP Send Rate controls how many packets are sent per second (10 = lowest rate, 60 = highest). The application should work with any value, regardless of the game year.
 
 ### Running from an IDE
 
@@ -156,13 +168,13 @@ The following features and improvements are planned for upcoming releases:
 
     Refined Data Layout: The existing UI will be updated to ensure data is more logically organized and easier to read.
     Dynamic Data Display: Functionality will be added to allow users to show or hide specific data points on select panels (e.g., toggling sector times on the Latest Lap panel or energy information on the Run Data panel).
-    Scroll Panel Fixes: The scrolling functionality for both ScrollPane components is currently non-functional and will be repaired.
 
 ### Core Application Enhancements
 
     Code Cleanup: All remaining print statements will be removed from the codebase.
     Package the application so it can be started by double-clicking the JAR file, instead of requiring the command line.
     Possibly move towards a standalone installer, though not certain at this time.
-    Reset panels on session change and allow viewing of previous session data after completion. Also, add saving of data once a session has ended.
+    Save session data to enable reviewing information after the session ends.
+    Generate graphs from run data to better visualize performance in a race-style format.
 
 [Back to top](#table-of-contents)
