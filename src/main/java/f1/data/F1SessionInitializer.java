@@ -1,13 +1,14 @@
 package f1.data;
 
-import f1.data.packets.PacketHeader;
-import f1.data.packets.PacketHeaderFactory;
-import f1.data.packets.ParticipantData;
-import f1.data.packets.ParticipantDataFactory;
+import f1.data.parse.packets.PacketHeader;
+import f1.data.parse.packets.PacketHeaderFactory;
+import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.ParticipantDataFactory;
 import f1.data.enums.DriverPairingsEnum;
-import f1.data.packets.session.SessionData;
-import f1.data.packets.session.SessionDataFactory;
-import f1.data.ui.home.HomePanel;
+import f1.data.parse.packets.session.SessionData;
+import f1.data.parse.packets.session.SessionDataFactory;
+import f1.data.parse.F1PacketProcessor;
+import f1.data.ui.panels.home.HomePanel;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
