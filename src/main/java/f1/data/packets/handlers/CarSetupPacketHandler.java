@@ -31,9 +31,15 @@ public class CarSetupPacketHandler implements PacketHandler {
                 if (isValidKey) {
                     TelemetryData td = participants.get(i);
                     boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
-                    if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup())) {
+                    boolean isDiffTire = td.getCurrentLapsPerSetupKey() != null && td.getFittedTireId() != td.getCurrentLapsPerSetupKey().fittedTireId();
+                    //if the setup is null (hasn't loaded yet), changed (material difference between saved and current setup data).
+                    //OR the fuel load has changed (with no material difference).
+                    //OR a tire change occurred (fitted id vs fitted id, so Soft 1 != soft 2)
+                    //Then we need a new setup.
+                    if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup()) || isDiffTire) {
                         td.setCurrentSetup(csd);
-                        if (isNullOrChanged) td.setSetupChange(true);
+                        //Only these two checks actually flip this flag. Fuel load change doesn't trigger a run data change, for now anyway.
+                        if (isNullOrChanged || isDiffTire) td.setSetupChange(true);
                     }
                 }
             }

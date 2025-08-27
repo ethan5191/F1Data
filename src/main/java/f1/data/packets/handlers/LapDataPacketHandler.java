@@ -79,14 +79,10 @@ public class LapDataPacketHandler implements PacketHandler {
             info.setCarSetupData(td.getCurrentSetup());
             info.setCurrentSetupNumber(td.getCurrentSetupNumber());
             info.setSetupChange(td.isSetupChange());
+            info.setCurrentSetupKey(td.getCurrentLapsPerSetupKey());
             td.setSetupChange(false);
-            td.getLapsPerSetup().get(td.getCurrentSetupNumber()).add(info);
-            info.setTotalLapsThisSetup(td.getLapsPerSetup().get(td.getCurrentSetupNumber()).size());
-        }
-        //If we have had a change of tire, that counts as a setup change. Let info object know and update the prevTireCompound value.
-        if (td.getFittedTireId() != td.getPrevLapFittedTireId()) {
-            info.setSetupChange(true);
-            td.setPrevLapFittedTireId(td.getFittedTireId());
+            td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).add(info);
+            info.setTotalLapsThisSetup(td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).size());
         }
         if (td.getCurrentTelemetry() != null) {
             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));

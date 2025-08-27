@@ -3,6 +3,7 @@ package f1.data.individualLap;
 import f1.data.packets.CarSetupData;
 import f1.data.packets.LapData;
 import f1.data.enums.TireBrakesOrderEnum;
+import f1.data.telemetry.SetupTireKey;
 import f1.data.utils.Util;
 
 import java.math.BigDecimal;
@@ -56,6 +57,7 @@ public class IndividualLapInfo {
 
     private int totalLapsThisSetup;
     private int currentSetupNumber;
+    private SetupTireKey currentSetupKey;
     private CarSetupData carSetupData;
     private CarTelemetryInfo carTelemetryInfo;
 
@@ -119,6 +121,14 @@ public class IndividualLapInfo {
 
     public void setCurrentSetupNumber(int currentSetupNumber) {
         this.currentSetupNumber = currentSetupNumber;
+    }
+
+    public SetupTireKey getCurrentSetupKey() {
+        return currentSetupKey;
+    }
+
+    public void setCurrentSetupKey(SetupTireKey currentSetupKey) {
+        this.currentSetupKey = currentSetupKey;
     }
 
     public CarSetupData getCarSetupData() {

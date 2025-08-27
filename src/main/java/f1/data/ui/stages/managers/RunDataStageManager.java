@@ -1,6 +1,7 @@
 package f1.data.ui.stages.managers;
 
 import f1.data.individualLap.IndividualLapInfo;
+import f1.data.telemetry.SetupTireKey;
 import f1.data.ui.OnSessionReset;
 import f1.data.ui.Panel;
 import f1.data.ui.RunDataAverage;
@@ -9,12 +10,15 @@ import f1.data.ui.dashboards.SetupInfoDashboard;
 import f1.data.ui.dto.DriverDataDTO;
 import javafx.scene.layout.VBox;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RunDataStageManager implements Panel, OnSessionReset {
 
     private final VBox container;
-    private final Map<Integer, Map<Integer, List<RunDataDashboard>>> dashboards = new HashMap<>();
+    private final Map<Integer, Map<SetupTireKey, List<RunDataDashboard>>> dashboards = new HashMap<>();
     private final int playerDriverId;
     private final int teamMateId;
     private final boolean isF1;
@@ -31,8 +35,10 @@ public class RunDataStageManager implements Panel, OnSessionReset {
         IndividualLapInfo info = dto.getInfo();
         if (info != null) {
             if (dto.getId() == this.playerDriverId || dto.getId() == this.teamMateId) {
+                //does this drive id exist in the dashboard yet?
                 boolean containsKey = this.dashboards.containsKey(dto.getId());
-                boolean setupAlreadyUsed = isSetupUsed(containsKey, dto.getId(), dto.getInfo().getCurrentSetupNumber());
+                //Does this setup/fitted tire id exist for this driver?
+                boolean setupAlreadyUsed = containsKey && isSetupUsed(dto.getInfo().getCurrentSetupKey(), dto.getId());
                 //If this is the first pass through or (the setup has changed, and we haven't used this setup) we need to do all of this.
                 if (!containsKey || (info.isSetupChange() && !setupAlreadyUsed)) {
                     VBox driver = new VBox();
@@ -41,11 +47,12 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     SetupInfoDashboard setupInfo = new SetupInfoDashboard(info.getCarSetupData().setupName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox newBox = new VBox(3);
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(dto, this.isF1);
-                    Map<Integer, List<RunDataDashboard>> initial = new HashMap<>();
+                    //If the driver already has completed a lap, but this is a different setup, we must use the current data as the baseline so we don't override it.
+                    Map<SetupTireKey, List<RunDataDashboard>> initial = (!containsKey) ? new HashMap<>() : this.dashboards.get(dto.getId());
                     //calculate the averages and add them as a new dashboard to the end of the list.
                     RunDataAverage average = new RunDataAverage(info.getLapNum(), info.getTotalLapsThisSetup(), dto, this.isF1);
                     RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
-                    initial.put(info.getCurrentSetupNumber(), List.of(lapInfoBoard, averages));
+                    initial.put(info.getCurrentSetupKey(), List.of(lapInfoBoard, averages));
                     this.dashboards.put(dto.getId(), initial);
                     newBox.getChildren().add(setupInfo);
                     lapInfoBoard.createHeaderRow(newBox);
@@ -54,17 +61,17 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     driver.getChildren().add(newBox);
                     //else we have this setup already done a lap, so we just need to create a new lap info
                 } else {
-                    Map<Integer, List<RunDataDashboard>> currentData = this.dashboards.get(dto.getId());
-                    Integer currentSetupNumber = dto.getInfo().getCurrentSetupNumber();
-                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(currentSetupNumber));
+                    Map<SetupTireKey, List<RunDataDashboard>> currentData = this.dashboards.get(dto.getId());
+                    SetupTireKey currentSetupKey = info.getCurrentSetupKey();
+                    List<RunDataDashboard> lapsForSetupCopy = new ArrayList<>(currentData.get(currentSetupKey));
                     //get the current averages and use it to update the averages to account for a new lap completed.
                     RunDataDashboard currentAverages = lapsForSetupCopy.get(lapsForSetupCopy.size() - 1);
-                    RunDataAverage updatedAverages = new RunDataAverage(currentSetupNumber, info.getTotalLapsThisSetup(), dto, currentAverages.getAverage());
+                    RunDataAverage updatedAverages = new RunDataAverage(currentSetupKey.setupNumber(), info.getTotalLapsThisSetup(), dto, currentAverages.getAverage());
                     RunDataDashboard newAvgDash = new RunDataDashboard(updatedAverages, info.isUseLegacy());
                     lapsForSetupCopy.add(newAvgDash);
                     //Update the previous averages line to have the new laps data in it instead of averages.
                     currentAverages.updateValues(dto);
-                    currentData.put(currentSetupNumber, lapsForSetupCopy);
+                    currentData.put(currentSetupKey, lapsForSetupCopy);
                     VBox parent = (VBox) currentAverages.getParent();
                     parent.getChildren().add(newAvgDash);
                 }
@@ -73,12 +80,8 @@ public class RunDataStageManager implements Panel, OnSessionReset {
     }
 
     //Returns true if the setup we are using, has already completed at least one lap in practice.
-    private boolean isSetupUsed(boolean containsKey, int driverId, int currentSetupNumber) {
-        if (containsKey) {
-            Map<Integer, List<RunDataDashboard>> setupWithDashboards = this.dashboards.get(driverId);
-            return setupWithDashboards.containsKey(currentSetupNumber);
-        }
-        return false;
+    private boolean isSetupUsed(SetupTireKey currentSetupKey, int driverId) {
+        return this.dashboards.get(driverId).containsKey(currentSetupKey);
     }
 
     public void onSessionReset() {
