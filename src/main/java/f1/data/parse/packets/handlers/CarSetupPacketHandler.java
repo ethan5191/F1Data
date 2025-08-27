@@ -23,12 +23,8 @@ public class CarSetupPacketHandler implements PacketHandler {
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
-                boolean isValidKey = PacketUtils.validKey(participants, i);
-                //If this isn't a valid key, we still need to parse the packet to ensure the position in the parser is updated.
-                //Pass an empty string as this setup isn't going to be saved anywhere, so we don't care about the value.
-                String setupName = (isValidKey) ? participants.get(i).getParticipantData().lastName() : "";
-                CarSetupData csd = CarSetupDataFactory.build(packetFormat, byteBuffer, setupName);
-                if (isValidKey) {
+                CarSetupData csd = CarSetupDataFactory.build(packetFormat, byteBuffer);
+                if (PacketUtils.validKey(participants, i)) {
                     TelemetryData td = participants.get(i);
                     boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
                     boolean isDiffTire = td.getCurrentLapsPerSetupKey() != null && td.getFittedTireId() != td.getCurrentLapsPerSetupKey().fittedTireId();
