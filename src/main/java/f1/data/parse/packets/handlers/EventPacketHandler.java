@@ -9,7 +9,7 @@ import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.save.SaveSessionData;
+import f1.data.save.SpeedTrapSessionData;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.save.SpeedTrapSessionWrapper;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
@@ -60,15 +60,15 @@ public class EventPacketHandler implements PacketHandler {
                 || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
         ) {
             if (AppState.saveSessionData.get()) {
-                List<SaveSessionData> saveSessionDataList = new ArrayList<>(this.participants.size());
+                List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(this.participants.size());
                 //Loop over the participant map and create new telemetry data to reset the data on the backend.
                 for (Integer i : this.participants.keySet()) {
                     TelemetryData td = this.participants.get(i);
                     ParticipantData pd = td.getParticipantData();
-                    saveSessionDataList.add(new SaveSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                    speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
                     this.participants.put(i, new TelemetryData(pd));
                 }
-                SaveSessionDataHandler.saveSessionData("Testing", new SpeedTrapSessionWrapper(saveSessionDataList));
+                SaveSessionDataHandler.saveSessionData("Testing", new SpeedTrapSessionWrapper(speedTrapSessionDataList));
             }
             for (Map.Entry<Integer, TelemetryData> id : this.participants.entrySet()) {
                 TelemetryData td = id.getValue();
