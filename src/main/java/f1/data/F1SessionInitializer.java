@@ -1,5 +1,6 @@
 package f1.data;
 
+import f1.data.mapKeys.DriverPair;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;

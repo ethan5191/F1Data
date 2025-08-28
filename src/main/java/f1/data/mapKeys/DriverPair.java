@@ -1,4 +1,4 @@
-package f1.data;
+package f1.data.mapKeys;
 
 //Object represents two drivers on a single team
 public class DriverPair {

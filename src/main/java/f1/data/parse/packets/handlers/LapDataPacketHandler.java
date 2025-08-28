@@ -9,6 +9,7 @@ import f1.data.parse.packets.LapDataFactory;
 import f1.data.parse.packets.PacketUtils;
 import f1.data.enums.DriverStatusEnum;
 import f1.data.parse.packets.events.SpeedTrapDistance;
+import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.ParentConsumer;
@@ -72,7 +73,7 @@ public class LapDataPacketHandler implements PacketHandler {
             tireWearThisLap[i] = td.getCurrentTireWear()[i] - td.getStartOfLapTireWear()[i];
         }
         td.setStartOfLapTireWear(td.getCurrentTireWear());
-        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrap(), fuelUsedThisLap, tireWearThisLap);
+        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrapData().getSpeed(), fuelUsedThisLap, tireWearThisLap);
         td.setLastLapNum(info.getLapNum());
         td.setLastLapTimeInMs(info.getLapTimeInMs());
         if (td.getCurrentSetup() != null) {
@@ -100,7 +101,7 @@ public class LapDataPacketHandler implements PacketHandler {
         //Populate the DriverDataDTO to populate the panels.
         this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
         //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
-        td.setSpeedTrap(0.0F);
+        if (td.getSpeedTrapData() != null) td.getSpeedTrapData().setSpeed(0.0F);
     }
 
     private void handle2020Logic(TelemetryData td) {
@@ -112,8 +113,7 @@ public class LapDataPacketHandler implements PacketHandler {
                 //If this car triggered a speed trap event, then it will already have a value, so don't replace it.
                 //the td's speed trap values gets reset to 0.0F at the end of each lap.
                 if (td.getCurrentTelemetry() != null && td.getCurrentTelemetry().speed() != 0.0F) {
-                    td.setSpeedTrap(td.getCurrentTelemetry().speed());
-                    this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), td.getSpeedTrap(), td.getCurrentLap().currentLapNum()));
+                    SpeedTrapTelemetryData.updateConsumer(this.speedTrapData, td, td.getCurrentTelemetry().speed());
                 }
             }
         }
