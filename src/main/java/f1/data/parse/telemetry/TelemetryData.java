@@ -39,7 +39,8 @@ public class TelemetryData {
     private SetupTireKey currentLapsPerSetupKey;
     private final Map<SetupTireKey, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
 
-    private SpeedTrapTelemetryData speedTrapData;
+    //Default this to a speed of 0 on lap 0 to prevent an NPE.
+    private SpeedTrapTelemetryData speedTrapData = new SpeedTrapTelemetryData(0, 0);
 
     public ParticipantData getParticipantData() {
         return participantData;

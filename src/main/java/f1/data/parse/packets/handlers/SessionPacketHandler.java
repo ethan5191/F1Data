@@ -7,7 +7,9 @@ import f1.data.parse.packets.session.SessionName;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.save.SaveSessionData;
 import f1.data.save.SaveSessionDataHandler;
+import f1.data.save.SpeedTrapSessionWrapper;
 import f1.data.ui.panels.dto.SessionResetDTO;
+import f1.data.ui.panels.home.AppState;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -17,13 +19,13 @@ import java.util.function.Consumer;
 
 public class SessionPacketHandler implements PacketHandler {
 
-    private final Map<Integer, TelemetryData> participantsMap;
+    private final Map<Integer, TelemetryData> participants;
     private final int packetFormat;
     private final Consumer<SessionResetDTO> sessionDataConsumer;
     private final SessionName sessionName;
 
-    public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participantsMap, Consumer<SessionResetDTO> sessionDataConsumer, SessionName sessionName) {
-        this.participantsMap = participantsMap;
+    public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SessionResetDTO> sessionDataConsumer, SessionName sessionName) {
+        this.participants = participants;
         this.packetFormat = packetFormat;
         this.sessionDataConsumer = sessionDataConsumer;
         this.sessionName = sessionName;
@@ -34,15 +36,16 @@ public class SessionPacketHandler implements PacketHandler {
         if (packetFormat > 0) {
             SessionData sd = SessionDataFactory.build(packetFormat, byteBuffer);
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
-                List<SaveSessionData> saveSessionDataList = new ArrayList<>(this.participantsMap.size());
+                List<SaveSessionData> saveSessionDataList = new ArrayList<>(this.participants.size());
                 //Loop over the participant map and create new telemetry data to reset the data on the backend.
-                for (Integer i : this.participantsMap.keySet()) {
-                    TelemetryData td = this.participantsMap.get(i);
+                for (Integer i : this.participants.keySet()) {
+                    TelemetryData td = this.participants.get(i);
                     ParticipantData pd = td.getParticipantData();
+                    //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
                     saveSessionDataList.add(new SaveSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                    this.participantsMap.put(i, new TelemetryData(pd));
+                    this.participants.put(i, new TelemetryData(pd));
                 }
-                SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), saveSessionDataList);
+                if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), new SpeedTrapSessionWrapper(saveSessionDataList));
                 //build out the new session name object
                 this.sessionName.setSessionType(sd.sessionType());
                 this.sessionName.setFormula(sd.formula());
