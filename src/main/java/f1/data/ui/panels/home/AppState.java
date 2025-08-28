@@ -11,4 +11,5 @@ public class AppState {
     public static final BooleanProperty speedTrapPanelVisible = new SimpleBooleanProperty(false);
     public static final BooleanProperty teamSpeedTrapPanelVisible = new SimpleBooleanProperty(false);
     public static final BooleanProperty runDataPanelVisible = new SimpleBooleanProperty(false);
+    public static final BooleanProperty saveSessionData = new SimpleBooleanProperty(false);
 }

@@ -1,6 +1,7 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.parse.individualLap.IndividualLapInfo;
+import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.events.ButtonsData;
 import f1.data.parse.packets.events.SpeedTrapData;
 import f1.data.parse.packets.events.SpeedTrapDataFactory;
@@ -8,12 +9,17 @@ import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
+import f1.data.save.SpeedTrapSessionData;
+import f1.data.save.SaveSessionDataHandler;
+import f1.data.save.SpeedTrapSessionWrapper;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
+import f1.data.ui.panels.home.AppState;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -53,6 +59,17 @@ public class EventPacketHandler implements PacketHandler {
         if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
                 || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
         ) {
+            if (AppState.saveSessionData.get()) {
+                List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(this.participants.size());
+                //Loop over the participant map and create new telemetry data to reset the data on the backend.
+                for (Integer i : this.participants.keySet()) {
+                    TelemetryData td = this.participants.get(i);
+                    ParticipantData pd = td.getParticipantData();
+                    speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                    this.participants.put(i, new TelemetryData(pd));
+                }
+                SaveSessionDataHandler.saveSessionData("Testing", new SpeedTrapSessionWrapper(speedTrapSessionDataList));
+            }
             for (Map.Entry<Integer, TelemetryData> id : this.participants.entrySet()) {
                 TelemetryData td = id.getValue();
                 System.out.println(td.getParticipantData().lastName());

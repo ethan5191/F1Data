@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
+//Object used to track the speed trap and lap # for each individual car.
 public class SpeedTrapTelemetryData {
 
     private float speed;
@@ -13,7 +14,8 @@ public class SpeedTrapTelemetryData {
 
     public SpeedTrapTelemetryData(float speed, Integer lapNum) {
         this.speed = speed;
-        this.speedTrapByLap.put(lapNum, speed);
+        //Default is 0 speed on lap 0 to prevent NPEs. I don't want lap 0 in the map.
+        if (lapNum > 0 ) this.speedTrapByLap.put(lapNum, speed);
     }
 
     public float getSpeed() {
