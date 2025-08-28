@@ -6,6 +6,7 @@ import f1.data.parse.packets.events.SpeedTrapData;
 import f1.data.parse.packets.events.SpeedTrapDataFactory;
 import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.telemetry.SetupTireKey;
+import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
 import f1.data.utils.BitMaskUtils;
@@ -74,12 +75,10 @@ public class EventPacketHandler implements PacketHandler {
         SpeedTrapData trap = SpeedTrapDataFactory.build(packetFormat, byteBuffer);
         //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
         TelemetryData td = participants.get(trap.vehicleId());
-        td.setSpeedTrap(trap.speed());
         if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance.getDistance() < 0) {
             speedTrapDistance.setDistance(td.getCurrentLap().lapDistance());
         }
-        //Populate the speedTrap consumer so that the panels get updated with the latest data.
-        this.speedTrapData.accept(new SpeedTrapDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), trap.speed(), td.getCurrentLap().currentLapNum()));
+        SpeedTrapTelemetryData.updateConsumer(this.speedTrapData, td, trap.speed());
     }
 
     public static void handle2020ButtonEvent(ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {

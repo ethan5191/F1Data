@@ -1,6 +1,7 @@
 package f1.data;
 
 import f1.data.enums.FormulaEnum;
+import f1.data.mapKeys.DriverPair;
 import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
 

@@ -22,7 +22,6 @@ public class TelemetryData {
     private CarSetupData currentSetup;
     private Integer lastLapNum;
     private BigDecimal lastLapTimeInMs;
-    private float speedTrap;
     private float[] currentTireWear = {0, 0, 0, 0};
     private float[] startOfLapTireWear = {0, 0, 0, 0};
     private float currentFuelInTank;
@@ -39,6 +38,8 @@ public class TelemetryData {
     private final List<CarSetupData> setups = new ArrayList<>();
     private SetupTireKey currentLapsPerSetupKey;
     private final Map<SetupTireKey, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
+
+    private SpeedTrapTelemetryData speedTrapData;
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -111,14 +112,6 @@ public class TelemetryData {
 
     public void setLastLapTimeInMs(BigDecimal lastLapTimeInMs) {
         this.lastLapTimeInMs = lastLapTimeInMs;
-    }
-
-    public float getSpeedTrap() {
-        return speedTrap;
-    }
-
-    public void setSpeedTrap(float speedTrap) {
-        this.speedTrap = speedTrap;
     }
 
     public float[] getCurrentTireWear() {
@@ -241,5 +234,13 @@ public class TelemetryData {
 
     public Map<SetupTireKey, List<IndividualLapInfo>> getLapsPerSetup() {
         return lapsPerSetup;
+    }
+
+    public SpeedTrapTelemetryData getSpeedTrapData() {
+        return speedTrapData;
+    }
+
+    public void setSpeedTrapData(SpeedTrapTelemetryData speedTrapData) {
+        this.speedTrapData = speedTrapData;
     }
 }

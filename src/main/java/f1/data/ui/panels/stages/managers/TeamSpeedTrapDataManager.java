@@ -1,5 +1,6 @@
 package f1.data.ui.panels.stages.managers;
 
+import f1.data.mapKeys.DriverIdLapNum;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;
 import f1.data.ui.panels.dashboards.TeamSpeedTrapDashboard;
@@ -12,9 +13,9 @@ import java.util.Map;
 public class TeamSpeedTrapDataManager implements Panel, OnSessionReset {
 
     private final VBox container;
-    private final Map<Integer, Map<Integer, TeamSpeedTrapDashboard>> dashboards = new HashMap<>(2);
     private final int playerDriverId;
     private final int teamMateId;
+    private final Map<DriverIdLapNum, TeamSpeedTrapDashboard> dashboards = new HashMap<>();
 
     public TeamSpeedTrapDataManager(int playerDriverId, int teamMateId) {
         this.container = new VBox(getSpacing());
@@ -22,41 +23,33 @@ public class TeamSpeedTrapDataManager implements Panel, OnSessionReset {
         this.teamMateId = teamMateId;
     }
 
-    //Creates the player team speed trap panel. This panel logs every speed trap registered by the teams 2 drivers, ordered by lap#.
     public void updateStage(SpeedTrapDataDTO dto) {
-        //This panel is only for the player and their teammate.
+        //For this panel we only care about the player driver and their teammate.
         if (dto.driverId() == this.playerDriverId || dto.driverId() == this.teamMateId) {
-            TeamSpeedTrapDashboard dashboard = new TeamSpeedTrapDashboard(dto);
-            boolean updated = false;
-            //If the map doesn't contain a record for this driver then we are doing an initial create.
-            if (!this.dashboards.containsKey(dto.driverId())) {
-                Map<Integer, TeamSpeedTrapDashboard> temp = new HashMap<>(1);
-                temp.put(dto.lapNum(), dashboard);
-                this.dashboards.put(dto.driverId(), temp);
+            //Create the driverId/LapNum key object.
+            DriverIdLapNum idLapNum = new DriverIdLapNum(dto.driverId(), dto.lapNum());
+            //If that key already exists, then we just need to update the speed. We only care about the latest and greatest speed.
+            //If you trip the speed trap then pit, that speed will be overwritten the next time you trigger the speed trap.
+            if (this.dashboards.containsKey(idLapNum)) {
+                this.dashboards.get(idLapNum).updateSpeed(dto);
+            //if that key doesn't exist, then we create a new dashboard that will get displayed.
+            //add that dashboard to the map.
             } else {
-                //Else we need to make sure that the current lap doesn't already exist for this driver.
-                Map<Integer, TeamSpeedTrapDashboard> latestSpeedDash = this.dashboards.get(dto.driverId());
-                //If the lap already exists in the map (driver pitted) then we just update the dashboard's trap speed
-                if (latestSpeedDash.containsKey(dto.lapNum())) {
-                    dashboard = latestSpeedDash.get(dto.lapNum());
-                    dashboard.updateSpeed(dto);
-                    //Flip this flag, so we don't try to add this child element, as its already on the view.
-                    updated = true;
-                }
-                latestSpeedDash.put(dto.lapNum(), dashboard);
-                this.dashboards.put(dto.driverId(), latestSpeedDash);
+                TeamSpeedTrapDashboard trapDashboard = new TeamSpeedTrapDashboard(dto);
+                this.dashboards.put(idLapNum, trapDashboard);
+                this.container.getChildren().add(trapDashboard);
             }
-            if (!updated) this.container.getChildren().add(dashboard);
         }
-    }
-
-    public void onSessionReset() {
-        this.container.getChildren().clear();
-        this.dashboards.clear();
     }
 
     public VBox getContainer() {
         return container;
+    }
+
+    @Override
+    public void onSessionReset() {
+        this.container.getChildren().clear();
+        this.dashboards.clear();
     }
 
     @Override
