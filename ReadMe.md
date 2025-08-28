@@ -6,6 +6,7 @@
   - [Running from an IDE](#running-from-an-ide)
   - [Building and Running](#building-and-running-the-application)
 - [Current Features](#current-features)  
+  - [Save Data](#save-data)
 - [Architecture Overview](#architecture-overview)  
   - [F1 Data Main](#f1datamain)  
   - [F1 Data UI](#f1dataui)
@@ -68,6 +69,15 @@ The application currently supports six separate data panels:
     Fastest Speed Trap: Ranks the fastest speed trap times for each individual driver.
     All Speed Traps: Records and displays every speed trap time for both the player and their teammate.
     Run Data: Tracks and presents run-specific data for both the player and their teammate.
+
+### Save Data
+
+The application now allows for the saving of data at the end of a given session. 
+
+    The home panel has a checkbox 'Save Session Data?' if that is checked and a session ends, the app will save the session telemetry data. 
+    Currently only the speed trap data (lap num and speed) for all cars is saved. The save location will be within a 'SessionSaves' folder either within the project folder, or in the target folder next to the jar.
+    This process currently only runs once a session switch has been picked up (session name has changed). So it won't happen until the next session actually starts.
+    The files are named as follows: Formula Session Track.json (F2 Short_Practice at BAHRAIN.json, for example). 
 [Back to top](#table-of-contents)
 ___
 
@@ -178,6 +188,9 @@ The following features and improvements are planned for upcoming releases:
 
 ### Core Application Enhancements
 
+    Save data update: Update to include run data and lap times in the save data process. 
+    Save data update: Update to ensure the data is saved when the final packet is recieved from a session, so it doesn't have to rely on the next session starting.
+    Save data update: Location updates and file name updates. I want to include either game year or packetFormat in the save file name. 
     Code Cleanup: All remaining print statements will be removed from the codebase.
     Package the application so it can be started by double-clicking the JAR file, instead of requiring the command line.
     Possibly move towards a standalone installer, though not certain at this time.
