@@ -2,19 +2,19 @@ package f1.data.ui.panels.home;
 
 import f1.data.parse.F1PacketProcessor;
 import f1.data.ui.panels.Panel;
+import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,7 +23,7 @@ public class HomePanel implements Panel {
 
     private static final Logger logger = LoggerFactory.getLogger(HomePanel.class);
     private static final double WIDTH = 250;
-    private static final double HEIGHT = 250;
+    private static final double HEIGHT = 300;
 
     private final F1PacketProcessor packetProcessor;
     private final VBox container;
@@ -56,12 +56,7 @@ public class HomePanel implements Panel {
             temp.setDisable(true);
             this.container.getChildren().add(temp);
         }
-        Separator separator = new Separator(Orientation.HORIZONTAL);
-        this.container.getChildren().add(separator);
-        CheckBox saveSession = new CheckBox("Save Session Data?");
-        saveSession.selectedProperty().bindBidirectional(AppState.saveSessionData);
-        saveSession.setDisable(true);
-        this.container.getChildren().add(saveSession);
+        addExtraItems();
         Scene scene = new Scene(this.container, WIDTH, HEIGHT);
         Stage panel = new Stage();
         panel.setScene(scene);
@@ -71,6 +66,39 @@ public class HomePanel implements Panel {
             Platform.exit();
         });
         panel.show();
+    }
+
+    private void addExtraItems() {
+        Separator separator = new Separator(Orientation.HORIZONTAL);
+        this.container.getChildren().add(separator);
+        CheckBox saveSession = new CheckBox("Save Session Data?");
+        saveSession.selectedProperty().bindBidirectional(AppState.saveSessionData);
+        saveSession.setDisable(true);
+        this.container.getChildren().add(saveSession);
+        this.container.getChildren().add(new Separator(Orientation.HORIZONTAL));
+        addSavedSessionsDataButton();
+    }
+
+    private void addSavedSessionsDataButton() {
+        Button viewSessionsButton = new Button("View Saved Session Data");
+        viewSessionsButton.setOnAction(actionEvent -> {
+            FileChooser chooser = new FileChooser();
+            File initialDirectory = new File(System.getProperty(Constants.USER_DIR) + File.separator + Constants.SAVE_SESSIONS);
+            if (initialDirectory.isDirectory()) {
+                chooser.setInitialDirectory(initialDirectory);
+            } else {
+                chooser.setInitialDirectory(new File(System.getProperty(Constants.USER_DIR)));
+            }
+            FileChooser.ExtensionFilter json = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
+            chooser.getExtensionFilters().add(json);
+            File selected = chooser.showOpenDialog(null);
+            if (selected != null) {
+                System.out.println(selected.getName());
+            } else {
+                System.out.println("No File Selected");
+            }
+        });
+        this.container.getChildren().add(viewSessionsButton);
     }
 
     public VBox getContainer() {

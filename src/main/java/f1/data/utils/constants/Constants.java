@@ -71,4 +71,7 @@ public class Constants {
     public static final String KG = "kg";
 
     public static final float DIVISOR = 32767.0f;
+
+    public static final String SAVE_SESSIONS = "SessionSaves";
+    public static final String USER_DIR = "user.dir";
 }

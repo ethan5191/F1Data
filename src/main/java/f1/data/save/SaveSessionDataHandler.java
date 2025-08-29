@@ -1,6 +1,7 @@
 package f1.data.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import f1.data.utils.constants.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,8 @@ public class SaveSessionDataHandler {
 
     public static void saveSessionData(String sessionName, List<SpeedTrapSessionData> speedTrapSessionWrapper, List<RunDataSessionData> runDataSessionDataWrapper) {
         SaveSessionDataWrapper saveSessionDataWrapper = new SaveSessionDataWrapper(speedTrapSessionWrapper, runDataSessionDataWrapper);
-        String workingDir = System.getProperty("user.dir");
-        Path savePath = Paths.get(workingDir, "SessionSaves");
+        String workingDir = System.getProperty(Constants.USER_DIR);
+        Path savePath = Paths.get(workingDir, Constants.SAVE_SESSIONS);
         try {
             if (Files.notExists(savePath)) {
                 Files.createDirectory(savePath);
