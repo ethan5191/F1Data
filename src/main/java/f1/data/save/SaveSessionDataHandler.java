@@ -15,13 +15,14 @@ public class SaveSessionDataHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(SaveSessionDataHandler.class);
 
-    public static void saveSessionData(String sessionName, List<SpeedTrapSessionData> speedTrapSessionWrapper, List<RunDataSessionData> runDataSessionDataWrapper) {
+    public static void saveSessionData(int packetFormat, String sessionName, List<SpeedTrapSessionData> speedTrapSessionWrapper, List<RunDataSessionData> runDataSessionDataWrapper) {
         SaveSessionDataWrapper saveSessionDataWrapper = new SaveSessionDataWrapper(speedTrapSessionWrapper, runDataSessionDataWrapper);
         String workingDir = System.getProperty(Constants.USER_DIR);
-        Path savePath = Paths.get(workingDir, Constants.SAVE_SESSIONS);
+        Path workingPath = Paths.get(workingDir);
+        Path savePath = workingPath.resolve(Constants.SAVE_SESSIONS).resolve("F1_" + packetFormat);
         try {
             if (Files.notExists(savePath)) {
-                Files.createDirectory(savePath);
+                Files.createDirectories(savePath);
             }
         } catch (IOException e) {
             logger.error("Caught IO Exception creating SaveSessions directory ", e);

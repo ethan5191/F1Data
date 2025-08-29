@@ -45,7 +45,7 @@ public class SessionPacketHandler implements PacketHandler {
                     runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), td.getCarSetupData().getLapsPerSetup()));
                     this.participants.put(i, new TelemetryData(pd));
                 }
-                if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), speedTrapSessionDataList, runDataSessionData);
+                if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.packetFormat, this.sessionName.buildSessionName(), speedTrapSessionDataList, runDataSessionData);
                 //build out the new session name object
                 this.sessionName.setSessionType(sd.sessionType());
                 this.sessionName.setFormula(sd.formula());
