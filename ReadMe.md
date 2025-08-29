@@ -20,6 +20,7 @@
 - [Future Projects](#future-projects)
   - [UI Improvements](#ui-improvements)
   - [Enhancements](#core-application-enhancements)
+- [License](#license)
 
 ___
 # Project Status: Work in Progress (WIP)
@@ -196,5 +197,12 @@ The following features and improvements are planned for upcoming releases:
     Possibly move towards a standalone installer, though not certain at this time.
     Save session data to enable reviewing information after the session ends.
     Generate graphs from run data to better visualize performance in a race-style format.
+
+[Back to top](#table-of-contents)
+___
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 [Back to top](#table-of-contents)
