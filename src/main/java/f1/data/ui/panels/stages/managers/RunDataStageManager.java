@@ -44,7 +44,7 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     VBox driver = new VBox();
                     this.container.getChildren().add(driver);
                     //Creates the actual dashboard
-                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(dto.getLastName(), info.getCarSetupData(), info.getCarStatusInfo().getVisualTireCompound());
+                    SetupInfoDashboard setupInfo = new SetupInfoDashboard(dto.getLastName(), info.getCarSetupInfo(), info.getCarStatusInfo().getVisualTireCompound());
                     VBox newBox = new VBox(3);
                     RunDataDashboard lapInfoBoard = new RunDataDashboard(dto, this.isF1);
                     //If the driver already has completed a lap, but this is a different setup, we must use the current data as the baseline so we don't override it.

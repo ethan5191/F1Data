@@ -1,5 +1,7 @@
 package f1.data.ui.panels.dashboards;
 
+import f1.data.parse.individualLap.CarSetupInfo;
+import f1.data.parse.individualLap.CarStatusInfo;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
@@ -10,11 +12,11 @@ import f1.data.enums.VisualTireEnum;
 
 public class SetupInfoDashboard extends VBox {
 
-    public SetupInfoDashboard(String setupName, CarSetupData setupData, int visualCompound) {
+    public SetupInfoDashboard(String setupName, CarSetupInfo setupInfo, int visualCompound) {
         GridPane setupDetails = new GridPane();
         //Prints the data out in the order that the setup elements exist in the setup menu in the game.
-        for (int i = 0; i < setupData.getSetupDashboardData().length; i++) {
-            Label[] inner = setupData.getSetupDashboardData()[i];
+        for (int i = 0; i < setupInfo.getSetupDashboardData().length; i++) {
+            Label[] inner = setupInfo.getSetupDashboardData()[i];
             for (int j = 0; j < inner.length; j++) {
                 setupDetails.add(inner[j], i, j);
             }

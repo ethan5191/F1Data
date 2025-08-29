@@ -1,13 +1,8 @@
 package f1.data.parse.individualLap;
 
-import f1.data.parse.packets.CarSetupData;
 import f1.data.parse.packets.LapData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.save.IndividualLapSessionData;
-import f1.data.utils.Util;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 //Used to represent an individual laps data for an individual car. Idea is this will be populated at the end of the lap.
 //Used to display data to the different panels, uses the save data object as its seed for the majority of its data.
@@ -31,7 +26,7 @@ public class IndividualLapInfo {
     private int totalLapsThisSetup;
     private int currentSetupNumber;
     private SetupTireKey currentSetupKey;
-    private CarSetupData carSetupData;
+    private CarSetupInfo carSetupInfo;
     private CarTelemetryInfo carTelemetryInfo;
 
     private boolean isSetupChange;
@@ -76,12 +71,12 @@ public class IndividualLapInfo {
         this.currentSetupKey = currentSetupKey;
     }
 
-    public CarSetupData getCarSetupData() {
-        return carSetupData;
+    public CarSetupInfo getCarSetupInfo() {
+        return carSetupInfo;
     }
 
-    public void setCarSetupData(CarSetupData carSetupData) {
-        this.carSetupData = carSetupData;
+    public void setCarSetupInfo(CarSetupInfo carSetupInfo) {
+        this.carSetupInfo = carSetupInfo;
     }
 
     public CarTelemetryInfo getCarTelemetryInfo() {
