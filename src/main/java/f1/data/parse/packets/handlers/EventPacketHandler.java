@@ -65,7 +65,7 @@ public class EventPacketHandler implements PacketHandler {
                     TelemetryData td = this.participants.get(i);
                     ParticipantData pd = td.getParticipantData();
                     speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getLapsPerSetup()));
+                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), td.getCarSetupData().getLapsPerSetup()));
 //                    this.participants.put(i, new TelemetryData(pd));
                 }
                 SaveSessionDataHandler.saveSessionData("Testing",speedTrapSessionDataList, runDataSessionData);

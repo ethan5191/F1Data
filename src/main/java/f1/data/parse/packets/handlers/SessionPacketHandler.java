@@ -42,7 +42,7 @@ public class SessionPacketHandler implements PacketHandler {
                     ParticipantData pd = td.getParticipantData();
                     //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
                     speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getLapsPerSetup()));
+                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), td.getCarSetupData().getLapsPerSetup()));
                     this.participants.put(i, new TelemetryData(pd));
                 }
                 if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), speedTrapSessionDataList, runDataSessionData);
