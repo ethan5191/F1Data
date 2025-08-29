@@ -102,8 +102,14 @@ public class EventPacketHandler implements PacketHandler {
                 TelemetryData td = participants.get(i);
                 ParticipantData pd = td.getParticipantData();
                 speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), td.getCarSetupData().getLapsPerSetup()));
-//                    this.participants.put(i, new TelemetryData(pd));
+                List<RunDataMapRecord> records = new ArrayList<>(td.getCarSetupData().getLapsPerSetup().size());
+                //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
+                speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                for (SetupTireKey key : td.getCarSetupData().getLapsPerSetup().keySet()) {
+                    records.add(new RunDataMapRecord(key, td.getCarSetupData().getLapsPerSetup().get(key)));
+                }
+                runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), records));
+                //                    this.participants.put(i, new TelemetryData(pd));
             }
             SaveSessionDataHandler.saveSessionData(packetFormat, "Testing", speedTrapSessionDataList, runDataSessionData);
         }

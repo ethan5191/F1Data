@@ -1,6 +1,8 @@
 package f1.data.ui.panels.home;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import f1.data.parse.F1PacketProcessor;
+import f1.data.save.SaveSessionDataWrapper;
 import f1.data.ui.panels.Panel;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -93,7 +96,13 @@ public class HomePanel implements Panel {
             chooser.getExtensionFilters().add(json);
             File selected = chooser.showOpenDialog(null);
             if (selected != null) {
-                System.out.println(selected.getName());
+                ObjectMapper reader = new ObjectMapper();
+                try {
+                    SaveSessionDataWrapper data = reader.readValue(selected, SaveSessionDataWrapper.class);
+                    System.out.println(data);
+                } catch (IOException e) {
+                    logger.error("Caught Exception reading file ", e);
+                }
             } else {
                 System.out.println("No File Selected");
             }
