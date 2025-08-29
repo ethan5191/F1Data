@@ -5,9 +5,7 @@ import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.parse.packets.session.SessionName;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.save.SpeedTrapSessionData;
-import f1.data.save.SaveSessionDataHandler;
-import f1.data.save.SpeedTrapSessionWrapper;
+import f1.data.save.*;
 import f1.data.ui.panels.dto.SessionResetDTO;
 import f1.data.ui.panels.home.AppState;
 
@@ -37,15 +35,17 @@ public class SessionPacketHandler implements PacketHandler {
             SessionData sd = SessionDataFactory.build(packetFormat, byteBuffer);
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
                 List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(this.participants.size());
+                List<RunDataSessionData> runDataSessionData = new ArrayList<>(this.participants.size());
                 //Loop over the participant map and create new telemetry data to reset the data on the backend.
                 for (Integer i : this.participants.keySet()) {
                     TelemetryData td = this.participants.get(i);
                     ParticipantData pd = td.getParticipantData();
                     //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
                     speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getLapsPerSetup()));
                     this.participants.put(i, new TelemetryData(pd));
                 }
-                if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), new SpeedTrapSessionWrapper(speedTrapSessionDataList));
+                if (AppState.saveSessionData.get()) SaveSessionDataHandler.saveSessionData(this.sessionName.buildSessionName(), speedTrapSessionDataList, runDataSessionData);
                 //build out the new session name object
                 this.sessionName.setSessionType(sd.sessionType());
                 this.sessionName.setFormula(sd.formula());
