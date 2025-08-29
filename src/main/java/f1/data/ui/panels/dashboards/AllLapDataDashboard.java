@@ -17,10 +17,10 @@ public class AllLapDataDashboard extends HBox {
         this.tire = new Label(info.getCarStatusInfo().getVisualTire().getDisplay());
         this.tire.setMinWidth(LAP_HEADERS_WIDTH[1]);
         this.tire.setTextFill(Color.WHITE);
-        this.lapNum = new Label(String.valueOf(info.getLapNum()));
+        this.lapNum = new Label(String.valueOf(info.getIndividualLap().getLapNum()));
         this.lapNum.setMinWidth(LAP_HEADERS_WIDTH[2]);
         this.lapNum.setTextFill(Color.WHITE);
-        this.lapTime = new Label(DashboardUtils.buildTimeText(info.getLapTimeInMs()));
+        this.lapTime = new Label(DashboardUtils.buildTimeText(info.getIndividualLap().getLapTimeInMs()));
         this.lapTime.setMinWidth(LAP_HEADERS_WIDTH[3]);
         this.lapTime.setTextFill(Color.WHITE);
 

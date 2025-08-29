@@ -1,16 +1,15 @@
 package f1.data.parse.packets.handlers;
 
-import f1.data.parse.individualLap.CarDamageInfo;
-import f1.data.parse.individualLap.CarStatusInfo;
-import f1.data.parse.individualLap.CarTelemetryInfo;
-import f1.data.parse.individualLap.IndividualLapInfo;
+import f1.data.enums.DriverStatusEnum;
+import f1.data.parse.individualLap.*;
 import f1.data.parse.packets.LapData;
 import f1.data.parse.packets.LapDataFactory;
 import f1.data.parse.packets.PacketUtils;
-import f1.data.enums.DriverStatusEnum;
 import f1.data.parse.packets.events.SpeedTrapDistance;
+import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
+import f1.data.save.IndividualLapSessionData;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.ParentConsumer;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
@@ -73,17 +72,20 @@ public class LapDataPacketHandler implements PacketHandler {
             tireWearThisLap[i] = td.getCurrentTireWear()[i] - td.getStartOfLapTireWear()[i];
         }
         td.setStartOfLapTireWear(td.getCurrentTireWear());
-        IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrapData().getSpeed(), fuelUsedThisLap, tireWearThisLap);
-        td.setLastLapNum(info.getLapNum());
-        td.setLastLapTimeInMs(info.getLapTimeInMs());
-        if (td.getCurrentSetup() != null) {
-            info.setCarSetupData(td.getCurrentSetup());
-            info.setCurrentSetupNumber(td.getCurrentSetupNumber());
-            info.setSetupChange(td.isSetupChange());
-            info.setCurrentSetupKey(td.getCurrentLapsPerSetupKey());
-            td.setSetupChange(false);
-            td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).add(info);
-            info.setTotalLapsThisSetup(td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).size());
+        IndividualLapSessionData individualLap = new IndividualLapSessionData(ld, td.getCurrentLap(), td.getSpeedTrapData().getSpeed(), fuelUsedThisLap, tireWearThisLap, td.getCurrentStatus());
+        IndividualLapInfo info = new IndividualLapInfo(individualLap, ld);
+        td.setLastLapNum(individualLap.getLapNum());
+        td.setLastLapTimeInMs(individualLap.getLapTimeInMs());
+        if (td.getCarSetupData().getCurrentSetup() != null) {
+            CarSetupTelemetryData cstd = td.getCarSetupData();
+            CarSetupInfo csi = new CarSetupInfo(cstd.getCurrentSetup());
+            info.setCarSetupInfo(csi);
+            info.setCurrentSetupNumber(cstd.getCurrentSetupNumber());
+            info.setSetupChange(cstd.isSetupChange());
+            info.setCurrentSetupKey(cstd.getCurrentLapsPerSetupKey());
+            cstd.setSetupChange(false);
+            cstd.getLapsPerSetup().get(cstd.getCurrentLapsPerSetupKey()).add(individualLap);
+            info.setTotalLapsThisSetup(cstd.getLapsPerSetup().get(cstd.getCurrentLapsPerSetupKey()).size());
         }
         if (td.getCurrentTelemetry() != null) {
             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
@@ -95,13 +97,13 @@ public class LapDataPacketHandler implements PacketHandler {
             info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
         }
         //Print info when the lap is completed.
-        info.printInfo(td.getParticipantData().lastName());
-        info.printStatus(td.getParticipantData().lastName());
-        info.printDamage(td.getParticipantData().lastName());
+        PrintIndividualLapInfo.printTelemetry(info.getCarTelemetryInfo(), td.getParticipantData().lastName(), individualLap.getLapNum(), individualLap.getLapTimeInMs(), individualLap.getSector1InMs(), individualLap.getSector2InMs(), individualLap.getSector3InMs(), individualLap.getSpeedTrap());
+        PrintIndividualLapInfo.printStatus(info.getCarStatusInfo(), td.getParticipantData().lastName());
+        PrintIndividualLapInfo.printDamage(info.getCarDamageInfo(), td.getParticipantData().lastName());
         //Populate the DriverDataDTO to populate the panels.
         this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
         //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
-        if (td.getSpeedTrapData() != null) td.getSpeedTrapData().setSpeed(0.0F);
+        td.getSpeedTrapData().setSpeed(0.0F);
     }
 
     private void handle2020Logic(TelemetryData td) {

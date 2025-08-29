@@ -31,7 +31,7 @@ public class SetupStageManager implements Panel, OnSessionReset {
                 //If this setupNumber doesn't exist in the map, then we need to actually update the UI.
                 Set<Integer> setupIds = this.driversSetupsIds.get(dto.getId());
                 if (!setupIds.contains(dto.getInfo().getCurrentSetupNumber())) {
-                    String setupName = dto.getLastName() + " Lap #" + dto.getInfo().getLapNum();
+                    String setupName = dto.getLastName() + " Lap #" + dto.getInfo().getIndividualLap().getLapNum();
                     Map<Integer, VBox> existingSetups = this.dashboards.get(dto.getId());
                     commonSetupLogic(dto, this.container, existingSetups, setupIds, setupName);
                 }
@@ -44,10 +44,10 @@ public class SetupStageManager implements Panel, OnSessionReset {
         VBox driver = new VBox();
         setupData.getChildren().add(driver);
         //Add the box to the map so we can ensure we don't duplicate it.
-        mapToUpdate.put(snapshot.getInfo().getLapNum(), driver);
+        mapToUpdate.put(snapshot.getInfo().getIndividualLap().getLapNum(), driver);
         this.dashboards.put(snapshot.getId(), mapToUpdate);
         //Creates the actual dashboard
-        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupData(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
+        SetupInfoDashboard setupInfo = new SetupInfoDashboard(setupName, snapshot.getInfo().getCarSetupInfo(), snapshot.getInfo().getCarStatusInfo().getVisualTireCompound());
         VBox container = new VBox(5);
         //Add the current setupNumber to the map of <DriverID, Set<SetupNumbers>>
         setupIds.add(snapshot.getInfo().getCurrentSetupNumber());

@@ -38,3 +38,4 @@ build/
 .DS_Store
 /.idea/
 /f1-data.log
+/SessionSaves/

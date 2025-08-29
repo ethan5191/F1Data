@@ -3,6 +3,7 @@ package f1.data.parse.packets.handlers;
 import f1.data.parse.packets.CarSetupData;
 import f1.data.parse.packets.CarSetupDataFactory;
 import f1.data.parse.packets.PacketUtils;
+import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.utils.constants.Constants;
 
@@ -26,16 +27,17 @@ public class CarSetupPacketHandler implements PacketHandler {
                 CarSetupData csd = CarSetupDataFactory.build(packetFormat, byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     TelemetryData td = participants.get(i);
-                    boolean isNullOrChanged = (td.getCurrentSetup() == null || !csd.equals(td.getCurrentSetup()));
-                    boolean isDiffTire = td.getCurrentLapsPerSetupKey() != null && td.getFittedTireId() != td.getCurrentLapsPerSetupKey().fittedTireId();
+                    CarSetupTelemetryData cstd = td.getCarSetupData();
+                    boolean isNullOrChanged = (cstd.getCurrentSetup() == null || !csd.equals(cstd.getCurrentSetup()));
+                    boolean isDiffTire = cstd.getCurrentLapsPerSetupKey() != null && cstd.getFittedTireId() != cstd.getCurrentLapsPerSetupKey().fittedTireId();
                     //if the setup is null (hasn't loaded yet), changed (material difference between saved and current setup data).
                     //OR the fuel load has changed (with no material difference).
                     //OR a tire change occurred (fitted id vs fitted id, so Soft 1 != soft 2)
                     //Then we need a new setup.
-                    if (isNullOrChanged || !csd.isSameFuelLoad(td.getCurrentSetup()) || isDiffTire) {
+                    if (isNullOrChanged || !csd.isSameFuelLoad(cstd.getCurrentSetup()) || isDiffTire) {
                         td.setCurrentSetup(csd);
                         //Only these two checks actually flip this flag. Fuel load change doesn't trigger a run data change, for now anyway.
-                        if (isNullOrChanged || isDiffTire) td.setSetupChange(true);
+                        if (isNullOrChanged || isDiffTire) cstd.setSetupChange(true);
                     }
                 }
             }

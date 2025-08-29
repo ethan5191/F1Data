@@ -22,28 +22,28 @@ public class RunDataDashboard extends HBox {
     public RunDataDashboard(DriverDataDTO dto, boolean isF1) {
         this.dto = dto;
         this.isF1 = isF1;
-        this.lapNum = new Label(String.valueOf(dto.getInfo().getLapNum()));
+        this.lapNum = new Label(String.valueOf(dto.getInfo().getIndividualLap().getLapNum()));
         this.lapNum.setTextFill(Color.WHITE);
         this.lapNum.setMinWidth(HEADERS_WIDTH[0]);
-        this.lapTime = new Label(DashboardUtils.buildTimeText(dto.getInfo().getLapTimeInMs()));
+        this.lapTime = new Label(DashboardUtils.buildTimeText(dto.getInfo().getIndividualLap().getLapTimeInMs()));
         this.lapTime.setTextFill(Color.WHITE);
         this.lapTime.setMinWidth(HEADERS_WIDTH[1]);
-        this.rearLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[0]) + Constants.PERCENT_SIGN);
+        this.rearLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[0]) + Constants.PERCENT_SIGN);
         this.rearLeftWear.setTextFill(Color.WHITE);
         this.rearLeftWear.setMinWidth(HEADERS_WIDTH[2]);
-        this.rearRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[1]) + Constants.PERCENT_SIGN);
+        this.rearRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[1]) + Constants.PERCENT_SIGN);
         this.rearRightWear.setTextFill(Color.WHITE);
         this.rearRightWear.setMinWidth(HEADERS_WIDTH[3]);
-        this.frontLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[2]) + Constants.PERCENT_SIGN);
+        this.frontLeftWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[2]) + Constants.PERCENT_SIGN);
         this.frontLeftWear.setTextFill(Color.WHITE);
         this.frontLeftWear.setMinWidth(HEADERS_WIDTH[4]);
-        this.frontRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[3]) + Constants.PERCENT_SIGN);
+        this.frontRightWear = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[3]) + Constants.PERCENT_SIGN);
         this.frontRightWear.setTextFill(Color.WHITE);
         this.frontRightWear.setMinWidth(HEADERS_WIDTH[5]);
-        this.fuelUsed = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getFuelUsedThisLap()) + Constants.KG);
+        this.fuelUsed = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getFuelUsed()) + Constants.KG);
         this.fuelUsed.setTextFill(Color.WHITE);
         this.fuelUsed.setMinWidth(HEADERS_WIDTH[6]);
-        this.speedTrap = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getSpeedTrap()));
+        this.speedTrap = new Label(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getSpeedTrap()));
         this.speedTrap.setTextFill(Color.WHITE);
         this.speedTrap.setMinWidth(HEADERS_WIDTH[7]);
 
@@ -171,14 +171,14 @@ public class RunDataDashboard extends HBox {
     //Used to update the values of the previous averages record to be an actual lap record when a new lap is registered in a run.
     public void updateValues(DriverDataDTO dto) {
         this.dto = dto;
-        this.lapNum.setText(String.valueOf(dto.getInfo().getLapNum()));
-        this.lapTime.setText(DashboardUtils.buildTimeText(dto.getInfo().getLapTimeInMs()));
-        this.rearLeftWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[0]) + Constants.PERCENT_SIGN);
-        this.rearRightWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[1]) + Constants.PERCENT_SIGN);
-        this.frontLeftWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[2]) + Constants.PERCENT_SIGN);
-        this.frontRightWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getTireWearThisLap()[3]) + Constants.PERCENT_SIGN);
-        this.fuelUsed.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getFuelUsedThisLap()) + Constants.KG);
-        this.speedTrap.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getSpeedTrap()));
+        this.lapNum.setText(String.valueOf(dto.getInfo().getIndividualLap().getLapNum()));
+        this.lapTime.setText(DashboardUtils.buildTimeText(dto.getInfo().getIndividualLap().getLapTimeInMs()));
+        this.rearLeftWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[0]) + Constants.PERCENT_SIGN);
+        this.rearRightWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[1]) + Constants.PERCENT_SIGN);
+        this.frontLeftWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[2]) + Constants.PERCENT_SIGN);
+        this.frontRightWear.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getTireWear()[3]) + Constants.PERCENT_SIGN);
+        this.fuelUsed.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getFuelUsed()) + Constants.KG);
+        this.speedTrap.setText(DashboardUtils.formatTwoDecimals(dto.getInfo().getIndividualLap().getSpeedTrap()));
         if (this.isF1) {
             this.energyStore.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsStoreEnergy()));
             this.mgukHarvested.setText(String.valueOf(dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK()));
