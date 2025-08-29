@@ -27,7 +27,7 @@ public class SaveSessionDataHandler {
         } catch (IOException e) {
             logger.error("Caught IO Exception creating SaveSessions directory ", e);
         }
-        Path filePath = savePath.resolve(sessionName + ".json");
+        Path filePath = savePath.resolve(sessionName + "_" + System.currentTimeMillis() + ".json");
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.writerWithDefaultPrettyPrinter().writeValue(filePath.toFile(), saveSessionDataWrapper);
