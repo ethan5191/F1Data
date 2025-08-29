@@ -6,11 +6,12 @@ import f1.data.parse.packets.events.ButtonsData;
 import f1.data.parse.packets.events.SpeedTrapData;
 import f1.data.parse.packets.events.SpeedTrapDataFactory;
 import f1.data.parse.packets.events.SpeedTrapDistance;
+import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.save.SpeedTrapSessionData;
 import f1.data.save.SaveSessionDataHandler;
+import f1.data.save.SpeedTrapSessionData;
 import f1.data.save.SpeedTrapSessionWrapper;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
 import f1.data.ui.panels.home.AppState;
@@ -70,21 +71,7 @@ public class EventPacketHandler implements PacketHandler {
                 }
                 SaveSessionDataHandler.saveSessionData("Testing", new SpeedTrapSessionWrapper(speedTrapSessionDataList));
             }
-            for (Map.Entry<Integer, TelemetryData> id : this.participants.entrySet()) {
-                TelemetryData td = id.getValue();
-                System.out.println(td.getParticipantData().lastName());
-                if (td.getCurrentSetup() != null) System.out.println(td.getCurrentSetup());
-                if (!td.getLapsPerSetup().isEmpty()) {
-                    for (Map.Entry<SetupTireKey, List<IndividualLapInfo>> laps : td.getLapsPerSetup().entrySet()) {
-                        System.out.println(td.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
-                        if (!laps.getValue().isEmpty()) {
-                            for (IndividualLapInfo lap : laps.getValue()) {
-                                System.out.println("#" + lap.getLapNum() + " " + lap.getLapTimeInMs());
-                            }
-                        }
-                    }
-                }
-            }
+            printLapAndSetupData(this.participants);
         }
     }
 
@@ -98,17 +85,16 @@ public class EventPacketHandler implements PacketHandler {
         SpeedTrapTelemetryData.updateConsumer(this.speedTrapData, td, trap.speed());
     }
 
-    public static void handle2020ButtonEvent(ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
-        long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
-        //2020 special button press mapped to button P on the McLaren wheel.
-        if (buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON) {
-            for (Map.Entry<Integer, TelemetryData> id : participants.entrySet()) {
-                TelemetryData td = id.getValue();
+    private static void printLapAndSetupData(Map<Integer, TelemetryData> participants) {
+        for (Map.Entry<Integer, TelemetryData> id : participants.entrySet()) {
+            TelemetryData td = id.getValue();
+            CarSetupTelemetryData cstd = td.getCarSetupData();
+            if (cstd.getCurrentSetup() != null) {
                 System.out.println(td.getParticipantData().lastName());
-                if (td.getCurrentSetup() != null) System.out.println(td.getCurrentSetup());
-                if (!td.getLapsPerSetup().isEmpty()) {
-                    for (Map.Entry<SetupTireKey, List<IndividualLapInfo>> laps : td.getLapsPerSetup().entrySet()) {
-                        System.out.println(td.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
+                System.out.println(cstd.getCurrentSetup());
+                if (!cstd.getLapsPerSetup().isEmpty()) {
+                    for (Map.Entry<SetupTireKey, List<IndividualLapInfo>> laps : cstd.getLapsPerSetup().entrySet()) {
+                        System.out.println(cstd.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
                         if (!laps.getValue().isEmpty()) {
                             for (IndividualLapInfo lap : laps.getValue()) {
                                 System.out.println("#" + lap.getLapNum() + " " + lap.getLapTimeInMs());
@@ -117,6 +103,14 @@ public class EventPacketHandler implements PacketHandler {
                     }
                 }
             }
+        }
+    }
+
+    public static void handle2020ButtonEvent(ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
+        long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
+        //2020 special button press mapped to button P on the McLaren wheel.
+        if (buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON) {
+            printLapAndSetupData(participants);
         }
     }
 }

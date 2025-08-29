@@ -9,6 +9,7 @@ import f1.data.parse.packets.LapDataFactory;
 import f1.data.parse.packets.PacketUtils;
 import f1.data.enums.DriverStatusEnum;
 import f1.data.parse.packets.events.SpeedTrapDistance;
+import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
@@ -76,14 +77,15 @@ public class LapDataPacketHandler implements PacketHandler {
         IndividualLapInfo info = new IndividualLapInfo(ld, td.getCurrentLap(), td.getSpeedTrapData().getSpeed(), fuelUsedThisLap, tireWearThisLap);
         td.setLastLapNum(info.getLapNum());
         td.setLastLapTimeInMs(info.getLapTimeInMs());
-        if (td.getCurrentSetup() != null) {
-            info.setCarSetupData(td.getCurrentSetup());
-            info.setCurrentSetupNumber(td.getCurrentSetupNumber());
-            info.setSetupChange(td.isSetupChange());
-            info.setCurrentSetupKey(td.getCurrentLapsPerSetupKey());
-            td.setSetupChange(false);
-            td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).add(info);
-            info.setTotalLapsThisSetup(td.getLapsPerSetup().get(td.getCurrentLapsPerSetupKey()).size());
+        if (td.getCarSetupData().getCurrentSetup() != null) {
+            CarSetupTelemetryData cstd = td.getCarSetupData();
+            info.setCarSetupData(cstd.getCurrentSetup());
+            info.setCurrentSetupNumber(cstd.getCurrentSetupNumber());
+            info.setSetupChange(cstd.isSetupChange());
+            info.setCurrentSetupKey(cstd.getCurrentLapsPerSetupKey());
+            cstd.setSetupChange(false);
+            cstd.getLapsPerSetup().get(cstd.getCurrentLapsPerSetupKey()).add(info);
+            info.setTotalLapsThisSetup(cstd.getLapsPerSetup().get(cstd.getCurrentLapsPerSetupKey()).size());
         }
         if (td.getCurrentTelemetry() != null) {
             info.setCarTelemetryInfo(new CarTelemetryInfo(td.getCurrentTelemetry()));
