@@ -2,7 +2,6 @@ package f1.data.parse.individualLap;
 
 import f1.data.parse.packets.CarSetupData;
 import f1.data.parse.packets.LapData;
-import f1.data.enums.TireBrakesOrderEnum;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.utils.Util;
 
@@ -169,60 +168,5 @@ public class IndividualLapInfo {
 
     public void setSetupChange(boolean setupChange) {
         isSetupChange = setupChange;
-    }
-
-    public void printInfo(String lastName) {
-        CarTelemetryInfo cti = this.carTelemetryInfo;
-        System.out.println();
-        System.out.println(lastName + " Lap # " + this.lapNum + " Time " + this.lapTimeInMs +
-                " 1st " + this.sector1InMs + " 2nd " + this.sector2InMs + " 3rd " + this.sector3InMs
-                + " Speed Trap " + this.speedTrap + " Engine temp " + cti.getEngineTemp() + "\n");
-        printLoop(cti.getBrakeTemps(), "Brakes");
-        System.out.println("\n-----------------");
-        printLoop(cti.getTireSurfaceTemps(), "Tire Surface");
-        System.out.println("\n-----------------");
-        printLoop(cti.getTireInnerTemps(), "Tire Inner");
-        System.out.println("\n-----------------");
-        System.out.println("Tire Pressure");
-        printLoop(cti.getTirePressures());
-    }
-
-    public void printStatus(String lastName) {
-        CarStatusInfo csi = this.carStatusInfo;
-        System.out.println();
-        System.out.println(lastName + " In Tank " + csi.getFuelInTank() + " Remain Lap " + csi.getFuelRemainingLaps()
-                + " Actual Tire " + csi.getActualTire().getDisplay() + " Visual tire " + csi.getVisualTire().getDisplay() + " Tire Age " + csi.getTiresAgeLaps());
-        System.out.println("ICE " + csi.getEnginePowerICE() + " MGUK " + csi.getEnginePowerMGUK() + " Store " + csi.getErsStoreEnergy() +
-                " MGUK Harvest " + csi.getErsHarvestedThisLapMGUK() + " MGUH Harvested " + csi.getErsHarvestedThisLapMGUH() + " Deployed " + csi.getErsDeployedThisLap());
-    }
-
-    public void printDamage(String lastName) {
-        CarDamageInfo cdi = this.carDamageInfo;
-        System.out.println();
-        System.out.println(lastName + " Floor " + cdi.getFloorDamage() + " Diffuser " + cdi.getDiffuserDamage());
-        printLoop(cdi.getTyresWear());
-        System.out.println("\n-----------------");
-    }
-
-    private void printLoop(int[] array, String header) {
-        System.out.println(header);
-        for (int i = 0; i < array.length; i++) {
-            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
-            System.out.print(elem.name() + " " + array[i] + " ");
-        }
-    }
-
-    private void printLoop(float[] array) {
-        for (int i = 0; i < array.length; i++) {
-            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
-            System.out.print(" " + elem + " " + array[i] + " ");
-        }
-    }
-
-    private void printLoop(String[] array) {
-        for (int i = 0; i < array.length; i++) {
-            TireBrakesOrderEnum elem = TireBrakesOrderEnum.values()[i];
-            System.out.print(" " + elem + " " + array[i] + " ");
-        }
     }
 }

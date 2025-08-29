@@ -1,13 +1,10 @@
 package f1.data.parse.packets.handlers;
 
-import f1.data.parse.individualLap.CarDamageInfo;
-import f1.data.parse.individualLap.CarStatusInfo;
-import f1.data.parse.individualLap.CarTelemetryInfo;
-import f1.data.parse.individualLap.IndividualLapInfo;
+import f1.data.enums.DriverStatusEnum;
+import f1.data.parse.individualLap.*;
 import f1.data.parse.packets.LapData;
 import f1.data.parse.packets.LapDataFactory;
 import f1.data.parse.packets.PacketUtils;
-import f1.data.enums.DriverStatusEnum;
 import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
@@ -97,13 +94,13 @@ public class LapDataPacketHandler implements PacketHandler {
             info.setCarDamageInfo(new CarDamageInfo(td.getCurrentDamage()));
         }
         //Print info when the lap is completed.
-        info.printInfo(td.getParticipantData().lastName());
-        info.printStatus(td.getParticipantData().lastName());
-        info.printDamage(td.getParticipantData().lastName());
+        PrintIndividualLapInfo.printTelemetry(info.getCarTelemetryInfo(), td.getParticipantData().lastName(), info.getLapNum(), info.getLapTimeInMs(), info.getSector1InMs(), info.getSector2InMs(), info.getSector3InMs(), info.getSpeedTrap());
+        PrintIndividualLapInfo.printStatus(info.getCarStatusInfo(), td.getParticipantData().lastName());
+        PrintIndividualLapInfo.printDamage(info.getCarDamageInfo(), td.getParticipantData().lastName());
         //Populate the DriverDataDTO to populate the panels.
         this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
         //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
-        if (td.getSpeedTrapData() != null) td.getSpeedTrapData().setSpeed(0.0F);
+        td.getSpeedTrapData().setSpeed(0.0F);
     }
 
     private void handle2020Logic(TelemetryData td) {
