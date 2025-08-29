@@ -10,6 +10,7 @@ import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
+import f1.data.save.IndividualLapSessionData;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.save.SpeedTrapSessionData;
 import f1.data.save.SpeedTrapSessionWrapper;
@@ -93,10 +94,10 @@ public class EventPacketHandler implements PacketHandler {
                 System.out.println(td.getParticipantData().lastName());
                 System.out.println(cstd.getCurrentSetup());
                 if (!cstd.getLapsPerSetup().isEmpty()) {
-                    for (Map.Entry<SetupTireKey, List<IndividualLapInfo>> laps : cstd.getLapsPerSetup().entrySet()) {
+                    for (Map.Entry<SetupTireKey, List<IndividualLapSessionData>> laps : cstd.getLapsPerSetup().entrySet()) {
                         System.out.println(cstd.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
                         if (!laps.getValue().isEmpty()) {
-                            for (IndividualLapInfo lap : laps.getValue()) {
+                            for (IndividualLapSessionData lap : laps.getValue()) {
                                 System.out.println("#" + lap.getLapNum() + " " + lap.getLapTimeInMs());
                             }
                         }

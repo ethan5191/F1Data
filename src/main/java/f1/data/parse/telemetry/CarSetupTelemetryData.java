@@ -1,7 +1,7 @@
 package f1.data.parse.telemetry;
 
-import f1.data.parse.individualLap.IndividualLapInfo;
 import f1.data.parse.packets.CarSetupData;
+import f1.data.save.IndividualLapSessionData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,7 @@ public class CarSetupTelemetryData {
     private CarSetupData currentSetup;
     private SetupTireKey currentLapsPerSetupKey;
     private final List<CarSetupData> setups = new ArrayList<>();
-    private final Map<SetupTireKey, List<IndividualLapInfo>> lapsPerSetup = new HashMap<>();
+    private final Map<SetupTireKey, List<IndividualLapSessionData>> lapsPerSetup = new HashMap<>();
     private boolean setupChange;
 
     public CarSetupTelemetryData() {
@@ -53,7 +53,7 @@ public class CarSetupTelemetryData {
         return setups;
     }
 
-    public Map<SetupTireKey, List<IndividualLapInfo>> getLapsPerSetup() {
+    public Map<SetupTireKey, List<IndividualLapSessionData>> getLapsPerSetup() {
         return lapsPerSetup;
     }
 

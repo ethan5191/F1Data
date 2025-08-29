@@ -50,7 +50,7 @@ public class RunDataStageManager implements Panel, OnSessionReset {
                     //If the driver already has completed a lap, but this is a different setup, we must use the current data as the baseline so we don't override it.
                     Map<SetupTireKey, List<RunDataDashboard>> initial = (!containsKey) ? new HashMap<>() : this.dashboards.get(dto.getId());
                     //calculate the averages and add them as a new dashboard to the end of the list.
-                    RunDataAverage average = new RunDataAverage(info.getLapNum(), info.getTotalLapsThisSetup(), dto, this.isF1);
+                    RunDataAverage average = new RunDataAverage(info.getIndividualLap().getLapNum(), info.getTotalLapsThisSetup(), dto, this.isF1);
                     RunDataDashboard averages = new RunDataDashboard(average, info.isUseLegacy());
                     initial.put(info.getCurrentSetupKey(), List.of(lapInfoBoard, averages));
                     this.dashboards.put(dto.getId(), initial);

@@ -66,17 +66,17 @@ public class LatestLapDashboard extends HBox {
     }
 
     public void updateValues(IndividualLapInfo info) {
-        if (info.getLapNum() > Integer.parseInt(this.lapNum.getText())) {
+        if (info.getIndividualLap().getLapNum() > Integer.parseInt(this.lapNum.getText())) {
             //Add the active tire to the output, only do this once to ensure we don't keep adding more data to the name area.
             if (!this.name.getText().contains("(")) {
                 String text = this.name.getText() + " (" + info.getCarStatusInfo().getVisualTire().getDisplay() + ")";
                 this.name.setText(text);
             }
-            this.lapNum.setText(String.valueOf(info.getLapNum()));
-            this.s1.setText(DashboardUtils.buildTimeText(info.getSector1InMs()));
-            this.s2.setText(DashboardUtils.buildTimeText(info.getSector2InMs()));
-            this.s3.setText(DashboardUtils.buildTimeText(info.getSector3InMs()));
-            this.lapTime.setText(DashboardUtils.buildTimeText(info.getLapTimeInMs()));
+            this.lapNum.setText(String.valueOf(info.getIndividualLap().getLapNum()));
+            this.s1.setText(DashboardUtils.buildTimeText(info.getIndividualLap().getSector1InMs()));
+            this.s2.setText(DashboardUtils.buildTimeText(info.getIndividualLap().getSector2InMs()));
+            this.s3.setText(DashboardUtils.buildTimeText(info.getIndividualLap().getSector3InMs()));
+            this.lapTime.setText(DashboardUtils.buildTimeText(info.getIndividualLap().getLapTimeInMs()));
         }
     }
 }

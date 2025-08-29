@@ -10,13 +10,13 @@ public class RunDataAverage {
     public RunDataAverage(Integer startLap, Integer totalLaps, DriverDataDTO dto, boolean isF1) {
         this.isF1 = isF1;
         this.startLap = startLap;
-        this.completedLap = dto.getInfo().getLapNum();
+        this.completedLap = dto.getInfo().getIndividualLap().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
         this.totalLaps = totalLaps;
         this.totalTimeInMS = dto.getInfo().getNonRoundedLapTime();
-        this.totalTireWear = dto.getInfo().getTireWearThisLap();
-        this.totalFuelUsed = dto.getInfo().getFuelUsedThisLap();
-        this.totalTrapSpeed = dto.getInfo().getSpeedTrap();
+        this.totalTireWear = dto.getInfo().getIndividualLap().getTireWear();
+        this.totalFuelUsed = dto.getInfo().getIndividualLap().getFuelUsed();
+        this.totalTrapSpeed = dto.getInfo().getIndividualLap().getSpeedTrap();
         if (this.isF1) {
             this.totalErsStoreEnergy = dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
             this.totalErsHarvestedThisLapMGUK = dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
@@ -31,15 +31,15 @@ public class RunDataAverage {
     public RunDataAverage(Integer startLap, Integer totalLaps, DriverDataDTO dto, RunDataAverage current) {
         this.isF1 = current.isF1;
         this.startLap = startLap;
-        this.completedLap = dto.getInfo().getLapNum();
+        this.completedLap = dto.getInfo().getIndividualLap().getLapNum();
         //Add 1 to this value to ensure we are always including the first lap we completed. Otherwise our total laps will be off by 1.
         this.totalLaps = totalLaps;
         this.totalTimeInMS = dto.getInfo().getNonRoundedLapTime() + current.totalTimeInMS;
         for (int i = 0; i < current.totalTireWear.length; i++) {
-            this.totalTireWear[i] = current.totalTireWear[i] + dto.getInfo().getTireWearThisLap()[i];
+            this.totalTireWear[i] = current.totalTireWear[i] + dto.getInfo().getIndividualLap().getTireWear()[i];
         }
-        this.totalFuelUsed = current.totalFuelUsed + dto.getInfo().getFuelUsedThisLap();
-        this.totalTrapSpeed = current.getTotalTrapSpeed() + dto.getInfo().getSpeedTrap();
+        this.totalFuelUsed = current.totalFuelUsed + dto.getInfo().getIndividualLap().getFuelUsed();
+        this.totalTrapSpeed = current.getTotalTrapSpeed() + dto.getInfo().getIndividualLap().getSpeedTrap();
         if (this.isF1) {
             this.totalErsStoreEnergy = current.getTotalErsStoreEnergy() + dto.getInfo().getCarStatusInfo().getErsStoreEnergy();
             this.totalErsHarvestedThisLapMGUK = current.getTotalErsHarvestedThisLapMGUK() + dto.getInfo().getCarStatusInfo().getErsHarvestedThisLapMGUK();
