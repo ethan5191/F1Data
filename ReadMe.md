@@ -75,7 +75,7 @@ The application currently supports six separate data panels:
 The application now allows for the saving of data at the end of a given session. 
 
     The home panel has a checkbox 'Save Session Data?' if that is checked and a session ends, the app will save the session telemetry data. 
-    Currently only the speed trap data (lap num and speed) for all cars is saved. The save location will be within a 'SessionSaves' folder either within the project folder, or in the target folder next to the jar.
+    Currently a single json file is created with the speed trap data and run data both saved. The save location will be within a 'SessionSaves' folder either within the project folder, or in the target folder next to the jar.
     This process currently only runs once a session switch has been picked up (session name has changed). So it won't happen until the next session actually starts.
     The files are named as follows: Formula Session Track.json (F2 Short_Practice at BAHRAIN.json, for example). 
 [Back to top](#table-of-contents)
