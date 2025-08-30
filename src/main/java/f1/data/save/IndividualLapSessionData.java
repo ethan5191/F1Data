@@ -24,6 +24,7 @@ public class IndividualLapSessionData {
     private float ersHarvestedMGUH;
     private float ersDeployed;
 
+    //Used by the Jackson process to deserialize the data.
     public IndividualLapSessionData() {
     }
 
