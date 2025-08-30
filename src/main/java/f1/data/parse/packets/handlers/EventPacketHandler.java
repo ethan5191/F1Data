@@ -57,19 +57,7 @@ public class EventPacketHandler implements PacketHandler {
         if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
                 || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
         ) {
-            if (AppState.saveSessionData.get()) {
-                List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(this.participants.size());
-                List<RunDataSessionData> runDataSessionData = new ArrayList<>(this.participants.size());
-                //Loop over the participant map and create new telemetry data to reset the data on the backend.
-                for (Integer i : this.participants.keySet()) {
-                    TelemetryData td = this.participants.get(i);
-                    ParticipantData pd = td.getParticipantData();
-                    speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                    runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), td.getCarSetupData().getLapsPerSetup()));
-//                    this.participants.put(i, new TelemetryData(pd));
-                }
-                SaveSessionDataHandler.saveSessionData("Testing",speedTrapSessionDataList, runDataSessionData);
-            }
+            handleTestSave(this.packetFormat, this.participants);
             printLapAndSetupData(this.participants);
         }
     }
@@ -105,10 +93,33 @@ public class EventPacketHandler implements PacketHandler {
         }
     }
 
-    public static void handle2020ButtonEvent(ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
+    private static void handleTestSave(int packetFormat, Map<Integer, TelemetryData> participants) {
+        if (AppState.saveSessionData.get()) {
+            List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(participants.size());
+            List<RunDataSessionData> runDataSessionData = new ArrayList<>(participants.size());
+            //Loop over the participant map and create new telemetry data to reset the data on the backend.
+            for (Integer i : participants.keySet()) {
+                TelemetryData td = participants.get(i);
+                ParticipantData pd = td.getParticipantData();
+                speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                List<RunDataMapRecord> records = new ArrayList<>(td.getCarSetupData().getLapsPerSetup().size());
+                //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
+                speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
+                for (SetupTireKey key : td.getCarSetupData().getLapsPerSetup().keySet()) {
+                    records.add(new RunDataMapRecord(key, td.getCarSetupData().getLapsPerSetup().get(key)));
+                }
+                runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), records));
+                //                    this.participants.put(i, new TelemetryData(pd));
+            }
+            SaveSessionDataHandler.saveSessionData(packetFormat, "Testing", speedTrapSessionDataList, runDataSessionData);
+        }
+    }
+
+    public static void handle2020ButtonEvent(int packetFormat, ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
         long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
         //2020 special button press mapped to button P on the McLaren wheel.
         if (buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON) {
+            handleTestSave(packetFormat, participants);
             printLapAndSetupData(participants);
         }
     }

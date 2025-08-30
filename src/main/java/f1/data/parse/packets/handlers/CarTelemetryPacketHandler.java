@@ -33,7 +33,7 @@ public class CarTelemetryPacketHandler implements PacketHandler {
         //Params at the end of the Telemetry packet, not associated with each car. Keep here to ensure the byteBuffer position is moved correctly.
         //For 2020 the button event was attached at the end of the telemetry packet, not the event packet.
         if (packetFormat <= Constants.YEAR_2020) {
-            EventPacketHandler.handle2020ButtonEvent(byteBuffer, participants);
+            EventPacketHandler.handle2020ButtonEvent(packetFormat, byteBuffer, participants);
         }
         int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
         int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());

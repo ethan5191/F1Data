@@ -10,19 +10,23 @@ import java.math.RoundingMode;
 //Used to save data after a session ends.
 public class IndividualLapSessionData {
 
-    private final int lapNum;
-    private final BigDecimal sector1InMs;
-    private final BigDecimal sector2InMs;
-    private final BigDecimal sector3InMs;
-    private final BigDecimal lapTimeInMs;
-    private final float fuelUsed;
-    private final float[] tireWear;
-    private final float speedTrap;
-    private final int visualTire;
-    private final float ersStoreEnergy;
-    private final float ersHarvestedMGUK;
-    private final float ersHarvestedMGUH;
-    private final float ersDeployed;
+    private int lapNum;
+    private BigDecimal sector1InMs;
+    private BigDecimal sector2InMs;
+    private BigDecimal sector3InMs;
+    private BigDecimal lapTimeInMs;
+    private float fuelUsed;
+    private float[] tireWear;
+    private float speedTrap;
+    private int visualTire;
+    private float ersStoreEnergy;
+    private float ersHarvestedMGUK;
+    private float ersHarvestedMGUH;
+    private float ersDeployed;
+
+    //Used by the Jackson process to deserialize the data.
+    public IndividualLapSessionData() {
+    }
 
     public IndividualLapSessionData(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap, CarStatusData csd) {
         this.lapNum = prevLap.currentLapNum();
