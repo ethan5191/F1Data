@@ -51,7 +51,7 @@ public class CarSetupInfo {
         this.rearLeftPressure = csd.rearLeftPressure();
         this.rearRightPressure = csd.rearRightPressure();
         this.frontLeftPressure = csd.frontLeftPressure();
-        this.frontRightPressure = csd.rearRightPressure();
+        this.frontRightPressure = csd.frontRightPressure();
         this.fuelLoad = csd.fuelLoad();
     }
 
