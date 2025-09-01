@@ -69,7 +69,7 @@ public class F1SessionInitializer {
                         numActiveCars.set((int) buffer.get());
                         List<ParticipantData> participants = new ArrayList<>();
                         //Loop over the packet and create objects for each record in the array.
-                        for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+                        for (int i = 0; i < Constants.F1_20_TO_25_CAR_COUNT; i++) {
                             ParticipantData pd = ParticipantDataFactory.build(ph.packetFormat(), buffer);
                             //If race number isn't greater than 0 then its not an actual participant but a placeholder, so don't add to the list.
                             if (pd.raceNumber() > 0) {

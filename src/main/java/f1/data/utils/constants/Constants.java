@@ -19,7 +19,8 @@ public class Constants {
     public static final String ONE_DECIMAL = "%.1f";
     public static final String TWO_DECIMAL = "%.2f";
 
-    public static final int F1_25_AND_EARLIER_CAR_COUNT = 22;
+    public static final int F1_19_AND_EARLIER_CAR_COUNT = 20;
+    public static final int F1_20_TO_25_CAR_COUNT = 22;
     //Assuming that with the addition of Cadillac F1, this will go up by 2 to account for 11 full time teams + 2 spots for my team career mode.
     public static final int F1_26_AND_LATER_CAR_COUNT = 24;
     public static final int TIRE_SETS_PACKET_COUNT = 20;

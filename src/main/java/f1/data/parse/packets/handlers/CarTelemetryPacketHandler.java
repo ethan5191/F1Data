@@ -23,7 +23,7 @@ public class CarTelemetryPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            for (int i = 0; i < Constants.F1_20_TO_25_CAR_COUNT; i++) {
                 CarTelemetryData ctd = CarTelemetryDataFactory.build(packetFormat, byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentTelemetry(ctd);

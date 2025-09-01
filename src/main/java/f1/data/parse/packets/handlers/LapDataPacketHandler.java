@@ -39,7 +39,8 @@ public class LapDataPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? Constants.F1_19_AND_EARLIER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
+            for (int i = 0; i < arraySize; i++) {
                 LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
                 //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
                 if (PacketUtils.validKey(participants, i)) {

@@ -20,7 +20,7 @@ public class MotionPacketHandler implements PacketHandler {
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            final int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? 20 : Constants.F1_25_AND_EARLIER_CAR_COUNT;
+            final int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? Constants.F1_19_AND_EARLIER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
             for (int i = 0; i < arraySize; i++) {
                 MotionData md = new MotionData(byteBuffer);
             }
