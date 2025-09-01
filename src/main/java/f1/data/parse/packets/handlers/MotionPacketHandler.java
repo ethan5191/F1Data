@@ -3,6 +3,7 @@ package f1.data.parse.packets.handlers;
 import f1.data.parse.packets.MotionData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.utils.ParseUtils;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -20,7 +21,7 @@ public class MotionPacketHandler implements PacketHandler {
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            final int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? Constants.F1_19_AND_EARLIER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
+            int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
                 MotionData md = new MotionData(byteBuffer);
             }

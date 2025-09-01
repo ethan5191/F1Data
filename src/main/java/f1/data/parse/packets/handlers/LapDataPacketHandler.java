@@ -14,6 +14,7 @@ import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.ParentConsumer;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
 import f1.data.utils.BitMaskUtils;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -39,7 +40,7 @@ public class LapDataPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? Constants.F1_19_AND_EARLIER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
+            int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
                 LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
                 //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
