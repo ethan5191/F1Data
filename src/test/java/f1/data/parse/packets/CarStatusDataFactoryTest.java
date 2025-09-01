@@ -14,6 +14,60 @@ import static org.mockito.Mockito.mockStatic;
 public class CarStatusDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
+    @ValueSource(ints = Constants.YEAR_2019)
+    @DisplayName("Builds the Car Status Data for 2019.")
+    void testBuild_carStatus2019(int packetFormat) {
+        float[] mockTireWear = new float[]{8F, 9F, 10F, 11F};
+        int bitMask8Count = 18;
+        int bitMask16Count = 2;
+        int floatCount = 7;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
+             MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
+            FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
+            CarStatusData result = CarStatusDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(1, result.tractionControl());
+            assertEquals(2, result.antiLockBrakes());
+            assertEquals(3, result.fuelMix());
+            assertEquals(4, result.frontBrakeBias());
+            assertEquals(5, result.pitLimitStatus());
+            assertEquals(100, result.fuelInTank());
+            assertEquals(101, result.fuelCapacity());
+            assertEquals(102, result.fuelRemainingLaps());
+            assertEquals(50, result.maxRPM());
+            assertEquals(51, result.idleRPM());
+            assertEquals(6, result.maxGears());
+            assertEquals(7, result.drsAllowed());
+            assertArrayEquals(mockTireWear, result.tyresWear());
+            assertEquals(12, result.actualTireCompound());
+            assertEquals(13, result.visualTireCompound());
+            assertArrayEquals(new int[4], result.tyresDamage());
+            assertEquals(14, result.frontLeftWingDamage());
+            assertEquals(15, result.frontRightWingDamage());
+            assertEquals(16, result.rearWingDamage());
+            assertEquals(17, result.engineDamage());
+            assertEquals(18, result.gearBoxDamage());
+            assertEquals(19, result.vehicleFiaFlags());
+            assertEquals(103, result.ersStoreEnergy());
+            assertEquals(18, result.ersDeployMode());
+            assertEquals(104, result.ersHarvestedThisLapMGUK());
+            assertEquals(105, result.ersHarvestedThisLapMGUH());
+            assertEquals(106, result.ersDeployedThisLap());
+
+            assertEquals(0, result.tiresAgeLaps());
+            assertEquals(0, result.drsFault());
+            assertEquals(0, result.drsActivationDistance());
+            assertEquals(0, result.networkPaused());
+            assertEquals(0, result.enginePowerICE());
+            assertEquals(0, result.enginePowerMGUK());
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2020)
     @DisplayName("Builds the Car Status Data for 2020.")
     void testBuild_carStatus2020(int packetFormat) {
