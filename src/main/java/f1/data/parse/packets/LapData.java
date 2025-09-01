@@ -82,11 +82,12 @@ public record LapData(long lastLapTimeMs, long currentLapTimeMs, int sector1Time
                       int warnings, float sector1Time, float sector2Time) {
 
     record LapData19(float lastLapTime, float currentLapTime, float bestLapTime, float sector1Time, float sector2Time,
-                     float lapDistance, float safetyCarDelta, int carPosition, int currentLapNum, int pitStatus,
-                     int sector, int currentLapInvalid, int penalties, int gridPosition, int driverStatus,
-                     int resultStatus) {
+                     float lapDistance, float totalDistance, float safetyCarDelta, int carPosition, int currentLapNum,
+                     int pitStatus, int sector, int currentLapInvalid, int penalties, int gridPosition,
+                     int driverStatus, int resultStatus) {
         public LapData19(ByteBuffer byteBuffer) {
             this(
+                    byteBuffer.getFloat(),
                     byteBuffer.getFloat(),
                     byteBuffer.getFloat(),
                     byteBuffer.getFloat(),

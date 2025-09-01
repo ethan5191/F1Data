@@ -12,7 +12,7 @@ public class LapDataFactory {
                 LapData.LapData19 l19 = new LapData.LapData19(byteBuffer);
                 yield new LapData(0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, l19.lapDistance(),
-                        0, l19.safetyCarDelta(), l19.carPosition(), l19.currentLapNum(), l19.pitStatus(),
+                        l19.totalDistance(), l19.safetyCarDelta(), l19.carPosition(), l19.currentLapNum(), l19.pitStatus(),
                         0, l19.sector(), l19.currentLapInvalid(), l19.penalties(), 0, 0, 0,
                         0, l19.gridPosition(), l19.driverStatus(), l19.resultStatus(), 0,
                         0, 0, 0, 0, 0,

@@ -30,7 +30,8 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(FLOAT_START + 3, result.sector1Time());
             assertEquals(FLOAT_START + 4, result.sector2Time());
             assertEquals(FLOAT_START + 5, result.lapDistance());
-            assertEquals(FLOAT_START + 6, result.safetyCarDelta());
+            assertEquals(FLOAT_START + 6, result.totalDistance());
+            assertEquals(FLOAT_START + 7, result.safetyCarDelta());
             assertEquals(BIT_8_START, result.carPosition());
             assertEquals(BIT_8_START + 1, result.currentLapNum());
             assertEquals(BIT_8_START + 2, result.pitStatus());
@@ -53,7 +54,6 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.bestOverallSector2LapNum());
             assertEquals(0, result.bestOverallSector3InMS());
             assertEquals(0, result.bestOverallSector3LapNum());
-            assertEquals(0, result.totalDistance());
 
             //Params not used in 2020
             assertEquals(0, result.lastLapTimeMs());

@@ -20,7 +20,8 @@ public enum ActualTireEnum {
     S(12, Constants.F2, Constants.SOFT),
     M(13, Constants.F2, Constants.MEDIUM),
     H(14, Constants.F2, Constants.HARD),
-    W(15, Constants.F2, Constants.WET);
+    W(15, Constants.F2, Constants.WET),
+    H_F2_20(24, Constants.F2, Constants.HARD);
 
     private final int value;
     private final String series;
