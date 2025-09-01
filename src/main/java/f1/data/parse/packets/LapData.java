@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
  * F1 24 LapData Breakdown (Little Endian)
  * 2021 removed 11 fields related to bestLap info, lastLapTime and currentLapTime changed from float to uint32
  * 2021 added 7 fields related to pitStop info.
+ * - F1 2019 Length: 41 bytes
  * - F1 2020 Length: 53 bytes
  * - F1 2021/2022 Length: 43 bytes
  * - F1 2023 Length: 55 bytes Removed an uint 8 m_warnings that was after m_penalties and replaced it with 2 params.
@@ -61,6 +62,8 @@ import java.nio.ByteBuffer;
  * @param lastLapTime20 Params that changed datatype in 2021 packet updates.
  * @param bestLapTime   Params that where removed in the 2021 packet updates.
  * @param warnings      Replaced in 2023 by the totalWarnings and cornerCuttingWarnings params.
+ * @param sector1Time
+ * @param sector2Time
  */
 
 public record LapData(long lastLapTimeMs, long currentLapTimeMs, int sector1TimeMsPart, int sector1TimeMinutesPart,
@@ -76,7 +79,33 @@ public record LapData(long lastLapTimeMs, long currentLapTimeMs, int sector1Time
                       int bestLapSector1InMS, int bestLapSector2InMS, int bestLapSector3InMS,
                       int bestOverallSector1InMS, int bestOverallSector1LapNum, int bestOverallSector2InMS,
                       int bestOverallSector2LapNum, int bestOverallSector3InMS, int bestOverallSector3LapNum,
-                      int warnings) {
+                      int warnings, float sector1Time, float sector2Time) {
+
+    record LapData19(float lastLapTime, float currentLapTime, float bestLapTime, float sector1Time, float sector2Time,
+                     float lapDistance, float safetyCarDelta, int carPosition, int currentLapNum, int pitStatus,
+                     int sector, int currentLapInvalid, int penalties, int gridPosition, int driverStatus,
+                     int resultStatus) {
+        public LapData19(ByteBuffer byteBuffer) {
+            this(
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
 
     record LapData20(float lastLapTime20, float currentLapTime20, int sector1TimeMsPart, int sector2TimeMsPart,
                      float bestLapTime, int bestLapNum, int bestLapSector1InMS, int bestLapSector2InMS,

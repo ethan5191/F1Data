@@ -14,6 +14,72 @@ import static org.mockito.Mockito.mockStatic;
 public class LapDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
+    @ValueSource(ints = Constants.YEAR_2019)
+    @DisplayName("Builds the Lap Data for 2019.")
+    void testBuild_lapData2019(int packetFormat) {
+        int bitMask8Count = 9;
+        int floatCount = 8;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
+            LapData result = LapDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(FLOAT_START, result.lastLapTime20());
+            assertEquals(FLOAT_START + 1, result.currentLapTime20());
+            assertEquals(FLOAT_START + 2, result.bestLapTime());
+            assertEquals(FLOAT_START + 3, result.sector1Time());
+            assertEquals(FLOAT_START + 4, result.sector2Time());
+            assertEquals(FLOAT_START + 5, result.lapDistance());
+            assertEquals(FLOAT_START + 6, result.safetyCarDelta());
+            assertEquals(BIT_8_START, result.carPosition());
+            assertEquals(BIT_8_START + 1, result.currentLapNum());
+            assertEquals(BIT_8_START + 2, result.pitStatus());
+            assertEquals(BIT_8_START + 3, result.sector());
+            assertEquals(BIT_8_START + 4, result.currentLapInvalid());
+            assertEquals(BIT_8_START + 5, result.penalties());
+            assertEquals(BIT_8_START + 6, result.gridPosition());
+            assertEquals(BIT_8_START + 7, result.driverStatus());
+            assertEquals(BIT_8_START + 8, result.resultStatus());
+
+            assertEquals(0, result.sector1TimeMsPart());
+            assertEquals(0, result.sector2TimeMsPart());
+            assertEquals(0, result.bestLapNum());
+            assertEquals(0, result.bestLapSector1InMS());
+            assertEquals(0, result.bestLapSector2InMS());
+            assertEquals(0, result.bestLapSector3InMS());
+            assertEquals(0, result.bestOverallSector1InMS());
+            assertEquals(0, result.bestOverallSector1LapNum());
+            assertEquals(0, result.bestOverallSector2InMS());
+            assertEquals(0, result.bestOverallSector2LapNum());
+            assertEquals(0, result.bestOverallSector3InMS());
+            assertEquals(0, result.bestOverallSector3LapNum());
+            assertEquals(0, result.totalDistance());
+
+            //Params not used in 2020
+            assertEquals(0, result.lastLapTimeMs());
+            assertEquals(0, result.currentLapTimeMs());
+            assertEquals(0, result.sector1TimeMinutesPart());
+            assertEquals(0, result.sector2TimeMinutesPart());
+            assertEquals(0, result.deltaCarInFrontMsPart());
+            assertEquals(0, result.deltaCarInFrontMinutesPart());
+            assertEquals(0, result.deltaRaceLeaderMsPart());
+            assertEquals(0, result.deltaRaceLeaderMinutesPart());
+            assertEquals(0, result.numPitStops());
+            assertEquals(0, result.totalWarnings());
+            assertEquals(0, result.cornerCuttingWarnings());
+            assertEquals(0, result.numUnservedDriveThroughPens());
+            assertEquals(0, result.numUnservedStopGoPens());
+            assertEquals(0, result.pitLaneTimeActive());
+            assertEquals(0, result.pitLaneTimerInLaneInMs());
+            assertEquals(0, result.pitStopTimerInMS());
+            assertEquals(0, result.pitStopShouldServePen());
+            assertEquals(0, result.speedTrapFastestSpeed());
+            assertEquals(0, result.speedTrapFastestLap());
+            assertEquals(0, result.warnings());
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2020)
     @DisplayName("Builds the Lap Data for 2020.")
     void testBuild_lapData2020(int packetFormat) {
@@ -75,6 +141,8 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.speedTrapFastestSpeed());
             assertEquals(0, result.speedTrapFastestLap());
             assertEquals(0, result.warnings());
+            assertEquals(0, result.sector1Time());
+            assertEquals(0, result.sector2Time());
         }
     }
 
@@ -128,6 +196,8 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.cornerCuttingWarnings());
             assertEquals(0, result.speedTrapFastestSpeed());
             assertEquals(0, result.speedTrapFastestLap());
+            assertEquals(0, result.sector1Time());
+            assertEquals(0, result.sector2Time());
             lapData2020(result);
         }
     }
@@ -182,6 +252,8 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.speedTrapFastestSpeed());
             assertEquals(0, result.speedTrapFastestLap());
             assertEquals(0, result.warnings());
+            assertEquals(0, result.sector1Time());
+            assertEquals(0, result.sector2Time());
             lapData2020(result);
         }
     }
@@ -236,6 +308,8 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_8_START + 20, result.speedTrapFastestLap());
 
             assertEquals(0, result.warnings());
+            assertEquals(0, result.sector1Time());
+            assertEquals(0, result.sector2Time());
             lapData2020(result);
         }
     }
