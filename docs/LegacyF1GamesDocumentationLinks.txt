@@ -1,0 +1,8 @@
+F1 2019 UDP documentation: 
+https://f1-2019-telemetry.readthedocs.io/en/latest/telemetry-specification.html
+
+F1 2020 UDP documentation: 
+https://f1-2020-telemetry.readthedocs.io/en/stable/telemetry-specification.html
+
+F1 2021 UDP documentation:
+https://github.com/raweceek-temeletry/f1-2021-udp?tab=readme-ov-file#data-output-from-f1-2021
