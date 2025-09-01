@@ -8,11 +8,11 @@ public class CarTelemetryDataFactory {
 
     public static CarTelemetryData build(int packetFormat, ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case Constants.YEAR_2020:
-                CarTelemetryData.CarTelemetryData20 c20 = new CarTelemetryData.CarTelemetryData20(byteBuffer);
-                yield new CarTelemetryData(c20.speed(), c20.throttle(), c20.steer(), c20.brake(), c20.clutch(), c20.gear(), c20.engineRPM(),
-                        c20.drs(), c20.revLightPercent(), c20.brakeTemps(), c20.tireSurfaceTemps(), c20.tireInnerTemps(), c20.engineTemp(),
-                        c20.tirePressure(), c20.surfaceType(), 0);
+            case Constants.YEAR_2019, Constants.YEAR_2020:
+                CarTelemetryData.CarTelemetryData19 c19 = new CarTelemetryData.CarTelemetryData19(packetFormat, byteBuffer);
+                yield new CarTelemetryData(c19.speed(), c19.throttle(), c19.steer(), c19.brake(), c19.clutch(), c19.gear(), c19.engineRPM(),
+                        c19.drs(), c19.revLightPercent(), c19.brakeTemps(), c19.tireSurfaceTemps(), c19.tireInnerTemps(), c19.engineTemp(),
+                        c19.tirePressure(), c19.surfaceType(), 0);
             case Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024,
                  Constants.YEAR_2025:
                 CarTelemetryData.CarTelemetryData21 c21 = new CarTelemetryData.CarTelemetryData21(byteBuffer);
