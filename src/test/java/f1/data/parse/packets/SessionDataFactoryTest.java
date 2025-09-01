@@ -22,6 +22,69 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     private static final int WEATHER_FORECAST_24_NEWER_SIZE = 64;
 
     @ParameterizedTest
+    @ValueSource(ints = Constants.YEAR_2019)
+    @DisplayName("Builds the Session Data for 2019.")
+    void testBuild_sessionData2019(int packetFormat) {
+        int bitMask8Count = 12;
+        int bitMask8CountWeather = 1;//Extra param to ensure that the weather bitMask values all have the same data, easier to check this way.
+        int bitMask16Count = 3;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count + bitMask8CountWeather);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            FactoryTestHelper.mockSingleGetValue(mockByteBuffer, SINGLE_GET_VAL - 1);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, MARSHAL_ZONE_SIZE);
+            SessionData result = SessionDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(BIT_8_START, result.weather());
+            assertEquals(SINGLE_GET_VAL, result.trackTemperature());
+            assertEquals(SINGLE_GET_VAL, result.airTemperature());
+            assertEquals(BIT_8_START + 1, result.totalLaps());
+            assertEquals(BIT_16_START, result.trackLength());
+            assertEquals(BIT_8_START + 2, result.sessionType());
+            assertEquals(SINGLE_GET_VAL, result.trackId());
+            assertEquals(BIT_8_START + 3, result.formula());
+            assertEquals(BIT_16_START + 1, result.sessionTimeLeft());
+            assertEquals(BIT_16_START + 2, result.sessionDuration());
+            assertEquals(BIT_8_START + 4, result.pitSpeedLimit());
+            assertEquals(BIT_8_START + 5, result.gamePaused());
+            assertEquals(BIT_8_START + 6, result.isSpectating());
+            assertEquals(BIT_8_START + 7, result.spectatorCarIndex());
+            assertEquals(BIT_8_START + 8, result.sliProNativeSupport());
+            assertEquals(BIT_8_START + 9, result.numMarshalZones());
+            verifyMarshalZones(result, SINGLE_GET_VAL);
+            assertEquals(BIT_8_START + 10, result.safetyCarStatus());
+            assertEquals(BIT_8_START + 11, result.networkGame());
+
+            //params that didn't exist in 2019
+            assertEquals(0, result.numWeatherForecastSamples());
+            assertNull(result.weatherForecastSamples());
+            assertEquals(0, result.forecastAccuracy());
+            assertEquals(0, result.aiDifficulty());
+            assertEquals(0, result.seasonLinkIdentifier());
+            assertEquals(0, result.weekendLinkIdentifier());
+            assertEquals(0, result.sessionLinkIdentifier());
+            assertEquals(0, result.pitStopWindowIdealLap());
+            assertEquals(0, result.pitStopWindowLatestLap());
+            assertEquals(0, result.pitStopRejoinPosition());
+            assertNull(result.assistData());
+            assertEquals(0, result.gameMode());
+            assertEquals(0, result.ruleSet());
+            assertEquals(0, result.timeOfDay());
+            assertEquals(0, result.sessionLength());
+            assertEquals(0, result.speedUnitsLeadPlayer());
+            assertEquals(0, result.tempUnitsLeadPlayer());
+            assertEquals(0, result.speedUnitsSecondaryPlayer());
+            assertEquals(0, result.tempUnitsSecondaryPlayer());
+            assertEquals(0, result.numSafetyCarPeriods());
+            assertEquals(0, result.numVirtualSafetyCarPeriods());
+            assertEquals(0, result.numRedFlagPeriods());
+            assertNull(result.gameModeData());
+            assertEquals(0, result.sector2LapDistanceStart());
+            assertEquals(0, result.sector3LapDistanceStart());
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2020)
     @DisplayName("Builds the Session Data for 2020.")
     void testBuild_sessionData2020(int packetFormat) {

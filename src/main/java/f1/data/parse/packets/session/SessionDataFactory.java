@@ -8,6 +8,9 @@ public class SessionDataFactory {
 
     public static SessionData build(int packetFormat, ByteBuffer byteBuffer) {
         return switch (packetFormat) {
+            case Constants.YEAR_2019:
+                SessionData.SessionData19 s19 = new SessionData.SessionData19(byteBuffer);
+                yield new SessionData(s19.weather(), s19.trackTemperature(), s19.airTemperature(), s19.totalLaps(), s19.trackLength(), s19.sessionType(), s19.trackId(), s19.formula(), s19.sessionTimeLeft(), s19.sessionDuration(), s19.pitSpeedLimit(), s19.gamePaused(), s19.isSpectating(), s19.spectatorCarIndex(), s19.sliProNativeSupport(), s19.numMarshalZones(), s19.marshalZones(), s19.safetyCarStatus(), s19.networkGame(), 0, null, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0);
             case Constants.YEAR_2020:
                 SessionData.SessionData20 s20 = new SessionData.SessionData20(byteBuffer);
                 yield new SessionData(s20.weather(), s20.trackTemperature(), s20.airTemperature(), s20.totalLaps(), s20.trackLength(), s20.sessionType(), s20.trackId(), s20.formula(), s20.sessionTimeLeft(), s20.sessionDuration(), s20.pitSpeedLimit(), s20.gamePaused(), s20.isSpectating(), s20.spectatorCarIndex(), s20.sliProNativeSupport(), s20.numMarshalZones(), s20.marshalZones(), s20.safetyCarStatus(), s20.networkGame(), s20.numWeatherForecastSamples(), s20.weatherForecastSamples(), 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, 0, 0);
