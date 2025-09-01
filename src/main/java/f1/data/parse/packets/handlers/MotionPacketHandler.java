@@ -20,7 +20,8 @@ public class MotionPacketHandler implements PacketHandler {
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            final int arraySize = (this.packetFormat <= Constants.YEAR_2019) ? 20 : Constants.F1_25_AND_EARLIER_CAR_COUNT;
+            for (int i = 0; i < arraySize; i++) {
                 MotionData md = new MotionData(byteBuffer);
             }
             //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
