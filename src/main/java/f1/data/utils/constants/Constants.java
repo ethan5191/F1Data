@@ -76,4 +76,6 @@ public class Constants {
 
     public static final String SAVE_SESSIONS = "SessionSaves";
     public static final String USER_DIR = "user.dir";
+
+    public static final int SPACING = 5;
 }

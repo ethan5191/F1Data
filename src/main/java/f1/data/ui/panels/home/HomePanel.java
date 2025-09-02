@@ -3,7 +3,7 @@ package f1.data.ui.panels.home;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.save.SaveSessionDataWrapper;
-import f1.data.save.ViewSavedSessionDataHandler;
+import f1.data.save.view.ViewSavedSessionDataHandler;
 import f1.data.ui.panels.Panel;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
