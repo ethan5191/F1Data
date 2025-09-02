@@ -5,6 +5,7 @@
   - [Telemetry Setup](#telemetry-setup) 
   - [Running from an IDE](#running-from-an-ide)
   - [Building and Running](#building-and-running-the-application)
+  - [Logging](#logging)
 - [Current Features](#current-features)  
   - [Save Data](#save-data)
 - [Architecture Overview](#architecture-overview)  
@@ -44,20 +45,38 @@ Make sure the game is configured to send telemetry data:
 
 ### Building and Running the Application
 
-To build a standalone, executable version of this application, use the Maven command line tool.
+Java 17 or later must be installed to run this application.
 
-    Open your terminal or command prompt and navigate to the project's root directory.
-    Run the following command to build the .jar file:
-         mvn clean package
-    Once the build is complete, you will find the executable .jar file in the target/ directory.
+To build the artifact, use the provided script:
 
-You can then run the application from the command line using the following command:
-  
-    java -jar your-app-name.jar
+    Windows: run build.bat by double-clicking it.
+    Linux/Mac: run build.sh (currently untested).
 
-This project is in active development. While some telemetry data is still printed to the console for debugging, the primary focus has shifted to rendering data in dedicated UI components.
+The script will open a console window and display the build process. Once it finishes, you can close that console.
 
-The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage.  
+After the build, a target directory will appear. 
+
+    Inside it, you’ll find a start.bat script (Linux/Mac start.sh is not yet available). 
+    Double-click start.bat to launch the JAR. 
+    A new console window will open—do not close this window while the application is running, as it will terminate the app.
+
+The data processing logic runs continuously in the background, regardless of a component's visibility. This allows for dynamic control of the UI, such as showing or hiding panels based on whether the car is on the track or in the garage. 
+
+### Logging
+
+The application writes log messages to a file located at:
+
+    <user home>/F1Data/logs
+
+A new log file is created each day to keep individual files from getting too large.
+
+Currently, the log records:
+
+    When the application starts
+    When it ends
+    Any exceptions encountered
+    When packet drops occur
+
 [Back to top](#table-of-contents)
 ___
 
