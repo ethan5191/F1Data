@@ -118,10 +118,17 @@ public class F1SessionInitializer {
     }
 
     private void packetsLoaded(Integer packetFormat) {
-        ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
-        for (int i = 1; i < this.container.getChildren().size(); i++) {
-            if (this.container.getChildren().get(i) instanceof CheckBox) {
-                ((CheckBox) this.container.getChildren().get(i)).setDisable(false);
+        if (packetFormat <= Constants.YEAR_2019) {
+            ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat + " (No Speed Trap data in this year).");
+        } else {
+            ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
+        }
+        for (int i = this.container.getChildren().size() - 1; i >= 0; i--) {
+            if (this.container.getChildren().get(i) instanceof CheckBox current) {
+                boolean isSpeedTrapBox = current.getText().contains("Speed Trap");
+                if (packetFormat > Constants.YEAR_2019 || !isSpeedTrapBox) {
+                    current.setDisable(false);
+                }
             }
         }
     }
