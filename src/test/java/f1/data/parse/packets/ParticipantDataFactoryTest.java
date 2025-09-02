@@ -16,9 +16,9 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     private final int POST_2025_NAME_LENGTH = 32;
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2020)
-    @DisplayName("Builds the Participant Data for 2020.")
-    void testBuild_participantData2020(int packetFormat) {
+    @ValueSource(ints = {Constants.YEAR_2019, Constants.YEAR_2020})
+    @DisplayName("Builds the Participant Data for 2019 and 2020.")
+    void testBuild_participantData2019And2020(int packetFormat) {
         int bitMask8Count = 6;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);

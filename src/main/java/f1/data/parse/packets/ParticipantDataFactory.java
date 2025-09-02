@@ -10,10 +10,10 @@ public class ParticipantDataFactory {
     public static ParticipantData build(int packetFormat, ByteBuffer byteBuffer) {
         int nameLength = (packetFormat < Constants.YEAR_2025) ? 48 : 32;
         return switch (packetFormat) {
-            case Constants.YEAR_2020:
-                ParticipantData.ParticipantData20 p20 = new ParticipantData.ParticipantData20(nameLength, byteBuffer);
-                yield new ParticipantData(p20.aiControlled(), p20.driverId(), p20.teamId(), p20.raceNumber(), p20.nationality(),
-                        p20.name(), p20.yourTelemetry(), 0, 0, 0, 0, 0, buildLastName(p20.name()));
+            case Constants.YEAR_2019, Constants.YEAR_2020:
+                ParticipantData.ParticipantData19 p19 = new ParticipantData.ParticipantData19(nameLength, byteBuffer);
+                yield new ParticipantData(p19.aiControlled(), p19.driverId(), p19.teamId(), p19.raceNumber(), p19.nationality(),
+                        p19.name(), p19.yourTelemetry(), 0, 0, 0, 0, 0, buildLastName(p19.name()));
             case Constants.YEAR_2021, Constants.YEAR_2022:
                 ParticipantData.ParticipantData21 p21 = new ParticipantData.ParticipantData21(nameLength, byteBuffer);
                 yield new ParticipantData(p21.aiControlled(), p21.driverId(), p21.teamId(), p21.raceNumber(), p21.nationality(),

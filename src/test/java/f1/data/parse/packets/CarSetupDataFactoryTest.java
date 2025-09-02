@@ -14,6 +14,43 @@ import static org.mockito.Mockito.mockStatic;
 public class CarSetupDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
+    @ValueSource(ints = {Constants.YEAR_2019})
+    @DisplayName("Builds the Car Setup Data for 2019.")
+    void testBuild_carSetup2019(int packetFormat) {
+        int bitMask8Count = 13;
+        int floatCount = 7;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
+            CarSetupData result = CarSetupDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(1, result.frontWing());
+            assertEquals(2, result.rearWing());
+            assertEquals(3, result.onThrottle());
+            assertEquals(4, result.offThrottle());
+            assertEquals(100, result.frontCamber());
+            assertEquals(101, result.rearCamber());
+            assertEquals(102, result.frontToe());
+            assertEquals(103, result.rearToe());
+            assertEquals(5, result.frontSusp());
+            assertEquals(6, result.rearSusp());
+            assertEquals(7, result.frontARB());
+            assertEquals(8, result.rearARB());
+            assertEquals(9, result.frontHeight());
+            assertEquals(10, result.rearHeight());
+            assertEquals(11, result.brakePressure());
+            assertEquals(12, result.brakeBias());
+            assertEquals(104, result.frontLeftPressure());
+            assertEquals(104, result.frontRightPressure());
+            assertEquals(105, result.rearLeftPressure());
+            assertEquals(105, result.rearRightPressure());
+            assertEquals(13, result.ballast());
+            assertEquals(106, result.fuelLoad());
+            assertEquals(0, result.engineBraking());
+        }
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023})
     @DisplayName("Builds the Car Setup Data from 2020 to 2023.")
     void testBuild_carSetup2020To2023(int packetFormat) {

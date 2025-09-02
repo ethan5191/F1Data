@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 /**
  * F1 24 CarSetupData Breakdown (Little Endian)
  * <p>
+ * - F1 2019 Length: 41 bytes
  * - F1 2020-2023 Length: 49 bytes
  * - F1 2024/2025 Length: 50 bytes
  * This struct is 50 bytes long and contains data about a single car's setup.
@@ -51,6 +52,20 @@ public record CarSetupData(int frontWing, int rearWing, int onThrottle, int offT
                            int rearARB, int frontHeight, int rearHeight, int brakePressure, int brakeBias,
                            float rearLeftPressure, float rearRightPressure, float frontLeftPressure,
                            float frontRightPressure, int ballast, float fuelLoad, int engineBraking) {
+
+    record CarSetupData19(int frontWing, int rearWing, int onThrottle, int offThrottle, float frontCamber,
+                          float rearCamber, float frontToe, float rearToe, int frontSusp, int rearSusp, int frontARB,
+                          int rearARB, int frontHeight, int rearHeight, int brakePressure, int brakeBias,
+                          float frontTirePressure, float rearTirePressure, int ballast, float fuelLoad) {
+        public CarSetupData19(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.getFloat(), byteBuffer.getFloat(), byteBuffer.getFloat(),
+                    byteBuffer.getFloat(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(), byteBuffer.getFloat(), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.getFloat());
+        }
+    }
 
     record CarSetupData20(int frontWing, int rearWing, int onThrottle, int offThrottle, float frontCamber,
                           float rearCamber, float frontToe, float rearToe, int frontSusp, int rearSusp, int frontARB,

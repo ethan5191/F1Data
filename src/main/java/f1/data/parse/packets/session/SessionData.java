@@ -8,6 +8,7 @@ import f1.data.utils.BitMaskUtils;
 import java.nio.ByteBuffer;
 
 /**
+ * - F1 2019 Length: 149 bytes
  * - F1 2020 Length: 227 bytes
  * - F1 2021 Length: 601 bytes
  * - F1 2022 Length: 608 bytes
@@ -21,25 +22,25 @@ import java.nio.ByteBuffer;
  * Member Name                    | Data Type | Size (bytes) | First Appeared | Notes
  * -------------------------------|-----------|--------------|----------------|----------------------------------------------------------------------------------
  * m_header                       | struct    | ---          |                | Header
- * - m_weather                    | uint8     | 1            | 2020           | Weather - 0 = clear, 1 = light cloud, 2 = overcast, 3 = light rain, 4 = heavy rain, 5 = storm
- * - m_trackTemperature           | int8      | 1            | 2020           | Track temp. in degrees celsius
- * - m_airTemperature             | int8      | 1            | 2020           | Air temp. in degrees celsius
- * - m_totalLaps                  | uint8     | 1            | 2020           | Total number of laps in this race
- * - m_trackLength                | uint16    | 2            | 2020           | Track length in metres
- * - m_sessionType                | uint8     | 1            | 2020           | 0 = unknown, see appendix
- * - m_trackId                    | int8      | 1            | 2020           | -1 for unknown, see appendix
- * - m_formula                    | uint8     | 1            | 2020           | Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2, 3 = F1 Generic, 4 = Beta, 6 = Esports, 8 = F1 World, 9 = F1 Elimination
- * - m_sessionTimeLeft            | uint16    | 2            | 2020           | Time left in session in seconds
- * - m_sessionDuration            | uint16    | 2            | 2020           | Session duration in seconds
- * - m_pitSpeedLimit              | uint8     | 1            | 2020           | Pit speed limit in kilometres per hour
- * - m_gamePaused                 | uint8     | 1            | 2020           | Whether the game is paused – network game only
- * - m_isSpectating               | uint8     | 1            | 2020           | Whether the player is spectating
- * - m_spectatorCarIndex          | uint8     | 1            | 2020           | Index of the car being spectated
- * - m_sliProNativeSupport        | uint8     | 1            | 2020           | SLI Pro support, 0 = inactive, 1 = active
- * - m_numMarshalZones            | uint8     | 1            | 2020           | Number of marshal zones to follow
- * - m_marshalZones[21]           | struct    | 105          | 2020           | List of marshal zones – max 21
- * - m_safetyCarStatus            | uint8     | 1            | 2020           | 0 = no safety car, 1 = full, 2 = virtual, 3 = formation lap
- * - m_networkGame                | uint8     | 1            | 2020           | 0 = offline, 1 = online
+ * - m_weather                    | uint8     | 1            | 2019           | Weather - 0 = clear, 1 = light cloud, 2 = overcast, 3 = light rain, 4 = heavy rain, 5 = storm
+ * - m_trackTemperature           | int8      | 1            | 2019           | Track temp. in degrees celsius
+ * - m_airTemperature             | int8      | 1            | 2019           | Air temp. in degrees celsius
+ * - m_totalLaps                  | uint8     | 1            | 2019           | Total number of laps in this race
+ * - m_trackLength                | uint16    | 2            | 2019           | Track length in metres
+ * - m_sessionType                | uint8     | 1            | 2019           | 0 = unknown, see appendix
+ * - m_trackId                    | int8      | 1            | 2019           | -1 for unknown, see appendix
+ * - m_formula                    | uint8     | 1            | 2019           | Formula, 0 = F1 Modern, 1 = F1 Classic, 2 = F2, 3 = F1 Generic, 4 = Beta, 6 = Esports, 8 = F1 World, 9 = F1 Elimination
+ * - m_sessionTimeLeft            | uint16    | 2            | 2019           | Time left in session in seconds
+ * - m_sessionDuration            | uint16    | 2            | 2019           | Session duration in seconds
+ * - m_pitSpeedLimit              | uint8     | 1            | 2019           | Pit speed limit in kilometres per hour
+ * - m_gamePaused                 | uint8     | 1            | 2019           | Whether the game is paused – network game only
+ * - m_isSpectating               | uint8     | 1            | 2019           | Whether the player is spectating
+ * - m_spectatorCarIndex          | uint8     | 1            | 2019           | Index of the car being spectated
+ * - m_sliProNativeSupport        | uint8     | 1            | 2019           | SLI Pro support, 0 = inactive, 1 = active
+ * - m_numMarshalZones            | uint8     | 1            | 2019           | Number of marshal zones to follow
+ * - m_marshalZones[21]           | struct    | 105          | 2019           | List of marshal zones – max 21
+ * - m_safetyCarStatus            | uint8     | 1            | 2019           | 0 = no safety car, 1 = full, 2 = virtual, 3 = formation lap
+ * - m_networkGame                | uint8     | 1            | 2019           | 0 = offline, 1 = online
  * - m_numWeatherForecastSamples  | uint8     | 1            | 2020           | Number of weather samples to follow
  * - m_weatherForecastSamples[64] | struct    | 512          | 2020           | Array of weather forecast samples
  * - m_forecastAccuracy           | uint8     | 1            | 2021           | 0 = Perfect, 1 = Approximate
@@ -154,6 +155,16 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
             results[i] = new WeatherForecastSampleData(w21.sessionType(), w21.timeOffset(), w21.weather(), w21.trackTemperature(), w21.trackTemperatureChange(), w21.airTemperature(), w21.airTemperatureChange(), w21.rainPercentage());
         }
         return results;
+    }
+
+    public record SessionData19(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame) {
+        public SessionData19(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()));
+        }
     }
 
     public record SessionData20(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,

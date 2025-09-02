@@ -3,6 +3,7 @@ package f1.data.parse.packets.handlers;
 import f1.data.parse.packets.MotionData;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.utils.ParseUtils;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -20,7 +21,8 @@ public class MotionPacketHandler implements PacketHandler {
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            int arraySize = Util.findArraySize(this.packetFormat);
+            for (int i = 0; i < arraySize; i++) {
                 MotionData md = new MotionData(byteBuffer);
             }
             //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.

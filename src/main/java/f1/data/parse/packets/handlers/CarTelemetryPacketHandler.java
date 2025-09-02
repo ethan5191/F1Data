@@ -5,6 +5,7 @@ import f1.data.parse.packets.CarTelemetryDataFactory;
 import f1.data.parse.packets.PacketUtils;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.utils.BitMaskUtils;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -23,7 +24,8 @@ public class CarTelemetryPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            int arraySize = Util.findArraySize(this.packetFormat);
+            for (int i = 0; i < arraySize; i++) {
                 CarTelemetryData ctd = CarTelemetryDataFactory.build(packetFormat, byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentTelemetry(ctd);
@@ -35,8 +37,10 @@ public class CarTelemetryPacketHandler implements PacketHandler {
         if (packetFormat <= Constants.YEAR_2020) {
             EventPacketHandler.handle2020ButtonEvent(packetFormat, byteBuffer, participants);
         }
-        int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
-        int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
-        int suggestedGear = byteBuffer.get();
+        if (packetFormat >= Constants.YEAR_2020) {
+            int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());
+            int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
+            int suggestedGear = byteBuffer.get();
+        }
     }
 }

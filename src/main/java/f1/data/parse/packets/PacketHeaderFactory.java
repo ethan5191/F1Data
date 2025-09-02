@@ -10,6 +10,10 @@ public class PacketHeaderFactory {
     public static PacketHeader build(ByteBuffer byteBuffer) {
         int packetFormat = BitMaskUtils.bitMask16(byteBuffer.getShort());
         return switch (packetFormat) {
+            case Constants.YEAR_2019:
+                PacketHeader.PacketHeader19 p19 = new PacketHeader.PacketHeader19(packetFormat, byteBuffer);
+                yield new PacketHeader(packetFormat, p19.majorVersion(), p19.minorVersion(), p19.packetVersion(), p19.packetId(),
+                        p19.sessionUID(), p19.sessionTime(), p19.frameID(), p19.playerCarIndex(), 0, 0, 0L);
             case Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022:
                 PacketHeader.PacketHeader20 p20 = new PacketHeader.PacketHeader20(packetFormat, byteBuffer);
                 yield new PacketHeader(packetFormat, p20.majorVersion(), p20.minorVersion(), p20.packetVersion(), p20.packetId(),

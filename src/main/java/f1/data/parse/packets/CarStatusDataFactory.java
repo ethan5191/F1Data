@@ -8,6 +8,14 @@ public class CarStatusDataFactory {
 
     public static CarStatusData build(int packetFormat, ByteBuffer byteBuffer) {
         return switch (packetFormat) {
+            case Constants.YEAR_2019:
+                CarStatusData.CarStatusData19 c19 = new CarStatusData.CarStatusData19(byteBuffer);
+                yield new CarStatusData(c19.tractionControl(), c19.antiLockBrakes(), c19.fuelMix(), c19.frontBrakeBias(), c19.pitLimitStatus(),
+                        c19.fuelInTank(), c19.fuelCapacity(), c19.fuelRemainingLaps(), c19.maxRPM(), c19.idleRPM(), c19.maxGears(), c19.drsAllowed(),
+                        0, c19.actualTireCompound(), c19.visualTireCompound(), 0, c19.vehicleFiaFlags(),
+                        c19.ersStoreEnergy(), c19.ersDeployMode(), c19.ersHarvestedThisLapMGUK(), c19.ersHarvestedThisLapMGUH(), c19.ersDeployedThisLap(),
+                        0, 0, 0, c19.tyresWear(), c19.tyresDamage(), c19.frontLeftWingDamage(), c19.frontRightWingDamage(),
+                        c19.rearWingDamage(), 0, c19.engineDamage(), c19.gearBoxDamage());
             case Constants.YEAR_2020:
                 CarStatusData.CarStatusData20 c20 = new CarStatusData.CarStatusData20(byteBuffer);
                 yield new CarStatusData(c20.tractionControl(), c20.antiLockBrakes(), c20.fuelMix(), c20.frontBrakeBias(), c20.pitLimitStatus(),

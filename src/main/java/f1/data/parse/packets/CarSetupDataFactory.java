@@ -8,6 +8,12 @@ public class CarSetupDataFactory {
 
     public static CarSetupData build(int packetFormat, ByteBuffer byteBuffer) {
         return switch (packetFormat) {
+            case Constants.YEAR_2019:
+                CarSetupData.CarSetupData19 c19 = new CarSetupData.CarSetupData19(byteBuffer);
+                yield new CarSetupData(c19.frontWing(), c19.rearWing(), c19.onThrottle(), c19.offThrottle(), c19.frontCamber(), c19.rearCamber(),
+                        c19.frontToe(), c19.rearToe(), c19.frontSusp(), c19.rearSusp(), c19.frontARB(), c19.rearARB(), c19.frontHeight(),
+                        c19.rearHeight(), c19.brakePressure(), c19.brakeBias(), c19.rearTirePressure(), c19.rearTirePressure(),
+                        c19.frontTirePressure(), c19.frontTirePressure(), c19.ballast(), c19.fuelLoad(), 0);
             case Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023:
                 CarSetupData.CarSetupData20 c20 = new CarSetupData.CarSetupData20(byteBuffer);
                 yield new CarSetupData(c20.frontWing(), c20.rearWing(), c20.onThrottle(), c20.offThrottle(), c20.frontCamber(), c20.rearCamber(),

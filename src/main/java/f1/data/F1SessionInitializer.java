@@ -9,6 +9,7 @@ import f1.data.parse.packets.ParticipantDataFactory;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.ui.panels.home.HomePanel;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
@@ -69,7 +70,8 @@ public class F1SessionInitializer {
                         numActiveCars.set((int) buffer.get());
                         List<ParticipantData> participants = new ArrayList<>();
                         //Loop over the packet and create objects for each record in the array.
-                        for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+                        int arraySize = Util.findArraySize(ph.packetFormat());
+                        for (int i = 0; i < arraySize; i++) {
                             ParticipantData pd = ParticipantDataFactory.build(ph.packetFormat(), buffer);
                             //If race number isn't greater than 0 then its not an actual participant but a placeholder, so don't add to the list.
                             if (pd.raceNumber() > 0) {
@@ -116,10 +118,17 @@ public class F1SessionInitializer {
     }
 
     private void packetsLoaded(Integer packetFormat) {
-        ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
-        for (int i = 1; i < this.container.getChildren().size(); i++) {
-            if (this.container.getChildren().get(i) instanceof CheckBox) {
-                ((CheckBox) this.container.getChildren().get(i)).setDisable(false);
+        if (packetFormat <= Constants.YEAR_2019) {
+            ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat + " (No Speed Trap data in this year).");
+        } else {
+            ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
+        }
+        for (int i = this.container.getChildren().size() - 1; i >= 0; i--) {
+            if (this.container.getChildren().get(i) instanceof CheckBox current) {
+                boolean isSpeedTrapBox = current.getText().contains("Speed Trap");
+                if (packetFormat > Constants.YEAR_2019 || !isSpeedTrapBox) {
+                    current.setDisable(false);
+                }
             }
         }
     }

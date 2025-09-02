@@ -5,6 +5,7 @@ import f1.data.parse.packets.CarStatusData;
 import f1.data.parse.packets.CarStatusDataFactory;
 import f1.data.parse.packets.PacketUtils;
 import f1.data.parse.telemetry.TelemetryData;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -23,7 +24,8 @@ public class CarStatusPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            for (int i = 0; i < Constants.F1_25_AND_EARLIER_CAR_COUNT; i++) {
+            int arraySize = Util.findArraySize(this.packetFormat);
+            for (int i = 0; i < arraySize; i++) {
                 CarStatusData csd = CarStatusDataFactory.build(packetFormat, byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentStatus(csd);
