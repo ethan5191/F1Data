@@ -31,8 +31,8 @@ public class IndividualLapSessionData {
     public IndividualLapSessionData(LapData ld, LapData prevLap, float speedTrap, float fuelUsedThisLap, float[] tireWearThisLap, CarStatusData csd) {
         this.lapNum = prevLap.currentLapNum();
         this.lapTimeInMs = determineLapTimeInMs(ld);
-        this.sector1InMs = convertSectorToFullMs(prevLap.sector1TimeMinutesPart(), prevLap.sector1TimeMsPart());
-        this.sector2InMs = convertSectorToFullMs(prevLap.sector2TimeMinutesPart(), prevLap.sector2TimeMsPart());
+        this.sector1InMs = populateSectorTimes(prevLap.sector1Time(), prevLap.sector1TimeMinutesPart(), prevLap.sector1TimeMsPart());
+        this.sector2InMs = populateSectorTimes(prevLap.sector2Time(), prevLap.sector2TimeMinutesPart(), prevLap.sector2TimeMsPart());
         this.sector3InMs = determineSector3TimeInMs(this.lapTimeInMs, this.sector1InMs.add(this.sector2InMs));
         this.speedTrap = speedTrap;
         this.fuelUsed = fuelUsedThisLap;
@@ -101,6 +101,15 @@ public class IndividualLapSessionData {
             return BigDecimal.valueOf(ld.lastLapTime20()).setScale(3, RoundingMode.HALF_UP);
         } else {
             return Util.roundDecimal(BigDecimal.valueOf(ld.lastLapTimeMs()));
+        }
+    }
+
+    //F1 2019 passed the sector times as full float values, so just round it to 3 decimal places. 2020 and later games used the minute/seconds params.
+    private BigDecimal populateSectorTimes(float legacySector, int minutesPart, int msPart) {
+        if (legacySector > 0) {
+            return BigDecimal.valueOf(legacySector).setScale(3, RoundingMode.HALF_UP);
+        } else {
+            return convertSectorToFullMs(minutesPart, msPart);
         }
     }
 
