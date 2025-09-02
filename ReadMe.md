@@ -14,6 +14,7 @@
   - [Data Consumers](#data-consumers)
 - [Compatibility Matrix](#game-compatibility-matrix)
 - [Game Specific Notes](#game-specific-notes)
+  - [F1 2019](#f1-2019)
   - [F1 2020](#f1-2020)
   - [F1 2020-2022](#f1-20202022)
   - [F1 2024](#f1-2024)
@@ -111,23 +112,34 @@ The application uses two primary data consumers to process specific telemetry da
 ___
 
 ## Game Compatibility Matrix
-| Game Version | Tested                               | Speed Trap Data                        | Tyre Wear Precision | Tyre Set Identification        | Notes                                            |
-|--------------|--------------------------------------|----------------------------------------|---------------------|--------------------------------|--------------------------------------------------|
-| **F1 2020**  | ✔                                    | Limited (only when new fastest is set) | Whole numbers only  | Compound only (Soft/Med/Hard)  | Workarounds implemented for traps & wear         |
-| **F1 2021**  | ✖ (untested)                         | Expected same as 2020                  | Whole numbers only  | Compound only                  | Untested, but should function                    |
-| **F1 2022**  | ✔ (tested in 2024 using 2022 format) | Expected same as 2020/2021             | Whole numbers only  | Compound only                  | Tested in F1 2024 using the 2022 packet format   |
-| **F1 2023**  | ✔ (tested in 2024 using 2023 format) | Full                                   | Whole numbers only  | Full tyre set via fitted index | Tested in F1 2024 using the 2023 packet format   |
-| **F1 2024**  | ✔                                    | Full                                   | With decimals       | Full tyre set via fitted index | Development baseline, known accelerated-time bug |
-| **F1 2025**  | ✖ (not tested)                       | Expected full                          | With decimals       | Full tyre set via fitted index | Pending release/testing                          |
+| Game Version | Tested                               | Speed Trap Data                        | Tyre Wear Precision | Tyre Set Identification        | Notes                                              |
+|--------------|--------------------------------------|----------------------------------------|---------------------|--------------------------------|----------------------------------------------------|
+| **F1 2019**  | ✔                                    | No Speed Trap data                     | Whole numbers only  | Compound only                  | No speed trap data, tire pressures were front/rear |
+| **F1 2020**  | ✔                                    | Limited (only when new fastest is set) | Whole numbers only  | Compound only (Soft/Med/Hard)  | Workarounds implemented for traps & wear           |
+| **F1 2021**  | ✔                                    | Full                                   | Whole numbers only  | Compound only                  | Tested                                             |
+| **F1 2022**  | ✔ (tested in 2024 using 2022 format) | Full                                   | Whole numbers only  | Compound only                  | Tested in F1 2024 using the 2022 packet format     |
+| **F1 2023**  | ✔ (tested in 2024 using 2023 format) | Full                                   | Whole numbers only  | Full tyre set via fitted index | Tested in F1 2024 using the 2023 packet format     |
+| **F1 2024**  | ✔                                    | Full                                   | With decimals       | Full tyre set via fitted index | Development baseline, known accelerated-time bug   |
+| **F1 2025**  | ✖ (not tested)                       | Full                                   | With decimals       | Full tyre set via fitted index | Pending release/testing                            |
   
 [Back to top](#table-of-contents)
 ___
 
 ## Game-Specific Notes
 
-    The application has been tested with F1 2020 and F1 2024.
-    In theory, it should work with all titles from F1 2020 through F1 2025, but F1 2021–2023 have not been fully verified, and F1 2025 has not been tested.
+    The application has been tested with from F1 2019 to F1 2024.
+    In theory it should work with F1 2025, but I have not tested it yet. 
     F1 2022 and 2023 have both been tested in F1 2024 using the specific years packet format. No issues have been found with either packet format in F1 '24.
+
+### F1 2019
+
+Speed Trap Data
+  
+    This generation of the game did not send speed trap data at all. So those panels are disabled. Right now the other data panels will show 0.0 as the speed.
+    
+Tire Pressures
+
+    This version of the game only had tire pressures for front and rear tires. That changed with 2020.
 
 ### F1 2020
 
