@@ -118,7 +118,9 @@ public class EventPacketHandler implements PacketHandler {
     public static void handle2020ButtonEvent(int packetFormat, ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
         long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
         //2020 special button press mapped to button P on the McLaren wheel.
-        if (buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON) {
+        //2019 special button mapped to the top left button the McLaren Wheel.
+        if ((buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON && packetFormat == Constants.YEAR_2020)
+                || (buttonEvent == Constants.F1_2019_TOP_LEFT_BTN && packetFormat == Constants.YEAR_2019)) {
             handleTestSave(packetFormat, participants);
             printLapAndSetupData(participants);
         }

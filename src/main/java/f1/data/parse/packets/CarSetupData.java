@@ -3,6 +3,7 @@ package f1.data.parse.packets;
 import f1.data.utils.BitMaskUtils;
 
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 
 /**
  * F1 24 CarSetupData Breakdown (Little Endian)
@@ -53,14 +54,20 @@ public record CarSetupData(int frontWing, int rearWing, int onThrottle, int offT
                            float rearLeftPressure, float rearRightPressure, float frontLeftPressure,
                            float frontRightPressure, int ballast, float fuelLoad, int engineBraking) {
 
+    private static float formatFloatValue(ByteBuffer byteBuffer) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        String formattedVal = df.format(byteBuffer.getFloat());
+        return Float.parseFloat(formattedVal);
+    }
+
     record CarSetupData19(int frontWing, int rearWing, int onThrottle, int offThrottle, float frontCamber,
                           float rearCamber, float frontToe, float rearToe, int frontSusp, int rearSusp, int frontARB,
                           int rearARB, int frontHeight, int rearHeight, int brakePressure, int brakeBias,
                           float frontTirePressure, float rearTirePressure, int ballast, float fuelLoad) {
         public CarSetupData19(ByteBuffer byteBuffer) {
             this(BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
-                    BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.getFloat(), byteBuffer.getFloat(), byteBuffer.getFloat(),
-                    byteBuffer.getFloat(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()), formatFloatValue(byteBuffer), formatFloatValue(byteBuffer), formatFloatValue(byteBuffer),
+                    formatFloatValue(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     byteBuffer.getFloat(), byteBuffer.getFloat(), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.getFloat());
@@ -74,8 +81,8 @@ public record CarSetupData(int frontWing, int rearWing, int onThrottle, int offT
                           float frontRightPressure, int ballast, float fuelLoad) {
         public CarSetupData20(ByteBuffer byteBuffer) {
             this(BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
-                    BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.getFloat(), byteBuffer.getFloat(), byteBuffer.getFloat(),
-                    byteBuffer.getFloat(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()), formatFloatValue(byteBuffer), formatFloatValue(byteBuffer), formatFloatValue(byteBuffer),
+                    formatFloatValue(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     byteBuffer.getFloat(), byteBuffer.getFloat(), byteBuffer.getFloat(), byteBuffer.getFloat(),
