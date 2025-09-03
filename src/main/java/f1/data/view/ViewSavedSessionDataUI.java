@@ -1,8 +1,9 @@
-package f1.data.save.view;
+package f1.data.view;
 
 import f1.data.save.IndividualLapSessionData;
 import f1.data.save.RunDataMapRecord;
 import f1.data.utils.constants.Constants;
+import f1.data.view.gridColumns.GridPaneColumn;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -23,10 +24,15 @@ public class ViewSavedSessionDataUI {
     private final VBox container = new VBox(Constants.SPACING);
     private final ViewSavedSessionDataService service;
 
-    private final Label[] runDataHeaders = {new Label("#"), new Label("Setup/Tire #"), new Label("Lap Time")};
-    private final VBox[] runDataBoxes = {new VBox(Constants.SPACING), new VBox(Constants.SPACING), new VBox(Constants.SPACING)};
-    private final Label[] speedTrapHeaders = {new Label("#"), new Label("Speed")};
-    private final VBox[] speedTrapBoxes = {new VBox(Constants.SPACING), new VBox(Constants.SPACING)};
+    private final GridPaneColumn[] runDataColumns = {
+            new GridPaneColumn(new Label("#"), new VBox(Constants.SPACING)),
+            new GridPaneColumn(new Label("Setup/Tire #"), new VBox(Constants.SPACING)),
+            new GridPaneColumn(new Label("Lap Time"), new VBox(Constants.SPACING))
+    };
+    private final GridPaneColumn[] speedTrapColumns = {
+            new GridPaneColumn(new Label("#"), new VBox(Constants.SPACING)),
+            new GridPaneColumn(new Label("Speed"), new VBox(Constants.SPACING))
+    };
 
     public ViewSavedSessionDataUI(ViewSavedSessionDataService service) {
         this.service = service;
@@ -38,12 +44,12 @@ public class ViewSavedSessionDataUI {
         ListView<String> driverList = initializeListView();
         GridPane grid = initializeGrid(driverList);
         this.container.getChildren().add(grid);
-        GridPane runData = initializeGrid(runDataHeaders, runDataBoxes);
+        GridPane runData = initializeGrid(runDataColumns);
         int colIndex = 1;
         grid.add(runData, colIndex++, 0);
         if (service.isHasSpeedTrapData()) {
             grid.add(new Separator(Orientation.VERTICAL), colIndex++, 0);
-            GridPane speedTrap = initializeGrid(speedTrapHeaders, speedTrapBoxes);
+            GridPane speedTrap = initializeGrid(speedTrapColumns);
             grid.add(speedTrap, colIndex, 0);
         }
         showScene();
@@ -70,13 +76,13 @@ public class ViewSavedSessionDataUI {
         return grid;
     }
 
-    private GridPane initializeGrid(Label[] headers, VBox[] boxes) {
+    private GridPane initializeGrid(GridPaneColumn[] columns) {
         GridPane pane = new GridPane();
         pane.setHgap(Constants.SPACING);
         pane.setVgap(Constants.SPACING);
-        for (int i = 0; i < headers.length; i++) {
-            pane.add(headers[i], i, 0);
-            pane.add(boxes[i], i, 1);
+        for (int i = 0; i < columns.length; i++) {
+            pane.add(columns[i].columnHeader(), i, 0);
+            pane.add(columns[i].content(), i, 1);
         }
         return pane;
     }
@@ -92,29 +98,29 @@ public class ViewSavedSessionDataUI {
         viewSavedStage.show();
     }
 
-    private void clearContent(VBox[] boxes) {
-        for (VBox box : boxes) {
-            box.getChildren().clear();
+    private void clearContent(GridPaneColumn[] columns) {
+        for (GridPaneColumn column : columns) {
+            column.content().getChildren().clear();
         }
     }
 
     private void addListener(ListView<String> driverList) {
         driverList.getSelectionModel().selectedItemProperty().addListener((selectedItem, oldValue, newValue) -> {
             if (newValue != null) {
-                clearContent(runDataBoxes);
+                clearContent(runDataColumns);
                 ViewSavedSessionData data = service.findSessionDataByName(newValue);
                 for (RunDataMapRecord run : data.getLapsForSetup()) {
                     for (IndividualLapSessionData lap : run.laps()) {
-                        runDataBoxes[0].getChildren().add(new Label(String.valueOf(lap.getLapNum())));
-                        runDataBoxes[1].getChildren().add(new Label(run.key().setupNumber() + "/" + run.key().fittedTireId()));
-                        runDataBoxes[2].getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
+                        runDataColumns[0].content().getChildren().add(new Label(String.valueOf(lap.getLapNum())));
+                        runDataColumns[1].content().getChildren().add(new Label(run.key().setupNumber() + "/" + run.key().fittedTireId()));
+                        runDataColumns[2].content().getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
                     }
                 }
                 if (service.isHasSpeedTrapData()) {
-                    clearContent(speedTrapBoxes);
+                    clearContent(speedTrapColumns);
                     for (Map.Entry<Integer, Float> entry : data.getSpeedTrapByLap().entrySet()) {
-                        speedTrapBoxes[0].getChildren().add(new Label(String.valueOf(entry.getKey())));
-                        speedTrapBoxes[1].getChildren().add(new Label(String.valueOf(entry.getValue())));
+                        speedTrapColumns[0].content().getChildren().add(new Label(String.valueOf(entry.getKey())));
+                        speedTrapColumns[1].content().getChildren().add(new Label(String.valueOf(entry.getValue())));
                     }
                 }
             }

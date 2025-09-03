@@ -1,4 +1,4 @@
-package f1.data.save.view;
+package f1.data.view;
 
 import f1.data.utils.constants.Constants;
 import javafx.scene.control.CheckBox;
