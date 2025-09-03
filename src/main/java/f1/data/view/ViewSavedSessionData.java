@@ -3,8 +3,10 @@ package f1.data.view;
 import f1.data.parse.packets.CarSetupData;
 import f1.data.save.RunDataMapRecord;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ViewSavedSessionData {
 
@@ -15,6 +17,13 @@ public class ViewSavedSessionData {
 
     public ViewSavedSessionData(String lastName) {
         this.lastName = lastName;
+    }
+
+    public ViewSavedSessionData(ViewSavedSessionData data) {
+        this.lastName = data.lastName;
+        this.speedTrapByLap = (data.speedTrapByLap != null) ? new TreeMap<>(data.speedTrapByLap) : new TreeMap<>();
+        this.setups = new ArrayList<>(data.setups);
+        this.lapsForSetup = new ArrayList<>(data.lapsForSetup);
     }
 
     public String getLastName() {

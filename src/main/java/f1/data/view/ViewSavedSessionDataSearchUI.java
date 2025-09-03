@@ -11,6 +11,7 @@ public class ViewSavedSessionDataSearchUI {
 
     private final ViewSavedSessionDataService service;
     private final HBox searchOptions = new HBox(Constants.SPACING);
+    private final ComboBox<String> setupNums = new ComboBox<>();
 
     private final String[] dryTires = {Constants.SUPER, Constants.SOFT, Constants.MEDIUM, Constants.HARD};
     private final String[] wetTires = {Constants.INTER, Constants.WET};
@@ -67,7 +68,6 @@ public class ViewSavedSessionDataSearchUI {
     private VBox buildSetupSearch() {
         VBox setup = new VBox(Constants.SPACING);
         setup.getChildren().add(new Label("Setup #"));
-        ComboBox<String> setupNums = new ComboBox<>();
         setupNums.setValue("");
         setupNums.setItems(service.getSetupOptions());
         setup.getChildren().add(setupNums);
@@ -77,5 +77,9 @@ public class ViewSavedSessionDataSearchUI {
     //returns the search options container.
     public HBox getSearchOptions() {
         return searchOptions;
+    }
+
+    public ComboBox<String> getSetupNums() {
+        return setupNums;
     }
 }
