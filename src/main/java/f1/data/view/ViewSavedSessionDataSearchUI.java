@@ -69,10 +69,7 @@ public class ViewSavedSessionDataSearchUI {
         setup.getChildren().add(new Label("Setup #"));
         ComboBox<String> setupNums = new ComboBox<>();
         setupNums.setValue("");
-        setupNums.getItems().add("");
-        for (int i = 0; i <= service.getMaxSetups(); i++) {
-            setupNums.getItems().add(String.valueOf(i));
-        }
+        setupNums.setItems(service.getSetupOptions());
         setup.getChildren().add(setupNums);
         return setup;
     }
