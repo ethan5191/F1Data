@@ -1,5 +1,5 @@
 #!/bin/bash
-if ! command -v java &> /dev/null
+if ! java --version &>/dev/null
 then
     echo "Java not found in PATH. Please install at least Java 17 and try again."
     read -p "Press any key to exit..."
