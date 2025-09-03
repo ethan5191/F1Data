@@ -1,5 +1,6 @@
 package f1.data.view;
 
+import f1.data.ui.panels.Panel;
 import f1.data.utils.constants.Constants;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -71,6 +72,9 @@ public class ViewSavedSessionDataSearchUI {
         setupNums.setValue("");
         setupNums.setItems(service.getSetupOptions());
         setup.getChildren().add(setupNums);
+        setupNums.valueProperty().addListener((observable, oldValue, newValue) -> {
+            service.setSetupId((!newValue.isEmpty()) ? newValue : null);
+        });
         return setup;
     }
 

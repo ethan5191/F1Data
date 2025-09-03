@@ -20,6 +20,8 @@ public class ViewSavedSessionDataService {
     private final ObservableList<String> setupOptions = FXCollections.observableArrayList("");
     private final int maxSetups;
 
+    private String setupId = null;
+
     public ViewSavedSessionDataService(SaveSessionDataWrapper data, String fileName) {
         this.data = data;
         this.fileName = fileName;
@@ -65,6 +67,10 @@ public class ViewSavedSessionDataService {
         return maxSetups;
     }
 
+    public void setSetupId(String setupId) {
+        this.setupId = setupId;
+    }
+
     //Takes the wrapper object and builds out a map so you can find data based on the drivers last name.
     private Map<String, ViewSavedSessionData> buildViewData(SaveSessionDataWrapper data) {
         Map<String, ViewSavedSessionData> savedSessionData = new HashMap<>(data.runData().size());
@@ -103,6 +109,12 @@ public class ViewSavedSessionDataService {
 
     //Used to find the save session data based on the last name clicked in the list view.
     public ViewSavedSessionData findSessionDataByName(String newValue) {
-        return this.savedSessionData.get(newValue);
+        if (this.setupId == null) {
+            return this.savedSessionData.get(newValue);
+        } else {
+            ViewSavedSessionData copy = new ViewSavedSessionData(this.savedSessionData.get(newValue));
+            copy.getLapsForSetup().removeIf(record -> record.key().setupNumber() != Integer.parseInt(this.setupId));
+            return copy;
+        }
     }
 }
