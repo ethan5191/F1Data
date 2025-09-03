@@ -1,4 +1,4 @@
-package f1.data.save.view;
+package f1.data.view;
 
 import f1.data.save.RunDataSessionData;
 import f1.data.save.SaveSessionDataWrapper;
@@ -17,6 +17,7 @@ public class ViewSavedSessionDataService {
     private final Map<String, ViewSavedSessionData> savedSessionData;
     private final ObservableList<String> drivers;
     private final ObservableList<String> dropdownOptions = FXCollections.observableArrayList("");
+    private final ObservableList<String> setupOptions = FXCollections.observableArrayList("");
     private final int maxSetups;
 
     public ViewSavedSessionDataService(SaveSessionDataWrapper data, String fileName) {
@@ -27,6 +28,9 @@ public class ViewSavedSessionDataService {
         this.drivers = FXCollections.observableArrayList(this.savedSessionData.keySet());
         this.dropdownOptions.addAll(this.drivers);
         this.maxSetups = findNumMaxSetups();
+        for (int i = 0; i <= this.maxSetups; i++) {
+            this.setupOptions.add(String.valueOf(i));
+        }
     }
 
     public String getFileName() {
@@ -53,10 +57,15 @@ public class ViewSavedSessionDataService {
         return dropdownOptions;
     }
 
+    public ObservableList<String> getSetupOptions() {
+        return setupOptions;
+    }
+
     public int getMaxSetups() {
         return maxSetups;
     }
 
+    //Takes the wrapper object and builds out a map so you can find data based on the drivers last name.
     private Map<String, ViewSavedSessionData> buildViewData(SaveSessionDataWrapper data) {
         Map<String, ViewSavedSessionData> savedSessionData = new HashMap<>(data.runData().size());
         for (RunDataSessionData runData : data.runData()) {
@@ -73,6 +82,7 @@ public class ViewSavedSessionDataService {
         return savedSessionData;
     }
 
+    //Finds the maximum number of setups used by a single driver.
     private int findNumMaxSetups() {
         int result = -1;
         for (RunDataSessionData runData : data.runData()) {
@@ -81,6 +91,7 @@ public class ViewSavedSessionDataService {
         return result;
     }
 
+    //used to update the list view based on the selection made in the driver dropdown.
     public void updateListView(String newValue) {
         this.drivers.clear();
         if (newValue.isEmpty()) {
@@ -90,6 +101,7 @@ public class ViewSavedSessionDataService {
         }
     }
 
+    //Used to find the save session data based on the last name clicked in the list view.
     public ViewSavedSessionData findSessionDataByName(String newValue) {
         return this.savedSessionData.get(newValue);
     }
