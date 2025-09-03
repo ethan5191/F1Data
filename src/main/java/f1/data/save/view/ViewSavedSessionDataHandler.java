@@ -5,6 +5,7 @@ import f1.data.utils.constants.Constants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -12,6 +13,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
@@ -86,7 +88,9 @@ public class ViewSavedSessionDataHandler {
         container.getChildren().add(grid);
         Stage viewSavedStage = new Stage();
         viewSavedStage.setTitle(fileName);
-        Scene scene = new Scene(container, 500, driverList.getPrefHeight() + 5);
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+        Scene scene = new Scene(container, bounds.getWidth() - 15, bounds.getHeight() - 15);
         viewSavedStage.setScene(scene);
         viewSavedStage.show();
     }
