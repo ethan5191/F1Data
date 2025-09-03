@@ -8,16 +8,16 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ViewSavedSessionDataHandler {
 
@@ -90,7 +90,8 @@ public class ViewSavedSessionDataHandler {
         viewSavedStage.setTitle(fileName);
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
-        Scene scene = new Scene(container, bounds.getWidth() - 15, bounds.getHeight() - 15);
+        Scene scene = new Scene(container, bounds.getWidth() - 10, bounds.getHeight() - 15);
+        scene.getStylesheets().add(Objects.requireNonNull(ViewSavedSessionDataHandler.class.getResource("/styles.css")).toExternalForm());
         viewSavedStage.setScene(scene);
         viewSavedStage.show();
     }
@@ -114,7 +115,7 @@ public class ViewSavedSessionDataHandler {
     private static ListView<String> initializeListView(ObservableList<String> drivers, int size) {
         ListView<String> driverList = new ListView<>(drivers);
         driverList.setFixedCellSize(25);
-        driverList.setPrefHeight(driverList.getFixedCellSize() * size);
+        driverList.setPrefHeight((driverList.getFixedCellSize() * size) + Constants.SPACING);
         driverList.setPrefWidth(200);
         return driverList;
     }

@@ -3,7 +3,9 @@ package f1.data.ui.panels.home;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.save.SaveSessionDataWrapper;
+import f1.data.save.view.ViewSaveSessionDataService;
 import f1.data.save.view.ViewSavedSessionDataHandler;
+import f1.data.save.view.ViewSavedSessionDataUI;
 import f1.data.ui.panels.Panel;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
@@ -99,7 +101,7 @@ public class HomePanel implements Panel {
             if (selected != null) {
                 ObjectMapper reader = new ObjectMapper();
                 try {
-                    ViewSavedSessionDataHandler.viewSavedSessionData(selected.getName().substring(0, selected.getName().lastIndexOf('.')), reader.readValue(selected, SaveSessionDataWrapper.class));
+                    new ViewSavedSessionDataUI(new ViewSaveSessionDataService(reader.readValue(selected, SaveSessionDataWrapper.class), selected.getName().substring(0, selected.getName().lastIndexOf('.'))));
                 } catch (IOException e) {
                     logger.error("Caught Exception reading file ", e);
                 }
