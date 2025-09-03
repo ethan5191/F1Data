@@ -55,10 +55,12 @@ public class ViewSavedSessionDataUI {
         showScene();
     }
 
+    //Builds the search options panel at the top of the view.
     private HBox buildSearchOptions() {
         return new ViewSavedSessionDataSearchUI(this.service).getSearchOptions();
     }
 
+    //Creates the initial list view object with the different drivers names in it.
     private ListView<String> initializeListView() {
         ListView<String> driverList = new ListView<>(service.getDrivers());
         driverList.setFixedCellSize(25);
@@ -68,6 +70,7 @@ public class ViewSavedSessionDataUI {
         return driverList;
     }
 
+    //Initializes the overall grid that contains the listview and other panes.
     private GridPane initializeGrid(ListView<String> drivers) {
         GridPane grid = new GridPane();
         grid.setHgap(Constants.SPACING);
@@ -76,6 +79,7 @@ public class ViewSavedSessionDataUI {
         return grid;
     }
 
+    //Used to initialize the smaller data specific panes.
     private GridPane initializeGrid(GridPaneColumn[] columns) {
         GridPane pane = new GridPane();
         pane.setHgap(Constants.SPACING);
@@ -87,6 +91,7 @@ public class ViewSavedSessionDataUI {
         return pane;
     }
 
+    //Sets the scene height and width and displays the panel
     private void showScene() {
         Stage viewSavedStage = new Stage();
         viewSavedStage.setTitle(service.getFileName().substring(0, service.getFileName().lastIndexOf('_')));
@@ -98,12 +103,14 @@ public class ViewSavedSessionDataUI {
         viewSavedStage.show();
     }
 
+    //Clears all the VBOX children for the given array of columns passed in.
     private void clearContent(GridPaneColumn[] columns) {
         for (GridPaneColumn column : columns) {
             column.content().getChildren().clear();
         }
     }
 
+    //Adds the listener to the list view object to change the data shown in the data panels.
     private void addListener(ListView<String> driverList) {
         driverList.getSelectionModel().selectedItemProperty().addListener((selectedItem, oldValue, newValue) -> {
             if (newValue != null) {

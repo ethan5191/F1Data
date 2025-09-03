@@ -57,6 +57,7 @@ public class ViewSavedSessionDataService {
         return maxSetups;
     }
 
+    //Takes the wrapper object and builds out a map so you can find data based on the drivers last name.
     private Map<String, ViewSavedSessionData> buildViewData(SaveSessionDataWrapper data) {
         Map<String, ViewSavedSessionData> savedSessionData = new HashMap<>(data.runData().size());
         for (RunDataSessionData runData : data.runData()) {
@@ -73,6 +74,7 @@ public class ViewSavedSessionDataService {
         return savedSessionData;
     }
 
+    //Finds the maximum number of setups used by a single driver.
     private int findNumMaxSetups() {
         int result = -1;
         for (RunDataSessionData runData : data.runData()) {
@@ -81,6 +83,7 @@ public class ViewSavedSessionDataService {
         return result;
     }
 
+    //used to update the list view based on the selection made in the driver dropdown.
     public void updateListView(String newValue) {
         this.drivers.clear();
         if (newValue.isEmpty()) {
@@ -90,6 +93,7 @@ public class ViewSavedSessionDataService {
         }
     }
 
+    //Used to find the save session data based on the last name clicked in the list view.
     public ViewSavedSessionData findSessionDataByName(String newValue) {
         return this.savedSessionData.get(newValue);
     }

@@ -27,6 +27,7 @@ public class ViewSavedSessionDataSearchUI {
         searchOptions.getStyleClass().add("searchOptions");
     }
 
+    //builds the driver search dropdown section of the search area.
     private VBox buildDriverSearch() {
         VBox driverSearch = new VBox(Constants.SPACING);
         driverSearch.getChildren().add(new Label("Driver"));
@@ -43,6 +44,7 @@ public class ViewSavedSessionDataSearchUI {
         return driverSearch;
     }
 
+    //Builds the tire search options
     private VBox buildTireSearch() {
         VBox tireSearch = new VBox(Constants.SPACING);
         tireSearch.getChildren().add(new Label("Tire Compound"));
@@ -61,6 +63,7 @@ public class ViewSavedSessionDataSearchUI {
         return tireSearch;
     }
 
+    //Builds the setup search option
     private VBox buildSetupSearch() {
         VBox setup = new VBox(Constants.SPACING);
         setup.getChildren().add(new Label("Setup #"));
@@ -74,6 +77,7 @@ public class ViewSavedSessionDataSearchUI {
         return setup;
     }
 
+    //returns the search options container.
     public HBox getSearchOptions() {
         return searchOptions;
     }
