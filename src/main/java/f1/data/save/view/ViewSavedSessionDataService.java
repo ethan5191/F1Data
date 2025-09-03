@@ -9,7 +9,7 @@ import javafx.collections.ObservableList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewSaveSessionDataService {
+public class ViewSavedSessionDataService {
 
     private final String fileName;
     private final SaveSessionDataWrapper data;
@@ -19,7 +19,7 @@ public class ViewSaveSessionDataService {
     private final ObservableList<String> dropdownOptions = FXCollections.observableArrayList("");
     private final int maxSetups;
 
-    public ViewSaveSessionDataService(SaveSessionDataWrapper data, String fileName) {
+    public ViewSavedSessionDataService(SaveSessionDataWrapper data, String fileName) {
         this.data = data;
         this.fileName = fileName;
         this.hasSpeedTrapData = data.speedTraps() != null;
@@ -79,5 +79,18 @@ public class ViewSaveSessionDataService {
             if (runData.setups().size() - 1 > result) result = runData.setups().size() - 1;
         }
         return result;
+    }
+
+    public void updateListView(String newValue) {
+        this.drivers.clear();
+        if (newValue.isEmpty()) {
+            this.drivers.addAll(this.savedSessionData.keySet());
+        } else {
+            this.drivers.add(newValue);
+        }
+    }
+
+    public ViewSavedSessionData findSessionDataByName(String newValue) {
+        return this.savedSessionData.get(newValue);
     }
 }

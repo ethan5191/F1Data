@@ -9,50 +9,59 @@ import javafx.scene.layout.VBox;
 
 public class ViewSavedSessionDataSearchUI {
 
-    private final ViewSaveSessionDataService service;
+    private final ViewSavedSessionDataService service;
     private final HBox searchOptions = new HBox(Constants.SPACING);
 
-    public ViewSavedSessionDataSearchUI(ViewSaveSessionDataService service) {
+    private final String[] dryTires = {Constants.SUPER, Constants.SOFT, Constants.MEDIUM, Constants.HARD};
+    private final String[] wetTires = {Constants.INTER, Constants.WET};
+
+    public ViewSavedSessionDataSearchUI(ViewSavedSessionDataService service) {
         this.service = service;
         buildUI();
     }
 
     private void buildUI() {
+        searchOptions.getChildren().add(buildDriverSearch());
+        searchOptions.getChildren().add(buildTireSearch());
+        searchOptions.getChildren().add(buildSetupSearch());
+        searchOptions.getStyleClass().add("searchOptions");
+    }
+
+    private VBox buildDriverSearch() {
         VBox driverSearch = new VBox(Constants.SPACING);
         driverSearch.getChildren().add(new Label("Driver"));
         ComboBox<String> comboBox = new ComboBox<>();
         comboBox.setItems(service.getDropdownOptions());
         comboBox.setValue("");
-//        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                drivers.clear();
-//                if (newValue.isEmpty()) {
-//                    drivers.addAll(savedSessionData.keySet());
-//                } else {
-//                    drivers.add(newValue);
-//                }
-//                comboBox.setValue(newValue);
-//            }
-//        });
+        comboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                service.updateListView(newValue);
+                comboBox.setValue(newValue);
+            }
+        });
         driverSearch.getChildren().add(comboBox);
-        searchOptions.getChildren().add(driverSearch);
+        return driverSearch;
+    }
 
+    private VBox buildTireSearch() {
         VBox tireSearch = new VBox(Constants.SPACING);
         tireSearch.getChildren().add(new Label("Tire Compound"));
         HBox tireTypes = new HBox(Constants.SPACING);
         VBox dry = new VBox(Constants.SPACING);
-        dry.getChildren().add(new CheckBox(Constants.SUPER));
-        dry.getChildren().add(new CheckBox(Constants.SOFT));
-        dry.getChildren().add(new CheckBox(Constants.MEDIUM));
-        dry.getChildren().add(new CheckBox(Constants.HARD));
+        for (String s : dryTires) {
+            dry.getChildren().add(new CheckBox(s));
+        }
         tireTypes.getChildren().add(dry);
         VBox wet = new VBox(Constants.SPACING);
-        wet.getChildren().add(new CheckBox(Constants.INTER));
-        wet.getChildren().add(new CheckBox(Constants.WET));
+        for (String s : wetTires) {
+            wet.getChildren().add(new CheckBox(s));
+        }
         tireTypes.getChildren().add(wet);
         tireSearch.getChildren().add(tireTypes);
-        searchOptions.getChildren().add(tireSearch);
+        return tireSearch;
+    }
 
+    private VBox buildSetupSearch() {
         VBox setup = new VBox(Constants.SPACING);
         setup.getChildren().add(new Label("Setup #"));
         ComboBox<String> setupNums = new ComboBox<>();
@@ -62,9 +71,7 @@ public class ViewSavedSessionDataSearchUI {
             setupNums.getItems().add(String.valueOf(i));
         }
         setup.getChildren().add(setupNums);
-        searchOptions.getChildren().add(setup);
-
-        searchOptions.getStyleClass().add("searchOptions");
+        return setup;
     }
 
     public HBox getSearchOptions() {
