@@ -20,6 +20,7 @@ public class ViewSavedSessionDataService {
     private final ObservableList<String> setupOptions = FXCollections.observableArrayList("");
     private final int maxSetups;
 
+    private String lastName = null;
     private String setupId = null;
 
     public ViewSavedSessionDataService(SaveSessionDataWrapper data, String fileName) {
@@ -107,8 +108,14 @@ public class ViewSavedSessionDataService {
         }
     }
 
+    public ViewSavedSessionData findSessionDataByName() {
+        return findSessionDataByName(this.lastName);
+    }
+
     //Used to find the save session data based on the last name clicked in the list view.
     public ViewSavedSessionData findSessionDataByName(String newValue) {
+        if (newValue == null || newValue.isEmpty()) return null;
+        this.lastName = newValue;
         if (this.setupId == null) {
             return this.savedSessionData.get(newValue);
         } else {

@@ -24,12 +24,12 @@ public class ViewSavedSessionDataUI {
     private final VBox container = new VBox(Constants.SPACING);
     private final ViewSavedSessionDataService service;
 
-    private final GridPaneColumn[] runDataColumns = {
+    private final GridPaneColumn[] RUN_DATA_COLUMNS = {
             new GridPaneColumn(new Label("#"), new VBox(Constants.SPACING)),
             new GridPaneColumn(new Label("Setup/Tire #"), new VBox(Constants.SPACING)),
             new GridPaneColumn(new Label("Lap Time"), new VBox(Constants.SPACING))
     };
-    private final GridPaneColumn[] speedTrapColumns = {
+    private final GridPaneColumn[] SPEED_TRAP_COLUMNS = {
             new GridPaneColumn(new Label("#"), new VBox(Constants.SPACING)),
             new GridPaneColumn(new Label("Speed"), new VBox(Constants.SPACING))
     };
@@ -44,12 +44,12 @@ public class ViewSavedSessionDataUI {
         ListView<String> driverList = initializeListView();
         GridPane grid = initializeGrid(driverList);
         this.container.getChildren().add(grid);
-        GridPane runData = initializeGrid(runDataColumns);
+        GridPane runData = initializeGrid(RUN_DATA_COLUMNS);
         int colIndex = 1;
         grid.add(runData, colIndex++, 0);
         if (service.isHasSpeedTrapData()) {
             grid.add(new Separator(Orientation.VERTICAL), colIndex++, 0);
-            GridPane speedTrap = initializeGrid(speedTrapColumns);
+            GridPane speedTrap = initializeGrid(SPEED_TRAP_COLUMNS);
             grid.add(speedTrap, colIndex, 0);
         }
         showScene();
@@ -57,7 +57,13 @@ public class ViewSavedSessionDataUI {
 
     //Builds the search options panel at the top of the view.
     private HBox buildSearchOptions() {
-        return new ViewSavedSessionDataSearchUI(this.service).getSearchOptions();
+        ViewSavedSessionDataSearchUI searchUI = new ViewSavedSessionDataSearchUI(this.service);
+        searchUI.getSetupNums().valueProperty().addListener((observable, oldValue, newValue) -> {
+            service.setSetupId((!newValue.isEmpty()) ? newValue : null);
+            ViewSavedSessionData data = service.findSessionDataByName();
+            if (data != null) updateRunData(data);
+        });
+        return searchUI.getSearchOptions();
     }
 
     //Creates the initial list view object with the different drivers names in it.
@@ -114,23 +120,27 @@ public class ViewSavedSessionDataUI {
     private void addListener(ListView<String> driverList) {
         driverList.getSelectionModel().selectedItemProperty().addListener((selectedItem, oldValue, newValue) -> {
             if (newValue != null) {
-                clearContent(runDataColumns);
                 ViewSavedSessionData data = service.findSessionDataByName(newValue);
-                for (RunDataMapRecord run : data.getLapsForSetup()) {
-                    for (IndividualLapSessionData lap : run.laps()) {
-                        runDataColumns[0].content().getChildren().add(new Label(String.valueOf(lap.getLapNum())));
-                        runDataColumns[1].content().getChildren().add(new Label(run.key().setupNumber() + "/" + run.key().fittedTireId()));
-                        runDataColumns[2].content().getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
-                    }
-                }
+                updateRunData(data);
                 if (service.isHasSpeedTrapData()) {
-                    clearContent(speedTrapColumns);
+                    clearContent(SPEED_TRAP_COLUMNS);
                     for (Map.Entry<Integer, Float> entry : data.getSpeedTrapByLap().entrySet()) {
-                        speedTrapColumns[0].content().getChildren().add(new Label(String.valueOf(entry.getKey())));
-                        speedTrapColumns[1].content().getChildren().add(new Label(String.valueOf(entry.getValue())));
+                        SPEED_TRAP_COLUMNS[0].content().getChildren().add(new Label(String.valueOf(entry.getKey())));
+                        SPEED_TRAP_COLUMNS[1].content().getChildren().add(new Label(String.valueOf(entry.getValue())));
                     }
                 }
             }
         });
+    }
+
+    private void updateRunData(ViewSavedSessionData data) {
+        clearContent(RUN_DATA_COLUMNS);
+        for (RunDataMapRecord run : data.getLapsForSetup()) {
+            for (IndividualLapSessionData lap : run.laps()) {
+                RUN_DATA_COLUMNS[0].content().getChildren().add(new Label(String.valueOf(lap.getLapNum())));
+                RUN_DATA_COLUMNS[1].content().getChildren().add(new Label(run.key().setupNumber() + "/" + run.key().fittedTireId()));
+                RUN_DATA_COLUMNS[2].content().getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
+            }
+        }
     }
 }
