@@ -4,6 +4,7 @@ import f1.data.save.IndividualLapSessionData;
 import f1.data.save.RunDataMapRecord;
 import f1.data.utils.constants.Constants;
 import f1.data.view.gridColumns.GridPaneColumn;
+import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -16,8 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ViewSavedSessionDataUI {
 
@@ -58,8 +58,26 @@ public class ViewSavedSessionDataUI {
     //Builds the search options panel at the top of the view.
     private HBox buildSearchOptions() {
         ViewSavedSessionDataSearchUI searchUI = new ViewSavedSessionDataSearchUI(this.service);
+        BooleanProperty interProp = service.getSearch().interProperty();
+        BooleanProperty wetProp = service.getSearch().wetProperty();
+        BooleanProperty superProp = service.getSearch().superSoftProperty();
+        BooleanProperty softProp = service.getSearch().softProperty();
+        BooleanProperty mediumProp = service.getSearch().mediumProperty();
+        BooleanProperty hardProp = service.getSearch().hardProperty();
+        //Links the individual checkboxes with an associated boolean property on the search object.
+        searchUI.getInterCheck().selectedProperty().bindBidirectional(interProp);
+        searchUI.getWetCheck().selectedProperty().bindBidirectional(wetProp);
+        searchUI.getSuperSoftCheck().selectedProperty().bindBidirectional(superProp);
+        searchUI.getSoftCheck().selectedProperty().bindBidirectional(softProp);
+        searchUI.getMediumCheck().selectedProperty().bindBidirectional(mediumProp);
+        searchUI.getHardCheck().selectedProperty().bindBidirectional(hardProp);
+        //Create a list of the boolean properties to streamline the call to add the listener.
+        List<BooleanProperty> booleanProps = Arrays.asList(interProp, wetProp, superProp, softProp, mediumProp, hardProp);
+        for (BooleanProperty p : booleanProps) {
+            addCheckBoxListener(p);
+        }
         searchUI.getSetupNums().valueProperty().addListener((observable, oldValue, newValue) -> {
-            service.setSetupId((!newValue.isEmpty()) ? newValue : null);
+            service.getSearch().setSetupId((!newValue.isEmpty()) ? newValue : null);
             ViewSavedSessionData data = service.findSessionDataByName();
             if (data != null) updateRunData(data);
         });
@@ -114,6 +132,14 @@ public class ViewSavedSessionDataUI {
         for (GridPaneColumn column : columns) {
             column.content().getChildren().clear();
         }
+    }
+
+    //Adds listeners to each of the boolean properties associated with the tire compound search checkboxes.
+    private void addCheckBoxListener(BooleanProperty property) {
+        property.addListener((observable, oldValue, newValue) -> {
+            ViewSavedSessionData data = service.findSessionDataByName();
+            if (data != null) updateRunData(data);
+        });
     }
 
     //Adds the listener to the list view object to change the data shown in the data panels.
