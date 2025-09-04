@@ -7,17 +7,33 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
+
 public class ViewSavedSessionDataSearchUI {
 
     private final ViewSavedSessionDataService service;
     private final HBox searchOptions = new HBox(Constants.SPACING);
     private final ComboBox<String> setupNums = new ComboBox<>();
 
-    private final String[] dryTires = {Constants.SUPER, Constants.SOFT, Constants.MEDIUM, Constants.HARD};
-    private final String[] wetTires = {Constants.INTER, Constants.WET};
+    private final CheckBox superSoftCheck = new CheckBox(Constants.SUPER);
+    private final CheckBox softCheck = new CheckBox(Constants.SOFT);
+    private final CheckBox mediumCheck = new CheckBox(Constants.MEDIUM);
+    private final CheckBox hardCheck = new CheckBox(Constants.HARD);
+
+    private final CheckBox interCheck = new CheckBox(Constants.INTER);
+    private final CheckBox wetCheck = new CheckBox(Constants.WET);
+
+    private final ArrayList<CheckBox> dryBoxes = new ArrayList<>(4);
+    private final ArrayList<CheckBox> wetBoxes = new ArrayList<>(2);
 
     public ViewSavedSessionDataSearchUI(ViewSavedSessionDataService service) {
         this.service = service;
+        dryBoxes.add(superSoftCheck);
+        dryBoxes.add(softCheck);
+        dryBoxes.add(mediumCheck);
+        dryBoxes.add(hardCheck);
+        wetBoxes.add(interCheck);
+        wetBoxes.add(wetCheck);
         buildUI();
     }
 
@@ -51,13 +67,13 @@ public class ViewSavedSessionDataSearchUI {
         tireSearch.getChildren().add(new Label("Tire Compound"));
         HBox tireTypes = new HBox(Constants.SPACING);
         VBox dry = new VBox(Constants.SPACING);
-        for (String s : dryTires) {
-            dry.getChildren().add(new CheckBox(s));
+        for (CheckBox c : dryBoxes) {
+            dry.getChildren().add(c);
         }
         tireTypes.getChildren().add(dry);
         VBox wet = new VBox(Constants.SPACING);
-        for (String s : wetTires) {
-            wet.getChildren().add(new CheckBox(s));
+        for (CheckBox c : wetBoxes) {
+            wet.getChildren().add(c);
         }
         tireTypes.getChildren().add(wet);
         tireSearch.getChildren().add(tireTypes);
@@ -81,5 +97,29 @@ public class ViewSavedSessionDataSearchUI {
 
     public ComboBox<String> getSetupNums() {
         return setupNums;
+    }
+
+    public CheckBox getWetCheck() {
+        return wetCheck;
+    }
+
+    public CheckBox getInterCheck() {
+        return interCheck;
+    }
+
+    public CheckBox getHardCheck() {
+        return hardCheck;
+    }
+
+    public CheckBox getMediumCheck() {
+        return mediumCheck;
+    }
+
+    public CheckBox getSoftCheck() {
+        return softCheck;
+    }
+
+    public CheckBox getSuperSoftCheck() {
+        return superSoftCheck;
     }
 }
