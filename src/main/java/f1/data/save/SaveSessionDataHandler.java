@@ -17,9 +17,9 @@ public class SaveSessionDataHandler {
 
     public static void saveSessionData(int packetFormat, String sessionName, List<SpeedTrapSessionData> speedTrapSessionWrapper, List<RunDataSessionData> runDataSessionDataWrapper) {
         SaveSessionWrapper saveSessionDataWrapper = (packetFormat > Constants.YEAR_2019) ? new SaveSessionDataWrapper(speedTrapSessionWrapper, runDataSessionDataWrapper) : new SaveSessionDataWrapper2019(runDataSessionDataWrapper);
-        String workingDir = System.getProperty(Constants.USER_DIR);
+        String workingDir = System.getProperty(Constants.USER_HOME);
         Path workingPath = Paths.get(workingDir);
-        Path savePath = workingPath.resolve(Constants.SAVE_SESSIONS).resolve("F1_" + packetFormat);
+        Path savePath = workingPath.resolve(Constants.F1_DATA).resolve(Constants.SAVE_SESSIONS).resolve("F1_" + packetFormat);
         try {
             if (Files.notExists(savePath)) {
                 Files.createDirectories(savePath);
