@@ -3,10 +3,10 @@ package f1.data.ui.panels.home;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.save.SaveSessionDataWrapper;
-import f1.data.view.ViewSavedSessionDataService;
-import f1.data.view.ViewSavedSessionDataUI;
 import f1.data.ui.panels.Panel;
 import f1.data.utils.constants.Constants;
+import f1.data.view.ViewSavedSessionDataService;
+import f1.data.view.ViewSavedSessionDataUI;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
@@ -88,11 +88,16 @@ public class HomePanel implements Panel {
         Button viewSessionsButton = new Button("View Saved Session Data");
         viewSessionsButton.setOnAction(actionEvent -> {
             FileChooser chooser = new FileChooser();
-            File initialDirectory = new File(System.getProperty(Constants.USER_DIR) + File.separator + Constants.SAVE_SESSIONS);
+            File initialDirectory = new File(System.getProperty(Constants.USER_HOME) + File.separator + Constants.F1_DATA + File.separator + Constants.SAVE_SESSIONS);
             if (initialDirectory.isDirectory()) {
                 chooser.setInitialDirectory(initialDirectory);
             } else {
-                chooser.setInitialDirectory(new File(System.getProperty(Constants.USER_DIR)));
+                initialDirectory = new File(System.getProperty(Constants.USER_HOME) + File.separator + Constants.F1_DATA);
+                if (initialDirectory.isDirectory()) {
+                    chooser.setInitialDirectory(initialDirectory);
+                } else {
+                    chooser.setInitialDirectory(new File(System.getProperty(Constants.USER_HOME)));
+                }
             }
             FileChooser.ExtensionFilter json = new FileChooser.ExtensionFilter("JSON files (*.json)", "*.json");
             chooser.getExtensionFilters().add(json);
@@ -104,8 +109,6 @@ public class HomePanel implements Panel {
                 } catch (IOException e) {
                     logger.error("Caught Exception reading file ", e);
                 }
-            } else {
-                System.out.println("No File Selected");
             }
         });
         this.container.getChildren().add(viewSessionsButton);

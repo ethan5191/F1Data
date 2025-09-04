@@ -74,8 +74,9 @@ public class Constants {
 
     public static final float DIVISOR = 32767.0f;
 
+    public static final String F1_DATA = "F1Data";
     public static final String SAVE_SESSIONS = "SessionSaves";
-    public static final String USER_DIR = "user.dir";
+    public static final String USER_HOME = "user.home";
 
     public static final int SPACING = 5;
 }
