@@ -140,6 +140,7 @@ public class ViewSavedSessionDataService {
         }
     }
 
+    //Builds the valid tire compound set, based on user search options.
     private Set<Integer> buildValidCompoundsSet() {
         Set<Integer> validCompounds = new HashSet<>();
         //for each compound option that is checked, add its valid compounds to the set.
@@ -152,6 +153,7 @@ public class ViewSavedSessionDataService {
         return validCompounds;
     }
 
+    //finds the run data records that need to be removed, based on not using the tires compounds being searched for.
     private List<RunDataMapRecord> findRunDataToRemove(ViewSavedSessionData copy, Set<Integer> validCompounds) {
         List<RunDataMapRecord> recsToRemove = new ArrayList<>();
         //Loop over each run. For each run all the laps are on the same compound so the first lap will tell us if the run meets the compound requirement or not.

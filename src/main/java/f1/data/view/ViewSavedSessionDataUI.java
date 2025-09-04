@@ -1,5 +1,6 @@
 package f1.data.view;
 
+import f1.data.enums.VisualTireEnum;
 import f1.data.save.IndividualLapSessionData;
 import f1.data.save.RunDataMapRecord;
 import f1.data.utils.constants.Constants;
@@ -26,7 +27,7 @@ public class ViewSavedSessionDataUI {
 
     private final GridPaneColumn[] RUN_DATA_COLUMNS = {
             new GridPaneColumn(new Label("#"), new VBox(Constants.SPACING)),
-            new GridPaneColumn(new Label("Setup/Tire #"), new VBox(Constants.SPACING)),
+            new GridPaneColumn(new Label("Setup #/Compound (ID)"), new VBox(Constants.SPACING)),
             new GridPaneColumn(new Label("Lap Time"), new VBox(Constants.SPACING))
     };
     private final GridPaneColumn[] SPEED_TRAP_COLUMNS = {
@@ -164,7 +165,9 @@ public class ViewSavedSessionDataUI {
         for (RunDataMapRecord run : data.getLapsForSetup()) {
             for (IndividualLapSessionData lap : run.laps()) {
                 RUN_DATA_COLUMNS[0].content().getChildren().add(new Label(String.valueOf(lap.getLapNum())));
-                RUN_DATA_COLUMNS[1].content().getChildren().add(new Label(run.key().setupNumber() + "/" + run.key().fittedTireId()));
+                String setupTireValue = run.key().setupNumber() + "/" + VisualTireEnum.fromValue(lap.getVisualTire()).getDisplay();
+                if (run.key().fittedTireId() >= 0) setupTireValue += " (" + run.key().fittedTireId() + ") ";
+                RUN_DATA_COLUMNS[1].content().getChildren().add(new Label(setupTireValue));
                 RUN_DATA_COLUMNS[2].content().getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
             }
         }
