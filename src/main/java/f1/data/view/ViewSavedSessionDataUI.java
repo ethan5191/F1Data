@@ -9,6 +9,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
@@ -23,6 +26,9 @@ import java.util.*;
 public class ViewSavedSessionDataUI {
 
     private final VBox container = new VBox(Constants.SPACING);
+    private LineChart<Number, Number> lineChart;
+    private final NumberAxis xAxis = new NumberAxis();
+    private final NumberAxis yAxis = new NumberAxis();
     private final ViewSavedSessionDataService service;
 
     private final GridPaneColumn[] RUN_DATA_COLUMNS = {
@@ -51,8 +57,15 @@ public class ViewSavedSessionDataUI {
         if (service.isHasSpeedTrapData()) {
             grid.add(new Separator(Orientation.VERTICAL), colIndex++, 0);
             GridPane speedTrap = initializeGrid(SPEED_TRAP_COLUMNS);
-            grid.add(speedTrap, colIndex, 0);
+            grid.add(speedTrap, colIndex++, 0);
         }
+        grid.add(new Separator(Orientation.VERTICAL), colIndex++, 0);
+        defaultAxis(xAxis, "Lap #");
+        defaultAxis(yAxis, "Lap Time");
+        lineChart = new LineChart<>(xAxis, yAxis);
+        final double LINE_CHART_WIDTH = 1000;
+        lineChart.setPrefWidth(LINE_CHART_WIDTH);
+        grid.add(lineChart, colIndex, 0);
         showScene();
     }
 
@@ -80,7 +93,10 @@ public class ViewSavedSessionDataUI {
         searchUI.getSetupNums().valueProperty().addListener((observable, oldValue, newValue) -> {
             service.getSearch().setSetupId((!newValue.isEmpty()) ? newValue : null);
             ViewSavedSessionData data = service.findSessionDataByName();
-            if (data != null) updateRunData(data);
+            if (data != null) {
+                updateRunData(data);
+                updateLapChart(data);
+            }
         });
         return searchUI.getSearchOptions();
     }
@@ -128,6 +144,13 @@ public class ViewSavedSessionDataUI {
         viewSavedStage.show();
     }
 
+    private void defaultAxis(NumberAxis axis, String label) {
+        axis.setLowerBound(1);
+        axis.setAutoRanging(false);
+        axis.setUpperBound(10);
+        axis.setLabel(label);
+    }
+
     //Clears all the VBOX children for the given array of columns passed in.
     private void clearContent(GridPaneColumn[] columns) {
         for (GridPaneColumn column : columns) {
@@ -139,7 +162,10 @@ public class ViewSavedSessionDataUI {
     private void addCheckBoxListener(BooleanProperty property) {
         property.addListener((observable, oldValue, newValue) -> {
             ViewSavedSessionData data = service.findSessionDataByName();
-            if (data != null) updateRunData(data);
+            if (data != null) {
+                updateRunData(data);
+                updateLapChart(data);
+            }
         });
     }
 
@@ -149,6 +175,7 @@ public class ViewSavedSessionDataUI {
             if (newValue != null) {
                 ViewSavedSessionData data = service.findSessionDataByName(newValue);
                 updateRunData(data);
+                updateLapChart(data);
                 if (service.isHasSpeedTrapData()) {
                     clearContent(SPEED_TRAP_COLUMNS);
                     for (Map.Entry<Integer, Float> entry : data.getSpeedTrapByLap().entrySet()) {
@@ -170,6 +197,32 @@ public class ViewSavedSessionDataUI {
                 RUN_DATA_COLUMNS[1].content().getChildren().add(new Label(setupTireValue));
                 RUN_DATA_COLUMNS[2].content().getChildren().add(new Label(String.valueOf(lap.getLapTimeInMs())));
             }
+        }
+    }
+
+    private void updateLapChart(ViewSavedSessionData data) {
+        this.lineChart.getData().clear();
+        this.lineChart.setTitle(service.getSearch().getLastName());
+        List<XYChart.Series<Number, Number>> runs = new ArrayList<>();
+        int lapCount = 0;
+        int minTime = 0;
+        int maxTime = 0;
+        for (RunDataMapRecord run : data.getLapsForSetup()) {
+            XYChart.Series<Number, Number> laps = new XYChart.Series<>();
+            for (int i = 0; i < run.laps().size(); i++) {
+                IndividualLapSessionData lap = run.laps().get(i);
+                if (lap.getLapTimeInMs().intValue() < minTime || minTime == 0) minTime = lap.getLapTimeInMs().intValue();
+                if (lap.getLapTimeInMs().intValue() > maxTime || maxTime == 0) maxTime = lap.getLapTimeInMs().intValue();
+                laps.getData().add(new XYChart.Data<>(i + 1, lap.getLapTimeInMs()));
+            }
+            if (run.laps().size() > lapCount) lapCount = run.laps().size();
+            runs.add(laps);
+        }
+        xAxis.setUpperBound(lapCount + 1);
+        yAxis.setLowerBound(minTime - .5);
+        yAxis.setUpperBound(maxTime + 1);
+        for (XYChart.Series<Number, Number> individual : runs) {
+            this.lineChart.getData().add(individual);
         }
     }
 }
