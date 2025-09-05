@@ -94,25 +94,8 @@ public class EventPacketHandler implements PacketHandler {
     }
 
     private static void handleTestSave(int packetFormat, Map<Integer, TelemetryData> participants) {
-        if (AppState.saveSessionData.get()) {
-            List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(participants.size());
-            List<RunDataSessionData> runDataSessionData = new ArrayList<>(participants.size());
-            //Loop over the participant map and create new telemetry data to reset the data on the backend.
-            for (Integer i : participants.keySet()) {
-                TelemetryData td = participants.get(i);
-                ParticipantData pd = td.getParticipantData();
-                speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                List<RunDataMapRecord> records = new ArrayList<>(td.getCarSetupData().getLapsPerSetup().size());
-                //If a driver hasn't set a speed trap yet in the session, it will show as 0 as that is the default object for SpeedTrapData on the td object.
-                speedTrapSessionDataList.add(new SpeedTrapSessionData(pd.lastName(), td.getSpeedTrapData().getSpeedTrapByLap()));
-                for (SetupTireKey key : td.getCarSetupData().getLapsPerSetup().keySet()) {
-                    records.add(new RunDataMapRecord(key, td.getCarSetupData().getLapsPerSetup().get(key)));
-                }
-                runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), records));
-                //                    this.participants.put(i, new TelemetryData(pd));
-            }
-            SaveSessionDataHandler.saveSessionData(packetFormat, "Testing", speedTrapSessionDataList, runDataSessionData);
-        }
+        //Builds the save data, if enabled and calls the method to actually create the save file.
+        SaveSessionDataHandler.buildSaveData(packetFormat, "Testing", participants);
     }
 
     public static void handle2020ButtonEvent(int packetFormat, ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
