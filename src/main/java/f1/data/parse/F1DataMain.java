@@ -30,6 +30,7 @@ public class F1DataMain {
     private final MotionPacketHandler motionPacketHandler;
     private final SessionPacketHandler sessionPacketHandler;
     private final EventPacketHandler eventPacketHandler;
+    private final ParticipantPacketHandler participantPacketHandler;
     private final CarSetupPacketHandler carSetupPacketHandler;
     private final CarTelemetryPacketHandler carTelemetryPacketHandler;
     private final CarStatusPacketHandler carStatusPacketHandler;
@@ -54,6 +55,7 @@ public class F1DataMain {
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
+        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, participants, parent.driverDataDTOConsumer());
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
@@ -94,7 +96,7 @@ public class F1DataMain {
         handlerMap.put(Constants.SESSION_PACK, sessionPacketHandler);
         handlerMap.put(Constants.LAP_DATA_PACK, lapDataPacketHandler);
         handlerMap.put(Constants.EVENT_PACK, eventPacketHandler);
-        handlerMap.put(Constants.PARTICIPANTS_PACK, null);
+        handlerMap.put(Constants.PARTICIPANTS_PACK, participantPacketHandler);
         handlerMap.put(Constants.CAR_SETUP_PACK, carSetupPacketHandler);
         handlerMap.put(Constants.CAR_TELEMETRY_PACK, carTelemetryPacketHandler);
         handlerMap.put(Constants.CAR_STATUS_PACK, carStatusPacketHandler);

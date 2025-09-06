@@ -37,6 +37,8 @@ public class SessionPacketHandler implements PacketHandler {
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
                 SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants);
+                //Clear the participants map, so the participants packet logic knows to rebuild it.
+                this.participants.clear();
                 //build out the new session name object
                 this.sessionName.setSessionType(sd.sessionType());
                 this.sessionName.setFormula(sd.formula());
