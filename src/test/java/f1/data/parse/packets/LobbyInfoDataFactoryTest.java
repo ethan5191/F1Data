@@ -35,9 +35,9 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021})
-    @DisplayName("Builds the Lobby Info Data for 2021.")
-    void testBuild_lobbyInfoData2021(int packetFormat) {
+    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @DisplayName("Builds the Lobby Info Data for 2021 to 2022.")
+    void testBuild_lobbyInfoData2021To2022(int packetFormat) {
         int bitMask8Count = 5;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
