@@ -1,0 +1,34 @@
+package f1.data.parse.packets;
+
+import f1.data.utils.BitMaskUtils;
+import f1.data.utils.constants.Constants;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.MockedStatic;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
+
+public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
+
+    private final int PRE_2025_NAME_LENGTH = 48;
+    private final int POST_2025_NAME_LENGTH = 32;
+
+    @ParameterizedTest
+    @ValueSource(ints = {Constants.YEAR_2020})
+    @DisplayName("Builds the Lobby Info Data for 2020.")
+    void testBuild_lobbyInfoData2020(int packetFormat) {
+        int bitMask8Count = 4;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            LobbyInfoData result = LobbyInfoDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(BIT_8_START, result.aiControlled());
+            assertEquals(BIT_8_START + 1, result.teamId());
+            assertEquals(BIT_8_START + 2, result.nationality());
+            assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
+            assertEquals(BIT_8_START + 3, result.readyStatus());
+        }
+    }
+}
