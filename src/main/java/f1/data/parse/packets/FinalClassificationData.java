@@ -8,6 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * F1 2020 FinalClassificationData Breakdown (Little Endian)
  * - F1 2020/2021 Length: 37 bytes per car (2021 the type of bestLapTime changed from float to uint32)
+ * - F1 2022 Length: 45 bytes per car
  * This struct is 37 bytes long and contains details of a driver's final classification in a session.
  * This data is sent as an array for each car.
  * <p>
@@ -32,6 +33,7 @@ import java.nio.ByteBuffer;
  * - m_numTyreStints         | uint8                 | 1             | 2020            | Number of tyre stints up to max
  * - m_tyreStintsActual[8]   | uint8[8]              | 8             | 2020            | Actual tyres used
  * - m_tyreStintsVisual[8]   | uint8[8]              | 8             | 2020            | Visual tyres used
+ * - m_tyreStintsEndLaps[8]  | uint8[8]              | 8             | 2022            | End lap for each tire stint
  * <p>
  * Note:
  * - The uint8 type must be read as a byte and converted to an int to get the unsigned value.
@@ -43,7 +45,7 @@ import java.nio.ByteBuffer;
 public record FinalClassificationData(int position, int numLaps, int gridPosition, int points, int numPitsStops,
                                       int resultStatus, float bestLapTime20, double totalRaceTime, int penaltiesTime,
                                       int numPenalties, int numTyreStints, int[] tyreStintsActual,
-                                      int[] tyreStintsVisual, long bestLapTime) {
+                                      int[] tyreStintsVisual, long bestLapTime, int[] tyreStintsEndLaps) {
 
     record FinalClassificationData20(int position, int numLaps, int gridPosition, int points, int numPitsStops,
                                      int resultStatus, float bestLapTime20, double totalRaceTime, int penaltiesTime,
@@ -67,6 +69,19 @@ public record FinalClassificationData(int position, int numLaps, int gridPositio
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask32(byteBuffer.getInt()), byteBuffer.getDouble(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     ParseUtils.parseIntArray(byteBuffer, 8), ParseUtils.parseIntArray(byteBuffer, 8)
+            );
+        }
+    }
+
+    record FinalClassificationData22(int position, int numLaps, int gridPosition, int points, int numPitsStops,
+                                     int resultStatus, long bestLapTime, double totalRaceTime, int penaltiesTime,
+                                     int numPenalties, int numTyreStints, int[] tyreStintsActual,
+                                     int[] tyreStintsVisual, int[] tyreStintsEndLaps) {
+        public FinalClassificationData22(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()), byteBuffer.getDouble(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    ParseUtils.parseIntArray(byteBuffer, 8), ParseUtils.parseIntArray(byteBuffer, 8), ParseUtils.parseIntArray(byteBuffer, 8)
             );
         }
     }
