@@ -1,5 +1,6 @@
 package f1.data.parse;
 
+import f1.data.SessionInitializationResult;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.ParticipantData;
@@ -18,7 +19,6 @@ import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class F1DataMain {
@@ -30,6 +30,7 @@ public class F1DataMain {
     private final MotionPacketHandler motionPacketHandler;
     private final SessionPacketHandler sessionPacketHandler;
     private final EventPacketHandler eventPacketHandler;
+    private final ParticipantPacketHandler participantPacketHandler;
     private final CarSetupPacketHandler carSetupPacketHandler;
     private final CarTelemetryPacketHandler carTelemetryPacketHandler;
     private final CarStatusPacketHandler carStatusPacketHandler;
@@ -39,21 +40,27 @@ public class F1DataMain {
 
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
-    public F1DataMain(F1PacketProcessor packetProcessor, ParentConsumer parent, SessionData initialSession, List<ParticipantData> participantDataList, int packetFormat) {
+    private int playerCarIndex;
+
+    public F1DataMain(F1PacketProcessor packetProcessor, ParentConsumer parent, SessionInitializationResult result) {
+        this.playerCarIndex = result.getPlayerCarIndex();
         this.packetProcessor = packetProcessor;
         final Map<Integer, TelemetryData> participants = new HashMap<>();
-        for (int i = 0; i < participantDataList.size(); i++) {
-            ParticipantData pd = participantDataList.get(i);
+        for (int i = 0; i < result.getParticipantData().size(); i++) {
+            ParticipantData pd = result.getParticipantData().get(i);
             participants.put(i, new TelemetryData(pd));
             parent.driverDataDTOConsumer().accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
         }
 
         //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
+        SessionData initialSession = result.getSessionData();
         SessionName sessionName = new SessionName(initialSession.sessionType(), initialSession.trackId(), initialSession.formula());
+        final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
+        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer());
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
@@ -76,6 +83,10 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
+                if (ph.playerCarIndex() != this.playerCarIndex) {
+                    this.playerCarIndex = ph.playerCarIndex();
+                    this.participantPacketHandler.setPlayerCarIndex(ph.playerCarIndex());
+                }
                 PacketHandler handler = handlerMap.get(ph.packetId());
                 if (handler != null) handler.processPacket(byteBuffer);
                 packetCounts[ph.packetId()][0]++;
@@ -94,7 +105,7 @@ public class F1DataMain {
         handlerMap.put(Constants.SESSION_PACK, sessionPacketHandler);
         handlerMap.put(Constants.LAP_DATA_PACK, lapDataPacketHandler);
         handlerMap.put(Constants.EVENT_PACK, eventPacketHandler);
-        handlerMap.put(Constants.PARTICIPANTS_PACK, null);
+        handlerMap.put(Constants.PARTICIPANTS_PACK, participantPacketHandler);
         handlerMap.put(Constants.CAR_SETUP_PACK, carSetupPacketHandler);
         handlerMap.put(Constants.CAR_TELEMETRY_PACK, carTelemetryPacketHandler);
         handlerMap.put(Constants.CAR_STATUS_PACK, carStatusPacketHandler);

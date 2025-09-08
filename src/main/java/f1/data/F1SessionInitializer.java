@@ -5,11 +5,10 @@ import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.ParticipantData;
-import f1.data.parse.packets.ParticipantDataFactory;
+import f1.data.parse.packets.handlers.ParticipantPacketHandler;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.ui.panels.home.HomePanel;
-import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
@@ -19,10 +18,8 @@ import javafx.scene.layout.VBox;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -66,34 +63,11 @@ public class F1SessionInitializer {
                         SessionData sd = SessionDataFactory.build(ph.packetFormat(), buffer);
                         sessionRef.set(sd);
                     } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null) {
-                        //Must process this first as its always above the actual packet content, at least from 2020 onwards.
-                        numActiveCars.set((int) buffer.get());
-                        List<ParticipantData> participants = new ArrayList<>();
-                        //Loop over the packet and create objects for each record in the array.
-                        int arraySize = Util.findArraySize(ph.packetFormat());
-                        for (int i = 0; i < arraySize; i++) {
-                            ParticipantData pd = ParticipantDataFactory.build(ph.packetFormat(), buffer);
-                            //If race number isn't greater than 0 then its not an actual participant but a placeholder, so don't add to the list.
-                            if (pd.raceNumber() > 0) {
-                                participants.add(pd);
-                                if (driverPairPerTeam.get() != null) {
-                                    Map<Integer, DriverPair> working = driverPairPerTeam.get();
-                                    //if we have already added this team to the map, then just update the 2nd driver, the 1st driver is already there.
-                                    if (working.containsKey(pd.teamId())) {
-                                        working.get(pd.teamId()).setDriverTwo(pd.driverId());
-                                    } else {
-                                        //Haven't added this team yet, so create a new record in the map for team->driver pair object.
-                                        working.put(pd.teamId(), new DriverPair(pd.driverId()));
-                                    }
-                                } else {
-                                    //First pass through, create a new object and set it into the Atomic Reference.
-                                    Map<Integer, DriverPair> temp = new TreeMap<>();
-                                    temp.put(pd.teamId(), new DriverPair(pd.driverId()));
-                                    driverPairPerTeam.set(temp);
-                                }
-                            }
-                        }
-                        participantsRef.set(participants);
+                        ParticipantPacketHandler handler = new ParticipantPacketHandler(packetFormat.get(), playerCarIndex.get());
+                        handler.processPacket(buffer);
+                        numActiveCars.set(handler.getNumActiveCars());
+                        driverPairPerTeam.set(handler.getDriverPairPerTeam());
+                        participantsRef.set(handler.getParticipantDataList());
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

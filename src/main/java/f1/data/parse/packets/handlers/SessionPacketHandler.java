@@ -1,5 +1,6 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.enums.FormulaEnum;
 import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
@@ -37,12 +38,14 @@ public class SessionPacketHandler implements PacketHandler {
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
                 SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants);
+                //Clear the participants map, so the participants packet logic knows to rebuild it.
+                this.participants.clear();
                 //build out the new session name object
                 this.sessionName.setSessionType(sd.sessionType());
                 this.sessionName.setFormula(sd.formula());
                 this.sessionName.setTrackId(sd.trackId());
                 //Send a notification to the consumer so it knows to reset the UI.
-                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName()));
+                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName(), sd.formula() == FormulaEnum.F1.getValue()));
             }
         }
     }
