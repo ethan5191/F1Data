@@ -84,9 +84,9 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023})
-    @DisplayName("Builds the Participant Data for 2022 and 2023.")
-    void testBuild_participantData2022And2023(int packetFormat) {
+    @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024})
+    @DisplayName("Builds the Participant Data for 2022 to 2024.")
+    void testBuild_participantData2022To2024(int packetFormat) {
         int bitMask8Count = 11;
         int bitMask32Count = 1;
         int doubleCount = 1;
