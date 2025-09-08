@@ -1,11 +1,13 @@
 package f1.data.ui;
 
+import f1.data.F1SessionInitializer;
+import f1.data.SessionInitializationResult;
 import f1.data.parse.F1DataMain;
 import f1.data.parse.F1PacketProcessor;
-import f1.data.F1SessionInitializer;
-import f1.data.parse.packets.ParticipantData;
-import f1.data.parse.packets.session.SessionData;
-import f1.data.ui.panels.dto.*;
+import f1.data.ui.panels.dto.DriverDataDTO;
+import f1.data.ui.panels.dto.ParentConsumer;
+import f1.data.ui.panels.dto.SessionResetDTO;
+import f1.data.ui.panels.dto.SpeedTrapDataDTO;
 import f1.data.ui.panels.home.HomePanel;
 import f1.data.ui.panels.stages.*;
 import f1.data.ui.panels.stages.managers.*;
@@ -17,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
-import java.util.List;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -96,14 +97,14 @@ public class F1DataUI extends Application {
 
             ParentConsumer parent = new ParentConsumer(driverDataConsumer, speedTrapDataDTO, sessionResetConsumer);
             //Calls the data thread.
-            callTelemetryThread(parent, initResult.getSessionData(), initResult.getParticipantData(), initResult.getPacketFormat());
+            callTelemetryThread(parent, initResult);
         });
     }
 
     //Calls the telemetry thread, which handles parsing the packets.
-    private void callTelemetryThread(ParentConsumer parent, SessionData initialSession, List<ParticipantData> participantDataList, int packetFormat) {
+    private void callTelemetryThread(ParentConsumer parent, SessionInitializationResult result) {
         Thread telemetryThread = new Thread(() -> {
-            new F1DataMain(packetProcessor, parent, initialSession, participantDataList, packetFormat).run();
+            new F1DataMain(packetProcessor, parent, result).run();
         });
         telemetryThread.setDaemon(true);
         telemetryThread.start();
