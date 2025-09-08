@@ -1,5 +1,6 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.enums.FormulaEnum;
 import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
@@ -44,7 +45,7 @@ public class SessionPacketHandler implements PacketHandler {
                 this.sessionName.setFormula(sd.formula());
                 this.sessionName.setTrackId(sd.trackId());
                 //Send a notification to the consumer so it knows to reset the UI.
-                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName()));
+                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName(), sd.formula() == FormulaEnum.F1.getValue()));
             }
         }
     }

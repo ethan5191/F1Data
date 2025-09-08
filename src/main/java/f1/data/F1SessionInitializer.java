@@ -5,12 +5,10 @@ import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.ParticipantData;
-import f1.data.parse.packets.ParticipantDataFactory;
 import f1.data.parse.packets.handlers.ParticipantPacketHandler;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.ui.panels.home.HomePanel;
-import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
@@ -20,10 +18,8 @@ import javafx.scene.layout.VBox;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -67,7 +63,7 @@ public class F1SessionInitializer {
                         SessionData sd = SessionDataFactory.build(ph.packetFormat(), buffer);
                         sessionRef.set(sd);
                     } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null) {
-                        ParticipantPacketHandler handler = new ParticipantPacketHandler(packetFormat.get());
+                        ParticipantPacketHandler handler = new ParticipantPacketHandler(packetFormat.get(), playerCarIndex.get());
                         handler.processPacket(buffer);
                         numActiveCars.set(handler.getNumActiveCars());
                         driverPairPerTeam.set(handler.getDriverPairPerTeam());

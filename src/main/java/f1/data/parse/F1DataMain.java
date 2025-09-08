@@ -40,7 +40,10 @@ public class F1DataMain {
 
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
+    private int playerCarIndex;
+
     public F1DataMain(F1PacketProcessor packetProcessor, ParentConsumer parent, SessionInitializationResult result) {
+        this.playerCarIndex = result.getPlayerCarIndex();
         this.packetProcessor = packetProcessor;
         final Map<Integer, TelemetryData> participants = new HashMap<>();
         for (int i = 0; i < result.getParticipantData().size(); i++) {
@@ -57,7 +60,7 @@ public class F1DataMain {
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
-        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, participants, parent.driverDataDTOConsumer());
+        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer());
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
@@ -80,6 +83,10 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
+                if (ph.playerCarIndex() != this.playerCarIndex) {
+                    this.playerCarIndex = ph.playerCarIndex();
+                    this.participantPacketHandler.setPlayerCarIndex(ph.playerCarIndex());
+                }
                 PacketHandler handler = handlerMap.get(ph.packetId());
                 if (handler != null) handler.processPacket(byteBuffer);
                 packetCounts[ph.packetId()][0]++;

@@ -4,10 +4,7 @@ import f1.data.F1SessionInitializer;
 import f1.data.SessionInitializationResult;
 import f1.data.parse.F1DataMain;
 import f1.data.parse.F1PacketProcessor;
-import f1.data.ui.panels.dto.DriverDataDTO;
-import f1.data.ui.panels.dto.ParentConsumer;
-import f1.data.ui.panels.dto.SessionResetDTO;
-import f1.data.ui.panels.dto.SpeedTrapDataDTO;
+import f1.data.ui.panels.dto.*;
 import f1.data.ui.panels.home.HomePanel;
 import f1.data.ui.panels.stages.*;
 import f1.data.ui.panels.stages.managers.*;
@@ -19,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.SocketException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -42,19 +41,27 @@ public class F1DataUI extends Application {
 
         F1SessionInitializer initializer = new F1SessionInitializer(packetProcessor, home);
         initializer.startInitializationWithCallback(initResult -> {
-            boolean isF1 = initResult.isF1();
-            int playerDriverId = initResult.getPlayerDriverId();
-            int teamMateDriverId = initResult.getTeamMateDriverId();
-            int numActiveCars = initResult.getNumActiveCars();
+            AtomicBoolean isF1 = new AtomicBoolean(initResult.isF1());
+            AtomicInteger playerDriverId = new AtomicInteger(initResult.getPlayerDriverId());
+            AtomicInteger teamMateDriverId = new AtomicInteger(initResult.getTeamMateDriverId());
+            AtomicInteger numActiveCars = new AtomicInteger(initResult.getNumActiveCars());
 
             //Main content panels for the different views.
-            LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId, teamMateDriverId);
-            AllLapStageManager allLaps = new AllLapStageManager(playerDriverId, teamMateDriverId);
+            LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId.get(), teamMateDriverId.get());
+            AllLapStageManager allLaps = new AllLapStageManager(playerDriverId.get(), teamMateDriverId.get());
             SetupStageManager setupData = new SetupStageManager();
-            RunDataStageManager runData = new RunDataStageManager(playerDriverId, teamMateDriverId, isF1);
-            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId, teamMateDriverId, numActiveCars);
-            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId, teamMateDriverId);
+            RunDataStageManager runData = new RunDataStageManager(playerDriverId.get(), teamMateDriverId.get(), isF1.get());
+            SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get(), numActiveCars.get());
+            TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get());
 
+            Consumer<SessionChangeDTO> sessionChangeDTOConsumer = snapshot ->
+            {
+                Platform.runLater(() -> {
+                    playerDriverId.set(snapshot.playerDriverId());
+                    teamMateDriverId.set(snapshot.teamMateDriverId());
+                    numActiveCars.set(snapshot.numActiveCars());
+                });
+            };
             //Logic for the Setup, LatestLap, and AllLap panels.
             Consumer<DriverDataDTO> driverDataConsumer = snapshot ->
             {
@@ -77,6 +84,7 @@ public class F1DataUI extends Application {
             {
                 Platform.runLater(() -> {
                     if (snapshot.newSession()) {
+                        isF1.set(snapshot.isF1());
                         latestLap.onSessionReset();
                         allLaps.onSessionReset();
                         setupData.onSessionReset();
@@ -95,7 +103,7 @@ public class F1DataUI extends Application {
             new TeamSpeedTrapStage(new Stage(), teamSpeedTrapData.getContainer());
             new RunDataStage(new Stage(), runData.getContainer());
 
-            ParentConsumer parent = new ParentConsumer(driverDataConsumer, speedTrapDataDTO, sessionResetConsumer);
+            ParentConsumer parent = new ParentConsumer(driverDataConsumer, speedTrapDataDTO, sessionResetConsumer, sessionChangeDTOConsumer);
             //Calls the data thread.
             callTelemetryThread(parent, initResult);
         });
