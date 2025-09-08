@@ -1,6 +1,5 @@
 package f1.data.parse.packets;
 
-import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.utils.BitMaskUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +19,7 @@ public abstract class AbstractFactoryTest {
     protected final int BIT_16_START = 50;
     protected final int BIT_32_START = 200;
     protected final int FLOAT_START = 100;
+    protected final float DOUBLE_START = 300;
 
     @BeforeEach
     void setUp() {

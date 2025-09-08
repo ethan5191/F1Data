@@ -29,14 +29,15 @@ public class F1DataMain {
 
     private final MotionPacketHandler motionPacketHandler;
     private final SessionPacketHandler sessionPacketHandler;
+    private final LapDataPacketHandler lapDataPacketHandler;
     private final EventPacketHandler eventPacketHandler;
     private final ParticipantPacketHandler participantPacketHandler;
     private final CarSetupPacketHandler carSetupPacketHandler;
     private final CarTelemetryPacketHandler carTelemetryPacketHandler;
     private final CarStatusPacketHandler carStatusPacketHandler;
+    private final FinalClassificationHandler finalClassificationHandler;
     private final CarDamagePacketHandler carDamagePacketHandler;
     private final TireSetsPacketHandler tireSetsPacketHandler;
-    private final LapDataPacketHandler lapDataPacketHandler;
 
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
@@ -59,14 +60,15 @@ public class F1DataMain {
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
+        this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, parent, speedTrapDistance);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
         this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer());
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
+        this.finalClassificationHandler = new FinalClassificationHandler(packetFormat);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
-        this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, parent, speedTrapDistance);
 
         initializeHandlerMap();
     }
@@ -109,7 +111,7 @@ public class F1DataMain {
         handlerMap.put(Constants.CAR_SETUP_PACK, carSetupPacketHandler);
         handlerMap.put(Constants.CAR_TELEMETRY_PACK, carTelemetryPacketHandler);
         handlerMap.put(Constants.CAR_STATUS_PACK, carStatusPacketHandler);
-        handlerMap.put(Constants.FINAL_CLASS_PACK, null);
+        handlerMap.put(Constants.FINAL_CLASS_PACK, finalClassificationHandler);
         handlerMap.put(Constants.LOBBY_INFO_PACK, null);
         handlerMap.put(Constants.CAR_DAMAGE_PACK, carDamagePacketHandler);
         handlerMap.put(Constants.SESSION_HIST_PACK, null);
