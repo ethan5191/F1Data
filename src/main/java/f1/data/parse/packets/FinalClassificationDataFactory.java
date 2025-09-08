@@ -1,0 +1,20 @@
+package f1.data.parse.packets;
+
+import f1.data.utils.constants.Constants;
+
+import java.nio.ByteBuffer;
+
+public class FinalClassificationDataFactory {
+
+    public static FinalClassificationData build(int packetFormat, ByteBuffer byteBuffer) {
+        return switch (packetFormat) {
+            case Constants.YEAR_2020:
+                FinalClassificationData.FinalClassificationData20 fcd20 = new FinalClassificationData.FinalClassificationData20(byteBuffer);
+                yield new FinalClassificationData(fcd20.position(), fcd20.numLaps(), fcd20.gridPosition(), fcd20.points(), fcd20.numPitsStops(),
+                        fcd20.resultStatus(), fcd20.bestLapTime(), fcd20.totalRaceTime(), fcd20.penaltiesTime(), fcd20.numPenalties(),
+                        fcd20.numTyreStints(), fcd20.tyreStintsActual(), fcd20.tyreStintsVisual());
+            default:
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+        };
+    }
+}

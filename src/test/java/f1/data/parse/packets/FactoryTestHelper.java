@@ -49,6 +49,15 @@ public class FactoryTestHelper {
         when(mockByteBuffer.getFloat()).thenAnswer(returnsElementsOf(floatValues));
     }
 
+    protected static void mockDoubleValues(ByteBuffer mockByteBuffer, int count) {
+        int doubleStart = 300;
+        List<Double> doubleValues = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            doubleValues.add((double) doubleStart + i);
+        }
+        when(mockByteBuffer.getDouble()).thenAnswer(returnsElementsOf(doubleValues));
+    }
+
     protected static void mockSingleGetValue(ByteBuffer mockByteBuffer, int count) {
         when(mockByteBuffer.get()).thenReturn((byte) ((byte) count + 1));
     }
@@ -58,7 +67,7 @@ public class FactoryTestHelper {
     }
 
     protected static void parseIntArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils, int length) {
-        parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, 4)).thenReturn(new int[4]);
+        parseUtils.when(() -> ParseUtils.parseIntArray(mockByteBuffer, length)).thenReturn(new int[length]);
     }
 
     protected static void parseShortArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
