@@ -31,6 +31,7 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_8_START + 3, result.readyStatus());
 
             assertEquals(0, result.carNumber());
+            assertEquals(0, result.platform());
         }
     }
 
@@ -49,6 +50,27 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
             assertEquals(BIT_8_START + 3, result.readyStatus());
             assertEquals(BIT_8_START + 4, result.carNumber());
+
+            assertEquals(0, result.platform());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {Constants.YEAR_2023})
+    @DisplayName("Builds the Lobby Info Data for 2023.")
+    void testBuild_lobbyInfoData2023(int packetFormat) {
+        int bitMask8Count = 6;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            LobbyInfoData result = LobbyInfoDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(BIT_8_START, result.aiControlled());
+            assertEquals(BIT_8_START + 1, result.teamId());
+            assertEquals(BIT_8_START + 2, result.nationality());
+            assertEquals(BIT_8_START + 3, result.platform());
+            assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
+            assertEquals(BIT_8_START + 4, result.readyStatus());
+            assertEquals(BIT_8_START + 5, result.carNumber());
         }
     }
 }

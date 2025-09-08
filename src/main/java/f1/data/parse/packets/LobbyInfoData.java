@@ -22,6 +22,7 @@ import java.nio.ByteBuffer;
  * - m_aiControlled        | uint8          | 1            | 2020           |
  * - m_teamId              | uint8          | 1            | 2020           |
  * - m_nationality         | uint8          | 1            | 2020           |
+ * - m_platform            | uint8          | 1            | 2023           |
  * - m_name                | char[48]       | 48           | 2020           | UTF-8 name, null-terminated
  * - m_carNumber           | uint8          | 1            | 2021           | car number
  * - m_readyStatus         | uint8          | 1            | 2020           |
@@ -32,7 +33,7 @@ import java.nio.ByteBuffer;
  * - Arrays must be read in a loop for proper data conversion.
  */
 
-public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber) {
+public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber, int platform) {
 
     private static byte[] formatName(ByteBuffer byteBuffer, int nameLength) {
         byte[] tempName = new byte[nameLength];
@@ -55,6 +56,20 @@ public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[
     record LobbyInfoData21(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber) {
         public LobbyInfoData21(ByteBuffer byteBuffer, int nameLength) {
             this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
+
+    record LobbyInfoData23(int aiControlled, int teamId, int nationality, int platform, byte[] name, int readyStatus, int carNumber) {
+        public LobbyInfoData23(ByteBuffer byteBuffer, int nameLength) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
