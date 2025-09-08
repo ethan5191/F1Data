@@ -11,8 +11,13 @@ public class FinalClassificationDataFactory {
             case Constants.YEAR_2020:
                 FinalClassificationData.FinalClassificationData20 fcd20 = new FinalClassificationData.FinalClassificationData20(byteBuffer);
                 yield new FinalClassificationData(fcd20.position(), fcd20.numLaps(), fcd20.gridPosition(), fcd20.points(), fcd20.numPitsStops(),
-                        fcd20.resultStatus(), fcd20.bestLapTime(), fcd20.totalRaceTime(), fcd20.penaltiesTime(), fcd20.numPenalties(),
-                        fcd20.numTyreStints(), fcd20.tyreStintsActual(), fcd20.tyreStintsVisual());
+                        fcd20.resultStatus(), fcd20.bestLapTime20(), fcd20.totalRaceTime(), fcd20.penaltiesTime(), fcd20.numPenalties(),
+                        fcd20.numTyreStints(), fcd20.tyreStintsActual(), fcd20.tyreStintsVisual(), 0);
+            case Constants.YEAR_2021:
+                FinalClassificationData.FinalClassificationData21 fcd21 = new FinalClassificationData.FinalClassificationData21(byteBuffer);
+                yield new FinalClassificationData(fcd21.position(), fcd21.numLaps(), fcd21.gridPosition(), fcd21.points(), fcd21.numPitsStops(),
+                        fcd21.resultStatus(), 0, fcd21.totalRaceTime(), fcd21.penaltiesTime(), fcd21.numPenalties(),
+                        fcd21.numTyreStints(), fcd21.tyreStintsActual(), fcd21.tyreStintsVisual(), fcd21.bestLapTime());
             default:
                 throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
         };

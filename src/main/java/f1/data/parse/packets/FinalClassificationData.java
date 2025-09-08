@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 2020 FinalClassificationData Breakdown (Little Endian)
- * - F1 2020 Length: 37 bytes per car
+ * - F1 2020/2021 Length: 37 bytes per car (2021 the type of bestLapTime changed from float to uint32)
  * This struct is 37 bytes long and contains details of a driver's final classification in a session.
  * This data is sent as an array for each car.
  * <p>
@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
  * - m_points                | uint8                 | 1             | 2020            |
  * - m_numPitStops           | uint8                 | 1             | 2020            |
  * - m_resultStatus          | uint8                 | 1             | 2020            | Result status
- * - m_bestLapTime           | float                 | 4             | 2020            |
+ * - m_bestLapTime           | float (uint32 - 2021) | 4             | 2020            |
  * - m_totalRaceTime         | double                | 8             | 2020            | Total time without penalties
  * - m_penaltiesTime         | uint8                 | 1             | 2020            |
  * - m_numPenalties          | uint8                 | 1             | 2020            |
@@ -41,18 +41,31 @@ import java.nio.ByteBuffer;
  */
 
 public record FinalClassificationData(int position, int numLaps, int gridPosition, int points, int numPitsStops,
-                                      int resultStatus, float bestLapTime, double totalRaceTime, int penaltiesTime,
+                                      int resultStatus, float bestLapTime20, double totalRaceTime, int penaltiesTime,
                                       int numPenalties, int numTyreStints, int[] tyreStintsActual,
-                                      int[] tyreStintsVisual) {
+                                      int[] tyreStintsVisual, long bestLapTime) {
 
     record FinalClassificationData20(int position, int numLaps, int gridPosition, int points, int numPitsStops,
-                                     int resultStatus, float bestLapTime, double totalRaceTime, int penaltiesTime,
+                                     int resultStatus, float bestLapTime20, double totalRaceTime, int penaltiesTime,
                                      int numPenalties, int numTyreStints, int[] tyreStintsActual,
                                      int[] tyreStintsVisual) {
         public FinalClassificationData20(ByteBuffer byteBuffer) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     byteBuffer.getFloat(), byteBuffer.getDouble(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    ParseUtils.parseIntArray(byteBuffer, 8), ParseUtils.parseIntArray(byteBuffer, 8)
+            );
+        }
+    }
+
+    record FinalClassificationData21(int position, int numLaps, int gridPosition, int points, int numPitsStops,
+                                     int resultStatus, long bestLapTime, double totalRaceTime, int penaltiesTime,
+                                     int numPenalties, int numTyreStints, int[] tyreStintsActual,
+                                     int[] tyreStintsVisual) {
+        public FinalClassificationData21(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()), byteBuffer.getDouble(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()),
                     ParseUtils.parseIntArray(byteBuffer, 8), ParseUtils.parseIntArray(byteBuffer, 8)
             );
         }
