@@ -47,7 +47,7 @@ public class F1DataUI extends Application {
             AtomicInteger numActiveCars = new AtomicInteger(initResult.getNumActiveCars());
 
             //Main content panels for the different views.
-            LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId.get(), teamMateDriverId.get());
+            LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId.get(), teamMateDriverId.get(), initResult.getParticipantData());
             AllLapStageManager allLaps = new AllLapStageManager(playerDriverId.get(), teamMateDriverId.get());
             SetupStageManager setupData = new SetupStageManager();
             RunDataStageManager runData = new RunDataStageManager(playerDriverId.get(), teamMateDriverId.get(), isF1.get());
@@ -73,6 +73,7 @@ public class F1DataUI extends Application {
 
                     //Call panel specific logic for session change.
                     speedTrapData.onSessionChangeNumActiveCars(numActiveCars.get());
+                    latestLap.onSessionChange(snapshot.participantData());
                 });
             };
             //Logic for the Setup, LatestLap, and AllLap panels.

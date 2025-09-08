@@ -56,12 +56,12 @@ public class ParticipantPacketHandler implements PacketHandler {
                 this.participants.put(i, new TelemetryData(pd));
                 //If race number isn't greater than 0 then its not an actual participant but a placeholder, so don't add to the list.
                 if (pd.raceNumber() > 0) {
+                    this.participantDataList.add(pd);
                     if (driverPairPerTeam.containsKey(pd.teamId())) {
                         driverPairPerTeam.get(pd.teamId()).setDriverTwo(pd.driverId());
                     } else {
                         driverPairPerTeam.put(pd.teamId(), new DriverPair(pd.driverId()));
                     }
-                    this.participantDataList.add(pd);
                     if (this.driverDataDTO != null)
                         driverDataDTO.accept(new DriverDataDTO(pd.driverId(), pd.lastName()));
                 }
@@ -73,7 +73,7 @@ public class ParticipantPacketHandler implements PacketHandler {
                 DriverPair driverPair = driverPairPerTeam.get(playerDriver.teamId());
                 //Teammate driver ID will be whatever id on the driver pair isn't the players driver id.
                 final int teamMateDriverId = (playerDriverId == driverPair.getDriverOne()) ? driverPair.getDriverTwo() : driverPair.getDriverOne();
-                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, this.numActiveCars));
+                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, this.numActiveCars, this.participantDataList));
             }
         }
     }

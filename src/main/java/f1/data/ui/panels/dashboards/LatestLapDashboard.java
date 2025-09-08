@@ -11,6 +11,7 @@ public class LatestLapDashboard extends HBox {
     public static final int[] HEADERS_WIDTH = {155, 55, 100, 100, 100, 100};
 
     public LatestLapDashboard(String lastName) {
+        this.lastName = lastName;
         this.name = new Label(lastName);
         this.name.setMinWidth(HEADERS_WIDTH[0]);
         this.name.setTextFill(Color.WHITE);
@@ -34,12 +35,18 @@ public class LatestLapDashboard extends HBox {
         this.getChildren().addAll(name, lapNum, s1, s2, s3, lapTime);
     }
 
+    private final String lastName;
+
     private final Label name;
     private final Label lapNum;
     private final Label s1;
     private final Label s2;
     private final Label s3;
     private final Label lapTime;
+
+    public String getLastName() {
+        return lastName;
+    }
 
     public Label getName() {
         return name;
