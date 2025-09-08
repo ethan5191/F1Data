@@ -6,6 +6,7 @@
   - [Running from an IDE](#running-from-an-ide)
   - [Building and Running](#building-and-running-the-application)
   - [Logging](#logging)
+- [Packets per Game](#packets-per-game)
 - [Current Features](#current-features)  
   - [Save Data](#save-data)
 - [Architecture Overview](#architecture-overview)  
@@ -76,6 +77,34 @@ Currently, the log records:
     When it ends
     Any exceptions encountered
     When packet drops occur
+
+[Back to top](#table-of-contents)
+___
+## Packets per Game
+
+| Packet Type          | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
+|----------------------|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+| Motion               |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Session              |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Lap Data             |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Event                |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Participants         |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Car Setups           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Car Telemetry        |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Car Status           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Final Classification |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
+| Lobby Information    |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
+| Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
+| Session History      |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
+| Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
+| Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |
+| Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |
+| Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |
+
+**Legend:**
+- ✅ Fully parsed / supported
+- ⚠️ Sent by the game but not currently supported  
+- ❌ Does not exist in that version
 
 [Back to top](#table-of-contents)
 ___
