@@ -2,9 +2,7 @@ package f1.data.ui.panels.stages.managers;
 
 import f1.data.parse.individualLap.IndividualLapInfo;
 import f1.data.parse.telemetry.SetupTireKey;
-import f1.data.ui.panels.OnSessionReset;
-import f1.data.ui.panels.Panel;
-import f1.data.ui.panels.RunDataAverage;
+import f1.data.ui.panels.*;
 import f1.data.ui.panels.dashboards.RunDataDashboard;
 import f1.data.ui.panels.dashboards.SetupInfoDashboard;
 import f1.data.ui.panels.dto.DriverDataDTO;
@@ -15,13 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RunDataStageManager implements Panel, OnSessionReset {
+public class RunDataStageManager implements Panel, OnSessionReset, OnSessionChange, OnSessionChangeIsF1 {
 
     private final VBox container;
     private final Map<Integer, Map<SetupTireKey, List<RunDataDashboard>>> dashboards = new HashMap<>();
-    private final int playerDriverId;
-    private final int teamMateId;
-    private final boolean isF1;
+    private int playerDriverId;
+    private int teamMateId;
+    private boolean isF1;
 
     public RunDataStageManager(int playerDriverId, int teamMateId, boolean isF1) {
         this.container = new VBox(getSpacing());
@@ -87,6 +85,16 @@ public class RunDataStageManager implements Panel, OnSessionReset {
     public void onSessionReset() {
         this.container.getChildren().clear();
         this.dashboards.clear();
+    }
+
+    public void onSessionChange(int playerDriverId, int teamMateId) {
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
+        onSessionReset();
+    }
+
+    public void onSessionChangeIsF1(boolean isF1) {
+        this.isF1 = isF1;
     }
 
     public VBox getContainer() {

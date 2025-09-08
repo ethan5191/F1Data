@@ -1,6 +1,7 @@
 package f1.data.ui.panels.stages.managers;
 
 import f1.data.mapKeys.DriverIdLapNum;
+import f1.data.ui.panels.OnSessionChange;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;
 import f1.data.ui.panels.dashboards.TeamSpeedTrapDashboard;
@@ -10,11 +11,11 @@ import javafx.scene.layout.VBox;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TeamSpeedTrapDataManager implements Panel, OnSessionReset {
+public class TeamSpeedTrapDataManager implements Panel, OnSessionReset, OnSessionChange {
 
     private final VBox container;
-    private final int playerDriverId;
-    private final int teamMateId;
+    private int playerDriverId;
+    private int teamMateId;
     private final Map<DriverIdLapNum, TeamSpeedTrapDashboard> dashboards = new HashMap<>();
 
     public TeamSpeedTrapDataManager(int playerDriverId, int teamMateId) {
@@ -50,6 +51,12 @@ public class TeamSpeedTrapDataManager implements Panel, OnSessionReset {
     public void onSessionReset() {
         this.container.getChildren().clear();
         this.dashboards.clear();
+    }
+
+    public void onSessionChange(int playerDriverId, int teamMateId) {
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
+        onSessionReset();
     }
 
     @Override

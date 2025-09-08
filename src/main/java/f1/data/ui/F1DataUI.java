@@ -57,9 +57,22 @@ public class F1DataUI extends Application {
             Consumer<SessionChangeDTO> sessionChangeDTOConsumer = snapshot ->
             {
                 Platform.runLater(() -> {
+                    //Update global params
                     playerDriverId.set(snapshot.playerDriverId());
                     teamMateDriverId.set(snapshot.teamMateDriverId());
                     numActiveCars.set(snapshot.numActiveCars());
+
+                    //All the following calls also make a call to the onSessionReset method to clear the backing objects.
+                    //This is due to there being no way to verify that this logic will run before the update logic runs after the panels reset after a session change.
+                    //Call common interface logic for session change
+                    latestLap.onSessionChange(playerDriverId.get(), teamMateDriverId.get());
+                    allLaps.onSessionChange(playerDriverId.get(), teamMateDriverId.get());
+                    speedTrapData.onSessionChange(playerDriverId.get(), teamMateDriverId.get());
+                    teamSpeedTrapData.onSessionChange(playerDriverId.get(), teamMateDriverId.get());
+                    runData.onSessionChange(playerDriverId.get(), teamMateDriverId.get());
+
+                    //Call panel specific logic for session change.
+                    speedTrapData.onSessionChangeNumActiveCars(numActiveCars.get());
                 });
             };
             //Logic for the Setup, LatestLap, and AllLap panels.
@@ -84,7 +97,13 @@ public class F1DataUI extends Application {
             {
                 Platform.runLater(() -> {
                     if (snapshot.newSession()) {
+                        //Update global param value
                         isF1.set(snapshot.isF1());
+
+                        //Call panel specific logic for session reset.
+                        runData.onSessionChangeIsF1(isF1.get());
+
+                        //Call interface method for session reset
                         latestLap.onSessionReset();
                         allLaps.onSessionReset();
                         setupData.onSessionReset();

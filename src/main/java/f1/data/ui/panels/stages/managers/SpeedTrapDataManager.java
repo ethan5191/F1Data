@@ -1,5 +1,7 @@
 package f1.data.ui.panels.stages.managers;
 
+import f1.data.ui.panels.OnSessionChange;
+import f1.data.ui.panels.OnSessionChangeNumActiveCars;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;
 import f1.data.ui.panels.dashboards.SpeedTrapDashboard;
@@ -11,14 +13,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpeedTrapDataManager implements Panel, OnSessionReset {
+public class SpeedTrapDataManager implements Panel, OnSessionReset, OnSessionChange, OnSessionChangeNumActiveCars {
 
     private final VBox container;
     private final Map<Integer, SpeedTrapDashboard> dashboards = new HashMap<>();
     private final List<SpeedTrapDataDTO> rankings = new ArrayList<>();
-    private final int playerDriverId;
-    private final int teamMateId;
-    private final int numActiveCars;
+    private int playerDriverId;
+    private int teamMateId;
+    private int numActiveCars;
 
     public SpeedTrapDataManager(int playerDriverId, int teamMateId, int numActiveCars) {
         this.container = new VBox(getSpacing());
@@ -83,6 +85,17 @@ public class SpeedTrapDataManager implements Panel, OnSessionReset {
         this.container.getChildren().clear();
         this.dashboards.clear();
         this.rankings.clear();
+    }
+
+    public void onSessionChange(int playerDriverId, int teamMateId) {
+        this.playerDriverId = playerDriverId;
+        this.teamMateId = teamMateId;
+        onSessionReset();
+    }
+
+    public void onSessionChangeNumActiveCars(int numActiveCars) {
+        this.numActiveCars = numActiveCars;
+        onSessionReset();
     }
 
     public VBox getContainer() {
