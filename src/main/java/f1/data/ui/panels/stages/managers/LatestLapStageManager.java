@@ -1,5 +1,6 @@
 package f1.data.ui.panels.stages.managers;
 
+import f1.data.parse.packets.ParticipantData;
 import f1.data.ui.panels.OnSessionChange;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;
@@ -7,10 +8,7 @@ import f1.data.ui.panels.dashboards.LatestLapDashboard;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LatestLapStageManager implements Panel, OnSessionReset, OnSessionChange {
 
@@ -19,28 +17,37 @@ public class LatestLapStageManager implements Panel, OnSessionReset, OnSessionCh
     private int playerDriverId;
     private int teamMateId;
 
-    public LatestLapStageManager(int playerDriverId, int teamMateId) {
+    public LatestLapStageManager(int playerDriverId, int teamMateId, List<ParticipantData> participantData) {
         this.container = new VBox(getSpacing());
         this.playerDriverId = playerDriverId;
         this.teamMateId = teamMateId;
+        buildInitialMap(participantData);
+        buildInitialDisplay();
     }
 
     public void updateStage(DriverDataDTO dto) {
-        LatestLapDashboard latestLapDash = this.dashboards.computeIfAbsent(dto.getId(), id -> {
-            //Creates the new dashboard
-            LatestLapDashboard newDashboard = new LatestLapDashboard(dto.getLastName());
-            //add it to the view.
-            this.container.getChildren().add(newDashboard);
-            //If this is the players driver, then update the background color of this box.
-            if (dto.getId() == this.playerDriverId || dto.getId() == this.teamMateId) {
-                newDashboard.setStyle("-fx-background-color: #3e3e3e;");
-            }
-            return newDashboard;
-        });
         //Make sure we have the info object, if we do then we can actually update the dashboard with data.
         if (dto.getInfo() != null) {
-            latestLapDash.updateValues(dto.getInfo());
+            this.dashboards.get(dto.getId()).updateValues(dto.getInfo());
         }
+    }
+
+    //Builds the map of driver ID->LatestLapDashboard
+    private void buildInitialMap(List<ParticipantData> participantData) {
+        for (ParticipantData pd : participantData) {
+            LatestLapDashboard newDash = new LatestLapDashboard(pd.lastName());
+            if (pd.driverId() == this.playerDriverId || pd.driverId() == this.teamMateId) {
+                newDash.setStyle("-fx-background-color: #3e3e3e;");
+            }
+            this.dashboards.put(pd.driverId(), newDash);
+        }
+    }
+
+    //Takes the map, sorts it based on the last name and then adds the elements to the actual panel.
+    private void buildInitialDisplay() {
+        List<LatestLapDashboard> dashboardRecs = new ArrayList<>(this.dashboards.values());
+        dashboardRecs.sort(Comparator.comparing(LatestLapDashboard::getLastName));
+        this.container.getChildren().addAll(dashboardRecs);
     }
 
     public void onSessionReset() {
@@ -51,17 +58,11 @@ public class LatestLapStageManager implements Panel, OnSessionReset, OnSessionCh
     public void onSessionChange(int playerDriverId, int teamMateId) {
         this.playerDriverId = playerDriverId;
         this.teamMateId = teamMateId;
-        //Before we clear this specific dashboard we want to build a list of the objects.
-        List<DriverDataDTO> dtos = new ArrayList<>(this.dashboards.size());
-        //build the DTO object that we will use to rehydrate the default values for this specific panel.
-        for (Map.Entry<Integer, LatestLapDashboard> record : this.dashboards.entrySet()) {
-            dtos.add(new DriverDataDTO(record.getKey(), record.getValue().getName().getText()));
-        }
-        onSessionReset();
-        //for each DTO create a new dashboard and put it in the map.
-        for (DriverDataDTO dto : dtos) {
-            updateStage(dto);
-        }
+    }
+
+    public void onSessionChange(List<ParticipantData> participantData) {
+        buildInitialMap(participantData);
+        buildInitialDisplay();
     }
 
     public VBox getContainer() {
