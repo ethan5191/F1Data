@@ -18,7 +18,7 @@ public class LobbyInfoDataFactory {
             case Constants.YEAR_2023:
                 LobbyInfoData.LobbyInfoData23 lid23 = new LobbyInfoData.LobbyInfoData23(byteBuffer, nameLength);
                 yield new LobbyInfoData(lid23.aiControlled(), lid23.teamId(), lid23.nationality(), lid23.name(), lid23.readyStatus(), lid23.carNumber(), lid23.platform(), 0, 0, 0);
-            case Constants.YEAR_2024:
+            case Constants.YEAR_2024, Constants.YEAR_2025:
                 LobbyInfoData.LobbyInfoData24 lid24 = new LobbyInfoData.LobbyInfoData24(byteBuffer, nameLength);
                 yield new LobbyInfoData(lid24.aiControlled(), lid24.teamId(), lid24.nationality(), lid24.name(), lid24.readyStatus(), lid24.carNumber(), lid24.platform(), lid24.yourTelemetry(), lid24.showOnlineNames(), lid24.techLevel());
             default:

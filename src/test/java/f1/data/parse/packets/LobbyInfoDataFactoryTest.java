@@ -85,9 +85,10 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2024})
-    @DisplayName("Builds the Lobby Info Data for 2024.")
-    void testBuild_lobbyInfoData2024(int packetFormat) {
+    @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
+    @DisplayName("Builds the Lobby Info Data for 2024 to Present.")
+    void testBuild_lobbyInfoData2024ToPresent(int packetFormat) {
+        int nameLength = (packetFormat < Constants.YEAR_2025) ? PRE_2025_NAME_LENGTH : POST_2025_NAME_LENGTH;
         int bitMask8Count = 8;
         int bitMask16Count = 1;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
@@ -99,7 +100,7 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_8_START + 1, result.teamId());
             assertEquals(BIT_8_START + 2, result.nationality());
             assertEquals(BIT_8_START + 3, result.platform());
-            assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
+            assertArrayEquals(new byte[nameLength], result.name());
             assertEquals(BIT_8_START + 4, result.carNumber());
             assertEquals(BIT_8_START + 5, result.yourTelemetry());
             assertEquals(BIT_8_START + 6, result.showOnlineNames());
