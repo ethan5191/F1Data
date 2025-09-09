@@ -20,9 +20,9 @@ public class SessionHistoryDataFactoryTest extends AbstractFactoryTest {
     private final int TYRE_STINT_HISTORY_SIZE = 8;
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021})
-    @DisplayName("Builds the Session History Data for 2021.")
-    void testBuild_sessionHistoryData2021(int packetFormat) {
+    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @DisplayName("Builds the Session History Data for 2021 to 2022.")
+    void testBuild_sessionHistoryData2021To2022(int packetFormat) {
         int lapHistory8Count = LAP_HISTORY_SIZE;
         int lapHistory16Count = 3 * LAP_HISTORY_SIZE;
         int lapHistory32Count = LAP_HISTORY_SIZE;
@@ -47,6 +47,34 @@ public class SessionHistoryDataFactoryTest extends AbstractFactoryTest {
         }
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @DisplayName("Builds the Session History Data for 2023 to 2024.")
+    void testBuild_sessionHistoryData2023To2024(int packetFormat) {
+        int lapHistory8Count = 4 * LAP_HISTORY_SIZE;
+        int lapHistory16Count = 3 * LAP_HISTORY_SIZE;
+        int lapHistory32Count = LAP_HISTORY_SIZE;
+        int tyreStints8Count = 3 * TYRE_STINT_HISTORY_SIZE;
+        int bitMask8Count = 7 + lapHistory8Count + tyreStints8Count;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, lapHistory16Count);
+            FactoryTestHelper.mockBitMask32(bitMaskUtils, lapHistory32Count);
+            SessionHistoryData result = SessionHistoryDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+
+            assertEquals(BIT_8_START, result.carIndex());
+            assertEquals(BIT_8_START + 1, result.numLaps());;
+            assertEquals(BIT_8_START + 2, result.numTyreStints());;
+            assertEquals(BIT_8_START + 3, result.bestLapTimeLapNum());;
+            assertEquals(BIT_8_START + 4, result.bestSector1LapNum());;
+            assertEquals(BIT_8_START + 5, result.bestSector2LapNum());;
+            assertEquals(BIT_8_START + 6, result.bestSector3LapNum());;
+            int nextBit8Val = validateLapHistoryData23(result, BIT_8_START + 7, BIT_16_START, BIT_32_START);
+            validateTyreStintsHistoryData(result, nextBit8Val);
+        }
+    }
+
     private int validateLapHistoryData21(SessionHistoryData result, int bit8Val, int bit16Val, int bit32Val) {
         for (int n = 0; n < LAP_HISTORY_SIZE; n++) {
             LapHistoryData data = result.lapHistoryData()[n];
@@ -54,6 +82,24 @@ public class SessionHistoryDataFactoryTest extends AbstractFactoryTest {
             assertEquals(bit16Val++, data.sector1TimeInMS());
             assertEquals(bit16Val++, data.sector2TimeInMS());
             assertEquals(bit16Val++, data.sector3TimeInMS());
+            assertEquals(bit8Val++, data.lapValidBitFlags());
+            assertEquals(0, data.sector1TimeMinutesPart());
+            assertEquals(0, data.sector2TimeMinutesPart());
+            assertEquals(0, data.sector3TimeMinutesPart());
+        }
+        return bit8Val;
+    }
+
+    private int validateLapHistoryData23(SessionHistoryData result, int bit8Val, int bit16Val, int bit32Val) {
+        for (int n = 0; n < LAP_HISTORY_SIZE; n++) {
+            LapHistoryData data = result.lapHistoryData()[n];
+            assertEquals(bit32Val++, data.lapTimeInMS());
+            assertEquals(bit16Val++, data.sector1TimeInMS());
+            assertEquals(bit8Val++, data.sector1TimeMinutesPart());
+            assertEquals(bit16Val++, data.sector2TimeInMS());
+            assertEquals(bit8Val++, data.sector2TimeMinutesPart());
+            assertEquals(bit16Val++, data.sector3TimeInMS());
+            assertEquals(bit8Val++, data.sector3TimeMinutesPart());
             assertEquals(bit8Val++, data.lapValidBitFlags());
         }
         return bit8Val;
