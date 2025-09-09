@@ -32,6 +32,9 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
 
             assertEquals(0, result.carNumber());
             assertEquals(0, result.platform());
+            assertEquals(0, result.yourTelemetry());
+            assertEquals(0, result.showOnlineNames());
+            assertEquals(0, result.techLevel());
         }
     }
 
@@ -48,10 +51,13 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_8_START + 1, result.teamId());
             assertEquals(BIT_8_START + 2, result.nationality());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 3, result.readyStatus());
-            assertEquals(BIT_8_START + 4, result.carNumber());
+            assertEquals(BIT_8_START + 3, result.carNumber());
+            assertEquals(BIT_8_START + 4, result.readyStatus());
 
             assertEquals(0, result.platform());
+            assertEquals(0, result.yourTelemetry());
+            assertEquals(0, result.showOnlineNames());
+            assertEquals(0, result.techLevel());
         }
     }
 
@@ -69,8 +75,36 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
             assertEquals(BIT_8_START + 2, result.nationality());
             assertEquals(BIT_8_START + 3, result.platform());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 4, result.readyStatus());
-            assertEquals(BIT_8_START + 5, result.carNumber());
+            assertEquals(BIT_8_START + 4, result.carNumber());
+            assertEquals(BIT_8_START + 5, result.readyStatus());
+
+            assertEquals(0, result.yourTelemetry());
+            assertEquals(0, result.showOnlineNames());
+            assertEquals(0, result.techLevel());
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {Constants.YEAR_2024})
+    @DisplayName("Builds the Lobby Info Data for 2024.")
+    void testBuild_lobbyInfoData2024(int packetFormat) {
+        int bitMask8Count = 8;
+        int bitMask16Count = 1;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            LobbyInfoData result = LobbyInfoDataFactory.build(packetFormat, mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(BIT_8_START, result.aiControlled());
+            assertEquals(BIT_8_START + 1, result.teamId());
+            assertEquals(BIT_8_START + 2, result.nationality());
+            assertEquals(BIT_8_START + 3, result.platform());
+            assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
+            assertEquals(BIT_8_START + 4, result.carNumber());
+            assertEquals(BIT_8_START + 5, result.yourTelemetry());
+            assertEquals(BIT_8_START + 6, result.showOnlineNames());
+            assertEquals(BIT_16_START, result.techLevel());
+            assertEquals(BIT_8_START + 7, result.readyStatus());
         }
     }
 }

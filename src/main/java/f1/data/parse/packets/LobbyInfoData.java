@@ -25,6 +25,9 @@ import java.nio.ByteBuffer;
  * - m_platform            | uint8          | 1            | 2023           |
  * - m_name                | char[48]       | 48           | 2020           | UTF-8 name, null-terminated
  * - m_carNumber           | uint8          | 1            | 2021           | car number
+ * - m_yourTelemetry       | uint8          | 1            | 2024           |
+ * - m_showOnlineNames     | uint8          | 1            | 2024           |
+ * - m_techLevel           | uint16         | 2            | 2024           |
  * - m_readyStatus         | uint8          | 1            | 2020           |
  *
  * Note:
@@ -33,7 +36,8 @@ import java.nio.ByteBuffer;
  * - Arrays must be read in a loop for proper data conversion.
  */
 
-public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber, int platform) {
+public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber, int platform,
+                            int yourTelemetry, int showOnlineNames, int techLevel) {
 
     private static byte[] formatName(ByteBuffer byteBuffer, int nameLength) {
         byte[] tempName = new byte[nameLength];
@@ -53,7 +57,7 @@ public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[
         }
     }
 
-    record LobbyInfoData21(int aiControlled, int teamId, int nationality, byte[] name, int readyStatus, int carNumber) {
+    record LobbyInfoData21(int aiControlled, int teamId, int nationality, byte[] name, int carNumber, int readyStatus) {
         public LobbyInfoData21(ByteBuffer byteBuffer, int nameLength) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()),
@@ -66,7 +70,7 @@ public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[
         }
     }
 
-    record LobbyInfoData23(int aiControlled, int teamId, int nationality, int platform, byte[] name, int readyStatus, int carNumber) {
+    record LobbyInfoData23(int aiControlled, int teamId, int nationality, int platform, byte[] name, int carNumber, int readyStatus) {
         public LobbyInfoData23(ByteBuffer byteBuffer, int nameLength) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()),
@@ -75,6 +79,23 @@ public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     formatName(byteBuffer, nameLength),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
+
+    record LobbyInfoData24(int aiControlled, int teamId, int nationality, int platform, byte[] name, int carNumber, int yourTelemetry, int showOnlineNames, int techLevel, int readyStatus) {
+        public LobbyInfoData24(ByteBuffer byteBuffer, int nameLength) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask8(byteBuffer.get())
             );
         }
