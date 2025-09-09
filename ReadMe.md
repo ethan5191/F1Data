@@ -95,7 +95,7 @@ ___
 | Final Classification |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Lobby Information    |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Session History      |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
+| Session History      |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
 | Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |
 | Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |
