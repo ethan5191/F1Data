@@ -31,7 +31,7 @@ public class ParticipantDataFactory {
                 yield new ParticipantData(p25.aiControlled(), p25.driverId(), p25.teamId(), p25.raceNumber(), p25.nationality(),
                         p25.name(), p25.yourTelemetry(), p25.networkId(), p25.myTeam(), p25.showOnlineNames(), p25.platform(), p25.techLevel(), buildLastName(p25.name()));
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 

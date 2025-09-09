@@ -41,6 +41,7 @@ public class F1DataUI extends Application {
 
         F1SessionInitializer initializer = new F1SessionInitializer(packetProcessor, home);
         initializer.startInitializationWithCallback(initResult -> {
+            logger.info("Game Version {}", initResult.getPacketFormat());
             AtomicBoolean isF1 = new AtomicBoolean(initResult.isF1());
             AtomicInteger playerDriverId = new AtomicInteger(initResult.getPlayerDriverId());
             AtomicInteger teamMateDriverId = new AtomicInteger(initResult.getTeamMateDriverId());

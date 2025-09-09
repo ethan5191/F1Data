@@ -12,6 +12,7 @@ public enum FormulaEnum {
     F1_GENERIC(3),
     BETA(4),
     ESPORTS(6),
+    F2_ALT(7),
     F1_WORLD(8),
     F1_ELIMINATION(9);
 

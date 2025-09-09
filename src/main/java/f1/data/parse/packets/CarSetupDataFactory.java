@@ -27,7 +27,7 @@ public class CarSetupDataFactory {
                         c24.rearHeight(), c24.brakePressure(), c24.brakeBias(), c24.rearLeftPressure(), c24.rearRightPressure(),
                         c24.frontLeftPressure(), c24.frontRightPressure(), c24.ballast(), c24.fuelLoad(), c24.engineBraking());
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 }

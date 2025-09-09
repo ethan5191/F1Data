@@ -58,7 +58,7 @@ public class LapDataFactory {
                         l24.pitLaneTimerInLaneInMs(), l24.pitStopTimerInMS(), l24.pitStopShouldServePen(), l24.speedTrapFastestSpeed(), l24.speedTrapFastestLap(),
                         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 }
