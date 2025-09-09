@@ -99,7 +99,7 @@ ___
 | Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
 | Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
 | Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |
-| Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |
+| Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |
 
 **Legend:**
 - ✅ Fully parsed / supported
