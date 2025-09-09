@@ -8,6 +8,8 @@ import java.nio.ByteBuffer;
  * F1 2020 LobbyInfoData Breakdown (Little Endian)
  * - F1 2020 Length: 52 bytes per player
  * - F1 2021/2022 Length: 53 bytes per player
+ * - F1 2023 Length: 54 bytes per player
+ * - F1 2024 Length: 58 bytes per player
  * This struct is 52 bytes long and contains details about a single player in the lobby,
  * including their name, team, and ready status. This data is sent as an array for each player.
  * <p>
