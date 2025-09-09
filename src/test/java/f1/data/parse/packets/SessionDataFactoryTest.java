@@ -408,8 +408,8 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
             assertEquals(++nextBit8Value, result.numVirtualSafetyCarPeriods());
             assertEquals(++nextBit8Value, result.numRedFlagPeriods());
             verifyGameModData(result, ++nextBit8Value);
-            assertEquals(--nextFloat, result.sector2LapDistanceStart());
-            assertEquals(nextFloat, result.sector3LapDistanceStart());
+            assertEquals(++nextFloat, result.sector2LapDistanceStart());
+            assertEquals(++nextFloat, result.sector3LapDistanceStart());
         }
     }
 
@@ -419,7 +419,6 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
             MarshalZoneData temp = result.marshalZones()[i];
             assertEquals(marshalZone, temp.zoneStart());
             assertEquals(singleGetValue, temp.zoneFlag());
-            marshalZone++;
         }
         return marshalZone;
     }
