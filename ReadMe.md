@@ -93,7 +93,7 @@ ___
 | Car Telemetry        |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Car Status           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Final Classification |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Lobby Information    |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
+| Lobby Information    |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Session History      |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |  ⚠️  |
 | Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
