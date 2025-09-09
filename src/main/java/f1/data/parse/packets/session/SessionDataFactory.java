@@ -27,7 +27,7 @@ public class SessionDataFactory {
                 SessionData.SessionData24 s24 = new SessionData.SessionData24(byteBuffer);
                 yield new SessionData(s24.weather(), s24.trackTemperature(), s24.airTemperature(), s24.totalLaps(), s24.trackLength(), s24.sessionType(), s24.trackId(), s24.formula(), s24.sessionTimeLeft(), s24.sessionDuration(), s24.pitSpeedLimit(), s24.gamePaused(), s24.isSpectating(), s24.spectatorCarIndex(), s24.sliProNativeSupport(), s24.numMarshalZones(), s24.marshalZones(), s24.safetyCarStatus(), s24.networkGame(), s24.numWeatherForecastSamples(), s24.weatherForecastSamples(), s24.forecastAccuracy(), s24.aiDifficulty(), s24.seasonLinkIdentifier(), s24.weekendLinkIdentifier(), s24.sessionLinkIdentifier(), s24.pitStopWindowIdealLap(), s24.pitStopWindowLatestLap(), s24.pitStopRejoinPosition(), s24.assistData(), s24.gameMode(), s24.ruleSet(), s24.timeOfDay(), s24.sessionLength(), s24.speedUnitsLeadPlayer(), s24.tempUnitsLeadPlayer(), s24.speedUnitsSecondaryPlayer(), s24.tempUnitsSecondaryPlayer(), s24.numSafetyCarPeriods(), s24.numVirtualSafetyCarPeriods(), s24.numRedFlagPeriods(), s24.gameModeData(), s24.sector2LapDistanceStart(), s24.sector3LapDistanceStart());
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 }

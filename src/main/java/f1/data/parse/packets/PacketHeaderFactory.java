@@ -24,7 +24,7 @@ public class PacketHeaderFactory {
                         p23.sessionUID(), p23.sessionTime(), p23.frameID(), p23.playerCarIndex(), p23.secondaryPlayerCarIndex(),
                         p23.gameYear(), p23.overallFrameID());
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 }

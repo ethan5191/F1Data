@@ -20,7 +20,7 @@ public class CarTelemetryDataFactory {
                         c21.drs(), c21.revLightPercent(), c21.brakeTemps(), c21.tireSurfaceTemps(), c21.tireInnerTemps(), c21.engineTemp(),
                         c21.tirePressure(), c21.surfaceType(), c21.revLightBitVal());
             default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
 }
