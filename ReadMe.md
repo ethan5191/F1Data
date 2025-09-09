@@ -97,7 +97,7 @@ ___
 | Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Session History      |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
-| Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |  ⚠️  |
+| Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
 | Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |
 | Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |
 
