@@ -15,8 +15,8 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2020})
-    @DisplayName("Builds the Participant Data for 2020.")
-    void testBuild_participantData2020(int packetFormat) {
+    @DisplayName("Builds the Final Classification for 2020.")
+    void testBuild_finalClassificationData2020(int packetFormat) {
         int bitMask8Count = 11;
         int floatCount = 1;
         int doubleCount = 1;
@@ -51,8 +51,8 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2021})
-    @DisplayName("Builds the Participant Data for 2021.")
-    void testBuild_participantData2021(int packetFormat) {
+    @DisplayName("Builds the Final Classification for 2021.")
+    void testBuild_finalClassificationData2021(int packetFormat) {
         int bitMask8Count = 11;
         int bitMask32Count = 1;
         int doubleCount = 1;
@@ -87,8 +87,8 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024})
-    @DisplayName("Builds the Participant Data for 2022 to 2024.")
-    void testBuild_participantData2022To2024(int packetFormat) {
+    @DisplayName("Builds the Final Classification for 2022 to 2024.")
+    void testBuild_finalClassificationData2022To2024(int packetFormat) {
         int bitMask8Count = 11;
         int bitMask32Count = 1;
         int doubleCount = 1;
@@ -123,8 +123,8 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2025})
-    @DisplayName("Builds the Participant Data for 2025 to Present.")
-    void testBuild_participantData2025ToPresent(int packetFormat) {
+    @DisplayName("Builds the Final Classification for 2025 to Present.")
+    void testBuild_finalClassificationData2025ToPresent(int packetFormat) {
         int bitMask8Count = 12;
         int bitMask32Count = 1;
         int doubleCount = 1;

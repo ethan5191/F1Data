@@ -1,6 +1,7 @@
 package f1.data.parse;
 
 import f1.data.SessionInitializationResult;
+import f1.data.parse.packets.LobbyInfoData;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.ParticipantData;
@@ -36,6 +37,7 @@ public class F1DataMain {
     private final CarTelemetryPacketHandler carTelemetryPacketHandler;
     private final CarStatusPacketHandler carStatusPacketHandler;
     private final FinalClassificationHandler finalClassificationHandler;
+    private final LobbyInfoPacketHandler lobbyInfoPacketHandler;
     private final CarDamagePacketHandler carDamagePacketHandler;
     private final TireSetsPacketHandler tireSetsPacketHandler;
 
@@ -67,6 +69,7 @@ public class F1DataMain {
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
         this.finalClassificationHandler = new FinalClassificationHandler(packetFormat);
+        this.lobbyInfoPacketHandler = new LobbyInfoPacketHandler(packetFormat);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
 
@@ -112,7 +115,7 @@ public class F1DataMain {
         handlerMap.put(Constants.CAR_TELEMETRY_PACK, carTelemetryPacketHandler);
         handlerMap.put(Constants.CAR_STATUS_PACK, carStatusPacketHandler);
         handlerMap.put(Constants.FINAL_CLASS_PACK, finalClassificationHandler);
-        handlerMap.put(Constants.LOBBY_INFO_PACK, null);
+        handlerMap.put(Constants.LOBBY_INFO_PACK, lobbyInfoPacketHandler);
         handlerMap.put(Constants.CAR_DAMAGE_PACK, carDamagePacketHandler);
         handlerMap.put(Constants.SESSION_HIST_PACK, null);
         handlerMap.put(Constants.TYRE_SETS_PACK, tireSetsPacketHandler);
