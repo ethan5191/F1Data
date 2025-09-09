@@ -41,6 +41,7 @@ public class F1DataMain {
     private final SessionHistoryPacketHandler sessionHistoryPacketHandler;
     private final TireSetsPacketHandler tireSetsPacketHandler;
     private final MotionExPacketHandler motionExPacketHandler;
+    private final TimeTrialPacketHandler timeTrialPacketHandler;
 
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
@@ -75,6 +76,7 @@ public class F1DataMain {
         this.sessionHistoryPacketHandler = new SessionHistoryPacketHandler(packetFormat);
         this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
         this.motionExPacketHandler = new MotionExPacketHandler(packetFormat);
+        this.timeTrialPacketHandler = new TimeTrialPacketHandler(packetFormat);
 
         initializeHandlerMap();
     }
@@ -123,7 +125,7 @@ public class F1DataMain {
         handlerMap.put(Constants.SESSION_HIST_PACK, sessionHistoryPacketHandler);
         handlerMap.put(Constants.TYRE_SETS_PACK, tireSetsPacketHandler);
         handlerMap.put(Constants.MOTION_EX_PACK, motionExPacketHandler);
-        handlerMap.put(Constants.TIME_TRIAL_PACK, null);
+        handlerMap.put(Constants.TIME_TRIAL_PACK, timeTrialPacketHandler);
         handlerMap.put(Constants.LAP_POSITIONS_PACK, null);
     }
 }
