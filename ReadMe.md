@@ -98,7 +98,7 @@ ___
 | Session History      |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
 | Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
 | Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
-| Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |  ⚠️  |
+| Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |
 | Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ⚠️  |
 
 **Legend:**
