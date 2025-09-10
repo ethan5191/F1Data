@@ -1,6 +1,5 @@
 package f1.data.parse.packets.handlers;
 
-import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.events.ButtonsData;
 import f1.data.parse.packets.events.SpeedTrapData;
 import f1.data.parse.packets.events.SpeedTrapDataFactory;
@@ -9,15 +8,14 @@ import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.save.*;
+import f1.data.save.IndividualLapSessionData;
+import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
-import f1.data.ui.panels.home.AppState;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
