@@ -29,6 +29,8 @@ public class EventPacketHandler implements PacketHandler {
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
 
+    private boolean isPause = false;
+
 
     public EventPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SpeedTrapDataDTO> speedTrapData, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
@@ -59,6 +61,7 @@ public class EventPacketHandler implements PacketHandler {
         ) {
             handleTestSave(this.packetFormat, this.participants);
             printLapAndSetupData(this.participants);
+            this.isPause = true;
         }
     }
 
@@ -107,5 +110,13 @@ public class EventPacketHandler implements PacketHandler {
             handleTestSave(packetFormat, participants);
             printLapAndSetupData(participants);
         }
+    }
+
+    public void setPause(boolean pause) {
+        isPause = pause;
+    }
+
+    public boolean isPause() {
+        return isPause;
     }
 }

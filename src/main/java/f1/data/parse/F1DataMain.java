@@ -1,6 +1,7 @@
 package f1.data.parse;
 
 import f1.data.SessionInitializationResult;
+import f1.data.enums.PacketTypeEnum;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.ParticipantData;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +46,7 @@ public class F1DataMain {
     private final TimeTrialPacketHandler timeTrialPacketHandler;
     private final LapPositionsPacketHandler lapPositionsPacketHandler;
 
+    private final SessionName session;
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
     private int playerCarIndex;
@@ -62,6 +65,7 @@ public class F1DataMain {
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         SessionData initialSession = result.getSessionData();
         SessionName sessionName = new SessionName(initialSession.sessionType(), initialSession.trackId(), initialSession.formula());
+        this.session = sessionName;
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
         this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
@@ -83,7 +87,7 @@ public class F1DataMain {
         initializeHandlerMap();
     }
 
-    private final int[][] packetCounts = new int[16][1];
+    private final int[][] packetCounts = new int[PacketTypeEnum.values().length][1];
 
     public void run() {
         logger.info("In DataMain");
@@ -102,6 +106,7 @@ public class F1DataMain {
                 PacketHandler handler = handlerMap.get(ph.packetId());
                 if (handler != null) handler.processPacket(byteBuffer);
                 packetCounts[ph.packetId()][0]++;
+                logPacketCounts(handler);
             }
         } catch (InterruptedException e) {
             logger.error("e ", e);
@@ -129,5 +134,17 @@ public class F1DataMain {
         handlerMap.put(Constants.MOTION_EX_PACK, motionExPacketHandler);
         handlerMap.put(Constants.TIME_TRIAL_PACK, timeTrialPacketHandler);
         handlerMap.put(Constants.LAP_POSITIONS_PACK, lapPositionsPacketHandler);
+    }
+
+    private void logPacketCounts(PacketHandler handler) {
+        if (handler instanceof EventPacketHandler) {
+            if (((EventPacketHandler) handler).isPause()) {
+                logger.info(session.buildSessionName());
+                for (int i = 0; i < this.packetCounts.length; i++) {
+                    logger.info("Packet {} Count {}", PacketTypeEnum.findByValue(i).name(), Arrays.toString(this.packetCounts[i]));
+                }
+                ((EventPacketHandler) handler).setPause(false);
+            }
+        }
     }
 }
