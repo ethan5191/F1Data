@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class LapPositionsDataFactory {
+public class LapPositionsDataFactory implements DataFactory<LapPositionsData> {
 
     private final SupportedYearsEnum packetFormat;
 
