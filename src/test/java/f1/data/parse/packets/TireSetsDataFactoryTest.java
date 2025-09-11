@@ -24,7 +24,7 @@ public class TireSetsDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockSingleGetShortValue(mockByteBuffer, shortCount);
-            TireSetsData[] result = TireSetsDataFactory.build(packetFormat, mockByteBuffer);
+            TireSetsData[] result = new TireSetsDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
             Assertions.assertEquals(Constants.TIRE_SETS_PACKET_COUNT, result.length);
             for (TireSetsData data : result) {
