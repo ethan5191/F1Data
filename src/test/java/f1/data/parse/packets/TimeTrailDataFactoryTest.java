@@ -24,7 +24,7 @@ public class TimeTrailDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
-            TimeTrialData result = TimeTrialDataFactory.build(packetFormat, mockByteBuffer);
+            TimeTrialData result = new TimeTrialDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
             assertEquals(bit8Value++, result.carIndex());
             assertEquals(bit8Value++, result.teamId());
