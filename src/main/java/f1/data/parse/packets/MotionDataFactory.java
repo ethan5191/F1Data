@@ -1,22 +1,25 @@
 package f1.data.parse.packets;
 
-import f1.data.utils.constants.Constants;
+import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class MotionDataFactory {
+public class MotionDataFactory implements DataFactory<MotionData> {
 
-    public static MotionData build(int packetFormat, ByteBuffer byteBuffer) {
+    private final SupportedYearsEnum packetFormat;
+
+    public MotionDataFactory(int packetFormat) {
+        this.packetFormat = SupportedYearsEnum.fromYear(packetFormat);
+    }
+
+    public MotionData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case Constants.YEAR_2019, Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022,
-                 Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025 -> new MotionData(byteBuffer);
-            default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
+            case F1_2019, F1_2020, F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> new MotionData(byteBuffer);
         };
     }
 
     //Used to build a version of the MotionExData object from the extra packet information that is after the MotionData array in 2019-2022
-    public static MotionExData buildLegacy(ByteBuffer byteBuffer) {
+    public MotionExData buildLegacy(ByteBuffer byteBuffer) {
         MotionExData.MotionExData19 med19 = new MotionExData.MotionExData19(byteBuffer);
         return new MotionExData(med19.suspensionPosition(), med19.suspensionVelocity(), med19.suspensionAcceleration(), med19.wheelSpeed(),
                 med19.wheelSlip(), new float[4], new float[4], new float[4], 0, med19.localVelocityX(),

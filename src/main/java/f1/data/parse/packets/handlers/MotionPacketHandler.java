@@ -14,21 +14,23 @@ public class MotionPacketHandler implements PacketHandler {
 
     private final int packetFormat;
     private final Map<Integer, TelemetryData> participants;
+    private final MotionDataFactory factory;
 
     public MotionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
         this.participants = participants;
+        this.factory = new MotionDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                MotionData md = MotionDataFactory.build(this.packetFormat, byteBuffer);
+                MotionData md = factory.build(byteBuffer);
             }
-            //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
+            //Params existed OUTSIDE the main array in the struct until 2023 when they went away.
             if (packetFormat <= Constants.YEAR_2022) {
-                MotionExData med = MotionDataFactory.buildLegacy(byteBuffer);
+                MotionExData med = factory.buildLegacy(byteBuffer);
             }
         }
     }
