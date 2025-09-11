@@ -24,7 +24,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            MotionExData result = MotionExDataFactory.build(packetFormat, mockByteBuffer);
+            MotionExData result = new MotionExDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
             assertArrayEquals(VALUE, result.suspensionPosition());
@@ -69,7 +69,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            MotionExData result = MotionExDataFactory.build(packetFormat, mockByteBuffer);
+            MotionExData result = new MotionExDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
             assertArrayEquals(VALUE, result.suspensionPosition());
@@ -114,7 +114,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
-            MotionExData result = MotionExDataFactory.build(packetFormat, mockByteBuffer);
+            MotionExData result = new MotionExDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
             assertArrayEquals(VALUE, result.suspensionPosition());
