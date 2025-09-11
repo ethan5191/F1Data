@@ -79,7 +79,7 @@ public class F1DataMain {
         this.lobbyInfoPacketHandler = new LobbyInfoPacketHandler(packetFormat);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, participants);
         this.sessionHistoryPacketHandler = new SessionHistoryPacketHandler(packetFormat);
-        this.tireSetsPacketHandler = new TireSetsPacketHandler(participants);
+        this.tireSetsPacketHandler = new TireSetsPacketHandler(packetFormat, participants);
         this.motionExPacketHandler = new MotionExPacketHandler(packetFormat);
         this.timeTrialPacketHandler = new TimeTrialPacketHandler(packetFormat);
         this.lapPositionsPacketHandler = new LapPositionsPacketHandler(packetFormat);
