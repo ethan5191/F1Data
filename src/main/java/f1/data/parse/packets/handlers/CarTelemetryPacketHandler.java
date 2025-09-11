@@ -15,10 +15,12 @@ public class CarTelemetryPacketHandler implements PacketHandler {
 
     private final int packetFormat;
     private final Map<Integer, TelemetryData> participants;
+    private final CarTelemetryDataFactory factory;
 
     public CarTelemetryPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
         this.participants = participants;
+        this.factory = new CarTelemetryDataFactory(this.packetFormat);
     }
 
     @Override
@@ -26,7 +28,7 @@ public class CarTelemetryPacketHandler implements PacketHandler {
         if (!participants.isEmpty()) {
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                CarTelemetryData ctd = CarTelemetryDataFactory.build(packetFormat, byteBuffer);
+                CarTelemetryData ctd = factory.build(byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentTelemetry(ctd);
                 }

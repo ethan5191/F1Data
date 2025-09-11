@@ -13,6 +13,8 @@ import static org.mockito.Mockito.mockStatic;
 
 public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
+    private final int[] intArray = new int[8];
+
     @ParameterizedTest
     @ValueSource(ints = {Constants.YEAR_2020})
     @DisplayName("Builds the Final Classification for 2020.")
@@ -20,31 +22,32 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 11;
         int floatCount = 1;
         int doubleCount = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
             FactoryTestHelper.mockDoubleValues(mockByteBuffer, doubleCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 8);
-            FinalClassificationData result = FinalClassificationDataFactory.build(packetFormat, mockByteBuffer);
+            FinalClassificationData result = new FinalClassificationDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
-            assertEquals(BIT_8_START, result.position());
-            assertEquals(BIT_8_START + 1, result.numLaps());
-            assertEquals(BIT_8_START + 2, result.gridPosition());
-            assertEquals(BIT_8_START + 3, result.points());
-            assertEquals(BIT_8_START + 4, result.numPitsStops());
-            assertEquals(BIT_8_START + 5, result.resultStatus());
+            assertEquals(bitMask8Value++, result.position());
+            assertEquals(bitMask8Value++, result.numLaps());
+            assertEquals(bitMask8Value++, result.gridPosition());
+            assertEquals(bitMask8Value++, result.points());
+            assertEquals(bitMask8Value++, result.numPitsStops());
+            assertEquals(bitMask8Value++, result.resultStatus());
             assertEquals(FLOAT_START, result.bestLapTime20());
             assertEquals(DOUBLE_START, result.totalRaceTime());
-            assertEquals(BIT_8_START + 6, result.penaltiesTime());
-            assertEquals(BIT_8_START + 7, result.numPenalties());
-            assertEquals(BIT_8_START + 8, result.numTyreStints());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
+            assertEquals(bitMask8Value++, result.penaltiesTime());
+            assertEquals(bitMask8Value++, result.numPenalties());
+            assertEquals(bitMask8Value++, result.numTyreStints());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsActual());
 
             assertEquals(0, result.bestLapTime());
-            assertArrayEquals(new int[8], result.tyreStintsEndLaps());
+            assertArrayEquals(intArray, result.tyreStintsEndLaps());
             assertEquals(0, result.resultReason());
         }
     }
@@ -56,31 +59,32 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 11;
         int bitMask32Count = 1;
         int doubleCount = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
             FactoryTestHelper.mockDoubleValues(mockByteBuffer, doubleCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 8);
-            FinalClassificationData result = FinalClassificationDataFactory.build(packetFormat, mockByteBuffer);
+            FinalClassificationData result = new FinalClassificationDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
-            assertEquals(BIT_8_START, result.position());
-            assertEquals(BIT_8_START + 1, result.numLaps());
-            assertEquals(BIT_8_START + 2, result.gridPosition());
-            assertEquals(BIT_8_START + 3, result.points());
-            assertEquals(BIT_8_START + 4, result.numPitsStops());
-            assertEquals(BIT_8_START + 5, result.resultStatus());
+            assertEquals(bitMask8Value++, result.position());
+            assertEquals(bitMask8Value++, result.numLaps());
+            assertEquals(bitMask8Value++, result.gridPosition());
+            assertEquals(bitMask8Value++, result.points());
+            assertEquals(bitMask8Value++, result.numPitsStops());
+            assertEquals(bitMask8Value++, result.resultStatus());
             assertEquals(BIT_32_START, result.bestLapTime());
             assertEquals(DOUBLE_START, result.totalRaceTime());
-            assertEquals(BIT_8_START + 6, result.penaltiesTime());
-            assertEquals(BIT_8_START + 7, result.numPenalties());
-            assertEquals(BIT_8_START + 8, result.numTyreStints());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
+            assertEquals(bitMask8Value++, result.penaltiesTime());
+            assertEquals(bitMask8Value++, result.numPenalties());
+            assertEquals(bitMask8Value++, result.numTyreStints());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsActual());
 
             assertEquals(0, result.bestLapTime20());
-            assertArrayEquals(new int[8], result.tyreStintsEndLaps());
+            assertArrayEquals(intArray, result.tyreStintsEndLaps());
             assertEquals(0, result.resultReason());
         }
     }
@@ -92,29 +96,30 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 11;
         int bitMask32Count = 1;
         int doubleCount = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
             FactoryTestHelper.mockDoubleValues(mockByteBuffer, doubleCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 8);
-            FinalClassificationData result = FinalClassificationDataFactory.build(packetFormat, mockByteBuffer);
+            FinalClassificationData result = new FinalClassificationDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
-            assertEquals(BIT_8_START, result.position());
-            assertEquals(BIT_8_START + 1, result.numLaps());
-            assertEquals(BIT_8_START + 2, result.gridPosition());
-            assertEquals(BIT_8_START + 3, result.points());
-            assertEquals(BIT_8_START + 4, result.numPitsStops());
-            assertEquals(BIT_8_START + 5, result.resultStatus());
+            assertEquals(bitMask8Value++, result.position());
+            assertEquals(bitMask8Value++, result.numLaps());
+            assertEquals(bitMask8Value++, result.gridPosition());
+            assertEquals(bitMask8Value++, result.points());
+            assertEquals(bitMask8Value++, result.numPitsStops());
+            assertEquals(bitMask8Value++, result.resultStatus());
             assertEquals(BIT_32_START, result.bestLapTime());
             assertEquals(DOUBLE_START, result.totalRaceTime());
-            assertEquals(BIT_8_START + 6, result.penaltiesTime());
-            assertEquals(BIT_8_START + 7, result.numPenalties());
-            assertEquals(BIT_8_START + 8, result.numTyreStints());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsEndLaps());
+            assertEquals(bitMask8Value++, result.penaltiesTime());
+            assertEquals(bitMask8Value++, result.numPenalties());
+            assertEquals(bitMask8Value++, result.numTyreStints());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsEndLaps());
 
             assertEquals(0, result.bestLapTime20());
             assertEquals(0, result.resultReason());
@@ -128,30 +133,31 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 12;
         int bitMask32Count = 1;
         int doubleCount = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
             FactoryTestHelper.mockDoubleValues(mockByteBuffer, doubleCount);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 8);
-            FinalClassificationData result = FinalClassificationDataFactory.build(packetFormat, mockByteBuffer);
+            FinalClassificationData result = new FinalClassificationDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
-            assertEquals(BIT_8_START, result.position());
-            assertEquals(BIT_8_START + 1, result.numLaps());
-            assertEquals(BIT_8_START + 2, result.gridPosition());
-            assertEquals(BIT_8_START + 3, result.points());
-            assertEquals(BIT_8_START + 4, result.numPitsStops());
-            assertEquals(BIT_8_START + 5, result.resultStatus());
+            assertEquals(bitMask8Value++, result.position());
+            assertEquals(bitMask8Value++, result.numLaps());
+            assertEquals(bitMask8Value++, result.gridPosition());
+            assertEquals(bitMask8Value++, result.points());
+            assertEquals(bitMask8Value++, result.numPitsStops());
+            assertEquals(bitMask8Value++, result.resultStatus());
             assertEquals(BIT_32_START, result.bestLapTime());
             assertEquals(DOUBLE_START, result.totalRaceTime());
-            assertEquals(BIT_8_START + 6, result.penaltiesTime());
-            assertEquals(BIT_8_START + 7, result.numPenalties());
-            assertEquals(BIT_8_START + 8, result.numTyreStints());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsActual());
-            assertArrayEquals(new int[8], result.tyreStintsEndLaps());
-            assertEquals(BIT_8_START + 9, result.resultReason());
+            assertEquals(bitMask8Value++, result.penaltiesTime());
+            assertEquals(bitMask8Value++, result.numPenalties());
+            assertEquals(bitMask8Value++, result.numTyreStints());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsActual());
+            assertArrayEquals(intArray, result.tyreStintsEndLaps());
+            assertEquals(bitMask8Value++, result.resultReason());
 
             assertEquals(0, result.bestLapTime20());
         }

@@ -13,6 +13,9 @@ import static org.mockito.Mockito.mockStatic;
 
 public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
 
+    private final int[] intArray = new int[4];
+    private final float[] floatArray = new float[4];
+
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2019)
     @DisplayName("Builds the Car Telemetry Data for 2019.")
@@ -20,6 +23,9 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 3;
         int bitMask16Count = 3;
         int floatCount = 3;
+        int bitMask8Value = BIT_8_START;
+        int bitMask16Value = BIT_16_START;
+        int floatValue = FLOAT_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -29,23 +35,23 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
+            CarTelemetryData result = new CarTelemetryDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(50, result.speed());
-            assertEquals(100, result.throttle());
-            assertEquals(101, result.steer());
-            assertEquals(102, result.brake());
-            assertEquals(1, result.clutch());
-            assertEquals(4, result.gear());
-            assertEquals(51, result.engineRPM());
-            assertEquals(2, result.drs());
-            assertEquals(3, result.revLightPercent());
-            assertArrayEquals(new int[4], result.brakeTemps());
-            assertArrayEquals(new int[4], result.tireSurfaceTemps());
-            assertArrayEquals(new int[4], result.tireInnerTemps());
-            assertEquals(52, result.engineTemp());
-            assertArrayEquals(new float[4], result.tirePressure());
-            assertArrayEquals(new int[4], result.surfaceType());
+            assertEquals(bitMask16Value++, result.speed());
+            assertEquals(floatValue++, result.throttle());
+            assertEquals(floatValue++, result.steer());
+            assertEquals(floatValue++, result.brake());
+            assertEquals(bitMask8Value++, result.clutch());
+            assertEquals(bitMask8Count + 1, result.gear());
+            assertEquals(bitMask16Value++, result.engineRPM());
+            assertEquals(bitMask8Value++, result.drs());
+            assertEquals(bitMask8Value++, result.revLightPercent());
+            assertArrayEquals(intArray, result.brakeTemps());
+            assertArrayEquals(intArray, result.tireSurfaceTemps());
+            assertArrayEquals(intArray, result.tireInnerTemps());
+            assertEquals(bitMask16Value++, result.engineTemp());
+            assertArrayEquals(floatArray, result.tirePressure());
+            assertArrayEquals(intArray, result.surfaceType());
             assertEquals(0, result.revLightBitVal());
         }
     }
@@ -57,6 +63,9 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 3;
         int bitMask16Count = 3;
         int floatCount = 3;
+        int bitMask8Value = BIT_8_START;
+        int bitMask16Value = BIT_16_START;
+        int floatValue = FLOAT_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -66,23 +75,23 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
+            CarTelemetryData result = new CarTelemetryDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(50, result.speed());
-            assertEquals(100, result.throttle());
-            assertEquals(101, result.steer());
-            assertEquals(102, result.brake());
-            assertEquals(1, result.clutch());
-            assertEquals(4, result.gear());
-            assertEquals(51, result.engineRPM());
-            assertEquals(2, result.drs());
-            assertEquals(3, result.revLightPercent());
-            assertArrayEquals(new int[4], result.brakeTemps());
-            assertArrayEquals(new int[4], result.tireSurfaceTemps());
-            assertArrayEquals(new int[4], result.tireInnerTemps());
-            assertEquals(52, result.engineTemp());
-            assertArrayEquals(new float[4], result.tirePressure());
-            assertArrayEquals(new int[4], result.surfaceType());
+            assertEquals(bitMask16Value++, result.speed());
+            assertEquals(floatValue++, result.throttle());
+            assertEquals(floatValue++, result.steer());
+            assertEquals(floatValue++, result.brake());
+            assertEquals(bitMask8Value++, result.clutch());
+            assertEquals(bitMask8Count + 1, result.gear());
+            assertEquals(bitMask16Value++, result.engineRPM());
+            assertEquals(bitMask8Value++, result.drs());
+            assertEquals(bitMask8Value++, result.revLightPercent());
+            assertArrayEquals(intArray, result.brakeTemps());
+            assertArrayEquals(intArray, result.tireSurfaceTemps());
+            assertArrayEquals(intArray, result.tireInnerTemps());
+            assertEquals(bitMask16Value++, result.engineTemp());
+            assertArrayEquals(floatArray, result.tirePressure());
+            assertArrayEquals(intArray, result.surfaceType());
             assertEquals(0, result.revLightBitVal());
         }
     }
@@ -94,6 +103,9 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
         int bitMask8Count = 3;
         int bitMask16Count = 4;
         int floatCount = 3;
+        int bitMask8Value = BIT_8_START;
+        int bitMask16Value = BIT_16_START;
+        int floatValue = FLOAT_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
@@ -103,24 +115,24 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            CarTelemetryData result = CarTelemetryDataFactory.build(packetFormat, mockByteBuffer);
+            CarTelemetryData result = new CarTelemetryDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(50, result.speed());
-            assertEquals(100, result.throttle());
-            assertEquals(101, result.steer());
-            assertEquals(102, result.brake());
-            assertEquals(1, result.clutch());
-            assertEquals(4, result.gear());
-            assertEquals(51, result.engineRPM());
-            assertEquals(2, result.drs());
-            assertEquals(3, result.revLightPercent());
-            assertEquals(52, result.revLightBitVal());
-            assertArrayEquals(new int[4], result.brakeTemps());
-            assertArrayEquals(new int[4], result.tireSurfaceTemps());
-            assertArrayEquals(new int[4], result.tireInnerTemps());
-            assertEquals(53, result.engineTemp());
-            assertArrayEquals(new float[4], result.tirePressure());
-            assertArrayEquals(new int[4], result.surfaceType());
+            assertEquals(bitMask16Value++, result.speed());
+            assertEquals(floatValue++, result.throttle());
+            assertEquals(floatValue++, result.steer());
+            assertEquals(floatValue++, result.brake());
+            assertEquals(bitMask8Value++, result.clutch());
+            assertEquals(bitMask8Count + 1, result.gear());
+            assertEquals(bitMask16Value++, result.engineRPM());
+            assertEquals(bitMask8Value++, result.drs());
+            assertEquals(bitMask8Value++, result.revLightPercent());
+            assertEquals(bitMask16Value++, result.revLightBitVal());
+            assertArrayEquals(intArray, result.brakeTemps());
+            assertArrayEquals(intArray, result.tireSurfaceTemps());
+            assertArrayEquals(intArray, result.tireInnerTemps());
+            assertEquals(bitMask16Value++, result.engineTemp());
+            assertArrayEquals(floatArray, result.tirePressure());
+            assertArrayEquals(intArray, result.surfaceType());
         }
     }
 }
