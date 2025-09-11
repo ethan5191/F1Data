@@ -1,6 +1,7 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.parse.packets.MotionData;
+import f1.data.parse.packets.MotionDataFactory;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.utils.ParseUtils;
 import f1.data.utils.Util;
@@ -23,7 +24,7 @@ public class MotionPacketHandler implements PacketHandler {
         if (!participants.isEmpty()) {
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                MotionData md = new MotionData(byteBuffer);
+                MotionData md = MotionDataFactory.build(this.packetFormat, byteBuffer);
             }
             //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
             if (packetFormat <= Constants.YEAR_2022) {
