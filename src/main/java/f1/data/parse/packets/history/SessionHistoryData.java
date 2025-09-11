@@ -24,7 +24,7 @@ import java.nio.ByteBuffer;
  * m_bestSector3LapNum   | uint8                | 1            | 2021           | Lap the best Sector 3 was achieved
  * m_lapHistoryData[100] | LapHistoryData       | 1100         | 2021           | Lap history for the car
  * m_tyreStintsHistoryData[8] | TyreStintHistoryData | 24           | 2021           | Tyre stint history
- *
+ * <p>
  * Note:
  * - uint32 maps to a Java 'long'.
  * - uint16 maps to a Java 'int'.
@@ -32,30 +32,13 @@ import java.nio.ByteBuffer;
  * - The lap history and tyre stint history arrays must be read in a loop for proper data conversion.
  */
 
-public record SessionHistoryData(int carIndex, int numLaps, int numTyreStints, int bestLapTimeLapNum, int bestSector1LapNum,
-                                 int bestSector2LapNum, int bestSector3LapNum, LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
+public record SessionHistoryData(int carIndex, int numLaps, int numTyreStints, int bestLapTimeLapNum,
+                                 int bestSector1LapNum, int bestSector2LapNum, int bestSector3LapNum,
+                                 LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
 
-    private static final int LAP_HISTORY_SIZE = 100;
-    private static final int TYRE_STINT_HISTORY_SIZE = 8;
-
-    private static LapHistoryData[] buildLapHistoryData(int packetFormat, ByteBuffer byteBuffer) {
-        LapHistoryData[] results = new LapHistoryData[LAP_HISTORY_SIZE];
-        for (int i = 0; i < LAP_HISTORY_SIZE; i++) {
-            results[i] = LapHistoryDataFactory.build(packetFormat, byteBuffer);
-        }
-        return results;
-    }
-
-    private static TyreStintHistoryData[] buildTyreStintsHistoryData(ByteBuffer byteBuffer) {
-        TyreStintHistoryData[] results = new TyreStintHistoryData[TYRE_STINT_HISTORY_SIZE];
-        for (int i = 0; i < TYRE_STINT_HISTORY_SIZE; i++) {
-            results[i] = new TyreStintHistoryData(byteBuffer);
-        }
-        return results;
-    }
-
-    record SessionHistoryData21(int carIndex, int numLaps, int numTyreStints, int bestLapTimeLapNum, int bestSector1LapNum,
-                              int bestSector2LapNum, int bestSector3LapNum, LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
+    record SessionHistoryData21(int carIndex, int numLaps, int numTyreStints, int bestLapTimeLapNum,
+                                int bestSector1LapNum, int bestSector2LapNum, int bestSector3LapNum,
+                                LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
         public SessionHistoryData21(int packetFormat, ByteBuffer byteBuffer) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()),
@@ -65,8 +48,8 @@ public record SessionHistoryData(int carIndex, int numLaps, int numTyreStints, i
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
-                    buildLapHistoryData(packetFormat, byteBuffer),
-                    buildTyreStintsHistoryData(byteBuffer)
+                    new LapHistoryDataFactory(packetFormat).build(byteBuffer),
+                    new TyreStintHistoryDataFactory(packetFormat).build(byteBuffer)
             );
         }
     }
