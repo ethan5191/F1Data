@@ -10,13 +10,15 @@ import java.util.List;
 public class SessionHistoryPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final SessionHistoryDataFactory factory;
     private final List<SessionHistoryData> sessionHistory = new ArrayList<>();
 
     public SessionHistoryPacketHandler(int packetFormat) {
         this.packetFormat = packetFormat;
+        this.factory = new SessionHistoryDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
-        sessionHistory.add(SessionHistoryDataFactory.build(this.packetFormat, byteBuffer));
+        sessionHistory.add(factory.build(byteBuffer));
     }
 }
