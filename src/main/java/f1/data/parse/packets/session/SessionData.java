@@ -128,7 +128,7 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
 
     //Used to build the MarshalZone objects
     private static MarshalZoneData[] buildMarshalZones(int packetFormat, ByteBuffer byteBuffer) {
-        return MarshalZoneDataFactory.build(packetFormat, byteBuffer);
+        return new MarshalZoneDataFactory(packetFormat).build(byteBuffer);
     }
 
     //Used to build the WeatherForecastSamples array for F1 2020. It was a much smaller array back then.
