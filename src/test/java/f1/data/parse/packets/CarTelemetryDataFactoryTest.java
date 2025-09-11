@@ -13,8 +13,8 @@ import static org.mockito.Mockito.mockStatic;
 
 public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
 
-    int[] intArray = new int[4];
-    float[] floatArray = new float[4];
+    private final int[] intArray = new int[4];
+    private final float[] floatArray = new float[4];
 
     @ParameterizedTest
     @ValueSource(ints = Constants.YEAR_2019)
