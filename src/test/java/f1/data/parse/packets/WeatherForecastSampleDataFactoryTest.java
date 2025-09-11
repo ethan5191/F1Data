@@ -21,15 +21,16 @@ public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
     @ValueSource(ints = {Constants.YEAR_2020})
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2020")
     void testBuild_weatherForecastSampleData2020(int packetFormat) {
-        int bitMask8Count = (3 * SessionData.WEATHER_FORECAST_20_SIZE);
+        int SIZE_2020 = SessionData.WEATHER_FORECAST_20_SIZE;
+        int bitMask8Count = (3 * SIZE_2020);
         int intCount = 2;
         int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, intCount);
-            WeatherForecastSampleData[] result = WeatherForecastSampleDataFactory.build(packetFormat, mockByteBuffer, SessionData.WEATHER_FORECAST_20_SIZE);
+            WeatherForecastSampleData[] result = new WeatherForecastSampleDataFactory(packetFormat, SIZE_2020).build(mockByteBuffer);
             assertNotNull(result);
-            Assertions.assertEquals(SessionData.WEATHER_FORECAST_20_SIZE, result.length);
+            Assertions.assertEquals(SIZE_2020, result.length);
             for (WeatherForecastSampleData data : result) {
                 assertEquals(bitMask8Value++, data.sessionType());
                 assertEquals(bitMask8Value++, data.timeOffset());
@@ -57,7 +58,7 @@ public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockSingleGetValue(mockByteBuffer, intCount);
-            WeatherForecastSampleData[] result = WeatherForecastSampleDataFactory.build(packetFormat, mockByteBuffer, arraySize);
+            WeatherForecastSampleData[] result = new WeatherForecastSampleDataFactory(packetFormat, arraySize).build(mockByteBuffer);
             assertNotNull(result);
             Assertions.assertEquals(arraySize, result.length);
             for (WeatherForecastSampleData data : result) {

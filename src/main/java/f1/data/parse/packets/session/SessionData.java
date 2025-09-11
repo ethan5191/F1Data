@@ -133,12 +133,12 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
 
     //Used to build the WeatherForecastSamples array for F1 2020. It was a much smaller array back then.
     private static WeatherForecastSampleData[] buildWeatherForecastSamples20(int packetFormat, ByteBuffer byteBuffer) {
-        return WeatherForecastSampleDataFactory.build(packetFormat, byteBuffer, WEATHER_FORECAST_20_SIZE);
+        return new WeatherForecastSampleDataFactory(packetFormat, WEATHER_FORECAST_20_SIZE).build(byteBuffer);
     }
 
     //Used to build the WeatherForecastSamples array for F1 2021 and beyond. The object is the same, but the size changed in 2024
     private static WeatherForecastSampleData[] buildWeatherForecastSamples21(int packetFormat, ByteBuffer byteBuffer, int size) {
-        return WeatherForecastSampleDataFactory.build(packetFormat, byteBuffer, size);
+        return new WeatherForecastSampleDataFactory(packetFormat, size).build(byteBuffer);
     }
 
     public record SessionData19(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
