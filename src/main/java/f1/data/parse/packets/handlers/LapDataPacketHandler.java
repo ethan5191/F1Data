@@ -28,6 +28,7 @@ public class LapDataPacketHandler implements PacketHandler {
     private final Consumer<DriverDataDTO> driverData;
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
+    private final LapDataFactory factory;
 
     public LapDataPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, ParentConsumer parent, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
@@ -35,6 +36,7 @@ public class LapDataPacketHandler implements PacketHandler {
         this.driverData = parent.driverDataDTOConsumer();
         this.speedTrapData = parent.speedTrapDataDTOConsumer();
         this.speedTrapDistance = speedTrapDistance;
+        this.factory = new LapDataFactory(this.packetFormat);
     }
 
     @Override
@@ -42,7 +44,7 @@ public class LapDataPacketHandler implements PacketHandler {
         if (!participants.isEmpty()) {
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                LapData ld = LapDataFactory.build(packetFormat, byteBuffer);
+                LapData ld = factory.build(byteBuffer);
                 //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars
                 if (PacketUtils.validKey(participants, i)) {
                     TelemetryData td = participants.get(i);
