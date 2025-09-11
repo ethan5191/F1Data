@@ -20,17 +20,18 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Participant Data for 2019 and 2020.")
     void testBuild_participantData2019And2020(int packetFormat) {
         int bitMask8Count = 6;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
-            ParticipantData result = ParticipantDataFactory.build(packetFormat, mockByteBuffer);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.aiControlled());
-            assertEquals(BIT_8_START + 1, result.driverId());
-            assertEquals(BIT_8_START + 2, result.teamId());
-            assertEquals(BIT_8_START + 3, result.raceNumber());
-            assertEquals(BIT_8_START + 4, result.nationality());
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask8Value++, result.driverId());
+            assertEquals(bitMask8Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 5, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
 
             assertEquals(0, result.networkId());
             assertEquals(0, result.myTeam());
@@ -45,19 +46,20 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Participant Data for 2021 and 2022.")
     void testBuild_participantData2021And2022(int packetFormat) {
         int bitMask8Count = 8;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
-            ParticipantData result = ParticipantDataFactory.build(packetFormat, mockByteBuffer);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.aiControlled());
-            assertEquals(BIT_8_START + 1, result.driverId());
-            assertEquals(BIT_8_START + 2, result.networkId());
-            assertEquals(BIT_8_START + 3, result.teamId());
-            assertEquals(BIT_8_START + 4, result.myTeam());
-            assertEquals(BIT_8_START + 5, result.raceNumber());
-            assertEquals(BIT_8_START + 6, result.nationality());
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask8Value++, result.driverId());
+            assertEquals(bitMask8Value++, result.networkId());
+            assertEquals(bitMask8Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.myTeam());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 7, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
 
             assertEquals(0, result.showOnlineNames());
             assertEquals(0, result.platform());
@@ -70,21 +72,22 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Participant Data for 2023.")
     void testBuild_participantData2023(int packetFormat) {
         int bitMask8Count = 10;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
-            ParticipantData result = ParticipantDataFactory.build(packetFormat, mockByteBuffer);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.aiControlled());
-            assertEquals(BIT_8_START + 1, result.driverId());
-            assertEquals(BIT_8_START + 2, result.networkId());
-            assertEquals(BIT_8_START + 3, result.teamId());
-            assertEquals(BIT_8_START + 4, result.myTeam());
-            assertEquals(BIT_8_START + 5, result.raceNumber());
-            assertEquals(BIT_8_START + 6, result.nationality());
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask8Value++, result.driverId());
+            assertEquals(bitMask8Value++, result.networkId());
+            assertEquals(bitMask8Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.myTeam());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 7, result.yourTelemetry());
-            assertEquals(BIT_8_START + 8, result.showOnlineNames());
-            assertEquals(BIT_8_START + 9, result.platform());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.showOnlineNames());
+            assertEquals(bitMask8Value++, result.platform());
 
             assertEquals(0, result.techLevel());
         }
@@ -96,23 +99,24 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     void testBuild_participantData2024(int packetFormat) {
         int bitMask8Count = 10;
         int bitMask16Count = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
-            ParticipantData result = ParticipantDataFactory.build(packetFormat, mockByteBuffer);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.aiControlled());
-            assertEquals(BIT_8_START + 1, result.driverId());
-            assertEquals(BIT_8_START + 2, result.networkId());
-            assertEquals(BIT_8_START + 3, result.teamId());
-            assertEquals(BIT_8_START + 4, result.myTeam());
-            assertEquals(BIT_8_START + 5, result.raceNumber());
-            assertEquals(BIT_8_START + 6, result.nationality());
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask8Value++, result.driverId());
+            assertEquals(bitMask8Value++, result.networkId());
+            assertEquals(bitMask8Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.myTeam());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
             assertArrayEquals(new byte[PRE_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 7, result.yourTelemetry());
-            assertEquals(BIT_8_START + 8, result.showOnlineNames());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.showOnlineNames());
             assertEquals(BIT_16_START, result.techLevel());
-            assertEquals(BIT_8_START + 9, result.platform());
+            assertEquals(bitMask8Value++, result.platform());
         }
     }
 
@@ -122,23 +126,24 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     void testBuild_participantData2025ToPresent(int packetFormat) {
         int bitMask8Count = 10;
         int bitMask16Count = 1;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
-            ParticipantData result = ParticipantDataFactory.build(packetFormat, mockByteBuffer);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.aiControlled());
-            assertEquals(BIT_8_START + 1, result.driverId());
-            assertEquals(BIT_8_START + 2, result.networkId());
-            assertEquals(BIT_8_START + 3, result.teamId());
-            assertEquals(BIT_8_START + 4, result.myTeam());
-            assertEquals(BIT_8_START + 5, result.raceNumber());
-            assertEquals(BIT_8_START + 6, result.nationality());
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask8Value++, result.driverId());
+            assertEquals(bitMask8Value++, result.networkId());
+            assertEquals(bitMask8Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.myTeam());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
             assertArrayEquals(new byte[POST_2025_NAME_LENGTH], result.name());
-            assertEquals(BIT_8_START + 7, result.yourTelemetry());
-            assertEquals(BIT_8_START + 8, result.showOnlineNames());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.showOnlineNames());
             assertEquals(BIT_16_START, result.techLevel());
-            assertEquals(BIT_8_START + 9, result.platform());
+            assertEquals(bitMask8Value++, result.platform());
             //TODO:Add 2025 new params.
         }
     }

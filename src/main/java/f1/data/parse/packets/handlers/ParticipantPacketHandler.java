@@ -22,6 +22,7 @@ public class ParticipantPacketHandler implements PacketHandler {
     private final Map<Integer, TelemetryData> participants;
     private final Consumer<DriverDataDTO> driverDataDTO;
     private final Consumer<SessionChangeDTO> sessionChangeDTO;
+    private final ParticipantDataFactory factory;
 
     private int numActiveCars;
     private final List<ParticipantData> participantDataList = new ArrayList<>();
@@ -33,11 +34,13 @@ public class ParticipantPacketHandler implements PacketHandler {
         this.participants = participants;
         this.driverDataDTO = driverDataDTO;
         this.sessionChangeDTO = sessionChangeDTO;
+        this.factory = new ParticipantDataFactory(this.packetFormat);
     }
 
     public ParticipantPacketHandler(int packetFormat, int playerCarIndex) {
         this.packetFormat = packetFormat;
         this.playerCarIndex = playerCarIndex;
+        this.factory = new ParticipantDataFactory(this.packetFormat);
         this.participants = new TreeMap<>();
         this.driverDataDTO = null;
         this.sessionChangeDTO = null;
@@ -52,7 +55,7 @@ public class ParticipantPacketHandler implements PacketHandler {
             //Loop over the packet and create objects for each record in the array.
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                ParticipantData pd = ParticipantDataFactory.build(this.packetFormat, byteBuffer);
+                ParticipantData pd = factory.build(byteBuffer);
                 this.participants.put(i, new TelemetryData(pd));
                 //If race number isn't greater than 0 then its not an actual participant but a placeholder, so don't add to the list.
                 if (pd.raceNumber() > 0) {
