@@ -1,8 +1,9 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.parse.packets.MotionData;
+import f1.data.parse.packets.MotionDataFactory;
+import f1.data.parse.packets.MotionExData;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.utils.ParseUtils;
 import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
@@ -23,25 +24,11 @@ public class MotionPacketHandler implements PacketHandler {
         if (!participants.isEmpty()) {
             int arraySize = Util.findArraySize(this.packetFormat);
             for (int i = 0; i < arraySize; i++) {
-                MotionData md = new MotionData(byteBuffer);
+                MotionData md = MotionDataFactory.build(this.packetFormat, byteBuffer);
             }
             //Params existed OUTSIDE of the main array in the struct until 2023 when they went away.
             if (packetFormat <= Constants.YEAR_2022) {
-                float[] suspPosition = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspVelocity = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] suspAcceleration = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSpin = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float[] wheelSlip = ParseUtils.parseFloatArray(byteBuffer, new float[4]);
-                float localVelocityX = byteBuffer.getFloat();
-                float localVelocityY = byteBuffer.getFloat();
-                float localVelocityZ = byteBuffer.getFloat();
-                float angularVelocityX = byteBuffer.getFloat();
-                float angularVelocityY = byteBuffer.getFloat();
-                float angularVelocityZ = byteBuffer.getFloat();
-                float angularAccelerationX = byteBuffer.getFloat();
-                float angularAccelerationY = byteBuffer.getFloat();
-                float angularAccelerationZ = byteBuffer.getFloat();
-                float frontWheelsAngle = byteBuffer.getFloat();
+                MotionExData med = MotionDataFactory.buildLegacy(byteBuffer);
             }
         }
     }

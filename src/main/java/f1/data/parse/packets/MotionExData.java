@@ -60,6 +60,32 @@ public record MotionExData(float[] suspensionPosition, float[] suspensionVelocit
                            float frontAeroHeight, float rearAeroHeight, float frontRollAngle, float rearRollAngle,
                            float chassisYaw, float chassisPitch, float[] wheelCamber, float[] wheelCamberGain) {
 
+    //Used to represent data that is outside the MotionData array in F1 2019 - 2022. The data is the same as the MotionEx packet that started in 2023.
+    record MotionExData19(float[] suspensionPosition, float[] suspensionVelocity, float[] suspensionAcceleration,
+                          float[] wheelSpeed, float[] wheelSlip, float localVelocityX,
+                          float localVelocityY, float localVelocityZ, float angularVelocityX, float angularVelocityY,
+                          float angularVelocityZ, float angularAccelerationX, float angularAccelerationY,
+                          float angularAccelerationZ, float frontWheelsAngle) {
+        public MotionExData19(ByteBuffer byteBuffer) {
+            this(ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat()
+            );
+        }
+    }
+
     record MotionExData23(float[] suspensionPosition, float[] suspensionVelocity, float[] suspensionAcceleration,
                           float[] wheelSpeed, float[] wheelSlipRatio, float[] wheelSlipAngle, float[] wheelLatForce,
                           float[] wheelLongForce, float heightOfCOGAboveGround, float localVelocityX,
