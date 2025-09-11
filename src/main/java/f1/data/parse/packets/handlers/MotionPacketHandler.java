@@ -4,7 +4,6 @@ import f1.data.parse.packets.MotionData;
 import f1.data.parse.packets.MotionDataFactory;
 import f1.data.parse.packets.MotionExData;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.utils.ParseUtils;
 import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 
