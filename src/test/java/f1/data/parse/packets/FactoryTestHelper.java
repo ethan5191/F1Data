@@ -62,6 +62,10 @@ public class FactoryTestHelper {
         when(mockByteBuffer.get()).thenReturn((byte) ((byte) count + 1));
     }
 
+    protected static void mockSingleGetShortValue(ByteBuffer mockByteBuffer, int count) {
+        when(mockByteBuffer.getShort()).thenReturn(((short) count));
+    }
+
     protected static void parseFloatArray(ByteBuffer mockByteBuffer, MockedStatic<ParseUtils> parseUtils) {
         parseUtils.when(() -> ParseUtils.parseFloatArray(mockByteBuffer, 4)).thenReturn(new float[4]);
     }
