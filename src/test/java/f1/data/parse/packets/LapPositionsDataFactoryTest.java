@@ -26,7 +26,7 @@ public class LapPositionsDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, arraySize);
-            LapPositionsData result = LapPositionsDataFactory.build(packetFormat, mockByteBuffer);
+            LapPositionsData result = new LapPositionsDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
 
             assertEquals(bit8Value++, result.numLaps());

@@ -8,13 +8,15 @@ import java.nio.ByteBuffer;
 public class LapPositionsPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final LapPositionsDataFactory factory;
     private LapPositionsData lapPositionsData;
 
     public LapPositionsPacketHandler(int packetFormat) {
         this.packetFormat = packetFormat;
+        this.factory = new LapPositionsDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
-        lapPositionsData = LapPositionsDataFactory.build(this.packetFormat, byteBuffer);
+        lapPositionsData = factory.build(byteBuffer);
     }
 }
