@@ -498,7 +498,6 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
         assertEquals(++startValue, gmd.affectsLicenseLevelSolo());
         assertEquals(++startValue, gmd.affectsLicenseLevelMP());
         assertEquals(++startValue, gmd.numSessionsInWeekend());
-        //Value is coming back as null for some reason.
-//        assertArrayEquals(new int[12], gmd.weekendStructure());
+        assertArrayEquals(new int[12], gmd.weekendStructure());
     }
 }
