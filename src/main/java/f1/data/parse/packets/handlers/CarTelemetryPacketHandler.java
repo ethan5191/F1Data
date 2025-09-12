@@ -13,12 +13,14 @@ import f1.data.utils.constants.Constants;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-public class CarTelemetryPacketHandler implements PacketHandler {
+public class CarTelemetryPacketHandler implements PacketHandler, PauseActionHandler {
 
     private final int packetFormat;
     private final Map<Integer, TelemetryData> participants;
     private final CarTelemetryDataFactory factory;
     private final ButtonsDataFactory buttonsDataFactory;
+
+    private boolean isPause = false;
 
     public CarTelemetryPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
@@ -47,6 +49,7 @@ public class CarTelemetryPacketHandler implements PacketHandler {
             if ((bd.buttonsStatus() == Constants.F1_2020_GT3_WHEEL_P_BUTTON && packetFormat == Constants.YEAR_2020)
                     || (bd.buttonsStatus() == Constants.F1_2019_TOP_LEFT_BTN && packetFormat == Constants.YEAR_2019)) {
                 EventPacketHandler.handle2020ButtonEvent(this.packetFormat, this.participants);
+                this.isPause = true;
             }
         }
         if (packetFormat >= Constants.YEAR_2020) {
@@ -54,5 +57,15 @@ public class CarTelemetryPacketHandler implements PacketHandler {
             int mfdPanelIdxSecondPlayer = BitMaskUtils.bitMask8(byteBuffer.get());
             int suggestedGear = byteBuffer.get();
         }
+    }
+
+    @Override
+    public boolean isPause() {
+        return this.isPause;
+    }
+
+    @Override
+    public void setPause(boolean pause) {
+        this.isPause = pause;
     }
 }
