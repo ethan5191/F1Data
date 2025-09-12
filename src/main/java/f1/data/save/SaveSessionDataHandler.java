@@ -43,7 +43,7 @@ public class SaveSessionDataHandler {
         }
     }
 
-    public static void buildSaveData(int packetFormat, String sessionName, Map<Integer, TelemetryData> participants) {
+    public static void buildSaveData(int packetFormat, String sessionName, Map<Integer, TelemetryData> participants, boolean isNewSession) {
         if (AppState.saveSessionData.get()) {
             List<SpeedTrapSessionData> speedTrapSessionDataList = new ArrayList<>(participants.size());
             List<RunDataSessionData> runDataSessionData = new ArrayList<>(participants.size());
@@ -58,7 +58,8 @@ public class SaveSessionDataHandler {
                     records.add(new RunDataMapRecord(key, td.getCarSetupData().getLapsPerSetup().get(key)));
                 }
                 runDataSessionData.add(new RunDataSessionData(pd.lastName(), td.getCarSetupData().getSetups(), records));
-                participants.put(i, new TelemetryData(pd));
+                //Only on a new session do we want to clear the participants data.
+                if (isNewSession) participants.put(i, new TelemetryData(pd));
             }
             SaveSessionDataHandler.saveSessionData(packetFormat, sessionName, speedTrapSessionDataList, runDataSessionData);
         }
