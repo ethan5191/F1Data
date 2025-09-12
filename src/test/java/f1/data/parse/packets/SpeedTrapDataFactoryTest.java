@@ -22,7 +22,7 @@ public class SpeedTrapDataFactoryTest extends AbstractFactoryTest {
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, 1);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, 1);
-            SpeedTrapData result = SpeedTrapDataFactory.build(packetFormat, mockByteBuffer);
+            SpeedTrapData result = new SpeedTrapDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
             assertEquals(BIT_8_START, result.vehicleId());
             assertEquals(FLOAT_START, result.speed());
@@ -39,15 +39,16 @@ public class SpeedTrapDataFactoryTest extends AbstractFactoryTest {
     @DisplayName("Builds the Speed Trap Event Data for 2021.")
     void testBuild_speedTrapEvent2021(int packetFormat) {
         int bitMask8Count = 3;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, 1);
-            SpeedTrapData result = SpeedTrapDataFactory.build(packetFormat, mockByteBuffer);
+            SpeedTrapData result = new SpeedTrapDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.vehicleId());
+            assertEquals(bitMask8Value++, result.vehicleId());
             assertEquals(FLOAT_START, result.speed());
-            assertEquals(BIT_8_START + 1, result.isOverallFastest());
-            assertEquals(BIT_8_START + 2, result.isDriverFastest());
+            assertEquals(bitMask8Value++, result.isOverallFastest());
+            assertEquals(bitMask8Value++, result.isDriverFastest());
 
             assertEquals(0, result.fastestVehicleId());
             assertEquals(0, result.fastestSpeed());
@@ -60,16 +61,17 @@ public class SpeedTrapDataFactoryTest extends AbstractFactoryTest {
     void testBuild_speedTrapEvent2022ToPresent(int packetFormat) {
         int bitMask8Count = 4;
         int floatCount = 2;
+        int bitMask8Value = BIT_8_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockFloatValues(mockByteBuffer, floatCount);
-            SpeedTrapData result = SpeedTrapDataFactory.build(packetFormat, mockByteBuffer);
+            SpeedTrapData result = new SpeedTrapDataFactory(packetFormat).build(mockByteBuffer);
             assertNotNull(result);
-            assertEquals(BIT_8_START, result.vehicleId());
+            assertEquals(bitMask8Value++, result.vehicleId());
             assertEquals(FLOAT_START, result.speed());
-            assertEquals(BIT_8_START + 1, result.isOverallFastest());
-            assertEquals(BIT_8_START + 2, result.isDriverFastest());
-            assertEquals(BIT_8_START + 3, result.fastestVehicleId());
+            assertEquals(bitMask8Value++, result.isOverallFastest());
+            assertEquals(bitMask8Value++, result.isDriverFastest());
+            assertEquals(bitMask8Value++, result.fastestVehicleId());
             assertEquals(FLOAT_START + 1, result.fastestSpeed());
         }
     }

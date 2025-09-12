@@ -8,12 +8,14 @@ import java.nio.ByteBuffer;
 public class MotionExPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final MotionExDataFactory factory;
 
     public MotionExPacketHandler(int packetFormat) {
         this.packetFormat = packetFormat;
+        this.factory = new MotionExDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
-        MotionExData med = MotionExDataFactory.build(this.packetFormat, byteBuffer);
+        MotionExData med = factory.build(byteBuffer);
     }
 }

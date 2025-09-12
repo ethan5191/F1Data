@@ -1,24 +1,31 @@
 package f1.data.parse.packets.session;
 
-import f1.data.utils.constants.Constants;
+import f1.data.enums.SupportedYearsEnum;
+import f1.data.parse.packets.DataFactory;
 
 import java.nio.ByteBuffer;
 
-public class MarshalZoneDataFactory {
+public class MarshalZoneDataFactory implements DataFactory<MarshalZoneData[]> {
 
-    private static final int MARSHAL_ZONE_SIZE = 21;
+    private final SupportedYearsEnum packetFormat;
 
-    public static MarshalZoneData[] build(int packetFormat, ByteBuffer byteBuffer) {
-        MarshalZoneData[] result = new MarshalZoneData[MARSHAL_ZONE_SIZE];
+    public static final int MARSHAL_ZONE_SIZE = 21;
+
+    public MarshalZoneDataFactory(int packetFormat) {
+        this.packetFormat = SupportedYearsEnum.fromYear(packetFormat);
+    }
+
+    public MarshalZoneData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case Constants.YEAR_2019, Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022,
-                 Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025:
-                for (int i = 0; i < result.length; i++) {
-                    result[i] = new MarshalZoneData(byteBuffer);
-                }
-                yield result;
-            default:
-                throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
+            case F1_2019, F1_2020, F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
         };
+    }
+
+    private MarshalZoneData[] buildData(ByteBuffer byteBuffer) {
+        MarshalZoneData[] result = new MarshalZoneData[MARSHAL_ZONE_SIZE];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = new MarshalZoneData(byteBuffer);
+        }
+        return result;
     }
 }

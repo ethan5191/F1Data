@@ -1,5 +1,7 @@
 package f1.data.parse.packets;
 
+import f1.data.parse.packets.events.ButtonsData;
+import f1.data.parse.packets.events.ButtonsDataFactory;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
@@ -22,6 +24,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2019(int packetFormat) {
         int bitMask8Count = 3;
         int bitMask16Count = 3;
+        int bitMask32Count = 1;
         int floatCount = 3;
         int bitMask8Value = BIT_8_START;
         int bitMask16Value = BIT_16_START;
@@ -30,6 +33,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
@@ -53,6 +57,8 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             assertArrayEquals(floatArray, result.tirePressure());
             assertArrayEquals(intArray, result.surfaceType());
             assertEquals(0, result.revLightBitVal());
+
+            legacyButtonEvent(packetFormat);
         }
     }
 
@@ -62,6 +68,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     void testBuild_carTelemetry2020(int packetFormat) {
         int bitMask8Count = 3;
         int bitMask16Count = 3;
+        int bitMask32Count = 1;
         int floatCount = 3;
         int bitMask8Value = BIT_8_START;
         int bitMask16Value = BIT_16_START;
@@ -70,6 +77,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
             FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
             FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            FactoryTestHelper.mockBitMask32(bitMaskUtils, bitMask32Count);
             FactoryTestHelper.parseFloatArray(mockByteBuffer, parseUtils);
             FactoryTestHelper.parseIntArray(mockByteBuffer, parseUtils, 4);
             FactoryTestHelper.parseShortArray(mockByteBuffer, parseUtils);
@@ -93,6 +101,8 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             assertArrayEquals(floatArray, result.tirePressure());
             assertArrayEquals(intArray, result.surfaceType());
             assertEquals(0, result.revLightBitVal());
+
+            legacyButtonEvent(packetFormat);
         }
     }
 
@@ -134,5 +144,11 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
             assertArrayEquals(floatArray, result.tirePressure());
             assertArrayEquals(intArray, result.surfaceType());
         }
+    }
+
+    private void legacyButtonEvent(int packetFormat) {
+        ButtonsData button = new ButtonsDataFactory(packetFormat).build(mockByteBuffer);
+        assertNotNull(button);
+        assertEquals(BIT_32_START, button.buttonsStatus());
     }
 }

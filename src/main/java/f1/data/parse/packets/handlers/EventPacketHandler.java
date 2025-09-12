@@ -1,9 +1,6 @@
 package f1.data.parse.packets.handlers;
 
-import f1.data.parse.packets.events.ButtonsData;
-import f1.data.parse.packets.events.SpeedTrapData;
-import f1.data.parse.packets.events.SpeedTrapDataFactory;
-import f1.data.parse.packets.events.SpeedTrapDistance;
+import f1.data.parse.packets.events.*;
 import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.SpeedTrapTelemetryData;
@@ -11,7 +8,6 @@ import f1.data.parse.telemetry.TelemetryData;
 import f1.data.save.IndividualLapSessionData;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SpeedTrapDataDTO;
-import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
@@ -26,6 +22,8 @@ public class EventPacketHandler implements PacketHandler {
     private final Map<Integer, TelemetryData> participants;
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
+    private final ButtonsDataFactory buttonsDataFactory;
+    private final SpeedTrapDataFactory speedTrapFactory;
 
     private boolean isPause = false;
 
@@ -35,6 +33,8 @@ public class EventPacketHandler implements PacketHandler {
         this.participants = participants;
         this.speedTrapData = speedTrapData;
         this.speedTrapDistance = speedTrapDistance;
+        this.buttonsDataFactory = new ButtonsDataFactory(this.packetFormat);
+        this.speedTrapFactory = new SpeedTrapDataFactory(this.packetFormat);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class EventPacketHandler implements PacketHandler {
     }
 
     private void handleButtonEvent(ByteBuffer byteBuffer) {
-        ButtonsData bd = new ButtonsData(byteBuffer);
+        ButtonsData bd = buttonsDataFactory.build(byteBuffer);
         //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
         if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
                 || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
@@ -64,7 +64,7 @@ public class EventPacketHandler implements PacketHandler {
     }
 
     private void handleSpeedTrapEvent(ByteBuffer byteBuffer) {
-        SpeedTrapData trap = SpeedTrapDataFactory.build(packetFormat, byteBuffer);
+        SpeedTrapData trap = speedTrapFactory.build(byteBuffer);
         //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
         TelemetryData td = participants.get(trap.vehicleId());
         if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance.getDistance() < 0) {
@@ -99,15 +99,9 @@ public class EventPacketHandler implements PacketHandler {
         SaveSessionDataHandler.buildSaveData(packetFormat, "Testing", participants);
     }
 
-    public static void handle2020ButtonEvent(int packetFormat, ByteBuffer byteBuffer, Map<Integer, TelemetryData> participants) {
-        long buttonEvent = BitMaskUtils.bitMask32(byteBuffer.getInt());
-        //2020 special button press mapped to button P on the McLaren wheel.
-        //2019 special button mapped to the top left button the McLaren Wheel.
-        if ((buttonEvent == Constants.F1_2020_GT3_WHEEL_P_BUTTON && packetFormat == Constants.YEAR_2020)
-                || (buttonEvent == Constants.F1_2019_TOP_LEFT_BTN && packetFormat == Constants.YEAR_2019)) {
-            handleTestSave(packetFormat, participants);
-            printLapAndSetupData(participants);
-        }
+    public static void handle2020ButtonEvent(int packetFormat, Map<Integer, TelemetryData> participants) {
+        handleTestSave(packetFormat, participants);
+        printLapAndSetupData(participants);
     }
 
     public void setPause(boolean pause) {

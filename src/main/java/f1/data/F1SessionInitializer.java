@@ -60,7 +60,7 @@ public class F1SessionInitializer {
                     }
                     //If its the correct packet and that ref is null, we need to parse the packet, and store the object in the ref.
                     if (ph.packetId() == Constants.SESSION_PACK && sessionRef.get() == null) {
-                        SessionData sd = SessionDataFactory.build(ph.packetFormat(), buffer);
+                        SessionData sd = new SessionDataFactory(packetFormat.get()).build(buffer);
                         sessionRef.set(sd);
                     } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null) {
                         ParticipantPacketHandler handler = new ParticipantPacketHandler(packetFormat.get(), playerCarIndex.get());

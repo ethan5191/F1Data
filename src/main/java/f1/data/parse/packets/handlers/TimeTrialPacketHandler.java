@@ -10,16 +10,18 @@ import java.util.List;
 public class TimeTrialPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final TimeTrialDataFactory factory;
     private final List<TimeTrialData> timeTrialDataList = new ArrayList<>();
 
     public TimeTrialPacketHandler(int packetFormat) {
         this.packetFormat = packetFormat;
+        this.factory = new TimeTrialDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
         final int numTimeTrialRecs = 3;
         for (int i = 0; i < numTimeTrialRecs; i++) {
-            timeTrialDataList.add(TimeTrialDataFactory.build(this.packetFormat, byteBuffer));
+            timeTrialDataList.add(factory.build(byteBuffer));
         }
     }
 }
