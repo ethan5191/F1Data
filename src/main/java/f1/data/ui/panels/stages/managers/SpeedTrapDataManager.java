@@ -27,23 +27,20 @@ public class SpeedTrapDataManager implements Panel, OnSessionReset, OnSessionCha
         this.playerDriverId = playerDriverId;
         this.teamMateId = teamMateId;
         this.numActiveCars = numActiveCars;
+        buildInitialDisplay();
+    }
+
+    //Builds the initial dashboards for each speed trap ranking, with placeholder values.
+    private void buildInitialDisplay() {
+        for (int i = 0; i < this.numActiveCars; i++) {
+            SpeedTrapDashboard dashboard = new SpeedTrapDashboard(i + 1);
+            this.container.getChildren().add(dashboard);
+            this.dashboards.put(i, dashboard);
+        }
     }
 
     //Creates the all speed trap panel, keeps track of the order based on the fastest lap by each driver
     public void updateStage(SpeedTrapDataDTO dto) {
-        //If this is the first car through the speed trap then we need to create the initial group of containers for the data.
-        //Based on the number of cars in the session will determine how many dashboards are created.
-        if (this.rankings.isEmpty() && this.dashboards.isEmpty()) {
-            //This is the only panel so far that creates all the dashboards up front, then just updates the values with each new speed trap value.
-            for (int i = 0; i < numActiveCars; i++) {
-                SpeedTrapDashboard dashboard = new SpeedTrapDashboard(i + 1);
-                this.container.getChildren().add(dashboard);
-                this.dashboards.put(i, dashboard);
-            }
-            //Add this to the list and update its map object as its the first one in.
-            this.rankings.add(dto);
-            this.dashboards.get(0).updateRank(dto);
-        }
         if (!this.rankings.isEmpty()) {
             //Does a check on the driver name to see if this driver already has a top speed recorded.
             int index = this.rankings.indexOf(dto);
@@ -69,15 +66,25 @@ public class SpeedTrapDataManager implements Panel, OnSessionReset, OnSessionCha
                 for (int n = 0; n < this.rankings.size(); n++) {
                     SpeedTrapDataDTO current = this.rankings.get(n);
                     SpeedTrapDashboard currentDash = this.dashboards.get(n);
-                    //If it's the player or there teammate, update the background so they are easy to identify.
-                    if (current.driverId() == this.playerDriverId || current.driverId() == this.teamMateId) {
-                        currentDash.setStyle("-fx-background-color: #3e3e3e;");
-                    } else {
-                        currentDash.setStyle(null);
-                    }
+                    updateStyle(currentDash, current.driverId());
                     currentDash.updateRank(current);
                 }
             }
+        } else {
+            //Add this to the list and update its map object as it's the first one in.
+            this.rankings.add(dto);
+            this.dashboards.get(0).updateRank(dto);
+            updateStyle(this.dashboards.get(0), dto.driverId());
+        }
+    }
+
+    //Adds the colored background if its the player or there teammate, otherwise removes the style, in case it was previously added.
+    private void updateStyle(SpeedTrapDashboard currentDash, int driverId) {
+        //If it's the player or there teammate, update the background so they are easy to identify.
+        if (driverId == this.playerDriverId || driverId == this.teamMateId) {
+            currentDash.setStyle("-fx-background-color: #3e3e3e;");
+        } else {
+            currentDash.setStyle(null);
         }
     }
 
