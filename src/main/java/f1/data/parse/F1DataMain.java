@@ -139,7 +139,7 @@ public class F1DataMain {
     private void logPacketCounts(PacketHandler handler) {
         if (handler instanceof EventPacketHandler) {
             if (((EventPacketHandler) handler).isPause()) {
-                logger.info(session.buildSessionName());
+                logger.info(session.getName());
                 for (int i = 0; i < this.packetCounts.length; i++) {
                     logger.info("Packet {} Count {}", PacketTypeEnum.findByValue(i).name(), Arrays.toString(this.packetCounts[i]));
                 }

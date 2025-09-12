@@ -32,17 +32,16 @@ public class SessionPacketHandler implements PacketHandler {
     public void processPacket(ByteBuffer byteBuffer) {
         if (packetFormat > 0) {
             SessionData sd = factory.build(byteBuffer);
-            if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
+            SessionName temp = new SessionName(sd.sessionType(), sd.trackId(), sd.formula());
+            if (!this.sessionName.equals(temp)) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
-                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants, true);
+                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.getName(), this.participants, true);
                 //Clear the participants map, so the participants packet logic knows to rebuild it.
                 this.participants.clear();
                 //build out the new session name object
-                this.sessionName.setSessionType(sd.sessionType());
-                this.sessionName.setFormula(sd.formula());
-                this.sessionName.setTrackId(sd.trackId());
+                this.sessionName.updateSessionName(sd.sessionType(), sd.trackId(), sd.formula());
                 //Send a notification to the consumer so it knows to reset the UI.
-                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName(), sd.formula() == FormulaEnum.F1.getValue()));
+                this.sessionDataConsumer.accept(new SessionResetDTO(true, this.sessionName.getName(), sd.formula() == FormulaEnum.F1.getValue()));
             }
         }
     }
