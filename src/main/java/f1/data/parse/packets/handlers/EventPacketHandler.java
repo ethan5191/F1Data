@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class EventPacketHandler implements PacketHandler {
+public class EventPacketHandler implements PacketHandler, PauseActionHandler {
 
     private final int packetFormat;
     private final Map<Integer, TelemetryData> participants;
@@ -26,7 +26,6 @@ public class EventPacketHandler implements PacketHandler {
     private final SpeedTrapDataFactory speedTrapFactory;
 
     private boolean isPause = false;
-
 
     public EventPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SpeedTrapDataDTO> speedTrapData, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
@@ -104,11 +103,13 @@ public class EventPacketHandler implements PacketHandler {
         printLapAndSetupData(participants);
     }
 
-    public void setPause(boolean pause) {
-        isPause = pause;
+    @Override
+    public boolean isPause() {
+        return this.isPause;
     }
 
-    public boolean isPause() {
-        return isPause;
+    @Override
+    public void setPause(boolean pause) {
+        this.isPause = pause;
     }
 }

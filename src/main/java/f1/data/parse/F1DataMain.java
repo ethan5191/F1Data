@@ -49,9 +49,11 @@ public class F1DataMain {
     private final SessionName session;
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
+    private int packetFormat;
     private int playerCarIndex;
 
     public F1DataMain(F1PacketProcessor packetProcessor, ParentConsumer parent, SessionInitializationResult result) {
+        this.packetFormat = result.getPacketFormat();
         this.playerCarIndex = result.getPlayerCarIndex();
         this.packetProcessor = packetProcessor;
         final Map<Integer, TelemetryData> participants = new HashMap<>();
@@ -99,10 +101,7 @@ public class F1DataMain {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
                 //Parse the packetheader that comes in on every packet.
                 PacketHeader ph = PacketHeaderFactory.build(byteBuffer);
-                if (ph.playerCarIndex() != this.playerCarIndex) {
-                    this.playerCarIndex = ph.playerCarIndex();
-                    this.participantPacketHandler.setPlayerCarIndex(ph.playerCarIndex());
-                }
+                updateHeaderParams(ph);
                 PacketHandler handler = handlerMap.get(ph.packetId());
                 if (handler != null) handler.processPacket(byteBuffer);
                 packetCounts[ph.packetId()][0]++;
@@ -114,6 +113,15 @@ public class F1DataMain {
         } catch (Exception e) {
             logger.error("Caught Exception ", e);
             throw new RuntimeException(e);
+        }
+    }
+
+    //If either of these values are different, we need to update them so the handler's logic works correctly.
+    private void updateHeaderParams(PacketHeader ph) {
+        if (ph.packetFormat() != this.packetFormat) this.packetFormat = ph.packetFormat();
+        if (ph.playerCarIndex() != this.playerCarIndex) {
+            this.playerCarIndex = ph.playerCarIndex();
+            this.participantPacketHandler.setPlayerCarIndex(ph.playerCarIndex());
         }
     }
 
@@ -137,13 +145,13 @@ public class F1DataMain {
     }
 
     private void logPacketCounts(PacketHandler handler) {
-        if (handler instanceof EventPacketHandler) {
-            if (((EventPacketHandler) handler).isPause()) {
+        if (handler instanceof PauseActionHandler) {
+            if (((PauseActionHandler) handler).isPause()) {
                 logger.info(session.buildSessionName());
                 for (int i = 0; i < this.packetCounts.length; i++) {
                     logger.info("Packet {} Count {}", PacketTypeEnum.findByValue(i).name(), Arrays.toString(this.packetCounts[i]));
                 }
-                ((EventPacketHandler) handler).setPause(false);
+                ((PauseActionHandler) handler).setPause(false);
             }
         }
     }
