@@ -1,10 +1,15 @@
 package f1.data.parse.telemetry;
 
 import f1.data.enums.DriverStatusEnum;
+import f1.data.parse.individualLap.IndividualLapInfo;
 import f1.data.parse.packets.*;
 import f1.data.utils.constants.Constants;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TelemetryData {
 
@@ -30,6 +35,8 @@ public class TelemetryData {
     private final CarSetupTelemetryData carSetupData = new CarSetupTelemetryData();
     //Default this to a speed of 0 on lap 0 to prevent an NPE.
     private SpeedTrapTelemetryData speedTrapData = new SpeedTrapTelemetryData(0, 0);
+    //Map of completed laps, lap number -> Individual Lap Info object.
+    private final Map<Integer, IndividualLapInfo> completedLaps = new TreeMap<>();
 
     public ParticipantData getParticipantData() {
         return participantData;
@@ -166,5 +173,9 @@ public class TelemetryData {
 
     public void setSpeedTrapData(SpeedTrapTelemetryData speedTrapData) {
         this.speedTrapData = speedTrapData;
+    }
+
+    public Map<Integer, IndividualLapInfo> getCompletedLaps() {
+        return completedLaps;
     }
 }

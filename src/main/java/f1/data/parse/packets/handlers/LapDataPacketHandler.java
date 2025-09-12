@@ -50,7 +50,11 @@ public class LapDataPacketHandler implements PacketHandler {
                     TelemetryData td = participants.get(i);
                     if (td.getCurrentLap() != null) {
                         //If we have started a new lap, we need to create the info record, before we overnight the telemetry's ld object.
-                        if (ld.currentLapNum() > td.getCurrentLap().currentLapNum()) {
+                        //completed laps is a record of all laps->info object. if we already have a record for this lap.
+                        //then don't add a new lap. (flashback was used, only way this can happen).
+                        //Use the td.getcurrentLap().currentLapNum() so you get the lap num of the completed lap.
+                        if (ld.currentLapNum() > td.getCurrentLap().currentLapNum()
+                                && !td.getCompletedLaps().containsKey(td.getCurrentLap().currentLapNum())) {
                             handleNewLap(td, ld);
                         }
                         td.setCurrentLap(ld);
@@ -108,6 +112,7 @@ public class LapDataPacketHandler implements PacketHandler {
         this.driverData.accept(new DriverDataDTO(td.getParticipantData().driverId(), td.getParticipantData().lastName(), info));
         //Reset the speed trap value so the older games will know it needs to be reset on the next lap.
         td.getSpeedTrapData().setSpeed(0.0F);
+        td.getCompletedLaps().put(individualLap.getLapNum(), info);
     }
 
     private void handle2020Logic(TelemetryData td) {
