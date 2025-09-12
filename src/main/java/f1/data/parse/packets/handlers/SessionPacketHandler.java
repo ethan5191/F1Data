@@ -23,18 +23,20 @@ public class SessionPacketHandler implements PacketHandler {
     private final int packetFormat;
     private final Consumer<SessionResetDTO> sessionDataConsumer;
     private final SessionName sessionName;
+    private final SessionDataFactory factory;
 
     public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SessionResetDTO> sessionDataConsumer, SessionName sessionName) {
         this.participants = participants;
         this.packetFormat = packetFormat;
         this.sessionDataConsumer = sessionDataConsumer;
         this.sessionName = sessionName;
+        this.factory = new SessionDataFactory(this.packetFormat);
     }
 
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (packetFormat > 0) {
-            SessionData sd = SessionDataFactory.build(packetFormat, byteBuffer);
+            SessionData sd = factory.build(byteBuffer);
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
                 SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants);
