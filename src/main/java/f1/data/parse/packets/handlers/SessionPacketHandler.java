@@ -1,19 +1,14 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.enums.FormulaEnum;
-import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.parse.packets.session.SessionName;
-import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.save.*;
 import f1.data.ui.panels.dto.SessionResetDTO;
-import f1.data.ui.panels.home.AppState;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -39,7 +34,7 @@ public class SessionPacketHandler implements PacketHandler {
             SessionData sd = factory.build(byteBuffer);
             if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
-                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants);
+                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants, true);
                 //Clear the participants map, so the participants packet logic knows to rebuild it.
                 this.participants.clear();
                 //build out the new session name object
