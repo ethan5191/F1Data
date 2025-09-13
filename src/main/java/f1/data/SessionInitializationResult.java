@@ -18,6 +18,7 @@ public class SessionInitializationResult {
     private final Integer playerCarIndex;
     private final Integer playerDriverId;
     private final Integer teamMateDriverId;
+    private final Integer playerTeamId;
 
     public SessionInitializationResult(Integer playerCarIndex, Integer packetFormat, Integer numActiveCars, Map<Integer,
             DriverPair> driverPairPerTeam, List<ParticipantData> participantData, SessionData sessionData) {
@@ -31,6 +32,7 @@ public class SessionInitializationResult {
         //Get the player driver based on the player car index value.
         ParticipantData playerDriver = this.participantData.get(this.playerCarIndex);
         this.playerDriverId = playerDriver.driverId();
+        this.playerTeamId = playerDriver.teamId();
         //Use the player driver's team param to determine what team to look at for the teammate id.
         DriverPair driverPair = driverPairPerTeam.get(playerDriver.teamId());
         //Teammate driver ID will be whatever id on the driver pair isn't the players driver id.
@@ -67,6 +69,10 @@ public class SessionInitializationResult {
 
     public Integer getTeamMateDriverId() {
         return teamMateDriverId;
+    }
+
+    public Integer getPlayerTeamId() {
+        return playerTeamId;
     }
 
     public boolean isF1() {

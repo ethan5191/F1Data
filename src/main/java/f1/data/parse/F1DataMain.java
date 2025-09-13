@@ -8,7 +8,7 @@ import f1.data.parse.packets.ParticipantData;
 import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.packets.handlers.*;
 import f1.data.parse.packets.session.SessionData;
-import f1.data.parse.packets.session.SessionName;
+import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.ParentConsumer;
@@ -46,7 +46,7 @@ public class F1DataMain {
     private final TimeTrialPacketHandler timeTrialPacketHandler;
     private final LapPositionsPacketHandler lapPositionsPacketHandler;
 
-    private final SessionName session;
+    private final SessionInformation sessionInformation;
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
     private int packetFormat;
@@ -66,14 +66,15 @@ public class F1DataMain {
         //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         SessionData initialSession = result.getSessionData();
-        SessionName sessionName = new SessionName(initialSession.sessionType(), initialSession.trackId(), initialSession.formula());
-        this.session = sessionName;
+        SessionInformation sessionInformation = new SessionInformation(initialSession.sessionType(), initialSession.trackId(), initialSession.formula(),
+                result.getPlayerDriverId(), result.getTeamMateDriverId(), result.getPlayerTeamId());
+        this.sessionInformation = sessionInformation;
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, participants);
-        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionName);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionInformation);
         this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, participants, parent, speedTrapDistance);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
-        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer());
+        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer(), this.sessionInformation);
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, participants);
@@ -147,7 +148,7 @@ public class F1DataMain {
     private void logPacketCounts(PacketHandler handler) {
         if (handler instanceof PauseActionHandler) {
             if (((PauseActionHandler) handler).isPause()) {
-                logger.info(session.getName());
+                logger.info(sessionInformation.getName());
                 for (int i = 0; i < this.packetCounts.length; i++) {
                     logger.info("Packet {} Count {}", PacketTypeEnum.findByValue(i).name(), Arrays.toString(this.packetCounts[i]));
                 }
