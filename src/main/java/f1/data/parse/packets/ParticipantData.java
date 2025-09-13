@@ -3,6 +3,8 @@ package f1.data.parse.packets;
 import f1.data.utils.BitMaskUtils;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * F1 24 ParticipantData Breakdown (Little Endian)
@@ -138,5 +140,17 @@ public record ParticipantData(int aiControlled, int driverId, int teamId, int ra
                     //TODO add new params for 2025 participantData
             );
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        ParticipantData that = (ParticipantData) o;
+        return teamId == that.teamId && myTeam == that.myTeam && driverId == that.driverId && platform == that.platform && networkId == that.networkId && techLevel == that.techLevel && raceNumber == that.raceNumber && nationality == that.nationality && aiControlled == that.aiControlled && yourTelemetry == that.yourTelemetry && showOnlineNames == that.showOnlineNames && Objects.deepEquals(name, that.name) && Objects.equals(lastName, that.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(aiControlled, driverId, teamId, raceNumber, nationality, Arrays.hashCode(name), yourTelemetry, networkId, myTeam, showOnlineNames, platform, techLevel, lastName);
     }
 }

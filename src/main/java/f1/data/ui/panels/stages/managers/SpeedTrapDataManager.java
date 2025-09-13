@@ -92,6 +92,7 @@ public class SpeedTrapDataManager implements Panel, OnSessionReset, OnSessionCha
         this.container.getChildren().clear();
         this.dashboards.clear();
         this.rankings.clear();
+        buildInitialDisplay();
     }
 
     public void onSessionChange(int playerDriverId, int teamMateId) {

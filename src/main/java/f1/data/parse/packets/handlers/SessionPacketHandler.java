@@ -3,9 +3,9 @@ package f1.data.parse.packets.handlers;
 import f1.data.enums.FormulaEnum;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
-import f1.data.parse.packets.session.SessionName;
+import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
-import f1.data.save.*;
+import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SessionResetDTO;
 
 import java.nio.ByteBuffer;
@@ -17,14 +17,14 @@ public class SessionPacketHandler implements PacketHandler {
     private final Map<Integer, TelemetryData> participants;
     private final int packetFormat;
     private final Consumer<SessionResetDTO> sessionDataConsumer;
-    private final SessionName sessionName;
+    private final SessionInformation sessionInformation;
     private final SessionDataFactory factory;
 
-    public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SessionResetDTO> sessionDataConsumer, SessionName sessionName) {
+    public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SessionResetDTO> sessionDataConsumer, SessionInformation sessionInformation) {
         this.participants = participants;
         this.packetFormat = packetFormat;
         this.sessionDataConsumer = sessionDataConsumer;
-        this.sessionName = sessionName;
+        this.sessionInformation = sessionInformation;
         this.factory = new SessionDataFactory(this.packetFormat);
     }
 
@@ -32,17 +32,16 @@ public class SessionPacketHandler implements PacketHandler {
     public void processPacket(ByteBuffer byteBuffer) {
         if (packetFormat > 0) {
             SessionData sd = factory.build(byteBuffer);
-            if (!this.sessionName.buildSessionName().equals(sd.buildSessionName())) {
+            SessionInformation temp = new SessionInformation(sd.sessionType(), sd.trackId(), sd.formula(), this.sessionInformation.getPlayerDriverId(), this.sessionInformation.getTeamMateDriverId(), this.sessionInformation.getTeamId());
+            if (!this.sessionInformation.equals(temp)) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
-                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionName.buildSessionName(), this.participants, true);
+                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
                 //Clear the participants map, so the participants packet logic knows to rebuild it.
                 this.participants.clear();
                 //build out the new session name object
-                this.sessionName.setSessionType(sd.sessionType());
-                this.sessionName.setFormula(sd.formula());
-                this.sessionName.setTrackId(sd.trackId());
+                this.sessionInformation.updateSessionName(sd.sessionType(), sd.trackId(), sd.formula());
                 //Send a notification to the consumer so it knows to reset the UI.
-                this.sessionDataConsumer.accept(new SessionResetDTO(true, sd.buildSessionName(), sd.formula() == FormulaEnum.F1.getValue()));
+                this.sessionDataConsumer.accept(new SessionResetDTO(true, this.sessionInformation.getName(), sd.formula() == FormulaEnum.F1.getValue()));
             }
         }
     }

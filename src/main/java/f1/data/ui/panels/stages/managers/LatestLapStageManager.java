@@ -58,6 +58,7 @@ public class LatestLapStageManager implements Panel, OnSessionReset, OnSessionCh
     public void onSessionChange(int playerDriverId, int teamMateId) {
         this.playerDriverId = playerDriverId;
         this.teamMateId = teamMateId;
+        onSessionReset();
     }
 
     public void onSessionChange(List<ParticipantData> participantData) {
