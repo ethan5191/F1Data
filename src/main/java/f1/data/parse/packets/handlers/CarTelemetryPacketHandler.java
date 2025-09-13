@@ -16,14 +16,16 @@ import java.util.Map;
 public class CarTelemetryPacketHandler implements PacketHandler, PauseActionHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final CarTelemetryDataFactory factory;
     private final ButtonsDataFactory buttonsDataFactory;
 
     private boolean isPause = false;
 
-    public CarTelemetryPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
+    public CarTelemetryPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         this.factory = new CarTelemetryDataFactory(this.packetFormat);
         this.buttonsDataFactory = new ButtonsDataFactory(this.packetFormat);
@@ -32,7 +34,7 @@ public class CarTelemetryPacketHandler implements PacketHandler, PauseActionHand
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            int arraySize = Util.findArraySize(this.packetFormat);
+            int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
             for (int i = 0; i < arraySize; i++) {
                 CarTelemetryData ctd = factory.build(byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
