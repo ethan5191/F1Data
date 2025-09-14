@@ -55,7 +55,7 @@ public class ParticipantPacketHandler implements PacketHandler {
         //Must process this first as its always above the actual packet content, at least from 2020 onwards.
         numActiveCars = byteBuffer.get();
         //Loop over the packet and create objects for each record in the array.
-        int arraySize = Util.findArraySize(this.packetFormat);
+        int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
         for (int i = 0; i < arraySize; i++) {
             ParticipantData pd = factory.build(byteBuffer);
             //A race number of 0 means this is just a placeholder element, and shouldn't be added to the driver list.

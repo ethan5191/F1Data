@@ -13,18 +13,20 @@ import java.util.Map;
 public class MotionPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final MotionDataFactory factory;
 
-    public MotionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
+    public MotionPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         this.factory = new MotionDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            int arraySize = Util.findArraySize(this.packetFormat);
+            int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
             for (int i = 0; i < arraySize; i++) {
                 MotionData md = factory.build(byteBuffer);
             }

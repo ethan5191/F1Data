@@ -12,11 +12,13 @@ import java.util.Map;
 public class CarDamagePacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final CarDamageDataFactory factory;
 
-    public CarDamagePacketHandler(int packetFormat, Map<Integer, TelemetryData> participants) {
+    public CarDamagePacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         factory = new CarDamageDataFactory(this.packetFormat);
     }
@@ -24,7 +26,7 @@ public class CarDamagePacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            int arraySize = Util.findArraySize(this.packetFormat);
+            int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
             for (int i = 0; i < arraySize; i++) {
                 CarDamageData cdd = factory.build(byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {

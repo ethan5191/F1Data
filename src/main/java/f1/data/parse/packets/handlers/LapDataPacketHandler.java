@@ -24,14 +24,16 @@ import java.util.function.Consumer;
 public class LapDataPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final Consumer<DriverDataDTO> driverData;
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
     private final LapDataFactory factory;
 
-    public LapDataPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, ParentConsumer parent, SpeedTrapDistance speedTrapDistance) {
+    public LapDataPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants, ParentConsumer parent, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         this.driverData = parent.driverDataDTOConsumer();
         this.speedTrapData = parent.speedTrapDataDTOConsumer();
@@ -42,7 +44,7 @@ public class LapDataPacketHandler implements PacketHandler {
     @Override
     public void processPacket(ByteBuffer byteBuffer) {
         if (!participants.isEmpty()) {
-            int arraySize = Util.findArraySize(this.packetFormat);
+            int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
             for (int i = 0; i < arraySize; i++) {
                 LapData ld = factory.build(byteBuffer);
                 //Only look at this data if its a validKey, with 22 cars worth of data, but some modes only have 20 cars

@@ -12,18 +12,20 @@ import java.util.List;
 public class LobbyInfoPacketHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final LobbyInfoDataFactory factory;
     private int numCars;
     private final List<LobbyInfoData> lidList = new ArrayList<>();
 
-    public LobbyInfoPacketHandler(int packetFormat) {
+    public LobbyInfoPacketHandler(int packetFormat, int playerCarIndex) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.factory = new LobbyInfoDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
         this.numCars = BitMaskUtils.bitMask8(byteBuffer.get());
-        int arraySize = Util.findArraySize(this.packetFormat);
+        int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
         for (int i = 0; i < arraySize; i++) {
             LobbyInfoData lid = factory.build(byteBuffer);
             lidList.add(lid);

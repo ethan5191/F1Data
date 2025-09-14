@@ -12,19 +12,21 @@ import java.util.List;
 public class FinalClassificationHandler implements PacketHandler {
 
     private final int packetFormat;
+    private final int playerCarIndex;
     private final FinalClassificationDataFactory factory;
 
     private int numCars;
     private final List<FinalClassificationData> fcdList = new ArrayList<>();
 
-    public FinalClassificationHandler(int packetFormat) {
+    public FinalClassificationHandler(int packetFormat, int playerCarIndex) {
         this.packetFormat = packetFormat;
+        this.playerCarIndex = playerCarIndex;
         this.factory = new FinalClassificationDataFactory(this.packetFormat);
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
         this.numCars = BitMaskUtils.bitMask8(byteBuffer.get());
-        int arraySize = Util.findArraySize(this.packetFormat);
+        int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
         for (int i = 0; i < arraySize; i++) {
             FinalClassificationData fcd = factory.build(byteBuffer);
             this.fcdList.add(fcd);
