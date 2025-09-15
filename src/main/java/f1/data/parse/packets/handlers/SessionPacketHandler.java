@@ -7,6 +7,7 @@ import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SessionResetDTO;
+import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -35,9 +36,11 @@ public class SessionPacketHandler implements PacketHandler {
             SessionInformation temp = new SessionInformation(sd.sessionType(), sd.trackId(), sd.formula(), this.sessionInformation.getPlayerDriverId(), this.sessionInformation.getTeamMateDriverId(), this.sessionInformation.getTeamId());
             if (!this.sessionInformation.equals(temp)) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
-                SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
-                //Clear the participants map, so the participants packet logic knows to rebuild it.
-                this.participants.clear();
+                if (this.packetFormat <= Constants.YEAR_2019) {
+                    SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
+                    //Clear the participants map, so the participants packet logic knows to rebuild it.
+                    this.participants.clear();
+                }
                 //build out the new session name object
                 this.sessionInformation.updateSessionName(sd.sessionType(), sd.trackId(), sd.formula());
                 //Send a notification to the consumer so it knows to reset the UI.

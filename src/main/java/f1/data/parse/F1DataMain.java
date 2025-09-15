@@ -78,7 +78,7 @@ public class F1DataMain {
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, this.playerCarIndex, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, this.playerCarIndex, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, this.playerCarIndex, participants);
-        this.finalClassificationHandler = new FinalClassificationHandler(packetFormat, this.playerCarIndex);
+        this.finalClassificationHandler = new FinalClassificationHandler(packetFormat, this.playerCarIndex, participants, sessionInformation);
         this.lobbyInfoPacketHandler = new LobbyInfoPacketHandler(packetFormat, this.playerCarIndex);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, this.playerCarIndex, participants);
         this.sessionHistoryPacketHandler = new SessionHistoryPacketHandler(packetFormat);
