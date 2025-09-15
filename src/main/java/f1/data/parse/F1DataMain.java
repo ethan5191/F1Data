@@ -4,7 +4,7 @@ import f1.data.SessionInitializationResult;
 import f1.data.enums.PacketTypeEnum;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
-import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.packets.handlers.*;
 import f1.data.parse.packets.session.SessionData;

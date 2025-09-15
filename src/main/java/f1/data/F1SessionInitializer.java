@@ -4,7 +4,7 @@ import f1.data.mapKeys.DriverPair;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
-import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.handlers.ParticipantPacketHandler;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;

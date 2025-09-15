@@ -1,5 +1,7 @@
 package f1.data.parse.packets;
 
+import f1.data.parse.packets.participant.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantDataFactory;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;

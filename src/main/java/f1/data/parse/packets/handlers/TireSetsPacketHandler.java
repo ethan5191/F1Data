@@ -24,10 +24,12 @@ public class TireSetsPacketHandler implements PacketHandler {
         if (!participants.isEmpty()) {
             int carId = BitMaskUtils.bitMask8(byteBuffer.get());
             TelemetryData td = participants.get(carId);
-            td.setTireSetsData(factory.build(byteBuffer));
-            int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
-            if (td.getCarSetupData().getFittedTireId() != fittedId) {
-                td.getCarSetupData().setFittedTireId(fittedId);
+            if (td != null) {
+                td.setTireSetsData(factory.build(byteBuffer));
+                int fittedId = BitMaskUtils.bitMask8(byteBuffer.get());
+                if (td.getCarSetupData().getFittedTireId() != fittedId) {
+                    td.getCarSetupData().setFittedTireId(fittedId);
+                }
             }
         }
     }

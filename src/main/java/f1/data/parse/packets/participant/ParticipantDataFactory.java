@@ -1,6 +1,7 @@
-package f1.data.parse.packets;
+package f1.data.parse.packets.participant;
 
 import f1.data.enums.SupportedYearsEnum;
+import f1.data.parse.packets.DataFactory;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
