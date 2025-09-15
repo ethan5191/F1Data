@@ -61,7 +61,27 @@ public class SaveSessionDataHandler {
                 //Only on a new session do we want to clear the participants data.
                 if (isNewSession) participants.put(i, new TelemetryData(pd));
             }
-            SaveSessionDataHandler.saveSessionData(packetFormat, sessionName, speedTrapSessionDataList, runDataSessionData);
+            if (shouldSave(speedTrapSessionDataList, runDataSessionData))
+                SaveSessionDataHandler.saveSessionData(packetFormat, sessionName, speedTrapSessionDataList, runDataSessionData);
         }
+    }
+
+    private static boolean shouldSave(List<SpeedTrapSessionData> speedTrapSessionDataList, List<RunDataSessionData> runDataSessionData) {
+        boolean result = false;
+        for (SpeedTrapSessionData trap : speedTrapSessionDataList) {
+            if (!trap.speedTrapByLap().isEmpty()) {
+                result = true;
+                break;
+            }
+        }
+        if (!result) {
+            for (RunDataSessionData data : runDataSessionData) {
+                if (!data.setups().isEmpty() || !data.lapsForSetup().isEmpty()) {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }
