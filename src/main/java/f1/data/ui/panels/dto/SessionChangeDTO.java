@@ -1,6 +1,6 @@
 package f1.data.ui.panels.dto;
 
-import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantData;
 
 import java.util.List;
 

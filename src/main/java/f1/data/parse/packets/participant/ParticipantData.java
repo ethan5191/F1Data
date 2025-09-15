@@ -1,4 +1,4 @@
-package f1.data.parse.packets;
+package f1.data.parse.packets.participant;
 
 import f1.data.utils.BitMaskUtils;
 

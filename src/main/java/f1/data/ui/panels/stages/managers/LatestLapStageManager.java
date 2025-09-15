@@ -1,6 +1,6 @@
 package f1.data.ui.panels.stages.managers;
 
-import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.ui.panels.OnSessionChange;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;

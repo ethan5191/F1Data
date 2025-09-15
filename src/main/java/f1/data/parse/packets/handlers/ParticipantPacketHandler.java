@@ -1,8 +1,9 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.mapKeys.DriverPair;
-import f1.data.parse.packets.ParticipantData;
-import f1.data.parse.packets.ParticipantDataFactory;
+import f1.data.parse.packets.participant.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantDataFactory;
+import f1.data.parse.packets.participant.ParticipantKey;
 import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
@@ -10,10 +11,7 @@ import f1.data.ui.panels.dto.SessionChangeDTO;
 import f1.data.utils.Util;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ParticipantPacketHandler implements PacketHandler {
@@ -29,6 +27,7 @@ public class ParticipantPacketHandler implements PacketHandler {
     private int numActiveCars;
     private final List<ParticipantData> participantDataList = new ArrayList<>();
     private final Map<Integer, DriverPair> driverPairPerTeam = new TreeMap<>();
+    private final Set<ParticipantKey> distinctParticipants = new HashSet<>();
 
     public ParticipantPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants, Consumer<DriverDataDTO> driverDataDTO, Consumer<SessionChangeDTO> sessionChangeDTO, SessionInformation sessionInformation) {
         this.playerCarIndex = playerCarIndex;
@@ -58,17 +57,20 @@ public class ParticipantPacketHandler implements PacketHandler {
         int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
         for (int i = 0; i < arraySize; i++) {
             ParticipantData pd = factory.build(byteBuffer);
+            ParticipantKey pk = new ParticipantKey(pd.driverId(), pd.raceNumber(), pd.networkId(), pd.lastName());
             //A race number of 0 means this is just a placeholder element, and shouldn't be added to the driver list.
-            if (pd.raceNumber() > 0) {
+            if (pd.raceNumber() > 0 && !this.distinctParticipants.contains(pk)) {
                 localList.add(pd);
+                this.distinctParticipants.add(pk);
             }
         }
         //If these two lists are different then we need to rebuild the objects, as we have had some kind of change to the participants.
-        if (!localList.equals(this.participantDataList)) {
+        if (!localList.equals(this.participantDataList) && !localList.isEmpty()) {
             //Clear the maps and list.
             this.driverPairPerTeam.clear();
             this.participants.clear();
             this.participantDataList.clear();
+            this.distinctParticipants.clear();
             //Update the list to be the newly created list from the packet information
             this.participantDataList.addAll(localList);
             for (int i = 0; i < this.participantDataList.size(); i++) {

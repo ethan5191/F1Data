@@ -3,11 +3,10 @@ package f1.data.parse.telemetry;
 import f1.data.enums.DriverStatusEnum;
 import f1.data.parse.individualLap.IndividualLapInfo;
 import f1.data.parse.packets.*;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.utils.constants.Constants;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
 

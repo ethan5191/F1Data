@@ -1,7 +1,7 @@
 package f1.data.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import f1.data.parse.packets.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.home.AppState;
