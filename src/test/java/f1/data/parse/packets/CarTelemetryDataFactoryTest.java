@@ -7,6 +7,7 @@ import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -19,7 +20,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     private final float[] floatArray = new float[4];
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2019)
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds the Car Telemetry Data for 2019.")
     void testBuild_carTelemetry2019(int packetFormat) {
         int bitMask8Count = 3;

@@ -6,6 +6,7 @@ import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -22,7 +23,7 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     private static final int WEATHER_FORECAST_24_NEWER_SIZE = SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2019)
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds the Session Data for 2019.")
     void testBuild_sessionData2019(int packetFormat) {
         int bitMask8Count = 12;

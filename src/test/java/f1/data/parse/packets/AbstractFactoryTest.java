@@ -1,5 +1,6 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.nio.ByteBuffer;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,5 +45,19 @@ public abstract class AbstractFactoryTest {
             assertEquals("Games Packet Format did not match an accepted format (2019 - 2025)",
                     exception.getMessage());
         }
+    }
+
+    static Stream<Integer> supportedYearsAll() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear(),
+                SupportedYearsEnum.F1_2020.getYear(),
+                SupportedYearsEnum.F1_2021.getYear(),
+                SupportedYearsEnum.F1_2022.getYear(),
+                SupportedYearsEnum.F1_2023.getYear(),
+                SupportedYearsEnum.F1_2024.getYear(),
+                SupportedYearsEnum.F1_2025.getYear());
+    }
+
+    static Stream<Integer> supportedYears2019() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear());
     }
 }

@@ -4,6 +4,7 @@ import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.*;
 class PacketHeaderFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019})
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds Packet Header for 2019.")
     void testBuild_header2019(int packetFormat) {
         int bitMask8Count = 5;
