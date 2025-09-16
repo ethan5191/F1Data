@@ -5,6 +5,7 @@ import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -16,7 +17,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
     private static final float[] VALUE = new float[4];
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2023})
+    @MethodSource("supportedYears2023")
     @DisplayName("Builds the Motion EX Data for 2023.")
     void testBuild_motionExData2023(int packetFormat) {
         int floatCount = 20;

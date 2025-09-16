@@ -213,7 +213,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2023)
+    @MethodSource("supportedYears2023")
     @DisplayName("Builds the Lap Data for 2023.")
     void testBuild_lapData2023(int packetFormat) {
         int bitMask8Count = 18;

@@ -2,11 +2,9 @@ package f1.data.parse.packets;
 
 import f1.data.parse.packets.history.*;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +46,7 @@ public class SessionHistoryDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2023ToPresent")
     @DisplayName("Builds the Session History Data for 2023 to 2024.")
     void testBuild_sessionHistoryData2023To2024(int packetFormat) {
         int lapHistory8Count = 4 * LAP_SIZE;

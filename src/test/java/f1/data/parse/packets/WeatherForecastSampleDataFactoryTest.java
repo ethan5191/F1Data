@@ -1,10 +1,10 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.WeatherForecastSampleData;
 import f1.data.parse.packets.session.WeatherForecastSampleDataFactory;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -49,7 +49,8 @@ public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
     @MethodSource("supportedYears2021ToPresent")
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2021 to Present")
     void testBuild_weatherForecastSampleData2021ToPresent(int packetFormat) {
-        int arraySize = (packetFormat <= Constants.YEAR_2023) ? SessionData.WEATHER_FORECAST_21_TO_23_SIZE : SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
+        SupportedYearsEnum supportedYearsEnum = SupportedYearsEnum.fromYear(packetFormat);
+        int arraySize = (supportedYearsEnum.is2023OrEarlier()) ? SessionData.WEATHER_FORECAST_21_TO_23_SIZE : SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
         int bitMask8Count = (4 * arraySize);
         int intCount = 4;
         int bitMask8Value = BIT_8_START;

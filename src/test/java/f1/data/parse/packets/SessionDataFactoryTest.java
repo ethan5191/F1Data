@@ -301,7 +301,7 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2023)
+    @MethodSource("supportedYears2023")
     @DisplayName("Builds the Session Data for 2023.")
     void testBuild_sessionData2023(int packetFormat) {
         int numBitMask8InWeather = 4;
