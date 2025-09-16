@@ -2,11 +2,9 @@ package f1.data.parse.packets;
 
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -107,7 +105,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2025})
+    @MethodSource("supportedYears2025")
     @DisplayName("Builds the Motion EX Data for 2025 to Present.")
     void testBuild_motionExData2025ToPresent(int packetFormat) {
         int floatCount = 25;

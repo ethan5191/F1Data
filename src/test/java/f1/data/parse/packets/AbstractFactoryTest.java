@@ -107,4 +107,8 @@ public abstract class AbstractFactoryTest {
     static Stream<Integer> supportedYears2024() {
         return Stream.of(SupportedYearsEnum.F1_2024.getYear());
     }
+
+    static Stream<Integer> supportedYears2025() {
+        return Stream.of(SupportedYearsEnum.F1_2025.getYear());
+    }
 }

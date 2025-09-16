@@ -14,7 +14,7 @@ public class ParticipantDataFactory implements DataFactory<ParticipantData> {
 
     public ParticipantDataFactory(int packetFormat) {
         this.packetFormat = SupportedYearsEnum.fromYear(packetFormat);
-        this.nameLength = (packetFormat < Constants.YEAR_2025) ? 48 : 32;
+        this.nameLength = (this.packetFormat.is2024OrEarlier()) ? 48 : 32;
     }
 
     public ParticipantData build(ByteBuffer byteBuffer) {

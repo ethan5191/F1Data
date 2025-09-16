@@ -1,5 +1,6 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
@@ -91,7 +92,8 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
     @MethodSource("supportedYears2024ToPresent")
     @DisplayName("Builds the Lobby Info Data for 2024 to Present.")
     void testBuild_lobbyInfoData2024ToPresent(int packetFormat) {
-        int nameLength = (packetFormat < Constants.YEAR_2025) ? PRE_2025_NAME_LENGTH : POST_2025_NAME_LENGTH;
+        SupportedYearsEnum supportedYearsEnum = SupportedYearsEnum.fromYear(packetFormat);
+        int nameLength = (supportedYearsEnum.is2024OrEarlier()) ? PRE_2025_NAME_LENGTH : POST_2025_NAME_LENGTH;
         int bitMask8Count = 8;
         int bitMask16Count = 1;
         int bitMask8Value = BIT_8_START;
