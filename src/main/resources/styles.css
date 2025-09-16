@@ -4,6 +4,10 @@
     -fx-border-width: 1px;
 }
 
+.chart-plot-background {
+    -fx-background-color: black;
+}
+
 .ss {
     -fx-stroke: purple;
 }

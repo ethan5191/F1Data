@@ -12,4 +12,6 @@ public class StyleConstants {
     public static final String RUN_DATA_H = Constants.H;
     public static final String RUN_DATA_INTER = Constants.INTER;
     public static final String RUN_DATA_WET = Constants.WET;
+
+    public static final String CHART_LEGEND = ".chart-legend";
 }
