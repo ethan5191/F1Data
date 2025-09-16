@@ -37,4 +37,64 @@ public enum SupportedYearsEnum {
                     throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
         };
     }
+
+    public boolean is2019OrEarlier() {
+        return this.compareTo(F1_2019) <= 0;
+    }
+
+    public boolean is2020OrEarlier() {
+        return this.compareTo(F1_2020) <= 0;
+    }
+
+    public boolean is2021OrEarlier() {
+        return this.compareTo(F1_2021) <= 0;
+    }
+
+    public boolean is2022OrEarlier() {
+        return this.compareTo(F1_2022) <= 0;
+    }
+
+    public boolean is2023OrEarlier() {
+        return this.compareTo(F1_2023) <= 0;
+    }
+
+    public boolean is2024OrEarlier() {
+        return this.compareTo(F1_2024) <= 0;
+    }
+
+    public boolean is2025OrEarlier() {
+        return this.compareTo(F1_2025) <= 0;
+    }
+
+    public boolean is2019OrLater() {
+        return this.compareTo(F1_2019) >= 0;
+    }
+
+    public boolean is2020OrLater() {
+        return this.compareTo(F1_2020) >= 0;
+    }
+
+    public boolean is2021OrLater() {
+        return this.compareTo(F1_2021) >= 0;
+    }
+
+    public boolean is2022OrLater() {
+        return this.compareTo(F1_2022) >= 0;
+    }
+
+    public boolean is2023OrLater() {
+        return this.compareTo(F1_2023) >= 0;
+    }
+
+    public boolean is2024OrLater() {
+        return this.compareTo(F1_2024) >= 0;
+    }
+
+    public boolean is2025OrLater() {
+        return this.compareTo(F1_2025) >= 0;
+    }
+
+    public boolean hasSpeedTrapData() {
+        return this.compareTo(F1_2020) >= 0;
+    }
 }

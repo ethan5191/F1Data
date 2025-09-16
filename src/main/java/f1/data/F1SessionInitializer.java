@@ -1,5 +1,6 @@
 package f1.data;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.mapKeys.DriverPair;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
@@ -92,7 +93,8 @@ public class F1SessionInitializer {
     }
 
     private void packetsLoaded(Integer packetFormat) {
-        if (packetFormat <= Constants.YEAR_2019) {
+        SupportedYearsEnum supported = SupportedYearsEnum.fromYear(packetFormat);
+        if (!supported.hasSpeedTrapData()) {
             ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat + " (No Speed Trap data in this year).");
         } else {
             ((Label) this.container.getChildren().get(0)).setText("F1 " + packetFormat);
@@ -100,7 +102,7 @@ public class F1SessionInitializer {
         for (int i = this.container.getChildren().size() - 1; i >= 0; i--) {
             if (this.container.getChildren().get(i) instanceof CheckBox current) {
                 boolean isSpeedTrapBox = current.getText().contains("Speed Trap");
-                if (packetFormat > Constants.YEAR_2019 || !isSpeedTrapBox) {
+                if (supported.hasSpeedTrapData() || !isSpeedTrapBox) {
                     current.setDisable(false);
                 }
             }

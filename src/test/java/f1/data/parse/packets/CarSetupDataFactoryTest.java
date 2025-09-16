@@ -1,11 +1,15 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,8 +17,12 @@ import static org.mockito.Mockito.mockStatic;
 
 public class CarSetupDataFactoryTest extends AbstractFactoryTest {
 
+    static Stream<Integer> supportedYears2019() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear());
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019})
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds the Car Setup Data for 2019.")
     void testBuild_carSetup2019(int packetFormat) {
         int bitMask8Count = 13;
