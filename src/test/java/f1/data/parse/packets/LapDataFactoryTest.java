@@ -1,11 +1,9 @@
 package f1.data.parse.packets;
 
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -273,7 +271,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2024ToPresent")
     @DisplayName("Builds the Lap Data for 2024 to Present.")
     void testBuild_lapData2024ToPresent(int packetFormat) {
         int bitMask8Count = 21;

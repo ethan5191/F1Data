@@ -5,7 +5,6 @@ import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,7 +88,7 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2024ToPresent")
     @DisplayName("Builds the Lobby Info Data for 2024 to Present.")
     void testBuild_lobbyInfoData2024ToPresent(int packetFormat) {
         int nameLength = (packetFormat < Constants.YEAR_2025) ? PRE_2025_NAME_LENGTH : POST_2025_NAME_LENGTH;

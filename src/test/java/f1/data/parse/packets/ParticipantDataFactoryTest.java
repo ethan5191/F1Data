@@ -105,7 +105,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2024)
+    @MethodSource("supportedYears2024")
     @DisplayName("Builds the Participant Data for 2024.")
     void testBuild_participantData2024(int packetFormat) {
         int bitMask8Count = 10;

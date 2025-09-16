@@ -62,7 +62,7 @@ public class MotionExDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2024})
+    @MethodSource("supportedYears2024")
     @DisplayName("Builds the Motion EX Data for 2024.")
     void testBuild_motionExData2024(int packetFormat) {
         int floatCount = 25;

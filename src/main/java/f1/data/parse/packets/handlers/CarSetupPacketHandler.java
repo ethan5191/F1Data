@@ -1,5 +1,6 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.CarSetupData;
 import f1.data.parse.packets.CarSetupDataFactory;
 import f1.data.parse.packets.PacketUtils;
@@ -17,12 +18,14 @@ public class CarSetupPacketHandler implements PacketHandler {
     private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final CarSetupDataFactory factory;
+    private final SupportedYearsEnum supportedYearsEnum;
 
     public CarSetupPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
         this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         this.factory = new CarSetupDataFactory(this.packetFormat);
+        this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class CarSetupPacketHandler implements PacketHandler {
             }
             //Trailing value, must be here to ensure the packet is fully parsed.
             //nextFrontWingVal was added in the 24 data as a param AFTER the 22 car setups had been processed.
-            if (packetFormat >= Constants.YEAR_2024) {
+            if (this.supportedYearsEnum.is2024OrLater()) {
                 float nextFronWingVal = byteBuffer.getFloat();
             }
         }
