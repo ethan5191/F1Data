@@ -54,7 +54,7 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021})
+    @MethodSource("supportedYears2021")
     @DisplayName("Builds the Final Classification for 2021.")
     void testBuild_finalClassificationData2021(int packetFormat) {
         int bitMask8Count = 11;

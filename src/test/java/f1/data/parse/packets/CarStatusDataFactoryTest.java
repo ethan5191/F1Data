@@ -132,7 +132,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Car Status Data for 2021 and 2022.")
     void testBuild_carStatus2021And2022(int packetFormat) {
         int bitMask8Count = 12;

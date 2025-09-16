@@ -41,7 +41,7 @@ public class LobbyInfoDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Lobby Info Data for 2021 to 2022.")
     void testBuild_lobbyInfoData2021To2022(int packetFormat) {
         int bitMask8Count = 5;

@@ -7,6 +7,7 @@ import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.mockStatic;
 public class LapHistoryDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Lap History Data from 2021 to 2022.")
     void testBuild_lapHistoryData2021To2022(int packetFormat) {
         int bitMask8Count = 1;

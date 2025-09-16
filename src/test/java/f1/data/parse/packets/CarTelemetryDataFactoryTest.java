@@ -4,11 +4,9 @@ import f1.data.parse.packets.events.ButtonsData;
 import f1.data.parse.packets.events.ButtonsDataFactory;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -108,7 +106,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2021ToPresent")
     @DisplayName("Builds the Car Telemetry Data for 2021 to Present.")
     void testBuild_carTelemetry2021ToPresent(int packetFormat) {
         int bitMask8Count = 3;

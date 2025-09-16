@@ -5,6 +5,7 @@ import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -18,7 +19,7 @@ public class SessionHistoryDataFactoryTest extends AbstractFactoryTest {
     private final int TYRE_SIZE = TyreStintHistoryDataFactory.TYRE_STINT_HISTORY_SIZE;
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Session History Data for 2021 to 2022.")
     void testBuild_sessionHistoryData2021To2022(int packetFormat) {
         int lapHistory8Count = LAP_SIZE;

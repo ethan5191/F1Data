@@ -36,7 +36,7 @@ public class SpeedTrapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2021)
+    @MethodSource("supportedYears2021")
     @DisplayName("Builds the Speed Trap Event Data for 2021.")
     void testBuild_speedTrapEvent2021(int packetFormat) {
         int bitMask8Count = 3;

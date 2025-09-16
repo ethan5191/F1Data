@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,8 +46,7 @@ public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022,
-            Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2021ToPresent")
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2021 to Present")
     void testBuild_weatherForecastSampleData2021ToPresent(int packetFormat) {
         int arraySize = (packetFormat <= Constants.YEAR_2023) ? SessionData.WEATHER_FORECAST_21_TO_23_SIZE : SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
