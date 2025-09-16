@@ -1,10 +1,13 @@
 package f1.data.view;
 
+import com.sun.javafx.charts.Legend;
 import f1.data.enums.VisualTireEnum;
 import f1.data.save.IndividualLapSessionData;
 import f1.data.save.RunDataMapRecord;
 import f1.data.utils.constants.Constants;
+import f1.data.utils.constants.StyleConstants;
 import f1.data.view.gridColumns.GridPaneColumn;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
@@ -20,10 +23,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class ViewSavedSessionDataUI {
+
+    private static final Logger logger = LoggerFactory.getLogger(ViewSavedSessionDataUI.class);
 
     private final VBox container = new VBox(Constants.SPACING);
     private LineChart<Number, Number> lineChart;
@@ -211,9 +218,13 @@ public class ViewSavedSessionDataUI {
             XYChart.Series<Number, Number> laps = new XYChart.Series<>();
             for (int i = 0; i < run.laps().size(); i++) {
                 IndividualLapSessionData lap = run.laps().get(i);
-                if (lap.getLapTimeInMs().intValue() < minTime || minTime == 0) minTime = lap.getLapTimeInMs().intValue();
-                if (lap.getLapTimeInMs().intValue() > maxTime || maxTime == 0) maxTime = lap.getLapTimeInMs().intValue();
-                laps.getData().add(new XYChart.Data<>(i + 1, lap.getLapTimeInMs()));
+                if (lap.getLapTimeInMs().intValue() < minTime || minTime == 0)
+                    minTime = lap.getLapTimeInMs().intValue();
+                if (lap.getLapTimeInMs().intValue() > maxTime || maxTime == 0)
+                    maxTime = lap.getLapTimeInMs().intValue();
+                XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(i + 1, lap.getLapTimeInMs());
+                dataPoint.setExtraValue(VisualTireEnum.fromValue(lap.getVisualTire()).getDisplay());
+                laps.getData().add(dataPoint);
             }
             if (run.laps().size() > lapCount) lapCount = run.laps().size();
             runs.add(laps);
@@ -224,5 +235,67 @@ public class ViewSavedSessionDataUI {
         for (XYChart.Series<Number, Number> individual : runs) {
             this.lineChart.getData().add(individual);
         }
+        Platform.runLater(() -> {
+            Map<String, String> legendItems = new TreeMap<>();
+            for (XYChart.Series<Number, Number> individual : runs) {
+                XYChart.Data<Number, Number> dataPoint0 = individual.getData().get(0);
+                String styleClass = findStyleClass(dataPoint0, legendItems);
+                if (styleClass != null) {
+                    individual.getNode().getStyleClass().add(styleClass);
+                    for (XYChart.Data<Number, Number> dataPoint : individual.getData()) {
+                        dataPoint.getNode().getStyleClass().add(styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                    }
+                }
+            }
+            List<LegendLabel> legendLabels = new ArrayList<>(legendItems.size());
+            for (Map.Entry<String, String> entry : legendItems.entrySet()) {
+                legendLabels.add(new LegendLabel(entry.getKey(), entry.getValue()));
+            }
+            Legend legend = (Legend) lineChart.lookup(StyleConstants.CHART_LEGEND);
+            if (legend == null) {
+                logger.info("Legend not found on chart");
+            } else {
+                List<Legend.LegendItem> currentLegends = legend.getItems();
+                while (currentLegends.size() > legendLabels.size()) {
+                    currentLegends.remove(currentLegends.size() - 1);
+                }
+                for (int i = 0; i < currentLegends.size(); i++) {
+                    Legend.LegendItem item = currentLegends.get(i);
+                    item.setText(legendLabels.get(i).text());
+                    item.getSymbol().getStyleClass().add(legendLabels.get(i).cssClass());
+                }
+            }
+        });
+    }
+
+    private String findStyleClass(XYChart.Data<Number, Number> dataPoint0, Map<String, String> legendItems) {
+        String styleClass = null;
+        switch (dataPoint0.getExtraValue().toString()) {
+            case Constants.SUPER:
+                styleClass = StyleConstants.RUN_DATA_SS.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.SUPER, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+            case Constants.SOFT:
+                styleClass = StyleConstants.RUN_DATA_S.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.SOFT, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+            case Constants.MEDIUM:
+                styleClass = StyleConstants.RUN_DATA_M.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.MEDIUM, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+            case Constants.HARD:
+                styleClass = StyleConstants.RUN_DATA_H.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.HARD, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+            case Constants.INTERMEDIATE:
+                styleClass = StyleConstants.RUN_DATA_INTER.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.INTERMEDIATE, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+            case Constants.X_WET:
+                styleClass = StyleConstants.RUN_DATA_WET.toLowerCase(Locale.ENGLISH);
+                legendItems.put(Constants.X_WET, styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                break;
+        }
+        return styleClass;
     }
 }

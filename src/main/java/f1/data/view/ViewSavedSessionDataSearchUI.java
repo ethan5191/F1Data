@@ -20,8 +20,8 @@ public class ViewSavedSessionDataSearchUI {
     private final CheckBox mediumCheck = new CheckBox(Constants.MEDIUM);
     private final CheckBox hardCheck = new CheckBox(Constants.HARD);
 
-    private final CheckBox interCheck = new CheckBox(Constants.INTER);
-    private final CheckBox wetCheck = new CheckBox(Constants.WET);
+    private final CheckBox interCheck = new CheckBox(Constants.INTERMEDIATE);
+    private final CheckBox wetCheck = new CheckBox(Constants.X_WET);
 
     private final ArrayList<CheckBox> dryBoxes = new ArrayList<>(4);
     private final ArrayList<CheckBox> wetBoxes = new ArrayList<>(2);

@@ -3,3 +3,55 @@
     -fx-border-color: lightgray;
     -fx-border-width: 1px;
 }
+
+.chart-plot-background {
+    -fx-background-color: black;
+}
+
+.ss {
+    -fx-stroke: purple;
+}
+
+.ss-data-point {
+    -fx-background-color: purple, white;
+}
+
+.s {
+    -fx-stroke: red;
+}
+
+.s-data-point {
+    -fx-background-color: red, white;
+}
+
+.m {
+    -fx-stroke: yellow;
+}
+
+.m-data-point {
+    -fx-background-color: yellow, white;
+}
+
+.h {
+    -fx-stroke: white;
+}
+
+.h-data-point {
+    -fx-background-color: white, white;
+}
+
+.inter {
+    -fx-stroke: green;
+}
+
+.inter-data-point {
+    -fx-background-color: green, white;
+}
+
+.wet {
+    -fx-stroke: blue
+}
+
+.wet-data-point {
+    -fx-background-color: blue, white;
+}

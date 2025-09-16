@@ -7,12 +7,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum VisualTireEnum {
-    INTER(7, Constants.F1, Constants.INTER, Color.GREEN),
-    X_WET(8,Constants.F1, Constants.WET, Color.BLUE),
+    INTER(7, Constants.F1, Constants.INTERMEDIATE, Color.GREEN),
+    X_WET(8,Constants.F1, Constants.X_WET, Color.BLUE),
     SOFT(16, Constants.F1, Constants.SOFT, Color.RED),
     MEDIUM(17, Constants.F1, Constants.MEDIUM, Color.YELLOW),
     HARD(18, Constants.F1, Constants.HARD, Color.WHITE),
-    W(15, Constants.F2, Constants.WET, Color.BLUE),
+    W(15, Constants.F2, Constants.X_WET, Color.BLUE),
     SS(19, Constants.F2, Constants.SUPER, Color.getColor("Purple")),
     S(20, Constants.F2, Constants.SOFT, Color.RED),
     M(21, Constants.F2, Constants.MEDIUM, Color.YELLOW),
