@@ -1,5 +1,6 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.CarDamageData;
 import f1.data.parse.packets.CarStatusData;
 import f1.data.parse.packets.CarStatusDataFactory;
@@ -17,12 +18,14 @@ public class CarStatusPacketHandler implements PacketHandler {
     private final int playerCarIndex;
     private final Map<Integer, TelemetryData> participants;
     private final CarStatusDataFactory factory;
+    private final SupportedYearsEnum supportedYearsEnum;
 
     public CarStatusPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
         this.playerCarIndex = playerCarIndex;
         this.participants = participants;
         this.factory = new CarStatusDataFactory(this.packetFormat);
+        this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
     }
 
     @Override
@@ -33,7 +36,7 @@ public class CarStatusPacketHandler implements PacketHandler {
                 CarStatusData csd = factory.build(byteBuffer);
                 if (PacketUtils.validKey(participants, i)) {
                     participants.get(i).setCurrentStatus(csd);
-                    if (packetFormat <= Constants.YEAR_2020) {
+                    if (this.supportedYearsEnum.is2020OrEarlier()) {
                         CarDamageData cdd = CarDamageData.fromStatus(csd);
                         participants.get(i).setCurrentDamage(cdd);
                     }

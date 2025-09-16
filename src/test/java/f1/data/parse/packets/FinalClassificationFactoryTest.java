@@ -5,6 +5,7 @@ import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -16,7 +17,7 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
     private final int[] intArray = new int[8];
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2020})
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Final Classification for 2020.")
     void testBuild_finalClassificationData2020(int packetFormat) {
         int bitMask8Count = 11;

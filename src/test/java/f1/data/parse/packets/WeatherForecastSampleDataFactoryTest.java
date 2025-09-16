@@ -8,6 +8,7 @@ import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.mockStatic;
 public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2020})
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2020")
     void testBuild_weatherForecastSampleData2020(int packetFormat) {
         int SIZE_2020 = SessionData.WEATHER_FORECAST_20_SIZE;

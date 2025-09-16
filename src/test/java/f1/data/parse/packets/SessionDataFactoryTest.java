@@ -88,7 +88,7 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2020)
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Session Data for 2020.")
     void testBuild_sessionData2020(int packetFormat) {
         int bitMask8Count = 13;

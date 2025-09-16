@@ -60,4 +60,8 @@ public abstract class AbstractFactoryTest {
     static Stream<Integer> supportedYears2019() {
         return Stream.of(SupportedYearsEnum.F1_2019.getYear());
     }
+
+    static Stream<Integer> supportedYears2020() {
+        return Stream.of(SupportedYearsEnum.F1_2020.getYear());
+    }
 }
