@@ -3,11 +3,9 @@ package f1.data.parse.packets;
 import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import java.util.stream.Stream;
@@ -64,7 +62,7 @@ public class CarDamageDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2022ToPresent")
     @DisplayName("Builds the Car Damage Data from 2022 to Present.")
     void testBuild_carDamage2022ToPresent(int packetFormat) {
         int bitMask8Count = 18;

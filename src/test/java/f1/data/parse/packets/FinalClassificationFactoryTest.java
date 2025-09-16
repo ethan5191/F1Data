@@ -1,5 +1,6 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
@@ -9,12 +10,20 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
 public class FinalClassificationFactoryTest extends AbstractFactoryTest {
 
     private final int[] intArray = new int[8];
+
+    static Stream<Integer> supportedYears2022To2024() {
+        return Stream.of(SupportedYearsEnum.F1_2022.getYear(),
+                SupportedYearsEnum.F1_2023.getYear(),
+                SupportedYearsEnum.F1_2024.getYear());
+    }
 
     @ParameterizedTest
     @MethodSource("supportedYears2020")
@@ -91,7 +100,7 @@ public class FinalClassificationFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024})
+    @MethodSource("supportedYears2022To2024")
     @DisplayName("Builds the Final Classification for 2022 to 2024.")
     void testBuild_finalClassificationData2022To2024(int packetFormat) {
         int bitMask8Count = 11;

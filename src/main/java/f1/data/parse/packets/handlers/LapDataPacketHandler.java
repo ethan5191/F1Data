@@ -69,7 +69,7 @@ public class LapDataPacketHandler implements PacketHandler {
                     handle2020Logic(td);
                 }
             }
-            if (packetFormat >= Constants.YEAR_2022) {
+            if (this.supportedYearsEnum.is2022OrLater()) {
                 //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
                 int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
                 int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());

@@ -1,5 +1,6 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.session.*;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
@@ -9,6 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
@@ -21,6 +24,10 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     private static final int WEATHER_FORECAST_20_SIZE = SessionData.WEATHER_FORECAST_20_SIZE;
     private static final int WEATHER_FORECAST_21_TO_23_SIZE = SessionData.WEATHER_FORECAST_21_TO_23_SIZE;
     private static final int WEATHER_FORECAST_24_NEWER_SIZE = SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
+
+    static Stream<Integer> supportedYears2022() {
+        return Stream.of(SupportedYearsEnum.F1_2022.getYear());
+    }
 
     @ParameterizedTest
     @MethodSource("supportedYears2019")
@@ -227,7 +234,7 @@ public class SessionDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2022)
+    @MethodSource("supportedYears2022")
     @DisplayName("Builds the Session Data for 2022.")
     void testBuild_sessionData2022(int packetFormat) {
         int numBitMask8InWeather = 4;
