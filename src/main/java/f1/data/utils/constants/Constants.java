@@ -60,12 +60,19 @@ public class Constants {
     public static final String F1 = "F1";
     public static final String CLASSIC = "CLASSIC";
     public static final String F2 = "F2";
-    public static final String INTER = "Inter";
-    public static final String WET = "Wet";
+    public static final String INTERMEDIATE = "Inter";
+    public static final String X_WET = "Wet";
     public static final String HARD = "Hard";
     public static final String MEDIUM = "Medium";
     public static final String SOFT = "Soft";
     public static final String SUPER = "Super Soft";
+
+    public static final String SS = "SS";
+    public static final String S = "S";
+    public static final String M = "M";
+    public static final String H = "H";
+    public static final String INTER = "inter";
+    public static final String WET = "wet";
 
     public static final int SETUP_PANEL_WIDTH = 730;
 

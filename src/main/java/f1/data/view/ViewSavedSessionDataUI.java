@@ -4,7 +4,9 @@ import f1.data.enums.VisualTireEnum;
 import f1.data.save.IndividualLapSessionData;
 import f1.data.save.RunDataMapRecord;
 import f1.data.utils.constants.Constants;
+import f1.data.utils.constants.StyleConstants;
 import f1.data.view.gridColumns.GridPaneColumn;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
@@ -211,9 +213,13 @@ public class ViewSavedSessionDataUI {
             XYChart.Series<Number, Number> laps = new XYChart.Series<>();
             for (int i = 0; i < run.laps().size(); i++) {
                 IndividualLapSessionData lap = run.laps().get(i);
-                if (lap.getLapTimeInMs().intValue() < minTime || minTime == 0) minTime = lap.getLapTimeInMs().intValue();
-                if (lap.getLapTimeInMs().intValue() > maxTime || maxTime == 0) maxTime = lap.getLapTimeInMs().intValue();
-                laps.getData().add(new XYChart.Data<>(i + 1, lap.getLapTimeInMs()));
+                if (lap.getLapTimeInMs().intValue() < minTime || minTime == 0)
+                    minTime = lap.getLapTimeInMs().intValue();
+                if (lap.getLapTimeInMs().intValue() > maxTime || maxTime == 0)
+                    maxTime = lap.getLapTimeInMs().intValue();
+                XYChart.Data<Number, Number> dataPoint = new XYChart.Data<>(i + 1, lap.getLapTimeInMs());
+                dataPoint.setExtraValue(VisualTireEnum.fromValue(lap.getVisualTire()).getDisplay());
+                laps.getData().add(dataPoint);
             }
             if (run.laps().size() > lapCount) lapCount = run.laps().size();
             runs.add(laps);
@@ -224,5 +230,25 @@ public class ViewSavedSessionDataUI {
         for (XYChart.Series<Number, Number> individual : runs) {
             this.lineChart.getData().add(individual);
         }
+        Platform.runLater(() -> {
+            for (XYChart.Series<Number, Number> individual : runs) {
+                XYChart.Data<Number, Number> dataPoint0 = individual.getData().get(0);
+                String styleClass = switch (dataPoint0.getExtraValue().toString()) {
+                    case Constants.SUPER -> StyleConstants.RUN_DATA_SS.toLowerCase(Locale.ENGLISH);
+                    case Constants.SOFT -> StyleConstants.RUN_DATA_S.toLowerCase(Locale.ENGLISH);
+                    case Constants.MEDIUM -> StyleConstants.RUN_DATA_M.toLowerCase(Locale.ENGLISH);
+                    case Constants.HARD -> StyleConstants.RUN_DATA_H.toLowerCase(Locale.ENGLISH);
+                    case Constants.INTERMEDIATE -> StyleConstants.RUN_DATA_INTER.toLowerCase(Locale.ENGLISH);
+                    case Constants.X_WET -> StyleConstants.RUN_DATA_WET.toLowerCase(Locale.ENGLISH);
+                    default -> null;
+                };
+                if (styleClass != null) {
+                    individual.getNode().getStyleClass().add(styleClass);
+                    for (XYChart.Data<Number, Number> dataPoint : individual.getData()) {
+                        dataPoint.getNode().getStyleClass().add(styleClass + StyleConstants.DASH + StyleConstants.DATA_POINT);
+                    }
+                }
+            }
+        });
     }
 }
