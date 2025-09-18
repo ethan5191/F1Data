@@ -7,9 +7,11 @@ import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.handlers.ParticipantPacketHandler;
+import f1.data.parse.packets.participant.ParticipantDataFactory;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.ui.panels.home.HomePanel;
+import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
@@ -19,8 +21,10 @@ import javafx.scene.layout.VBox;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -59,16 +63,28 @@ public class F1SessionInitializer {
                         packetFormat.set(ph.packetFormat());
                         playerCarIndex.set(ph.playerCarIndex());
                     }
-                    //If its the correct packet and that ref is null, we need to parse the packet, and store the object in the ref.
+                    //If it's the correct packet and that ref is null, we need to parse the packet, and store the object in the ref.
                     if (ph.packetId() == Constants.SESSION_PACK && sessionRef.get() == null) {
                         SessionData sd = new SessionDataFactory(packetFormat.get()).build(buffer);
                         sessionRef.set(sd);
                     } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null) {
-                        ParticipantPacketHandler handler = new ParticipantPacketHandler(packetFormat.get(), playerCarIndex.get());
-                        handler.processPacket(buffer);
-                        numActiveCars.set(handler.getNumActiveCars());
-                        driverPairPerTeam.set(handler.getDriverPairPerTeam());
-                        participantsRef.set(handler.getParticipantDataList());
+                        List<ParticipantData> participantData = new ArrayList<>();
+                        Map<Integer, DriverPair> driverPair = new TreeMap<>();
+                        numActiveCars.set((int) buffer.get());
+                        int arraySize = Util.findArraySize(packetFormat.get(), playerCarIndex.get());
+                        for (int i = 0; i < arraySize; i++) {
+                            ParticipantData pd = new ParticipantDataFactory(packetFormat.get()).build(buffer);
+                            if (pd.raceNumber() > 0) {
+                                participantData.add(pd);
+                                if (driverPair.containsKey(pd.teamId())) {
+                                    driverPair.get(pd.teamId()).setDriverTwo(pd.driverId());
+                                } else {
+                                    driverPair.put(pd.teamId(), new DriverPair(pd.driverId()));
+                                }
+                            }
+                        }
+                        driverPairPerTeam.set(driverPair);
+                        participantsRef.set(participantData);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();

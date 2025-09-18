@@ -3,10 +3,14 @@ package f1.data.parse.packets.session;
 import f1.data.enums.FormulaEnum;
 import f1.data.enums.SessionTypeEnum;
 import f1.data.enums.TrackEnum;
+import f1.data.mapKeys.DriverPair;
+import f1.data.parse.packets.participant.ParticipantData;
+import f1.data.parse.packets.participant.ParticipantKey;
+import f1.data.parse.telemetry.TelemetryData;
 
-import java.util.Objects;
+import java.util.*;
 
-public class SessionInformation {
+public class SessionInformationWrapper {
 
     private int sessionType;
     private int trackId;
@@ -18,7 +22,13 @@ public class SessionInformation {
     private int teamMateDriverId;
     private int teamId;
 
-    public SessionInformation(SessionData sessionData, int playerDriverId, int teamMateDriverId, int teamId) {
+    private final Map<Integer, TelemetryData> participants;
+    private final List<ParticipantData> participantDataList = new ArrayList<>();
+    private final Map<Integer, DriverPair> driverPairPerTeam = new TreeMap<>();
+    private final Set<ParticipantKey> distinctParticipants = new HashSet<>();
+
+    public SessionInformationWrapper(Map<Integer, TelemetryData> participants, SessionData sessionData, int playerDriverId, int teamMateDriverId, int teamId) {
+        this.participants = participants;
         this.sessionType = sessionData.sessionType();
         this.trackId = sessionData.trackId();
         this.formula = sessionData.formula();
@@ -28,6 +38,35 @@ public class SessionInformation {
         this.teamMateDriverId = teamMateDriverId;
         this.teamId = teamId;
         this.name = buildSessionName();
+    }
+
+    public SessionInformationWrapper(SessionData sessionData, int playerDriverId, int teamMateDriverId, int teamId) {
+        this.participants = null;
+        this.sessionType = sessionData.sessionType();
+        this.trackId = sessionData.trackId();
+        this.formula = sessionData.formula();
+        this.sessionTimeLeft = sessionData.sessionTimeLeft();
+        this.sessionDuration = sessionData.sessionDuration();
+        this.playerDriverId = playerDriverId;
+        this.teamMateDriverId = teamMateDriverId;
+        this.teamId = teamId;
+        this.name = buildSessionName();
+    }
+
+    public Map<Integer, TelemetryData> getParticipants() {
+        return participants;
+    }
+
+    public List<ParticipantData> getParticipantDataList() {
+        return participantDataList;
+    }
+
+    public Map<Integer, DriverPair> getDriverPairPerTeam() {
+        return driverPairPerTeam;
+    }
+
+    public Set<ParticipantKey> getDistinctParticipants() {
+        return distinctParticipants;
     }
 
     public String getName() {
@@ -54,14 +93,6 @@ public class SessionInformation {
         this.sessionTimeLeft = sessionTimeLeft;
     }
 
-    public int getSessionDuration() {
-        return sessionDuration;
-    }
-
-    public void setSessionDuration(int sessionDuration) {
-        this.sessionDuration = sessionDuration;
-    }
-
     //Method used to update the given object. Using a single method vice setters as these are all updated at the same time.
     public void updateSessionName(SessionData sessionData) {
         this.sessionType = sessionData.sessionType();
@@ -77,6 +108,14 @@ public class SessionInformation {
         this.teamId = teamId;
     }
 
+    //Clear the collections due to a session change
+    public void clearCollection() {
+        this.participants.clear();
+        this.driverPairPerTeam.clear();
+        this.distinctParticipants.clear();
+        this.participantDataList.clear();
+    }
+
     private String buildSessionName() {
         String formula = FormulaEnum.fromValue(this.formula).name();
         String track = TrackEnum.fromId(this.trackId).name();
@@ -88,7 +127,7 @@ public class SessionInformation {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        SessionInformation that = (SessionInformation) o;
+        SessionInformationWrapper that = (SessionInformationWrapper) o;
         return sessionType == that.sessionType && trackId == that.trackId && formula == that.formula && playerDriverId == that.playerDriverId && teamMateDriverId == that.teamMateDriverId && teamId == that.teamId && sessionDuration == that.sessionDuration;
     }
 

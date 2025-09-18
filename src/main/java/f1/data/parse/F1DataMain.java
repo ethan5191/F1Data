@@ -8,7 +8,7 @@ import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.packets.handlers.*;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
-import f1.data.parse.packets.session.SessionInformation;
+import f1.data.parse.packets.session.SessionInformationWrapper;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.ParentConsumer;
@@ -46,7 +46,7 @@ public class F1DataMain {
     private final TimeTrialPacketHandler timeTrialPacketHandler;
     private final LapPositionsPacketHandler lapPositionsPacketHandler;
 
-    private final SessionInformation sessionInformation;
+    private final SessionInformationWrapper sessionInformationWrapper;
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
 
     private int packetFormat;
@@ -66,18 +66,18 @@ public class F1DataMain {
         //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         SessionData initialSession = result.getSessionData();
-        SessionInformation sessionInformation = new SessionInformation(initialSession, result.getPlayerDriverId(), result.getTeamMateDriverId(), result.getPlayerTeamId());
-        this.sessionInformation = sessionInformation;
+        SessionInformationWrapper sessionInformationWrapper = new SessionInformationWrapper(participants, initialSession, result.getPlayerDriverId(), result.getTeamMateDriverId(), result.getPlayerTeamId());
+        this.sessionInformationWrapper = sessionInformationWrapper;
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, this.playerCarIndex, participants);
-        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, participants, parent.sessionResetDTOConsumer(), sessionInformation);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, parent.sessionResetDTOConsumer(), sessionInformationWrapper);
         this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, this.playerCarIndex, participants, parent, speedTrapDistance);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
-        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, participants, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer(), this.sessionInformation);
+        this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer(), this.sessionInformationWrapper);
         this.carSetupPacketHandler = new CarSetupPacketHandler(packetFormat, this.playerCarIndex, participants);
         this.carTelemetryPacketHandler = new CarTelemetryPacketHandler(packetFormat, this.playerCarIndex, participants);
         this.carStatusPacketHandler = new CarStatusPacketHandler(packetFormat, this.playerCarIndex, participants);
-        this.finalClassificationHandler = new FinalClassificationHandler(packetFormat, this.playerCarIndex, participants, sessionInformation);
+        this.finalClassificationHandler = new FinalClassificationHandler(packetFormat, this.playerCarIndex, participants, sessionInformationWrapper);
         this.lobbyInfoPacketHandler = new LobbyInfoPacketHandler(packetFormat, this.playerCarIndex);
         this.carDamagePacketHandler = new CarDamagePacketHandler(packetFormat, this.playerCarIndex, participants);
         this.sessionHistoryPacketHandler = new SessionHistoryPacketHandler(packetFormat);
@@ -147,7 +147,7 @@ public class F1DataMain {
     private void logPacketCounts(PacketHandler handler) {
         if (handler instanceof PauseActionHandler) {
             if (((PauseActionHandler) handler).isPause()) {
-                logger.info(sessionInformation.getName());
+                logger.info(sessionInformationWrapper.getName());
                 for (int i = 0; i < this.packetCounts.length; i++) {
                     logger.info("Packet {} Count {}", PacketTypeEnum.findByValue(i).name(), Arrays.toString(this.packetCounts[i]));
                 }
