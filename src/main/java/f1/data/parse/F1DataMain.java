@@ -70,7 +70,7 @@ public class F1DataMain {
         this.sessionInformationWrapper = sessionInformationWrapper;
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, this.playerCarIndex, participants);
-        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, parent.sessionResetDTOConsumer(), sessionInformationWrapper);
+        this.sessionPacketHandler = new SessionPacketHandler(packetFormat, parent.sessionResetDTOConsumer(), sessionInformationWrapper, speedTrapDistance);
         this.lapDataPacketHandler = new LapDataPacketHandler(packetFormat, this.playerCarIndex, participants, parent, speedTrapDistance);
         this.eventPacketHandler = new EventPacketHandler(packetFormat, participants, parent.speedTrapDataDTOConsumer(), speedTrapDistance);
         this.participantPacketHandler = new ParticipantPacketHandler(packetFormat, this.playerCarIndex, parent.driverDataDTOConsumer(), parent.sessionChangeDTOConsumer(), this.sessionInformationWrapper);

@@ -2,12 +2,14 @@ package f1.data.parse.packets.handlers;
 
 import f1.data.enums.FormulaEnum;
 import f1.data.enums.SupportedYearsEnum;
+import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.parse.packets.session.SessionInformationWrapper;
 import f1.data.parse.packets.session.SessionTimeBuffer;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SessionResetDTO;
+import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
@@ -20,11 +22,13 @@ public class SessionPacketHandler implements PacketHandler {
     private final SessionDataFactory factory;
     private final SupportedYearsEnum supportedYearsEnum;
     private final SessionTimeBuffer sessionTimeBuffer;
+    private final SpeedTrapDistance speedTrapDistance;
 
-    public SessionPacketHandler(int packetFormat, Consumer<SessionResetDTO> sessionDataConsumer, SessionInformationWrapper sessionInformationWrapper) {
+    public SessionPacketHandler(int packetFormat, Consumer<SessionResetDTO> sessionDataConsumer, SessionInformationWrapper sessionInformationWrapper, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
         this.sessionDataConsumer = sessionDataConsumer;
         this.sessionInformationWrapper = sessionInformationWrapper;
+        this.speedTrapDistance = speedTrapDistance;
         this.factory = new SessionDataFactory(this.packetFormat);
         this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
         this.sessionTimeBuffer = new SessionTimeBuffer();
@@ -48,6 +52,7 @@ public class SessionPacketHandler implements PacketHandler {
                 //As this is a new gaming session clear these collections so the participants packet will rebuild them properly.
                 this.sessionInformationWrapper.clearCollection();
                 this.sessionTimeBuffer.reset();
+                this.speedTrapDistance.setDistance(Constants.SPEED_TRAP_DEFAULT);
                 //build out the new session name object
                 this.sessionInformationWrapper.updateSessionName(sd);
                 //Send a notification to the consumer so it knows to reset the UI.
