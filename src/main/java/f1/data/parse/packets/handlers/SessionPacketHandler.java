@@ -5,7 +5,6 @@ import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.parse.packets.session.SessionInformationWrapper;
-import f1.data.parse.packets.session.SessionTimeBuffer;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SessionResetDTO;
 
@@ -19,7 +18,6 @@ public class SessionPacketHandler implements PacketHandler {
     private final SessionInformationWrapper sessionInformationWrapper;
     private final SessionDataFactory factory;
     private final SupportedYearsEnum supportedYearsEnum;
-    private final SessionTimeBuffer sessionTimeBuffer;
 
     public SessionPacketHandler(int packetFormat, Consumer<SessionResetDTO> sessionDataConsumer, SessionInformationWrapper sessionInformationWrapper) {
         this.packetFormat = packetFormat;
@@ -27,7 +25,6 @@ public class SessionPacketHandler implements PacketHandler {
         this.sessionInformationWrapper = sessionInformationWrapper;
         this.factory = new SessionDataFactory(this.packetFormat);
         this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
-        this.sessionTimeBuffer = new SessionTimeBuffer();
     }
 
     @Override
@@ -35,8 +32,7 @@ public class SessionPacketHandler implements PacketHandler {
         if (packetFormat > 0) {
             SessionData sd = factory.build(byteBuffer);
             SessionInformationWrapper temp = new SessionInformationWrapper(sd, this.sessionInformationWrapper.getPlayerDriverId(), this.sessionInformationWrapper.getTeamMateDriverId(), this.sessionInformationWrapper.getTeamId());
-            //If the session time left is greater than the saved session time left and the value does not exist in the session time buffer.
-            boolean isSameSessionRestart = (sd.sessionTimeLeft() > this.sessionInformationWrapper.getSessionTimeLeft() && !this.sessionTimeBuffer.contains(sd.sessionTimeLeft()));
+            boolean isSameSessionRestart = sd.sessionTimeLeft() > this.sessionInformationWrapper.getSessionTimeLeft();
             //If the sessionInformation objects are not equal OR the session time left on the latest session data packet is greater than the session information's time left param.
             //The only way the OR in this can get hit is if you leave or restart a session without changing either the track, session, or player car.
             if (!this.sessionInformationWrapper.equals(temp) || isSameSessionRestart) {
@@ -48,7 +44,6 @@ public class SessionPacketHandler implements PacketHandler {
                 }
                 //As this is a new gaming session clear these collections so the participants packet will rebuild them properly.
                 this.sessionInformationWrapper.clearCollection();
-                this.sessionTimeBuffer.reset();
                 //build out the new session name object
                 this.sessionInformationWrapper.updateSessionName(sd);
                 //Send a notification to the consumer so it knows to reset the UI.
@@ -56,7 +51,6 @@ public class SessionPacketHandler implements PacketHandler {
             }
             //Always update this value to latest value from the session packet.
             this.sessionInformationWrapper.setSessionTimeLeft(sd.sessionTimeLeft());
-            this.sessionTimeBuffer.add(sd.sessionTimeLeft());
         }
     }
 }
