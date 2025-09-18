@@ -14,7 +14,7 @@ public class LapPositionsDataFactory implements DataFactory<LapPositionsData> {
 
     public LapPositionsData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2025 -> new LapPositionsData(this.packetFormat.getYear(), byteBuffer);
+            case F1_2025 -> new LapPositionsData(this.packetFormat, byteBuffer);
             default -> throw new IllegalStateException("Games Packet Format did not match an accepted format (2025)");
         };
     }

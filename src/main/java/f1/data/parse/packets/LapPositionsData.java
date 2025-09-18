@@ -1,5 +1,6 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.constants.Constants;
 
@@ -31,8 +32,8 @@ public record LapPositionsData(int numLaps, int lapStart, int[][] positionForVeh
 
     private static final int POSITION_SIZE = 50;
 
-    private static int[][] buildPositionsForVehicleId(int packetFormat, ByteBuffer byteBuffer) {
-        int innerArraySize = (packetFormat >= Constants.YEAR_2026) ? Constants.F1_26_AND_LATER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
+    private static int[][] buildPositionsForVehicleId(SupportedYearsEnum packetFormat, ByteBuffer byteBuffer) {
+        int innerArraySize = packetFormat.getCarCount();
         int[][] result = new int[POSITION_SIZE][innerArraySize];
         for (int i = 0; i < POSITION_SIZE; i++) {
             for (int j = 0; j < innerArraySize; j++) {
@@ -42,7 +43,7 @@ public record LapPositionsData(int numLaps, int lapStart, int[][] positionForVeh
         return result;
     }
 
-    public LapPositionsData(int packetFormat, ByteBuffer byteBuffer) {
+    public LapPositionsData(SupportedYearsEnum packetFormat, ByteBuffer byteBuffer) {
         this(BitMaskUtils.bitMask8(byteBuffer.get()),
                 BitMaskUtils.bitMask8(byteBuffer.get()),
                 buildPositionsForVehicleId(packetFormat, byteBuffer)
