@@ -20,6 +20,7 @@
   - [F1 2020](#f1-2020)
   - [F1 2020-2022](#f1-20202022)
   - [F1 2024](#f1-2024)
+- [Multiplayer](#multiplayer-notes)
 - [Future Projects](#future-projects)
   - [UI Improvements](#ui-improvements)
   - [Enhancements](#core-application-enhancements)
@@ -235,6 +236,14 @@ Practice Session "Accelerated Time" Issue
         Harvested and deployed values stuck at 0.0.
     This occurs when a lap ends while the game is running in accelerated time.
     Workaround: Switch back to normal speed before the car of interest completes its lap.
+[Back to top](#table-of-contents)
+___
+
+## Multiplayer Notes
+
+1. **Limited Testing** – Multiplayer functionality has not been thoroughly tested. Use this application in multiplayer sessions at your own risk.
+2. **Gamertag Display (F1 2023+)** – Starting with F1 2023, a new `showOnlineNames` parameter in the Participant packet allows your gamertag to appear on the panels instead of the default **Player** name. To enable this, set **Show Online Names** to **Yes** in the in-game telemetry settings. Otherwise, **Player** will be displayed.
+3. **Older Games** – No investigation has been done for F1 2022 and earlier titles to determine whether multiplayer shows the actual gamertag or a default value.
 [Back to top](#table-of-contents)
 ___
 
