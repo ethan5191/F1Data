@@ -2,10 +2,11 @@ package f1.data.parse.packets.history;
 
 import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.DataFactory;
+import f1.data.parse.packets.FirstYearProvided;
 
 import java.nio.ByteBuffer;
 
-public class TyreStintHistoryDataFactory implements DataFactory<TyreStintHistoryData[]> {
+public class TyreStintHistoryDataFactory implements DataFactory<TyreStintHistoryData[]>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -19,7 +20,7 @@ public class TyreStintHistoryDataFactory implements DataFactory<TyreStintHistory
         return switch (packetFormat) {
             case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2021 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -29,5 +30,10 @@ public class TyreStintHistoryDataFactory implements DataFactory<TyreStintHistory
             results[i] = new TyreStintHistoryData(byteBuffer);
         }
         return results;
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2021.getYear();
     }
 }

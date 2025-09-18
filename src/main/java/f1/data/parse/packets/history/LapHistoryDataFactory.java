@@ -2,10 +2,11 @@ package f1.data.parse.packets.history;
 
 import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.DataFactory;
+import f1.data.parse.packets.FirstYearProvided;
 
 import java.nio.ByteBuffer;
 
-public class LapHistoryDataFactory implements DataFactory<LapHistoryData[]> {
+public class LapHistoryDataFactory implements DataFactory<LapHistoryData[]>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -20,7 +21,7 @@ public class LapHistoryDataFactory implements DataFactory<LapHistoryData[]> {
             case F1_2021, F1_2022 -> buildData21(byteBuffer);
             case F1_2023, F1_2024, F1_2025 -> buildData23(byteBuffer);
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2021 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -40,5 +41,10 @@ public class LapHistoryDataFactory implements DataFactory<LapHistoryData[]> {
             results[i] = new LapHistoryData(lhd23.lapTimeInMS(), lhd23.sector1TimeInMS(), lhd23.sector2TimeInMS(), lhd23.sector3TimeInMS(), lhd23.lapValidBitFlags(), lhd23.sector1TimeMinutesPart(), lhd23.sector2TimeMinutesPart(), lhd23.sector3TimeMinutesPart());
         }
         return results;
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2021.getYear();
     }
 }

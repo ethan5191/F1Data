@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class MotionExDataFactory implements DataFactory<MotionExData> {
+public class MotionExDataFactory implements DataFactory<MotionExData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -18,7 +18,7 @@ public class MotionExDataFactory implements DataFactory<MotionExData> {
             case F1_2024 -> buildData(new MotionExData.MotionExData24(byteBuffer));
             case F1_2025 -> buildData(new MotionExData.MotionExData25(byteBuffer));
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2023 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -47,5 +47,10 @@ public class MotionExDataFactory implements DataFactory<MotionExData> {
                 med25.angularVelocityZ(), med25.angularAccelerationX(), med25.angularAccelerationY(), med25.angularAccelerationZ(), med25.frontWheelsAngle(), med25.wheelVertForce(),
                 med25.frontAeroHeight(), med25.rearAeroHeight(), med25.frontRollAngle(), med25.rearRollAngle(), med25.chassisYaw(), med25.chassisPitch(), med25.wheelCamber(), med25.wheelCamberGain());
 
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2023.getYear();
     }
 }

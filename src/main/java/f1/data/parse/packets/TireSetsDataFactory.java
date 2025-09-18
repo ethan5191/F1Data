@@ -5,7 +5,7 @@ import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
-public class TireSetsDataFactory implements DataFactory<TireSetsData[]> {
+public class TireSetsDataFactory implements DataFactory<TireSetsData[]>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -17,7 +17,7 @@ public class TireSetsDataFactory implements DataFactory<TireSetsData[]> {
         return switch (packetFormat) {
             case F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2023 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -27,5 +27,10 @@ public class TireSetsDataFactory implements DataFactory<TireSetsData[]> {
             results[i] = new TireSetsData(byteBuffer);
         }
         return results;
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2023.getYear();
     }
 }

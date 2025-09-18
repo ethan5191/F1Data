@@ -5,7 +5,7 @@ import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
-public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData> {
+public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -21,7 +21,7 @@ public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData> {
             case F1_2023 -> buildData(new LobbyInfoData.LobbyInfoData23(byteBuffer, nameLength));
             case F1_2024, F1_2025 -> buildData(new LobbyInfoData.LobbyInfoData24(byteBuffer, nameLength));
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -39,5 +39,10 @@ public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData> {
 
     private LobbyInfoData buildData(LobbyInfoData.LobbyInfoData24 lid24) {
         return new LobbyInfoData(lid24.aiControlled(), lid24.teamId(), lid24.nationality(), lid24.name(), lid24.readyStatus(), lid24.carNumber(), lid24.platform(), lid24.yourTelemetry(), lid24.showOnlineNames(), lid24.techLevel());
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2020.getYear();
     }
 }

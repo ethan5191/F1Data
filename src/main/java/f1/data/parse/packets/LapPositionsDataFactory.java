@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class LapPositionsDataFactory implements DataFactory<LapPositionsData> {
+public class LapPositionsDataFactory implements DataFactory<LapPositionsData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -15,7 +15,12 @@ public class LapPositionsDataFactory implements DataFactory<LapPositionsData> {
     public LapPositionsData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
             case F1_2025 -> new LapPositionsData(this.packetFormat, byteBuffer);
-            default -> throw new IllegalStateException("Games Packet Format did not match an accepted format (2025)");
+            default -> throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2025.getYear();
     }
 }

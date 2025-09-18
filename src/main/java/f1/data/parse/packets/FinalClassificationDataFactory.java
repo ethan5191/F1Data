@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class FinalClassificationDataFactory implements DataFactory<FinalClassificationData> {
+public class FinalClassificationDataFactory implements DataFactory<FinalClassificationData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -20,7 +20,7 @@ public class FinalClassificationDataFactory implements DataFactory<FinalClassifi
                     buildData(new FinalClassificationData.FinalClassificationData22(byteBuffer));
             case F1_2025 -> buildData(new FinalClassificationData.FinalClassificationData25(byteBuffer));
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -46,5 +46,10 @@ public class FinalClassificationDataFactory implements DataFactory<FinalClassifi
         return new FinalClassificationData(fcd25.position(), fcd25.numLaps(), fcd25.gridPosition(), fcd25.points(), fcd25.numPitsStops(),
                 fcd25.resultStatus(), 0, fcd25.totalRaceTime(), fcd25.penaltiesTime(), fcd25.numPenalties(),
                 fcd25.numTyreStints(), fcd25.tyreStintsActual(), fcd25.tyreStintsVisual(), fcd25.bestLapTime(), fcd25.tyreStintsEndLaps(), fcd25.resultReason());
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2020.getYear();
     }
 }
