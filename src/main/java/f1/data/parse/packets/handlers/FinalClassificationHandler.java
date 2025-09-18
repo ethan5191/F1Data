@@ -39,7 +39,7 @@ public class FinalClassificationHandler implements PacketHandler {
             FinalClassificationData fcd = factory.build(byteBuffer);
             this.fcdList.add(fcd);
         }
-        SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
+        SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants);
         //Clear the participants map, so the participants packet logic knows to rebuild it.
         this.participants.clear();
     }
