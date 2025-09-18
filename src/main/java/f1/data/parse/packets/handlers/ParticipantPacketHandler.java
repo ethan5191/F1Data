@@ -4,7 +4,7 @@ import f1.data.mapKeys.DriverPair;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.participant.ParticipantDataFactory;
 import f1.data.parse.packets.participant.ParticipantKey;
-import f1.data.parse.packets.session.SessionInformation;
+import f1.data.parse.packets.session.SessionInformationWrapper;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.ui.panels.dto.DriverDataDTO;
 import f1.data.ui.panels.dto.SessionChangeDTO;
@@ -18,71 +18,50 @@ public class ParticipantPacketHandler implements PacketHandler {
 
     private final int packetFormat;
     private int playerCarIndex;
-    private final Map<Integer, TelemetryData> participants;
     private final Consumer<DriverDataDTO> driverDataDTO;
     private final Consumer<SessionChangeDTO> sessionChangeDTO;
-    private final SessionInformation sessionInformation;
+    private final SessionInformationWrapper sessionInformationWrapper;
     private final ParticipantDataFactory factory;
 
-    private int numActiveCars;
-    private final List<ParticipantData> participantDataList = new ArrayList<>();
-    private final Map<Integer, DriverPair> driverPairPerTeam = new TreeMap<>();
-    private final Set<ParticipantKey> distinctParticipants = new HashSet<>();
-
-    public ParticipantPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants, Consumer<DriverDataDTO> driverDataDTO, Consumer<SessionChangeDTO> sessionChangeDTO, SessionInformation sessionInformation) {
+    public ParticipantPacketHandler(int packetFormat, int playerCarIndex, Consumer<DriverDataDTO> driverDataDTO, Consumer<SessionChangeDTO> sessionChangeDTO, SessionInformationWrapper sessionInformationWrapper) {
         this.playerCarIndex = playerCarIndex;
         this.packetFormat = packetFormat;
-        this.participants = participants;
         this.driverDataDTO = driverDataDTO;
         this.sessionChangeDTO = sessionChangeDTO;
-        this.sessionInformation = sessionInformation;
+        this.sessionInformationWrapper = sessionInformationWrapper;
         this.factory = new ParticipantDataFactory(this.packetFormat);
-    }
-
-    public ParticipantPacketHandler(int packetFormat, int playerCarIndex) {
-        this.packetFormat = packetFormat;
-        this.playerCarIndex = playerCarIndex;
-        this.factory = new ParticipantDataFactory(this.packetFormat);
-        this.participants = new TreeMap<>();
-        this.sessionInformation = null;
-        this.driverDataDTO = null;
-        this.sessionChangeDTO = null;
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
-        //If a session change has cleared the participants map, then we need to also clear the distinct set, so that we can properly rebuild the map.
-        if (this.participants.isEmpty() && !this.distinctParticipants.isEmpty()) {
-            this.distinctParticipants.clear();
-            this.participantDataList.clear();
-        }
         List<ParticipantData> localList = new ArrayList<>();
-        //Must process this first as its always above the actual packet content, at least from 2020 onwards.
-        numActiveCars = byteBuffer.get();
+        //Must process this first as its always above the actual packet content, at least from 2019 onwards.
+        int numActiveCars = byteBuffer.get();
         //Loop over the packet and create objects for each record in the array.
         int arraySize = Util.findArraySize(this.packetFormat, this.playerCarIndex);
         for (int i = 0; i < arraySize; i++) {
             ParticipantData pd = factory.build(byteBuffer);
             ParticipantKey pk = new ParticipantKey(pd.driverId(), pd.raceNumber(), pd.networkId(), pd.lastName());
             //A race number of 0 means this is just a placeholder element, and shouldn't be added to the driver list.
-            if (pd.raceNumber() > 0 && !this.distinctParticipants.contains(pk)) {
+            if (pd.raceNumber() > 0 && !this.sessionInformationWrapper.getDistinctParticipants().contains(pk)) {
                 localList.add(pd);
-                this.distinctParticipants.add(pk);
+                this.sessionInformationWrapper.getDistinctParticipants().add(pk);
             }
         }
         //If these two lists are different then we need to rebuild the objects, as we have had some kind of change to the participants.
-        if (!localList.equals(this.participantDataList) && !localList.isEmpty()) {
-            clearCollections();
+        if (!localList.equals(this.sessionInformationWrapper.getParticipantDataList()) && !localList.isEmpty()) {
+            this.sessionInformationWrapper.clearCollection();
             //Update the list to be the newly created list from the packet information
-            this.participantDataList.addAll(localList);
-            for (int i = 0; i < this.participantDataList.size(); i++) {
-                ParticipantData pd = this.participantDataList.get(i);
+            this.sessionInformationWrapper.getParticipantDataList().addAll(localList);
+            for (int i = 0; i < this.sessionInformationWrapper.getParticipantDataList().size(); i++) {
+                ParticipantData pd = this.sessionInformationWrapper.getParticipantDataList().get(i);
                 //Add a new record to the participants map with a new telemetry data object.
-                this.participants.put(i, new TelemetryData(pd));
+                this.sessionInformationWrapper.getParticipants().put(i, new TelemetryData(pd));
                 //Rebuild the driverPairPerTeam map.
-                if (driverPairPerTeam.containsKey(pd.teamId())) {
-                    driverPairPerTeam.get(pd.teamId()).setDriverTwo(pd.driverId());
+                Map<Integer, DriverPair> driverPairs = this.sessionInformationWrapper.getDriverPairPerTeam();
+                if (driverPairs.containsKey(pd.teamId())) {
+                    driverPairs.get(pd.teamId()).setDriverTwo(pd.driverId());
                 } else {
-                    driverPairPerTeam.put(pd.teamId(), new DriverPair(pd.driverId()));
+                    driverPairs.put(pd.teamId(), new DriverPair(pd.driverId()));
                 }
                 //If this dto exists, then send an update to the UI.
                 if (this.driverDataDTO != null)
@@ -90,39 +69,17 @@ public class ParticipantPacketHandler implements PacketHandler {
             }
             //If this objects exists then we need to repopulate these params for the UI.
             if (this.sessionChangeDTO != null) {
-                ParticipantData playerDriver = this.participantDataList.get(this.playerCarIndex);
+                ParticipantData playerDriver = this.sessionInformationWrapper.getParticipantDataList().get(this.playerCarIndex);
                 final int playerDriverId = playerDriver.driverId();
                 //Use the player driver's team param to determine what team to look at for the teammate id.
-                DriverPair driverPair = driverPairPerTeam.get(playerDriver.teamId());
+                DriverPair driverPair = this.sessionInformationWrapper.getDriverPairPerTeam().get(playerDriver.teamId());
                 //Teammate driver ID will be whatever id on the driver pair isn't the players driver id.
                 final int teamMateDriverId = (playerDriverId == driverPair.getDriverOne()) ? driverPair.getDriverTwo() : driverPair.getDriverOne();
-                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, this.numActiveCars, this.participantDataList));
+                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, numActiveCars, this.sessionInformationWrapper.getParticipantDataList()));
                 //Update this object with participant data, so the session logic will trigger a new session.
-                if (this.sessionInformation != null) {
-                    this.sessionInformation.updateDriverInfo(playerDriverId, teamMateDriverId, playerDriver.teamId());
-                }
+                this.sessionInformationWrapper.updateDriverInfo(playerDriverId, teamMateDriverId, playerDriver.teamId());
             }
         }
-    }
-
-    private void clearCollections() {
-        //Clear the maps and list.
-        this.driverPairPerTeam.clear();
-        this.participants.clear();
-        this.participantDataList.clear();
-        this.distinctParticipants.clear();
-    }
-
-    public int getNumActiveCars() {
-        return numActiveCars;
-    }
-
-    public List<ParticipantData> getParticipantDataList() {
-        return participantDataList;
-    }
-
-    public Map<Integer, DriverPair> getDriverPairPerTeam() {
-        return driverPairPerTeam;
     }
 
     public void setPlayerCarIndex(int playerCarIndex) {
