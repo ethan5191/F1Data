@@ -8,7 +8,6 @@ import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
 import f1.data.save.SaveSessionDataHandler;
 import f1.data.ui.panels.dto.SessionResetDTO;
-import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -36,20 +35,26 @@ public class SessionPacketHandler implements PacketHandler {
     public void processPacket(ByteBuffer byteBuffer) {
         if (packetFormat > 0) {
             SessionData sd = factory.build(byteBuffer);
-            SessionInformation temp = new SessionInformation(sd.sessionType(), sd.trackId(), sd.formula(), this.sessionInformation.getPlayerDriverId(), this.sessionInformation.getTeamMateDriverId(), this.sessionInformation.getTeamId());
-            if (!this.sessionInformation.equals(temp)) {
+            SessionInformation temp = new SessionInformation(sd, this.sessionInformation.getPlayerDriverId(), this.sessionInformation.getTeamMateDriverId(), this.sessionInformation.getTeamId());
+            boolean isSameSessionRestart = sd.sessionTimeLeft() > this.sessionInformation.getSessionTimeLeft();
+            //If the sessionInformation objects are not equal OR the session time left on the latest session data packet is greater than the session information's time left param.
+            //The only way the OR in this can get hit is if you leave or restart a session without changing either the track, session, or player car.
+            if (!this.sessionInformation.equals(temp) || isSameSessionRestart) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
                 //F1 2019 and earlier did not have the final classification packet, so they don't save data then, so save it now.
-                if (this.supportedYearsEnum.is2019OrEarlier()) {
-                    SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
-                    //Clear the participants map, so the participants packet logic knows to rebuild it.
-                    this.participants.clear();
+                //I don't want F1 2019 and earlier to save data just because the user restarted the session.
+                if (this.supportedYearsEnum.is2019OrEarlier() && !isSameSessionRestart) {
+                    SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants);
                 }
+                //Clear the participants map, so the participants packet logic knows to rebuild it.
+                this.participants.clear();
                 //build out the new session name object
-                this.sessionInformation.updateSessionName(sd.sessionType(), sd.trackId(), sd.formula());
+                this.sessionInformation.updateSessionName(sd);
                 //Send a notification to the consumer so it knows to reset the UI.
                 this.sessionDataConsumer.accept(new SessionResetDTO(true, this.sessionInformation.getName(), sd.formula() == FormulaEnum.F1.getValue()));
             }
+            //Always update this value to latest value from the session packet.
+            this.sessionInformation.setSessionTimeLeft(sd.sessionTimeLeft());
         }
     }
 }

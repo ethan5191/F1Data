@@ -4,9 +4,9 @@ import f1.data.SessionInitializationResult;
 import f1.data.enums.PacketTypeEnum;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
-import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.events.SpeedTrapDistance;
 import f1.data.parse.packets.handlers.*;
+import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionInformation;
 import f1.data.parse.telemetry.TelemetryData;
@@ -66,8 +66,7 @@ public class F1DataMain {
         //Object used to ensure that when the speed trap even triggers an updated distance, the lapData object gets that update automatically.
         SpeedTrapDistance speedTrapDistance = new SpeedTrapDistance();
         SessionData initialSession = result.getSessionData();
-        SessionInformation sessionInformation = new SessionInformation(initialSession.sessionType(), initialSession.trackId(), initialSession.formula(),
-                result.getPlayerDriverId(), result.getTeamMateDriverId(), result.getPlayerTeamId());
+        SessionInformation sessionInformation = new SessionInformation(initialSession, result.getPlayerDriverId(), result.getTeamMateDriverId(), result.getPlayerTeamId());
         this.sessionInformation = sessionInformation;
         final int packetFormat = result.getPacketFormat();
         this.motionPacketHandler = new MotionPacketHandler(packetFormat, this.playerCarIndex, participants);

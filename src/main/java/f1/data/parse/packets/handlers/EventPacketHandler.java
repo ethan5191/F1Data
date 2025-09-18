@@ -98,7 +98,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
 
     private static void handleTestSave(int packetFormat, Map<Integer, TelemetryData> participants) {
         //Builds the save data, if enabled and calls the method to actually create the save file.
-        SaveSessionDataHandler.buildSaveData(packetFormat, "Testing", participants, false);
+        SaveSessionDataHandler.buildSaveData(packetFormat, "Testing", participants);
     }
 
     public static void handle2020ButtonEvent(int packetFormat, Map<Integer, TelemetryData> participants) {

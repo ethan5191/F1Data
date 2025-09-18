@@ -50,6 +50,11 @@ public class ParticipantPacketHandler implements PacketHandler {
     }
 
     public void processPacket(ByteBuffer byteBuffer) {
+        //If a session change has cleared the participants map, then we need to also clear the distinct set, so that we can properly rebuild the map.
+        if (this.participants.isEmpty() && !this.distinctParticipants.isEmpty()) {
+            this.distinctParticipants.clear();
+            this.participantDataList.clear();
+        }
         List<ParticipantData> localList = new ArrayList<>();
         //Must process this first as its always above the actual packet content, at least from 2020 onwards.
         numActiveCars = byteBuffer.get();
@@ -66,11 +71,7 @@ public class ParticipantPacketHandler implements PacketHandler {
         }
         //If these two lists are different then we need to rebuild the objects, as we have had some kind of change to the participants.
         if (!localList.equals(this.participantDataList) && !localList.isEmpty()) {
-            //Clear the maps and list.
-            this.driverPairPerTeam.clear();
-            this.participants.clear();
-            this.participantDataList.clear();
-            this.distinctParticipants.clear();
+            clearCollections();
             //Update the list to be the newly created list from the packet information
             this.participantDataList.addAll(localList);
             for (int i = 0; i < this.participantDataList.size(); i++) {
@@ -102,6 +103,14 @@ public class ParticipantPacketHandler implements PacketHandler {
                 }
             }
         }
+    }
+
+    private void clearCollections() {
+        //Clear the maps and list.
+        this.driverPairPerTeam.clear();
+        this.participants.clear();
+        this.participantDataList.clear();
+        this.distinctParticipants.clear();
     }
 
     public int getNumActiveCars() {

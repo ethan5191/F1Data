@@ -11,15 +11,19 @@ public class SessionInformation {
     private int sessionType;
     private int trackId;
     private int formula;
+    private int sessionTimeLeft;
+    private int sessionDuration;
     private String name;
     private int playerDriverId;
     private int teamMateDriverId;
     private int teamId;
 
-    public SessionInformation(int sessionType, int trackId, int formula, int playerDriverId, int teamMateDriverId, int teamId) {
-        this.sessionType = sessionType;
-        this.trackId = trackId;
-        this.formula = formula;
+    public SessionInformation(SessionData sessionData, int playerDriverId, int teamMateDriverId, int teamId) {
+        this.sessionType = sessionData.sessionType();
+        this.trackId = sessionData.trackId();
+        this.formula = sessionData.formula();
+        this.sessionTimeLeft = sessionData.sessionTimeLeft();
+        this.sessionDuration = sessionData.sessionDuration();
         this.playerDriverId = playerDriverId;
         this.teamMateDriverId = teamMateDriverId;
         this.teamId = teamId;
@@ -42,11 +46,28 @@ public class SessionInformation {
         return teamId;
     }
 
+    public int getSessionTimeLeft() {
+        return sessionTimeLeft;
+    }
+
+    public void setSessionTimeLeft(int sessionTimeLeft) {
+        this.sessionTimeLeft = sessionTimeLeft;
+    }
+
+    public int getSessionDuration() {
+        return sessionDuration;
+    }
+
+    public void setSessionDuration(int sessionDuration) {
+        this.sessionDuration = sessionDuration;
+    }
+
     //Method used to update the given object. Using a single method vice setters as these are all updated at the same time.
-    public void updateSessionName(int sessionType, int trackId, int formula) {
-        this.sessionType = sessionType;
-        this.trackId = trackId;
-        this.formula = formula;
+    public void updateSessionName(SessionData sessionData) {
+        this.sessionType = sessionData.sessionType();
+        this.trackId = sessionData.trackId();
+        this.formula = sessionData.formula();
+        this.sessionDuration = sessionData.sessionDuration();
         this.name = buildSessionName();
     }
 
@@ -68,11 +89,11 @@ public class SessionInformation {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         SessionInformation that = (SessionInformation) o;
-        return sessionType == that.sessionType && trackId == that.trackId && formula == that.formula && playerDriverId == that.playerDriverId && teamMateDriverId == that.teamMateDriverId && teamId == that.teamId;
+        return sessionType == that.sessionType && trackId == that.trackId && formula == that.formula && playerDriverId == that.playerDriverId && teamMateDriverId == that.teamMateDriverId && teamId == that.teamId && sessionDuration == that.sessionDuration;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sessionType, trackId, formula, playerDriverId, teamMateDriverId, teamId);
+        return Objects.hash(sessionType, trackId, formula, sessionDuration, playerDriverId, teamMateDriverId, teamId);
     }
 }
