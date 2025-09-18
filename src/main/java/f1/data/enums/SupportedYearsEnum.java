@@ -39,8 +39,13 @@ public enum SupportedYearsEnum {
             case Constants.YEAR_2023 -> F1_2023;
             case Constants.YEAR_2024 -> F1_2024;
             case Constants.YEAR_2025 -> F1_2025;
-            default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2019 - 2025)");
+            default -> {
+                SupportedYearsEnum[] allYears = values();
+                int minYear = allYears[0].getYear();
+                int maxYear = allYears[allYears.length - 1].getYear();
+                String errorMessage = String.format("Games Packet Format did not match an accepted format (%d - %d)", minYear, maxYear);
+                throw new IllegalStateException(errorMessage);
+            }
         };
     }
 
