@@ -24,6 +24,7 @@ public class CarTelemetryPacketHandler implements PacketHandler, PauseActionHand
     private final SupportedYearsEnum supportedYearsEnum;
 
     private boolean isPause = false;
+    private long legacyLatestButtonValue = -1;
 
     public CarTelemetryPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants) {
         this.packetFormat = packetFormat;
@@ -51,11 +52,14 @@ public class CarTelemetryPacketHandler implements PacketHandler, PauseActionHand
             ButtonsData bd = buttonsDataFactory.build(byteBuffer);
             //2020 special button press mapped to button P on the McLaren wheel.
             //2019 special button mapped to the top left button the McLaren Wheel.
-            if ((bd.buttonsStatus() == Constants.F1_2020_GT3_WHEEL_P_BUTTON && this.supportedYearsEnum == SupportedYearsEnum.F1_2020)
+            if ((bd.buttonsStatus() == Constants.F1_2020_TOP_LEFT_BTN && this.supportedYearsEnum == SupportedYearsEnum.F1_2020)
                     || (bd.buttonsStatus() == Constants.F1_2019_TOP_LEFT_BTN && this.supportedYearsEnum == SupportedYearsEnum.F1_2019)) {
-                EventPacketHandler.handle2020ButtonEvent(this.packetFormat, this.participants);
-                this.isPause = true;
+                if (bd.buttonsStatus() != this.legacyLatestButtonValue) {
+                    EventPacketHandler.handle2020ButtonEvent(this.packetFormat, this.participants);
+                    this.isPause = true;
+                }
             }
+            this.legacyLatestButtonValue = bd.buttonsStatus();
         }
         if (this.supportedYearsEnum.is2020OrLater()) {
             int mfdPanelIdx = BitMaskUtils.bitMask8(byteBuffer.get());

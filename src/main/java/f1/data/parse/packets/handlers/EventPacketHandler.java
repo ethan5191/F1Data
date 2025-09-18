@@ -56,9 +56,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
     private void handleButtonEvent(ByteBuffer byteBuffer) {
         ButtonsData bd = buttonsDataFactory.build(byteBuffer);
         //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
-        if (Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN == bd.buttonsStatus()
-                || Constants.MCLAREN_GT3_WHEEL_PAUSE_BTN2 == bd.buttonsStatus()
-        ) {
+        if (Constants.F1_2019_TOP_LEFT_BTN == bd.buttonsStatus()) {
             handleTestSave(this.packetFormat, this.participants);
             printLapAndSetupData(this.participants);
             this.isPause = true;
@@ -81,7 +79,6 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
             CarSetupTelemetryData cstd = td.getCarSetupData();
             if (cstd.getCurrentSetup() != null) {
                 System.out.println(td.getParticipantData().lastName());
-                System.out.println(cstd.getCurrentSetup());
                 if (!cstd.getLapsPerSetup().isEmpty()) {
                     for (Map.Entry<SetupTireKey, List<IndividualLapSessionData>> laps : cstd.getLapsPerSetup().entrySet()) {
                         System.out.println(cstd.getSetups().get(laps.getKey().setupNumber()) + "\n" + laps.getKey().fittedTireId());
