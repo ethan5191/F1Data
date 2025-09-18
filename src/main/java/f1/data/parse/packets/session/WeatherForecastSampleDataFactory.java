@@ -2,10 +2,12 @@ package f1.data.parse.packets.session;
 
 import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.DataFactory;
+import f1.data.parse.packets.FirstYearProvided;
 
+import javax.sql.rowset.FilteredRowSet;
 import java.nio.ByteBuffer;
 
-public class WeatherForecastSampleDataFactory implements DataFactory<WeatherForecastSampleData[]> {
+public class WeatherForecastSampleDataFactory implements DataFactory<WeatherForecastSampleData[]>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
     private final int arraySize;
@@ -20,7 +22,7 @@ public class WeatherForecastSampleDataFactory implements DataFactory<WeatherFore
             case F1_2020 -> buildData20(byteBuffer);
             case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData21(byteBuffer);
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -40,5 +42,10 @@ public class WeatherForecastSampleDataFactory implements DataFactory<WeatherFore
             results[i] = new WeatherForecastSampleData(w21.sessionType(), w21.timeOffset(), w21.weather(), w21.trackTemperature(), w21.trackTemperatureChange(), w21.airTemperature(), w21.airTemperatureChange(), w21.rainPercentage());
         }
         return results;
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2020.getYear();
     }
 }

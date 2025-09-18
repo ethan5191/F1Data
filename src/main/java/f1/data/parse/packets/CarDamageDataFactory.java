@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class CarDamageDataFactory implements DataFactory<CarDamageData> {
+public class CarDamageDataFactory implements DataFactory<CarDamageData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -17,7 +17,7 @@ public class CarDamageDataFactory implements DataFactory<CarDamageData> {
             case F1_2020, F1_2021 -> buildData(new CarDamageData.CarDamageData20(byteBuffer));
             case F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(new CarDamageData.CarDamageData22(byteBuffer));
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2020 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
@@ -33,5 +33,10 @@ public class CarDamageDataFactory implements DataFactory<CarDamageData> {
                 c22.floorDamage(), c22.diffuserDamage(), c22.sidepodDamage(), c22.drsFault(), c22.gearBoxDamage(), c22.engineDamage(),
                 c22.engineMGUHWear(), c22.engineESWear(), c22.engineCEWear(), c22.engineICEWear(), c22.engineMGUKWear(), c22.engineTCWear(),
                 c22.ersFault(), c22.engineBlown(), c22.engineSeized());
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2020.getYear();
     }
 }

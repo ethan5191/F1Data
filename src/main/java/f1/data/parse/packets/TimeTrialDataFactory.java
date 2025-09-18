@@ -4,7 +4,7 @@ import f1.data.enums.SupportedYearsEnum;
 
 import java.nio.ByteBuffer;
 
-public class TimeTrialDataFactory implements DataFactory<TimeTrialData> {
+public class TimeTrialDataFactory implements DataFactory<TimeTrialData>, FirstYearProvided {
 
     private final SupportedYearsEnum packetFormat;
 
@@ -16,7 +16,12 @@ public class TimeTrialDataFactory implements DataFactory<TimeTrialData> {
         return switch (packetFormat) {
             case F1_2024, F1_2025 -> new TimeTrialData(byteBuffer);
             default ->
-                    throw new IllegalStateException("Games Packet Format did not match an accepted format (2024 - 2025)");
+                    throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
+    }
+
+    @Override
+    public int getFirstYear() {
+        return SupportedYearsEnum.F1_2024.getYear();
     }
 }

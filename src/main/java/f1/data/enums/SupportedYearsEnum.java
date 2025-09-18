@@ -49,6 +49,12 @@ public enum SupportedYearsEnum {
         };
     }
 
+    public static String buildErrorMessageFromYear(int startYear) {
+        SupportedYearsEnum[] allYears = values();
+        int maxYear = allYears[allYears.length - 1].getYear();
+        return "Games Packet Format did not match an accepted format " + String.format("(%d - %d)", startYear, maxYear);
+    }
+
     public boolean is2019OrEarlier() {
         return this.compareTo(F1_2019) <= 0;
     }
