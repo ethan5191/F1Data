@@ -57,6 +57,7 @@ public class Constants {
     public static final int F1_2020_GT3_WHEEL_P_BUTTON = 256;
     public static final int F1_2019_TOP_LEFT_BTN = 2048;
     public static final int F1_2020_TOP_LEFT_BTN = 8192;
+    public static final int F1_2024_TOP_RIGHT_BTN = 2048;
 
     public static final float SPEED_TRAP_DEFAULT = -50f;
 

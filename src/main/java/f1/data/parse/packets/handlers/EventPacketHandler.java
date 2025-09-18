@@ -56,7 +56,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
     private void handleButtonEvent(ByteBuffer byteBuffer) {
         ButtonsData bd = buttonsDataFactory.build(byteBuffer);
         //These are the 2 values that are the pause buttons on the McLaren GT3 wheel.
-        if (Constants.F1_2019_TOP_LEFT_BTN == bd.buttonsStatus()) {
+        if (Constants.F1_2024_TOP_RIGHT_BTN == bd.buttonsStatus()) {
             handleTestSave(this.packetFormat, this.participants);
             printLapAndSetupData(this.participants);
             this.isPause = true;
