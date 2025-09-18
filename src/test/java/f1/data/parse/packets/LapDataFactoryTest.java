@@ -1,10 +1,9 @@
 package f1.data.parse.packets;
 
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,7 +13,7 @@ import static org.mockito.Mockito.mockStatic;
 public class LapDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2019)
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds the Lap Data for 2019.")
     void testBuild_lapData2019(int packetFormat) {
         int bitMask8Count = 9;
@@ -82,7 +81,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2020)
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Lap Data for 2020.")
     void testBuild_lapData2020(int packetFormat) {
         int bitMask8Count = 13;
@@ -152,7 +151,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Lap Data for 2021 and 2022.")
     void testBuild_lapData2021And2022(int packetFormat) {
         int bitMask8Count = 15;
@@ -212,7 +211,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2023)
+    @MethodSource("supportedYears2023")
     @DisplayName("Builds the Lap Data for 2023.")
     void testBuild_lapData2023(int packetFormat) {
         int bitMask8Count = 18;
@@ -272,7 +271,7 @@ public class LapDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2024ToPresent")
     @DisplayName("Builds the Lap Data for 2024 to Present.")
     void testBuild_lapData2024ToPresent(int packetFormat) {
         int bitMask8Count = 21;

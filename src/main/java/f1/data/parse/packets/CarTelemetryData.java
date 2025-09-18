@@ -1,8 +1,8 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
 
@@ -53,7 +53,7 @@ public record CarTelemetryData(int speed, float throttle, float steer, float bra
     record CarTelemetryData19(int speed, float throttle, float steer, float brake, int clutch, int gear, int engineRPM,
                               int drs, int revLightPercent, int[] brakeTemps, int[] tireSurfaceTemps,
                               int[] tireInnerTemps, int engineTemp, float[] tirePressure, int[] surfaceType) {
-        public CarTelemetryData19(int packetFormat, ByteBuffer byteBuffer) {
+        public CarTelemetryData19(SupportedYearsEnum packetFormat, ByteBuffer byteBuffer) {
             this(
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     byteBuffer.getFloat(),
@@ -65,8 +65,8 @@ public record CarTelemetryData(int speed, float throttle, float steer, float bra
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     ParseUtils.parseShortArray(byteBuffer, 4),
-                    (packetFormat <= Constants.YEAR_2019) ? ParseUtils.parseShortArray(byteBuffer, 4) : ParseUtils.parseIntArray(byteBuffer, 4),
-                    (packetFormat <= Constants.YEAR_2019) ? ParseUtils.parseShortArray(byteBuffer, 4) : ParseUtils.parseIntArray(byteBuffer, 4),
+                    (packetFormat.is2019OrEarlier()) ? ParseUtils.parseShortArray(byteBuffer, 4) : ParseUtils.parseIntArray(byteBuffer, 4),
+                    (packetFormat.is2019OrEarlier()) ? ParseUtils.parseShortArray(byteBuffer, 4) : ParseUtils.parseIntArray(byteBuffer, 4),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     ParseUtils.parseFloatArray(byteBuffer, 4),
                     ParseUtils.parseIntArray(byteBuffer, 4)

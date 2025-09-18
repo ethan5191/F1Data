@@ -1,6 +1,7 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.enums.FormulaEnum;
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.parse.packets.session.SessionInformation;
@@ -20,6 +21,7 @@ public class SessionPacketHandler implements PacketHandler {
     private final Consumer<SessionResetDTO> sessionDataConsumer;
     private final SessionInformation sessionInformation;
     private final SessionDataFactory factory;
+    private final SupportedYearsEnum supportedYearsEnum;
 
     public SessionPacketHandler(int packetFormat, Map<Integer, TelemetryData> participants, Consumer<SessionResetDTO> sessionDataConsumer, SessionInformation sessionInformation) {
         this.participants = participants;
@@ -27,6 +29,7 @@ public class SessionPacketHandler implements PacketHandler {
         this.sessionDataConsumer = sessionDataConsumer;
         this.sessionInformation = sessionInformation;
         this.factory = new SessionDataFactory(this.packetFormat);
+        this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
     }
 
     @Override
@@ -36,7 +39,8 @@ public class SessionPacketHandler implements PacketHandler {
             SessionInformation temp = new SessionInformation(sd.sessionType(), sd.trackId(), sd.formula(), this.sessionInformation.getPlayerDriverId(), this.sessionInformation.getTeamMateDriverId(), this.sessionInformation.getTeamId());
             if (!this.sessionInformation.equals(temp)) {
                 //Builds the save data, if enabled and calls the method to actually create the save file.
-                if (this.packetFormat <= Constants.YEAR_2019) {
+                //F1 2019 and earlier did not have the final classification packet, so they don't save data then, so save it now.
+                if (this.supportedYearsEnum.is2019OrEarlier()) {
                     SaveSessionDataHandler.buildSaveData(this.packetFormat, sessionInformation.getName(), this.participants, true);
                     //Clear the participants map, so the participants packet logic knows to rebuild it.
                     this.participants.clear();

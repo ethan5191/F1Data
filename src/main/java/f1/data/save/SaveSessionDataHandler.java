@@ -1,6 +1,7 @@
 package f1.data.save;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.telemetry.SetupTireKey;
 import f1.data.parse.telemetry.TelemetryData;
@@ -22,7 +23,8 @@ public class SaveSessionDataHandler {
     private static final Logger logger = LoggerFactory.getLogger(SaveSessionDataHandler.class);
 
     private static void saveSessionData(int packetFormat, String sessionName, List<SpeedTrapSessionData> speedTrapSessionWrapper, List<RunDataSessionData> runDataSessionDataWrapper) {
-        SaveSessionWrapper saveSessionDataWrapper = (packetFormat > Constants.YEAR_2019) ? new SaveSessionDataWrapper(speedTrapSessionWrapper, runDataSessionDataWrapper) : new SaveSessionDataWrapper2019(runDataSessionDataWrapper);
+        SupportedYearsEnum supportedYearsEnum = SupportedYearsEnum.fromYear(packetFormat);
+        SaveSessionWrapper saveSessionDataWrapper = (supportedYearsEnum.is2020OrLater()) ? new SaveSessionDataWrapper(speedTrapSessionWrapper, runDataSessionDataWrapper) : new SaveSessionDataWrapper2019(runDataSessionDataWrapper);
         String workingDir = System.getProperty(Constants.USER_HOME);
         Path workingPath = Paths.get(workingDir);
         Path savePath = workingPath.resolve(Constants.F1_DATA).resolve(Constants.SAVE_SESSIONS).resolve("F1_" + packetFormat);

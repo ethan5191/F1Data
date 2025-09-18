@@ -14,7 +14,7 @@ public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData> {
     }
 
     public LobbyInfoData build(ByteBuffer byteBuffer) {
-        int nameLength = (this.packetFormat.getYear() < Constants.YEAR_2025) ? 48 : 32;
+        int nameLength = (this.packetFormat.is2024OrEarlier()) ? 48 : 32;
         return switch (packetFormat) {
             case F1_2020 -> buildData(new LobbyInfoData.LobbyInfoData20(byteBuffer, nameLength));
             case F1_2021, F1_2022 -> buildData(new LobbyInfoData.LobbyInfoData21(byteBuffer, nameLength));

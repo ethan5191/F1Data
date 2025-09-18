@@ -1,13 +1,14 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 
 import java.math.BigInteger;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,8 +16,14 @@ import static org.mockito.Mockito.*;
 
 class PacketHeaderFactoryTest extends AbstractFactoryTest {
 
+    static Stream<Integer> supportedYears2020To2022() {
+        return Stream.of(SupportedYearsEnum.F1_2020.getYear(),
+                SupportedYearsEnum.F1_2021.getYear(),
+                SupportedYearsEnum.F1_2022.getYear());
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019})
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds Packet Header for 2019.")
     void testBuild_header2019(int packetFormat) {
         int bitMask8Count = 5;
@@ -47,7 +54,7 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2020To2022")
     @DisplayName("Builds Packet Header for 2020 - 2022.")
     void testBuild_header2020To2022(int packetFormat) {
         int bitMask8Count = 6;
@@ -78,7 +85,7 @@ class PacketHeaderFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2023ToPresent")
     @DisplayName("Builds Packet Header for 2023 to Present.")
     void testBuild_header2023ToPresent(int packetFormat) {
         int bitMask8Count = 7;

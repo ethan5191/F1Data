@@ -1,5 +1,6 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.events.*;
 import f1.data.parse.telemetry.CarSetupTelemetryData;
 import f1.data.parse.telemetry.SetupTireKey;
@@ -24,6 +25,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
     private final SpeedTrapDistance speedTrapDistance;
     private final ButtonsDataFactory buttonsDataFactory;
     private final SpeedTrapDataFactory speedTrapFactory;
+    private final SupportedYearsEnum supportedYearsEnum;
 
     private boolean isPause = false;
 
@@ -34,6 +36,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
         this.speedTrapDistance = speedTrapDistance;
         this.buttonsDataFactory = new ButtonsDataFactory(this.packetFormat);
         this.speedTrapFactory = new SpeedTrapDataFactory(this.packetFormat);
+        this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class EventPacketHandler implements PacketHandler, PauseActionHandler {
         SpeedTrapData trap = speedTrapFactory.build(byteBuffer);
         //Vehicle ID is the id of the driver based on the order they were presented for the participants' data.
         TelemetryData td = participants.get(trap.vehicleId());
-        if (packetFormat <= Constants.YEAR_2020 && speedTrapDistance.getDistance() < 0) {
+        if (this.supportedYearsEnum.is2020OrEarlier() && speedTrapDistance.getDistance() < 0) {
             speedTrapDistance.setDistance(td.getCurrentLap().lapDistance());
         }
         SpeedTrapTelemetryData.updateConsumer(this.speedTrapData, td, trap.speed());

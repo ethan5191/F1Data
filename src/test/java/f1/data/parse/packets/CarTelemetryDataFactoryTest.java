@@ -4,10 +4,9 @@ import f1.data.parse.packets.events.ButtonsData;
 import f1.data.parse.packets.events.ButtonsDataFactory;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +18,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     private final float[] floatArray = new float[4];
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2019)
+    @MethodSource("supportedYears2019")
     @DisplayName("Builds the Car Telemetry Data for 2019.")
     void testBuild_carTelemetry2019(int packetFormat) {
         int bitMask8Count = 3;
@@ -63,7 +62,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2020)
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Car Telemetry Data for 2020.")
     void testBuild_carTelemetry2020(int packetFormat) {
         int bitMask8Count = 3;
@@ -107,7 +106,7 @@ public class CarTelemetryDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022, Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2021ToPresent")
     @DisplayName("Builds the Car Telemetry Data for 2021 to Present.")
     void testBuild_carTelemetry2021ToPresent(int packetFormat) {
         int bitMask8Count = 3;

@@ -1,6 +1,7 @@
 package f1.data.parse.packets.handlers;
 
 import f1.data.enums.DriverStatusEnum;
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.individualLap.*;
 import f1.data.parse.packets.LapData;
 import f1.data.parse.packets.LapDataFactory;
@@ -30,6 +31,7 @@ public class LapDataPacketHandler implements PacketHandler {
     private final Consumer<SpeedTrapDataDTO> speedTrapData;
     private final SpeedTrapDistance speedTrapDistance;
     private final LapDataFactory factory;
+    private final SupportedYearsEnum supportedYearsEnum;
 
     public LapDataPacketHandler(int packetFormat, int playerCarIndex, Map<Integer, TelemetryData> participants, ParentConsumer parent, SpeedTrapDistance speedTrapDistance) {
         this.packetFormat = packetFormat;
@@ -39,6 +41,7 @@ public class LapDataPacketHandler implements PacketHandler {
         this.speedTrapData = parent.speedTrapDataDTOConsumer();
         this.speedTrapDistance = speedTrapDistance;
         this.factory = new LapDataFactory(this.packetFormat);
+        this.supportedYearsEnum = SupportedYearsEnum.fromYear(this.packetFormat);
     }
 
     @Override
@@ -66,7 +69,7 @@ public class LapDataPacketHandler implements PacketHandler {
                     handle2020Logic(td);
                 }
             }
-            if (packetFormat >= Constants.YEAR_2022) {
+            if (this.supportedYearsEnum.is2022OrLater()) {
                 //Time trail params at the end of the Lap Data packet. Only there a single time, therefore they are outside of the loop.
                 int timeTrailPBCarId = BitMaskUtils.bitMask8(byteBuffer.get());
                 int timeTrailRivalPdCarId = BitMaskUtils.bitMask8(byteBuffer.get());
@@ -121,7 +124,7 @@ public class LapDataPacketHandler implements PacketHandler {
         //F1 2020 only sent a speed trap event when a new fastest speed was set in the session.
         //So for that game, if the lap distance is within a certain amount of the distance when the first speed trap was registered
         //We get the cars current speed. I have it within a certain distance each way, this should catch the majority of cars.
-        if (packetFormat <= Constants.YEAR_2020) {
+        if (this.supportedYearsEnum.is2020OrEarlier()) {
             if (td.getCurrentLap().driverStatus() == DriverStatusEnum.FLYING_LAP.getValue() && (td.getCurrentLap().lapDistance() >= (speedTrapDistance.getDistance() - Constants.TRAP_DISTANCE_BUFFER) && td.getCurrentLap().lapDistance() <= (speedTrapDistance.getDistance() + Constants.TRAP_DISTANCE_BUFFER))) {
                 //If this car triggered a speed trap event, then it will already have a value, so don't replace it.
                 //the td's speed trap values gets reset to 0.0F at the end of each lap.

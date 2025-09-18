@@ -1,14 +1,14 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.WeatherForecastSampleData;
 import f1.data.parse.packets.session.WeatherForecastSampleDataFactory;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.mockStatic;
 public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2020})
+    @MethodSource("supportedYears2020")
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2020")
     void testBuild_weatherForecastSampleData2020(int packetFormat) {
         int SIZE_2020 = SessionData.WEATHER_FORECAST_20_SIZE;
@@ -46,11 +46,11 @@ public class WeatherForecastSampleDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022,
-            Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYears2021ToPresent")
     @DisplayName("Builds the Weather Forecast Sample Data Factory for 2021 to Present")
     void testBuild_weatherForecastSampleData2021ToPresent(int packetFormat) {
-        int arraySize = (packetFormat <= Constants.YEAR_2023) ? SessionData.WEATHER_FORECAST_21_TO_23_SIZE : SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
+        SupportedYearsEnum supportedYearsEnum = SupportedYearsEnum.fromYear(packetFormat);
+        int arraySize = (supportedYearsEnum.is2023OrEarlier()) ? SessionData.WEATHER_FORECAST_21_TO_23_SIZE : SessionData.WEATHER_FORECAST_24_NEWER_SIZE;
         int bitMask8Count = (4 * arraySize);
         int intCount = 4;
         int bitMask8Value = BIT_8_START;

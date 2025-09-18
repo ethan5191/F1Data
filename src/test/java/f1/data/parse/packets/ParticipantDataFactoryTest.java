@@ -1,13 +1,15 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.participant.ParticipantDataFactory;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
@@ -17,8 +19,13 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     private final int PRE_2025_NAME_LENGTH = 48;
     private final int POST_2025_NAME_LENGTH = 32;
 
+    static Stream<Integer> supportedYears2019And2020() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear(),
+                SupportedYearsEnum.F1_2020.getYear());
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019, Constants.YEAR_2020})
+    @MethodSource("supportedYears2019And2020")
     @DisplayName("Builds the Participant Data for 2019 and 2020.")
     void testBuild_participantData2019And2020(int packetFormat) {
         int bitMask8Count = 6;
@@ -44,7 +51,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2021To2022")
     @DisplayName("Builds the Participant Data for 2021 and 2022.")
     void testBuild_participantData2021And2022(int packetFormat) {
         int bitMask8Count = 8;
@@ -70,7 +77,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2023)
+    @MethodSource("supportedYears2023")
     @DisplayName("Builds the Participant Data for 2023.")
     void testBuild_participantData2023(int packetFormat) {
         int bitMask8Count = 10;
@@ -96,7 +103,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2024)
+    @MethodSource("supportedYears2024")
     @DisplayName("Builds the Participant Data for 2024.")
     void testBuild_participantData2024(int packetFormat) {
         int bitMask8Count = 10;
@@ -123,7 +130,7 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = Constants.YEAR_2025)
+    @MethodSource("supportedYears2025")
     @DisplayName("Builds the Participant Data for 2025 to Present.")
     void testBuild_participantData2025ToPresent(int packetFormat) {
         int bitMask8Count = 10;

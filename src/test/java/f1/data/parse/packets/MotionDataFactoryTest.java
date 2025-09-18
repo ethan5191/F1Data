@@ -1,12 +1,15 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
 import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
@@ -14,8 +17,15 @@ import static org.mockito.Mockito.when;
 
 public class MotionDataFactoryTest extends AbstractFactoryTest {
 
+    static Stream<Integer> supportedYears2019To2022() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear(),
+                SupportedYearsEnum.F1_2020.getYear(),
+                SupportedYearsEnum.F1_2021.getYear(),
+                SupportedYearsEnum.F1_2022.getYear());
+    }
+
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019, Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022})
+    @MethodSource("supportedYears2019To2022")
     @DisplayName("Builds the Motion Data Legacy 2019 to 2022")
     void testBuild_motionDataLegacy2019To2022(int packetFormat) {
         int floatCount = 10;
@@ -60,8 +70,7 @@ public class MotionDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2019, Constants.YEAR_2020, Constants.YEAR_2021, Constants.YEAR_2022,
-            Constants.YEAR_2023, Constants.YEAR_2024, Constants.YEAR_2025})
+    @MethodSource("supportedYearsAll")
     @DisplayName("Builds the Motion Data 2019 to Present")
     void testBuild_motionData2019ToPresent(int packetFormat) {
         int bitMask16Count = 6;

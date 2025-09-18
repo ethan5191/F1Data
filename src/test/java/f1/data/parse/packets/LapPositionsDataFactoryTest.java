@@ -1,11 +1,11 @@
 package f1.data.parse.packets;
 
+import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
 import f1.data.utils.ParseUtils;
-import f1.data.utils.constants.Constants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.MockedStatic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,12 +15,13 @@ import static org.mockito.Mockito.mockStatic;
 public class LapPositionsDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
-    @ValueSource(ints = {Constants.YEAR_2025})
+    @MethodSource("supportedYears2025")
     @DisplayName("Builds the Lap Positions Data for 2025 to Present.")
     void testBuild_lapPositionsDataFor2025ToPresent(int packetFormat) {
+        SupportedYearsEnum supportedYearsEnum = SupportedYearsEnum.fromYear(packetFormat);
         int bit8Value = BIT_8_START;
         int arraySize = 50;
-        int innerSize = (packetFormat >= Constants.YEAR_2026) ? Constants.F1_26_AND_LATER_CAR_COUNT : Constants.F1_20_TO_25_CAR_COUNT;
+        int innerSize = supportedYearsEnum.getCarCount();
         int bitMask8Count = 3 + (arraySize * innerSize);
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class);
              MockedStatic<ParseUtils> parseUtils = mockStatic(ParseUtils.class)) {
