@@ -2,6 +2,7 @@ package f1.data.ui;
 
 import f1.data.F1SessionInitializer;
 import f1.data.SessionInitializationResult;
+import f1.data.enums.FormulaEnum;
 import f1.data.parse.F1DataMain;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.ui.panels.dto.*;
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.net.SocketException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class F1DataUI extends Application {
@@ -46,11 +48,14 @@ public class F1DataUI extends Application {
             AtomicInteger playerDriverId = new AtomicInteger(initResult.getPlayerDriverId());
             AtomicInteger teamMateDriverId = new AtomicInteger(initResult.getTeamMateDriverId());
             AtomicInteger numActiveCars = new AtomicInteger(initResult.getNumActiveCars());
+            AtomicInteger trackId = new AtomicInteger(initResult.getSessionData().trackId());
+            AtomicInteger packetFormat = new AtomicInteger(initResult.getPacketFormat());
+            AtomicReference<String> formula = new AtomicReference<>(FormulaEnum.fromValue(initResult.getSessionData().formula()).getName());
 
             //Main content panels for the different views.
             LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId.get(), teamMateDriverId.get(), initResult.getParticipantData());
             AllLapStageManager allLaps = new AllLapStageManager(playerDriverId.get(), teamMateDriverId.get());
-            SetupStageManager setupData = new SetupStageManager();
+            SetupStageManager setupData = new SetupStageManager(trackId.get(), packetFormat.get(), formula.get());
             RunDataStageManager runData = new RunDataStageManager(playerDriverId.get(), teamMateDriverId.get(), isF1.get());
             SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get(), numActiveCars.get());
             TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get());
@@ -101,9 +106,15 @@ public class F1DataUI extends Application {
                     if (snapshot.newSession()) {
                         //Update global param value
                         isF1.set(snapshot.isF1());
+                        trackId.set(snapshot.trackId());
+                        packetFormat.set(snapshot.packetFormat());
+                        formula.set(FormulaEnum.fromValue(snapshot.formula()).getName());
 
                         //Call panel specific logic for session reset.
                         runData.onSessionChangeIsF1(isF1.get());
+                        setupData.setTrackId(trackId.get());
+                        setupData.setFormula(formula.get());
+                        setupData.setPacketFormat(packetFormat.get());
 
                         //Call interface method for session reset
                         latestLap.onSessionReset();

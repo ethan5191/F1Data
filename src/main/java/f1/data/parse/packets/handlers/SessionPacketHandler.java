@@ -12,6 +12,7 @@ import f1.data.ui.panels.dto.SessionResetDTO;
 import f1.data.utils.constants.Constants;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class SessionPacketHandler implements PacketHandler {
@@ -56,7 +57,7 @@ public class SessionPacketHandler implements PacketHandler {
                 //build out the new session name object
                 this.sessionInformationWrapper.updateSessionName(sd);
                 //Send a notification to the consumer so it knows to reset the UI.
-                this.sessionDataConsumer.accept(new SessionResetDTO(true, this.sessionInformationWrapper.getName(), sd.formula() == FormulaEnum.F1.getValue()));
+                this.sessionDataConsumer.accept(new SessionResetDTO(true, this.sessionInformationWrapper.getName(), Objects.equals(FormulaEnum.fromValue(sd.formula()).getName(), FormulaEnum.F1.getName()), sd.trackId(), this.packetFormat, sd.formula()));
             }
             //Always update this value to latest value from the session packet.
             this.sessionInformationWrapper.setSessionTimeLeft(sd.sessionTimeLeft());
