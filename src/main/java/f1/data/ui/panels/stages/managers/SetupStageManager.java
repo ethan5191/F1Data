@@ -33,13 +33,15 @@ public class SetupStageManager implements Panel, OnSessionReset {
     }
 
     public void initializePanel() {
-        VBox driver = new VBox();
-        this.container.getChildren().add(driver);
         CarSetupInfo info = SetupLoader.getSetup(this.trackId, this.packetFormat, this.formula);
-        SetupInfoDashboard aiDash = new SetupInfoDashboard("AI Setup - " + TrackEnum.fromId(this.trackId).name(), info, VisualTireEnum.ALL.getValue());
-        VBox setup = new VBox();
-        setup.getChildren().add(aiDash);
-        driver.getChildren().add(setup);
+        if (info != null) {
+            VBox driver = new VBox();
+            this.container.getChildren().add(driver);
+            SetupInfoDashboard aiDash = new SetupInfoDashboard("AI Setup - " + TrackEnum.fromId(this.trackId).name().replace('_', ' '), info, VisualTireEnum.ALL.getValue());
+            VBox setup = new VBox();
+            setup.getChildren().add(aiDash);
+            driver.getChildren().add(setup);
+        }
     }
 
     public void updateStage(DriverDataDTO dto) {

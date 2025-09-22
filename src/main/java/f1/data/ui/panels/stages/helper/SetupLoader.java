@@ -1,6 +1,7 @@
 package f1.data.ui.panels.stages.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import f1.data.enums.TrackEnum;
 import f1.data.parse.individualLap.CarSetupInfo;
 import f1.data.parse.packets.CarSetupData;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class SetupLoader {
 
     public static CarSetupInfo getSetup(int trackId, int packetFormat, String formula) {
         Map<String, CarSetupData> aiSetups = loadSetups();
-        String key = trackId + "_" + packetFormat + "_" + formula;
+        String key = TrackEnum.fromId(trackId).name() + "_" + packetFormat + "_" + formula;
         CarSetupData loadedSetup = aiSetups.get(key);
         if (loadedSetup == null) return null;
         return new CarSetupInfo(loadedSetup);
