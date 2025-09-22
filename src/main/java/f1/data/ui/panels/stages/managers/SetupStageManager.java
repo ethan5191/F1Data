@@ -1,9 +1,13 @@
 package f1.data.ui.panels.stages.managers;
 
+import f1.data.enums.TrackEnum;
+import f1.data.enums.VisualTireEnum;
+import f1.data.parse.individualLap.CarSetupInfo;
 import f1.data.ui.panels.OnSessionReset;
 import f1.data.ui.panels.Panel;
 import f1.data.ui.panels.dashboards.SetupInfoDashboard;
 import f1.data.ui.panels.dto.DriverDataDTO;
+import f1.data.ui.panels.stages.helper.SetupLoader;
 import javafx.scene.layout.VBox;
 
 import java.util.HashMap;
@@ -16,9 +20,26 @@ public class SetupStageManager implements Panel, OnSessionReset {
     private final VBox container;
     private final Map<Integer, Map<Integer, VBox>> dashboards = new HashMap<>();
     private final Map<Integer, Set<Integer>> driversSetupsIds = new HashMap<>();
+    private int trackId;
+    private int packetFormat;
+    private String formula;
 
-    public SetupStageManager() {
+    public SetupStageManager(int trackId, int packetFormat, String formula) {
         this.container = new VBox(getSpacing());
+        this.trackId = trackId;
+        this.packetFormat = packetFormat;
+        this.formula = formula;
+        initializePanel();
+    }
+
+    public void initializePanel() {
+        VBox driver = new VBox();
+        this.container.getChildren().add(driver);
+        CarSetupInfo info = SetupLoader.getSetup(this.trackId, this.packetFormat, this.formula);
+        SetupInfoDashboard aiDash = new SetupInfoDashboard("AI Setup - " + TrackEnum.fromId(this.trackId).name(), info, VisualTireEnum.ALL.getValue());
+        VBox setup = new VBox();
+        setup.getChildren().add(aiDash);
+        driver.getChildren().add(setup);
     }
 
     public void updateStage(DriverDataDTO dto) {
@@ -59,6 +80,19 @@ public class SetupStageManager implements Panel, OnSessionReset {
     public void onSessionReset() {
         this.container.getChildren().clear();
         this.dashboards.clear();
+        initializePanel();
+    }
+
+    public void setTrackId(int trackId) {
+        this.trackId = trackId;
+    }
+
+    public void setPacketFormat(int packetFormat) {
+        this.packetFormat = packetFormat;
+    }
+
+    public void setFormula(String formula) {
+        this.formula = formula;
     }
 
     public VBox getContainer() {
