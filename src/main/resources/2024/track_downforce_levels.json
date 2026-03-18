@@ -25,5 +25,21 @@
     "QATAR": "HIGH",
     "ABU_DHABI": "MEDIUM",
     "PORTIMAO": "HIGH"
+  },
+  "F2": {
+    "BAHRAIN": "F2_MEDIUM",
+    "SAUDI_ARABIA": "F2_LOW",
+    "AUSTRALIA": "F2_MEDIUM",
+    "IMOLA": "F2_MEDIUM",
+    "MONACO": "F2_MAX",
+    "SPAIN": "F2_HIGH",
+    "AUSTRIA": "F2_LOW",
+    "SILVERSTONE": "F2_MEDIUM",
+    "HUNGARY": "F2_MAX",
+    "SPA": "F2_LOW",
+    "MONZA": "F2_MONZA",
+    "BAKU": "F2_LOW",
+    "QATAR": "F2_HIGH",
+    "ABU_DHABI": "F2_MEDIUM"
   }
 }

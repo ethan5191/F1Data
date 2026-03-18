@@ -8,7 +8,12 @@ public enum DownforceLevelEnum {
     MEDIUM("MEDIUM"),
     HIGH("HIGH"),
     MAX("MAX"),
-    UNKNOWN("UNKNOWN");
+    UNKNOWN("UNKNOWN"),
+    F2_MONZA("F2.MONZA"),
+    F2_LOW("F2_LOW"),
+    F2_MEDIUM("F2_MEDIUM"),
+    F2_HIGH("F2_HIGH"),
+    F2_MAX("F2_MAX");
 
     private final String name;
 
