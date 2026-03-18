@@ -1,5 +1,5 @@
 {
-  "BAHRAIN_2024_F1": {
+  "BAHRAIN": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -24,7 +24,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "SAUDI_ARABIA_2024_F1": {
+  "SAUDI_ARABIA": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -49,7 +49,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "AUSTRALIA_2024_F1": {
+  "AUSTRALIA": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -74,7 +74,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "JAPAN_2024_F1": {
+  "JAPAN": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -99,7 +99,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "CHINA_2024_F1": {
+  "CHINA": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -124,7 +124,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "MIAMI_2024_F1": {
+  "MIAMI": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -149,7 +149,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "IMOLA_2024_F1": {
+  "IMOLA": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -174,7 +174,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "MONACO_2024_F1": {
+  "MONACO": {
     "frontWing": 48,
     "rearWing": 48,
     "onThrottle": 25,
@@ -199,7 +199,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "CANADA_2024_F1": {
+  "CANADA": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -224,7 +224,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "SPAIN_2024_F1": {
+  "SPAIN": {
     "frontWing": 38,
     "rearWing": 37,
     "onThrottle": 25,
@@ -249,7 +249,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "AUSTRIA_2024_F1": {
+  "AUSTRIA": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -274,7 +274,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "SILVERSTONE_2024_F1": {
+  "SILVERSTONE": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -299,7 +299,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "HUNGARY_2024_F1": {
+  "HUNGARY": {
     "frontWing": 48,
     "rearWing": 48,
     "onThrottle": 25,
@@ -324,7 +324,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "SPA_2024_F1": {
+  "SPA": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -349,7 +349,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "ZANDVOORT_2024_F1": {
+  "ZANDVOORT": {
     "frontWing": 38,
     "rearWing": 37,
     "onThrottle": 25,
@@ -374,7 +374,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "MONZA_2024_F1": {
+  "MONZA": {
     "frontWing": 2,
     "rearWing": 0,
     "onThrottle": 25,
@@ -399,7 +399,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "BAKU_2024_F1": {
+  "BAKU": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -424,7 +424,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "SINGAPORE_2024_F1": {
+  "SINGAPORE": {
     "frontWing": 48,
     "rearWing": 48,
     "onThrottle": 25,
@@ -449,7 +449,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "COTA_2024_F1": {
+  "COTA": {
     "frontWing": 38,
     "rearWing": 37,
     "onThrottle": 25,
@@ -474,7 +474,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "MEXICO_2024_F1": {
+  "MEXICO": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -499,7 +499,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "BRAZIL_2024_F1": {
+  "BRAZIL": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -524,7 +524,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "LAS_VEGAS_2024_F1": {
+  "LAS_VEGAS": {
     "frontWing": 12,
     "rearWing": 11,
     "onThrottle": 25,
@@ -549,7 +549,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "QATAR_2024_F1": {
+  "QATAR": {
     "frontWing": 38,
     "rearWing": 37,
     "onThrottle": 25,
@@ -574,7 +574,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "ABU_DHABI_2024_F1": {
+  "ABU_DHABI": {
     "frontWing": 26,
     "rearWing": 24,
     "onThrottle": 25,
@@ -599,7 +599,7 @@
     "fuelLoad": 10.00,
     "engineBraking": 50
   },
-  "PORTIMAO_2024_F1": {
+  "PORTIMAO": {
     "frontWing": 38,
     "rearWing": 37,
     "onThrottle": 25,
@@ -622,406 +622,6 @@
     "frontRightPressure": 24.9,
     "ballast": 0,
     "fuelLoad": 10.00,
-    "engineBraking": 50
-  },
-  "BAHRAIN_2024_F2": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "SAUDI_ARABIA_2024_F2": {
-    "frontWing": 13,
-    "rearWing": 13,
-    "onThrottle": 20,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 59,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "BAHRAIN_2024_F2_23": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "SAUDI_ARABIA_2024_F2_23": {
-    "frontWing": 13,
-    "rearWing": 13,
-    "onThrottle": 20,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 59,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "AUSTRALIA_2024_F2_23": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "BAKU_2024_F2_23": {
-    "frontWing": 13,
-    "rearWing": 13,
-    "onThrottle": 20,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 59,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "IMOLA_2024_F2_23": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "MONACO_2024_F2_23": {
-    "frontWing": 48,
-    "rearWing": 50,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 64,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "SPAIN_2024_F2_23": {
-    "frontWing": 37,
-    "rearWing": 37,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 62,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "AUSTRIA_2024_F2_23": {
-    "frontWing": 13,
-    "rearWing": 13,
-    "onThrottle": 20,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 59,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "SILVERSTONE_2024_F2_23": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "HUNGARY_2024_F2_23": {
-    "frontWing": 48,
-    "rearWing": 50,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 64,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "SPA_2024_F2_23": {
-    "frontWing": 13,
-    "rearWing": 13,
-    "onThrottle": 20,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 59,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "ZANDVOORT_2024_F2_23": {
-    "frontWing": 37,
-    "rearWing": 37,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 62,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "MONZA_2024_F2_23": {
-    "frontWing": 0,
-    "rearWing": 0,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.35,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 58,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
-    "engineBraking": 50
-  },
-  "ABU_DHABI_2024_F2_23": {
-    "frontWing": 24,
-    "rearWing": 26,
-    "onThrottle": 10,
-    "offThrottle": 100,
-    "frontCamber": -2.90,
-    "rearCamber": -2.20,
-    "frontToe": 0.05,
-    "rearToe": 0.40,
-    "frontSusp": 37,
-    "rearSusp": 5,
-    "frontARB": 17,
-    "rearARB": 4,
-    "frontHeight": 22,
-    "rearHeight": 60,
-    "brakePressure": 100,
-    "brakeBias": 62,
-    "rearLeftPressure": 21.3,
-    "rearRightPressure": 21.3,
-    "frontLeftPressure": 25.3,
-    "frontRightPressure": 25.3,
-    "ballast": 0,
-    "fuelLoad": 25.0,
     "engineBraking": 50
   }
 }

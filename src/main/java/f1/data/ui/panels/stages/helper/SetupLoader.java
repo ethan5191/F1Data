@@ -16,11 +16,11 @@ public class SetupLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(SetupLoader.class);
 
-    private static final String FILE_PATH = "/ai_setups.json";
+    private static final String FILE_PATH = "/2024/ai_setups.json";
 
     public static CarSetupInfo getSetup(int trackId, int packetFormat, String formula) {
         Map<String, CarSetupData> aiSetups = loadSetups();
-        String key = TrackEnum.fromId(trackId).name() + "_" + packetFormat + "_" + formula;
+        String key = TrackEnum.fromId(trackId).getSetupName();
         CarSetupData loadedSetup = aiSetups.get(key);
         if (loadedSetup == null) return null;
         return new CarSetupInfo(loadedSetup);

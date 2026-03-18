@@ -37,7 +37,7 @@ public class SetupStageManager implements Panel, OnSessionReset {
         if (info != null) {
             VBox driver = new VBox();
             this.container.getChildren().add(driver);
-            SetupInfoDashboard aiDash = new SetupInfoDashboard("AI Setup - " + TrackEnum.fromId(this.trackId).name().replace('_', ' '), info, VisualTireEnum.ALL.getValue());
+            SetupInfoDashboard aiDash = new SetupInfoDashboard(buildName(), info, VisualTireEnum.ALL.getValue());
             VBox setup = new VBox();
             setup.getChildren().add(aiDash);
             driver.getChildren().add(setup);
@@ -104,5 +104,11 @@ public class SetupStageManager implements Panel, OnSessionReset {
     @Override
     public double getSpacing() {
         return 5;
+    }
+
+    private String buildName() {
+        TrackEnum track = TrackEnum.fromId(this.trackId);
+        String trackName = track.name().replace('_', ' ');
+        return "AI Setup - " + trackName + " (" + track.getSetupName() + ")";
     }
 }
