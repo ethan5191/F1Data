@@ -1,5 +1,6 @@
 package f1.data.enums;
 
+//Enum is a definition of the downforce levels for AI setups based on track needs.
 public enum DownforceLevelEnum {
 
     MONZA("MONZA"),

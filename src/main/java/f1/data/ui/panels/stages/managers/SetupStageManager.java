@@ -109,6 +109,6 @@ public class SetupStageManager implements Panel, OnSessionReset {
     private String buildName() {
         TrackEnum track = TrackEnum.fromId(this.trackId);
         String trackName = track.name().replace('_', ' ');
-        return "AI Setup - " + trackName + " (" + track.getSetupName() + ")";
+        return "AI Setup - " + trackName;
     }
 }

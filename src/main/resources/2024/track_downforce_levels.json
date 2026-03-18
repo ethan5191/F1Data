@@ -1,0 +1,29 @@
+{
+  "F1": {
+    "BAHRAIN": "MEDIUM",
+    "SAUDI_ARABIA": "LOW",
+    "AUSTRALIA": "MEDIUM",
+    "JAPAN": "MEDIUM",
+    "CHINA": "MEDIUM",
+    "MIAMI": "LOW",
+    "IMOLA": "MEDIUM",
+    "MONACO": "MAX",
+    "SPAIN": "HIGH",
+    "CANADA": "LOW",
+    "AUSTRIA": "LOW",
+    "SILVERSTONE": "LOW",
+    "HUNGARY": "MAX",
+    "SPA": "LOW",
+    "ZANDVOORT": "HIGH",
+    "MONZA": "MONZA",
+    "BAKU": "LOW",
+    "SINGAPORE": "MAX",
+    "COTA": "HIGH",
+    "MEXICO": "MEDIUM",
+    "BRAZIL": "MEDIUM",
+    "LAS_VEGAS": "LOW",
+    "QATAR": "HIGH",
+    "ABU_DHABI": "MEDIUM",
+    "PORTIMAO": "HIGH"
+  }
+}
