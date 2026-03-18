@@ -24,6 +24,8 @@
 - [Future Projects](#future-projects)
   - [UI Improvements](#ui-improvements)
   - [Enhancements](#core-application-enhancements)
+- [WIP](#work-in-progress)
+  - [Setup Panel Updates](#setup-panel-updates)
 - [License](#license)
 
 ___
@@ -266,6 +268,28 @@ The following features and improvements are planned for upcoming releases:
     Possibly move towards a standalone installer, though not certain at this time.
     Save session data to enable reviewing information after the session ends.
     Generate graphs from run data to better visualize performance in a race-style format.
+
+[Back to top](#table-of-contents)
+___
+
+## Work In Progress
+
+### Setup Panel Updates
+
+I am currently in the process of updating the setup panel data panel. 
+
+Currently, I have the F1 2024 setups moved over to a more manageable structure. More work is being done to handle the F2 cars. 
+
+Then new process takes the different setups and groups them based on common setup and uses that to display the setups.
+
+    There are 5 different setup downforce levels currently: 
+    1. Monza
+    2. Low 
+    3. Medium
+    4. High
+    5. Max
+
+The TrackEnum has been updated to add the setup downforce level as an element for the track. 
 
 [Back to top](#table-of-contents)
 ___
