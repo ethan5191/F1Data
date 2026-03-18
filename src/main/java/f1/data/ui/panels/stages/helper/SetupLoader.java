@@ -16,22 +16,23 @@ public class SetupLoader {
 
     private static final Logger logger = LoggerFactory.getLogger(SetupLoader.class);
 
-    private static final String FILE_PATH = "/2024/ai_setups.json";
+    private static final String FILE_PATH = "/%d/ai_setups.json";
 
     public static CarSetupInfo getSetup(int trackId, int packetFormat, String formula) {
-        Map<String, CarSetupData> aiSetups = loadSetups();
+        Map<String, CarSetupData> aiSetups = loadSetups(packetFormat);
         String key = TrackEnum.fromId(trackId).getSetupName();
         CarSetupData loadedSetup = aiSetups.get(key);
         if (loadedSetup == null) return null;
         return new CarSetupInfo(loadedSetup);
     }
 
-    private static Map<String, CarSetupData> loadSetups() {
+    private static Map<String, CarSetupData> loadSetups(int packetFormat) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, CarSetupData> aiSetups = new HashMap<>();
-        try (InputStream inputStream = SetupLoader.class.getResourceAsStream(FILE_PATH)) {
+        String fullPath = String.format(FILE_PATH, packetFormat);
+        try (InputStream inputStream = SetupLoader.class.getResourceAsStream(fullPath)) {
             if (inputStream == null) {
-                throw new IOException("Resource not found: " + FILE_PATH);
+                throw new IOException("Resource not found: " + fullPath);
             }
             aiSetups = objectMapper.readValue(inputStream, new com.fasterxml.jackson.core.type.TypeReference<Map<String, CarSetupData>>() {
             });
