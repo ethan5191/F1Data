@@ -19,14 +19,16 @@ public class SessionInitializationResult {
     private final Integer playerDriverId;
     private final Integer teamMateDriverId;
     private final Integer playerTeamId;
+    private final String f2SeasonYear;
 
     public SessionInitializationResult(Integer playerCarIndex, Integer packetFormat, Integer numActiveCars, Map<Integer,
-            DriverPair> driverPairPerTeam, List<ParticipantData> participantData, SessionData sessionData) {
+            DriverPair> driverPairPerTeam, List<ParticipantData> participantData, SessionData sessionData, String  f2SeasonYear) {
         this.playerCarIndex = playerCarIndex;
         this.packetFormat = packetFormat;
         this.numActiveCars = numActiveCars;
         this.driverPairPerTeam = driverPairPerTeam;
         this.participantData = participantData;
+        this.f2SeasonYear = f2SeasonYear;
 
         this.sessionData = sessionData;
         //Get the player driver based on the player car index value.
@@ -73,6 +75,10 @@ public class SessionInitializationResult {
 
     public Integer getPlayerTeamId() {
         return playerTeamId;
+    }
+
+    public String getF2SeasonYear() {
+        return f2SeasonYear;
     }
 
     public boolean isF1() {

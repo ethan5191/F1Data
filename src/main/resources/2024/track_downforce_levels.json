@@ -26,7 +26,7 @@
     "ABU_DHABI": "MEDIUM",
     "PORTIMAO": "HIGH"
   },
-  "F2": {
+  "2024": {
     "BAHRAIN": "F2_MEDIUM",
     "SAUDI_ARABIA": "F2_LOW",
     "AUSTRALIA": "F2_MEDIUM",
@@ -41,5 +41,21 @@
     "BAKU": "F2_LOW",
     "QATAR": "F2_HIGH",
     "ABU_DHABI": "F2_MEDIUM"
+  },
+  "2023": {
+    "BAHRAIN": "PREV_F2_MEDIUM",
+    "SAUDI_ARABIA": "PREV_F2_LOW",
+    "AUSTRALIA": "PREV_F2_MEDIUM",
+    "IMOLA": "PREV_F2_MEDIUM",
+    "MONACO": "PREV_F2_MAX",
+    "SPAIN": "PREV_F2_HIGH",
+    "AUSTRIA": "PREV_F2_LOW",
+    "SILVERSTONE": "PREV_F2_MEDIUM",
+    "HUNGARY": "PREV_F2_MAX",
+    "SPA": "PREV_F2_LOW",
+    "MONZA": "PREV_F2_MONZA",
+    "BAKU": "PREV_F2_LOW",
+    "QATAR": "PREV_F2_HIGH",
+    "ABU_DHABI": "PREV_F2_MEDIUM"
   }
 }

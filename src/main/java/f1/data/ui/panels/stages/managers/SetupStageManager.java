@@ -23,17 +23,19 @@ public class SetupStageManager implements Panel, OnSessionReset {
     private int trackId;
     private int packetFormat;
     private String formula;
+    private String f2SeasonYear;
 
-    public SetupStageManager(int trackId, int packetFormat, String formula) {
+    public SetupStageManager(int trackId, int packetFormat, String formula, String f2SeasonYear) {
         this.container = new VBox(getSpacing());
         this.trackId = trackId;
         this.packetFormat = packetFormat;
         this.formula = formula;
+        this.f2SeasonYear = f2SeasonYear;
         initializePanel();
     }
 
     public void initializePanel() {
-        CarSetupInfo info = SetupLoader.getSetup(this.trackId, this.packetFormat, this.formula);
+        CarSetupInfo info = SetupLoader.getSetup(this.trackId, this.packetFormat, this.formula, this.f2SeasonYear);
         if (info != null) {
             VBox driver = new VBox();
             this.container.getChildren().add(driver);
@@ -95,6 +97,10 @@ public class SetupStageManager implements Panel, OnSessionReset {
 
     public void setFormula(String formula) {
         this.formula = formula;
+    }
+
+    public void setF2SeasonYear(String f2SeasonYear) {
+        this.f2SeasonYear = f2SeasonYear;
     }
 
     public VBox getContainer() {

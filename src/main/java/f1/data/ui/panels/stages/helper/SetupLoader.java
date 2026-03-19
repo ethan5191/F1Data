@@ -18,10 +18,10 @@ public class SetupLoader {
     private static final Logger logger = LoggerFactory.getLogger(SetupLoader.class);
 
     private static final String TRACK_DOWNFORCE_PATH = "/%d/track_downforce_levels.json";
-    private static final String FILE_PATH = "/%d/ai_setups.json";
+    private static final String SETUPS_PATH = "/%d/ai_setups.json";
 
-    public static CarSetupInfo getSetup(int trackId, int packetFormat, String formula) {
-        String setupType = loadTrackSetupType(trackId, packetFormat, formula);
+    public static CarSetupInfo getSetup(int trackId, int packetFormat, String formula, String f2SeasonYear) {
+        String setupType = loadTrackSetupType(trackId, packetFormat, formula, f2SeasonYear);
         if (setupType == null) return null;
         Map<String, CarSetupData> aiSetups = loadSetups(packetFormat);
         CarSetupData loadedSetup = aiSetups.get(setupType);
@@ -29,7 +29,8 @@ public class SetupLoader {
         return new CarSetupInfo(loadedSetup);
     }
 
-    private static String loadTrackSetupType(int trackId, int packetFormat, String formula) {
+    //Loads the track setuptype based on what year and formula you are racing in.
+    private static String loadTrackSetupType(int trackId, int packetFormat, String formula, String f2SeasonYear) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Map<String, String>> trackSetupTypes;
         String fullPath = String.format(TRACK_DOWNFORCE_PATH, packetFormat);
@@ -39,7 +40,8 @@ public class SetupLoader {
             }
             trackSetupTypes = mapper.readValue(inputStream, new TypeReference<>() {
             });
-            Map<String, String> trackMap = trackSetupTypes.get(formula);
+            //F2 logic uses the year as the key instead of F2, due to the fact there are 2 versions of F2 on the games.
+            Map<String, String> trackMap = (f2SeasonYear == null) ? trackSetupTypes.get(formula) : trackSetupTypes.get(f2SeasonYear);
             if (trackMap != null) {
                 return trackMap.get(TrackEnum.fromId(trackId).name());
             }
@@ -49,10 +51,11 @@ public class SetupLoader {
         return null;
     }
 
+    //Loads the setup based on the packetFormat for the game the user is playing.
     private static Map<String, CarSetupData> loadSetups(int packetFormat) {
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, CarSetupData> aiSetups = new HashMap<>();
-        String fullPath = String.format(FILE_PATH, packetFormat);
+        String fullPath = String.format(SETUPS_PATH, packetFormat);
         try (InputStream inputStream = SetupLoader.class.getResourceAsStream(fullPath)) {
             if (inputStream == null) {
                 throw new IOException("Resource not found: " + fullPath);

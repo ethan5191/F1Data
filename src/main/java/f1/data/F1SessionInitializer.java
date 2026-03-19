@@ -1,34 +1,42 @@
 package f1.data;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import f1.data.enums.FormulaEnum;
 import f1.data.enums.SupportedYearsEnum;
 import f1.data.mapKeys.DriverPair;
 import f1.data.parse.F1PacketProcessor;
 import f1.data.parse.packets.PacketHeader;
 import f1.data.parse.packets.PacketHeaderFactory;
 import f1.data.parse.packets.participant.ParticipantData;
-import f1.data.parse.packets.handlers.ParticipantPacketHandler;
 import f1.data.parse.packets.participant.ParticipantDataFactory;
 import f1.data.parse.packets.session.SessionData;
 import f1.data.parse.packets.session.SessionDataFactory;
 import f1.data.ui.panels.home.HomePanel;
+import f1.data.ui.panels.stages.helper.SetupLoader;
 import f1.data.utils.Util;
 import f1.data.utils.constants.Constants;
 import javafx.application.Platform;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramPacket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class F1SessionInitializer {
+
+    private static final Logger logger = LoggerFactory.getLogger(F1SessionInitializer.class);
+
+    private static final String F2_DRIVER_LINEUPS = "/%d/F2_driver_lineups.json";
 
     private final F1PacketProcessor packetProcessor;
     private final VBox container;
@@ -46,6 +54,7 @@ public class F1SessionInitializer {
         AtomicReference<Integer> packetFormat = new AtomicReference<>();
         AtomicReference<Integer> playerCarIndex = new AtomicReference<>();
         AtomicReference<Map<Integer, DriverPair>> driverPairPerTeam = new AtomicReference<>();
+        AtomicReference<String> f2SeasonYear = new AtomicReference<>();
         showInProgress();
         //create this logic on its independent thread to ensure that the UI logic still runs while waiting on
         //the session and participants packets to load.
@@ -67,24 +76,16 @@ public class F1SessionInitializer {
                     if (ph.packetId() == Constants.SESSION_PACK && sessionRef.get() == null) {
                         SessionData sd = new SessionDataFactory(packetFormat.get()).build(buffer);
                         sessionRef.set(sd);
-                    } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null) {
+                    } else if (ph.packetId() == Constants.PARTICIPANTS_PACK && participantsRef.get() == null && sessionRef.get() != null) {
                         List<ParticipantData> participantData = new ArrayList<>();
-                        Map<Integer, DriverPair> driverPair = new TreeMap<>();
                         numActiveCars.set((int) buffer.get());
-                        int arraySize = Util.findArraySize(packetFormat.get(), playerCarIndex.get());
-                        for (int i = 0; i < arraySize; i++) {
-                            ParticipantData pd = new ParticipantDataFactory(packetFormat.get()).build(buffer);
-                            if (pd.raceNumber() > 0) {
-                                participantData.add(pd);
-                                if (driverPair.containsKey(pd.teamId())) {
-                                    driverPair.get(pd.teamId()).setDriverTwo(pd.driverId());
-                                } else {
-                                    driverPair.put(pd.teamId(), new DriverPair(pd.driverId()));
-                                }
-                            }
-                        }
-                        driverPairPerTeam.set(driverPair);
+                        driverPairPerTeam.set(buildDriverPairs(buffer, packetFormat.get(), playerCarIndex.get(), participantData));
                         participantsRef.set(participantData);
+                        if (sessionRef.get().formula() == FormulaEnum.F2.getValue() || sessionRef.get().formula() == FormulaEnum.F2_ALT.getValue()) {
+                            Integer firstF2Team = driverPairPerTeam.get().keySet().stream().findFirst().orElse(-1);
+                            String verifiedF2Year = findF2YearByDriverLineups(packetFormat.get(), firstF2Team);
+                            f2SeasonYear.set(verifiedF2Year);
+                        }
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -92,7 +93,8 @@ public class F1SessionInitializer {
                 }
             }
             //We have both packets we need, build the result object
-            SessionInitializationResult result = new SessionInitializationResult(playerCarIndex.get(), packetFormat.get(), numActiveCars.get(), driverPairPerTeam.get(), participantsRef.get(), sessionRef.get());
+            SessionInitializationResult result = new SessionInitializationResult(playerCarIndex.get(), packetFormat.get(),
+                    numActiveCars.get(), driverPairPerTeam.get(), participantsRef.get(), sessionRef.get(), f2SeasonYear.get());
             //Hides the progress dialog, I might make it post an 'All Packets Loaded' message instead of hiding it.
             Platform.runLater(() -> {
                 packetsLoaded(packetFormat.get());
@@ -123,5 +125,46 @@ public class F1SessionInitializer {
                 }
             }
         }
+    }
+
+    //Builds the driver pairs and populates the partcipantData list with the Participants object.
+    private Map<Integer, DriverPair> buildDriverPairs(ByteBuffer buffer, Integer packetFormat, Integer playerCarIndex, List<ParticipantData> participantData) {
+        Map<Integer, DriverPair> driverPair = new TreeMap<>();
+        int arraySize = Util.findArraySize(packetFormat, playerCarIndex);
+        for (int i = 0; i < arraySize; i++) {
+            ParticipantData pd = new ParticipantDataFactory(packetFormat).build(buffer);
+            if (pd.raceNumber() > 0) {
+                participantData.add(pd);
+                if (driverPair.containsKey(pd.teamId())) {
+                    driverPair.get(pd.teamId()).setDriverTwo(pd.driverId());
+                } else {
+                    driverPair.put(pd.teamId(), new DriverPair(pd.driverId()));
+                }
+            }
+        }
+        return driverPair;
+    }
+
+    //Finds the specific F2 year being used. Can be different from the packetFormat due to multiple F2 years in a single game.
+    private String findF2YearByDriverLineups(Integer packetFormat, Integer firstF2TeamId) {
+        ObjectMapper mapper = new ObjectMapper();
+        String fullPath = String.format(F2_DRIVER_LINEUPS, packetFormat);
+        try (InputStream inputStream = SetupLoader.class.getResourceAsStream(fullPath)) {
+            if (inputStream == null) {
+                throw new IOException("Resource not found: " + fullPath);
+            }
+            Map<String, Map<Integer, Set<Integer>>> f2DriverLineups = mapper.readValue(inputStream, new TypeReference<>() {
+            });
+            if (f2DriverLineups != null) {
+                for (Map.Entry<String, Map<Integer, Set<Integer>>> entry : f2DriverLineups.entrySet()) {
+                    if (entry.getValue().containsKey(firstF2TeamId)) {
+                        return entry.getKey();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            logger.error("Caught Exception ", e);
+        }
+        return null;
     }
 }

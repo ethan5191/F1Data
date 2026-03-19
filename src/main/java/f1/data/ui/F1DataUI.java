@@ -51,11 +51,12 @@ public class F1DataUI extends Application {
             AtomicInteger trackId = new AtomicInteger(initResult.getSessionData().trackId());
             AtomicInteger packetFormat = new AtomicInteger(initResult.getPacketFormat());
             AtomicReference<String> formula = new AtomicReference<>(FormulaEnum.fromValue(initResult.getSessionData().formula()).getName());
+            AtomicReference<String> f2SeasonYear = new AtomicReference<>(initResult.getF2SeasonYear());
 
             //Main content panels for the different views.
             LatestLapStageManager latestLap = new LatestLapStageManager(playerDriverId.get(), teamMateDriverId.get(), initResult.getParticipantData());
             AllLapStageManager allLaps = new AllLapStageManager(playerDriverId.get(), teamMateDriverId.get());
-            SetupStageManager setupData = new SetupStageManager(trackId.get(), packetFormat.get(), formula.get());
+            SetupStageManager setupData = new SetupStageManager(trackId.get(), packetFormat.get(), formula.get(), f2SeasonYear.get());
             RunDataStageManager runData = new RunDataStageManager(playerDriverId.get(), teamMateDriverId.get(), isF1.get());
             SpeedTrapDataManager speedTrapData = new SpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get(), numActiveCars.get());
             TeamSpeedTrapDataManager teamSpeedTrapData = new TeamSpeedTrapDataManager(playerDriverId.get(), teamMateDriverId.get());
