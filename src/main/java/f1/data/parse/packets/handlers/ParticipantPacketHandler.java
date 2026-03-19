@@ -1,5 +1,7 @@
 package f1.data.parse.packets.handlers;
 
+import f1.data.F1SessionInitializer;
+import f1.data.enums.FormulaEnum;
 import f1.data.mapKeys.DriverPair;
 import f1.data.parse.packets.participant.ParticipantData;
 import f1.data.parse.packets.participant.ParticipantDataFactory;
@@ -75,7 +77,11 @@ public class ParticipantPacketHandler implements PacketHandler {
                 DriverPair driverPair = this.sessionInformationWrapper.getDriverPairPerTeam().get(playerDriver.teamId());
                 //Teammate driver ID will be whatever id on the driver pair isn't the players driver id.
                 final int teamMateDriverId = (playerDriverId == driverPair.getDriverOne()) ? driverPair.getDriverTwo() : driverPair.getDriverOne();
-                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, numActiveCars, this.sessionInformationWrapper.getParticipantDataList()));
+                String f2SeasonYear = null;
+                if (this.sessionInformationWrapper.getFormula() == FormulaEnum.F2.getValue() || this.sessionInformationWrapper.getFormula() == FormulaEnum.F2_ALT.getValue()) {
+                    f2SeasonYear = F1SessionInitializer.findF2YearByDriverLineups(this.packetFormat, playerDriver.teamId());
+                }
+                this.sessionChangeDTO.accept(new SessionChangeDTO(playerDriverId, teamMateDriverId, numActiveCars, this.sessionInformationWrapper.getParticipantDataList(), f2SeasonYear));
                 //Update this object with participant data, so the session logic will trigger a new session.
                 this.sessionInformationWrapper.updateDriverInfo(playerDriverId, teamMateDriverId, playerDriver.teamId());
             }

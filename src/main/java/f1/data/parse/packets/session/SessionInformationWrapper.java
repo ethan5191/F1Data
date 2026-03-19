@@ -69,6 +69,10 @@ public class SessionInformationWrapper {
         return distinctParticipants;
     }
 
+    public int getFormula() {
+        return formula;
+    }
+
     public String getName() {
         return name;
     }

@@ -146,7 +146,7 @@ public class F1SessionInitializer {
     }
 
     //Finds the specific F2 year being used. Can be different from the packetFormat due to multiple F2 years in a single game.
-    private String findF2YearByDriverLineups(Integer packetFormat, Integer firstF2TeamId) {
+    public static String findF2YearByDriverLineups(Integer packetFormat, Integer firstF2TeamId) {
         ObjectMapper mapper = new ObjectMapper();
         String fullPath = String.format(F2_DRIVER_LINEUPS, packetFormat);
         try (InputStream inputStream = SetupLoader.class.getResourceAsStream(fullPath)) {

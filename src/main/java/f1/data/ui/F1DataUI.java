@@ -68,6 +68,12 @@ public class F1DataUI extends Application {
                     playerDriverId.set(snapshot.playerDriverId());
                     teamMateDriverId.set(snapshot.teamMateDriverId());
                     numActiveCars.set(snapshot.numActiveCars());
+                    f2SeasonYear.set(snapshot.f2SeasonYear());
+
+                    //setupData needs to rebuild itself with the correct default setup.
+                    //Must update the F2SeasonYear param to ensure that the key is updated and used correctly.
+                    setupData.setF2SeasonYear(f2SeasonYear.get());
+                    setupData.onSessionReset();
 
                     //All the following calls also make a call to the onSessionReset method to clear the backing objects.
                     //This is due to there being no way to verify that this logic will run before the update logic runs after the panels reset after a session change.
