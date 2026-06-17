@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
 import java.nio.ByteBuffer;
+import java.util.EnumSet;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,9 @@ public abstract class AbstractFactoryTest {
     protected final int BIT_32_START = 200;
     protected final int FLOAT_START = 100;
     protected final float DOUBLE_START = 300;
+
+    protected static final SupportedYearsEnum MIN_YEAR_SUPPORTED = SupportedYearsEnum.F1_2019;
+    protected static final SupportedYearsEnum MAX_YEAR_SUPPORTED = SupportedYearsEnum.F1_2024;
 
     @BeforeEach
     void setUp() {
@@ -48,13 +52,7 @@ public abstract class AbstractFactoryTest {
     }
 
     static Stream<Integer> supportedYearsAll() {
-        return Stream.of(SupportedYearsEnum.F1_2019.getYear(),
-                SupportedYearsEnum.F1_2020.getYear(),
-                SupportedYearsEnum.F1_2021.getYear(),
-                SupportedYearsEnum.F1_2022.getYear(),
-                SupportedYearsEnum.F1_2023.getYear(),
-                SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+        return EnumSet.range(MIN_YEAR_SUPPORTED, MAX_YEAR_SUPPORTED).stream().map(SupportedYearsEnum::getYear);
     }
 
     static Stream<Integer> supportedYears2021To2022() {
@@ -63,29 +61,19 @@ public abstract class AbstractFactoryTest {
     }
 
     static Stream<Integer> supportedYears2021ToPresent() {
-        return Stream.of(SupportedYearsEnum.F1_2021.getYear(),
-                SupportedYearsEnum.F1_2022.getYear(),
-                SupportedYearsEnum.F1_2023.getYear(),
-                SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+        return EnumSet.range(SupportedYearsEnum.F1_2021, MAX_YEAR_SUPPORTED).stream().map(SupportedYearsEnum::getYear);
     }
 
     static Stream<Integer> supportedYears2022ToPresent() {
-        return Stream.of(SupportedYearsEnum.F1_2022.getYear(),
-                SupportedYearsEnum.F1_2023.getYear(),
-                SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+        return EnumSet.range(SupportedYearsEnum.F1_2022, MAX_YEAR_SUPPORTED).stream().map(SupportedYearsEnum::getYear);
     }
 
     static Stream<Integer> supportedYears2023ToPresent() {
-        return Stream.of(SupportedYearsEnum.F1_2023.getYear(),
-                SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+        return EnumSet.range(SupportedYearsEnum.F1_2023, MAX_YEAR_SUPPORTED).stream().map(SupportedYearsEnum::getYear);
     }
 
     static Stream<Integer> supportedYears2024ToPresent() {
-        return Stream.of(SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+        return EnumSet.range(SupportedYearsEnum.F1_2024, MAX_YEAR_SUPPORTED).stream().map(SupportedYearsEnum::getYear);
     }
 
     static Stream<Integer> supportedYears2019() {
