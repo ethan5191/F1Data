@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 2025 PacketLapPositionsData Breakdown (Little Endian)
- * - F1 2025 Length: 1131 bytes (maxNumCars I believe is 22, will probably change to 24 in F1 2026)
+ * - F1 2025 - 2026 Length: 1131 bytes (maxNumCars I believe is 22, will probably change to 24 in F1 2026)
  * This struct contains the lap-by-lap position history for all cars in the session.
  * It provides the position for each car over the past 50 laps.
  * <p>

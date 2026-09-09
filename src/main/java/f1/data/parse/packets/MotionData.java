@@ -7,36 +7,38 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 24 CarMotionData Breakdown (Little Endian)
+ * 2026 changed the datatype of gForceLat, gForceLong, and gForceVert from float to int16, making the total size smaller.
  * - F1 2019 Length: 60 bytes (carMotionData array is size of 20)
  * - F1 2020-2022 Length: 60 bytes (had 9 other elements AFTER the array)
  * - F1 2023-2025 Length: 60 bytes
+ * - F1 2026 Length: 54 bytes (gForce elements become int16 instead of floats)
  * This struct is 60 bytes long and represents the motion data for a single car.
  * It is repeated 22 times within the PacketMotionData struct.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
  * <p>
  * -------------------------------
- * Member Name                     | Data Type       | Size (bytes) | First Appeared | Notes
- * --------------------------------|----------------|--------------|----------------|-------------------------
- * m_header                        | PacketHeader    | ...          | 2019           | Full packet header
- * m_carMotionData[22]             | CarMotionData   | ...          | 2019           | Array for each car
- * - m_worldPositionX              | float           | 4            | 2019           | World space X position - metres
- * - m_worldPositionY              | float           | 4            | 2019           | World space Y position
- * - m_worldPositionZ              | float           | 4            | 2019           | World space Z position
- * - m_worldVelocityX              | float           | 4            | 2019           | Velocity in world space X – metres/s
- * - m_worldVelocityY              | float           | 4            | 2019           | Velocity in world space Y
- * - m_worldVelocityZ              | float           | 4            | 2019           | Velocity in world space Z
- * - m_worldForwardDirX            | int16           | 2            | 2019           | World space forward X direction (normalised)
- * - m_worldForwardDirY            | int16           | 2            | 2019           | World space forward Y direction (normalised)
- * - m_worldForwardDirZ            | int16           | 2            | 2019           | World space forward Z direction (normalised)
- * - m_worldRightDirX              | int16           | 2            | 2019           | World space right X direction (normalised)
- * - m_worldRightDirY              | int16           | 2            | 2019           | World space right Y direction (normalised)
- * - m_worldRightDirZ              | int16           | 2            | 2019           | World space right Z direction (normalised)
- * - m_gForceLateral               | float           | 4            | 2019           | Lateral G-Force component
- * - m_gForceLongitudinal          | float           | 4            | 2019           | Longitudinal G-Force component
- * - m_gForceVertical              | float           | 4            | 2019           | Vertical G-Force component
- * - m_yaw                         | float           | 4            | 2019           | Yaw angle in radians
- * - m_pitch                       | float           | 4            | 2019           | Pitch angle in radians
- * - m_roll                        | float           | 4            | 2019           | Roll angle in radians
+ * Member Name                     | Data Type           | Size (bytes) | First Appeared | Notes
+ * --------------------------------|---------------------|--------------|----------------|-------------------------
+ * m_header                        | PacketHeader        | ...          | 2019           | Full packet header
+ * m_carMotionData[22]             | CarMotionData       | ...          | 2019           | Array for each car
+ * - m_worldPositionX              | float               | 4            | 2019           | World space X position - metres
+ * - m_worldPositionY              | float               | 4            | 2019           | World space Y position
+ * - m_worldPositionZ              | float               | 4            | 2019           | World space Z position
+ * - m_worldVelocityX              | float               | 4            | 2019           | Velocity in world space X – metres/s
+ * - m_worldVelocityY              | float               | 4            | 2019           | Velocity in world space Y
+ * - m_worldVelocityZ              | float               | 4            | 2019           | Velocity in world space Z
+ * - m_worldForwardDirX            | int16               | 2            | 2019           | World space forward X direction (normalised)
+ * - m_worldForwardDirY            | int16               | 2            | 2019           | World space forward Y direction (normalised)
+ * - m_worldForwardDirZ            | int16               | 2            | 2019           | World space forward Z direction (normalised)
+ * - m_worldRightDirX              | int16               | 2            | 2019           | World space right X direction (normalised)
+ * - m_worldRightDirY              | int16               | 2            | 2019           | World space right Y direction (normalised)
+ * - m_worldRightDirZ              | int16               | 2            | 2019           | World space right Z direction (normalised)
+ * - m_gForceLateral               | float (int16 in 26) | 4            | 2019           | Lateral G-Force component
+ * - m_gForceLongitudinal          | float (int16 in 26) | 4            | 2019           | Longitudinal G-Force component
+ * - m_gForceVertical              | float (int16 in 26) | 4            | 2019           | Vertical G-Force component
+ * - m_yaw                         | float               | 4            | 2019           | Yaw angle in radians
+ * - m_pitch                       | float               | 4            | 2019           | Pitch angle in radians
+ * - m_roll                        | float               | 4            | 2019           | Roll angle in radians
  */
 
 public record MotionData(

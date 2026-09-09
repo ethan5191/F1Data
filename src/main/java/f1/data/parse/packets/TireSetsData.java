@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 /**
  * F1 24 TyreSetData Breakdown (Little Endian)
  * Packet didn't exist prior to 2023's version of the game.
- * - F1 2023-2025 Length: 10 bytes
+ * - F1 2023-2026 Length: 10 bytes
  * This struct is 10 bytes long and contains details about a single tyre set.
  * This data is sent for all tyre sets in the session.
  * <p>

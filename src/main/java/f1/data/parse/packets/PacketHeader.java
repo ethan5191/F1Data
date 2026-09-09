@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
  * * **Note:** The header length and some fields vary by game year.
  *  - F1 2019 Header Length: 23 bytes
  *  - F1 2020 - 2022 Header Length: 24 bytes
- *  - F1 2023 - 2025 Header Length: 29 bytes
+ *  - F1 2023 - 2026 Header Length: 29 bytes
  * Member Name                    | Data Type | Size (bytes) | Starting Offset | First Appeared
  * -------------------------------|-----------|--------------|-----------------|---------------
  * m_packetFormat                 | uint16    | 2            | 0               | 2019

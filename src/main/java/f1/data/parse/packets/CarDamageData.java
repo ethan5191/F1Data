@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  * - F1 2020 CarDamage info was part of CarStatusPacket
  * - F1 2021 Length: 39 bytes
  * - F1 2022-2024 Length: 42 bytes
- * - F1 2025 Length: 46 bytes TODO:add m_tyreBlisters[4] after breakDamage[4] for 2025.
+ * - F1 2025-2026 Length: 46 bytes TODO:add m_tyreBlisters[4] after breakDamage[4] for 2025.
  * This struct is 42 bytes long and contains details of the car's damage state,
  * including bodywork, tyres, brakes, and engine components. This data is sent for all cars.
  * <p>
@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
  * - m_tyresWear[4]          | float           | 16           | 2021           |
  * - m_tyresDamage[4]        | uint8           | 4            | 2021           |
  * - m_brakesDamage[4]       | uint8           | 4            | 2021           |
+ * - m_tyreBlisters[4]       | uint8           | 4            | 2025           |
  * - m_frontLeftWingDamage    | uint8           | 1            | 2021           |
  * - m_frontRightWingDamage   | uint8           | 1            | 2021           |
  * - m_rearWingDamage         | uint8           | 1            | 2021           |

@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
  * - F1 2023 Length: 204 bytes
  * - F1 2024 Length: 224 bytes
  * - F1 2025 Length: 260 bytes
+ * - F1 2026 Length: 260 bytes
  * This struct contains extra motion data for the player's car only.
  * <p>
  * The values must be read from a ByteBuffer configured for Little Endian byte order.

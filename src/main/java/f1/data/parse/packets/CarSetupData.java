@@ -10,7 +10,7 @@ import java.text.DecimalFormat;
  * <p>
  * - F1 2019 Length: 41 bytes
  * - F1 2020-2023 Length: 49 bytes
- * - F1 2024/2025 Length: 50 bytes
+ * - F1 2024 - 2026 Length: 50 bytes
  * This struct is 50 bytes long and contains data about a single car's setup.
  * It is repeated for each car in the PacketCarSetupData packet.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.

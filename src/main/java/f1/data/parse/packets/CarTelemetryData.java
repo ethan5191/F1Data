@@ -8,37 +8,39 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 24 CarTelemetryData Breakdown (Little Endian)
+ * 2026 changed the engineTemperature from uint16 to uint8.
  * - F1 2019 Length: 66 bytes
  * - F1 2020 Length: 58 bytes (m_tyresSurfaceTemperature and m_tyresInnerTemperature changed from u_int16 to u_int8)
  * - F1 2021-2025 Length: 60 bytes
+ * - F1 2026 Length: 59 bytes
  * This struct is 60 bytes long and contains a snapshot of a single car's
  * telemetry data, including speed, temperatures, pressures, and controls.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
  * /*
  * -------------------------------
- * Member Name                     | Data Type       | Size (bytes) | First Appeared | Notes
- * --------------------------------|----------------|--------------|----------------|-------------------------
- * m_header                        | PacketHeader    | ...          | 2019           | Full packet header
- * m_carTelemetryData[22]          | CarTelemetryData| ...          | 2019           | Array for each car
- * - m_speed                        | uint16          | 2            | 2019           | Speed of car in kph
- * - m_throttle                     | float           | 4            | 2019           | Amount of throttle applied (0.0-1.0)
- * - m_steer                        | float           | 4            | 2019           | Steering (-1.0 full left, 1.0 full right)
- * - m_brake                        | float           | 4            | 2019           | Amount of brake applied (0.0-1.0)
- * - m_clutch                       | uint8           | 1            | 2019           | Clutch applied (0-100)
- * - m_gear                         | int8            | 1            | 2019           | Gear selected (1-8, N=0, R=-1)
- * - m_engineRPM                    | uint16          | 2            | 2019           | Engine RPM
- * - m_drs                          | uint8           | 1            | 2019           | 0 = off, 1 = on
- * - m_revLightsPercent             | uint8           | 1            | 2019           | Rev lights indicator (percentage)
- * - m_revLightsBitValue            | uint16          | 2            | 2021           | Bitmask for rev lights (0=leftmost LED, 14=rightmost)
- * - m_brakesTemperature[4]         | uint16[4]       | 8            | 2019           | Brake temperatures in Celsius
- * - m_tyresSurfaceTemperature[4]   | uint8[4]        | 4            | 2019           | Tyre surface temperatures
- * - m_tyresInnerTemperature[4]     | uint8[4]        | 4            | 2019           | Tyre inner temperatures
- * - m_engineTemperature            | uint16          | 2            | 2019           | Engine temperature in Celsius
- * - m_tyresPressure[4]             | float[4]        | 16           | 2019           | Tyre pressures in PSI
- * - m_surfaceType[4]               | uint8[4]        | 4            | 2019           | Driving surface type
- * m_mfdPanelIndex                  | uint8           | 1            | 2020           | Index of MFD panel open (255 = closed)
- * m_mfdPanelIndexSecondaryPlayer   | uint8           | 1            | 2020           | Same as above for secondary player
- * m_suggestedGear                  | int8            | 1            | 2020           | Suggested gear for the player (0 = none)
+ * Member Name                     | Data Type             | Size (bytes) | First Appeared | Notes
+ * --------------------------------|-----------------------|--------------|----------------|-------------------------
+ * m_header                        | PacketHeader          | ...          | 2019           | Full packet header
+ * m_carTelemetryData[22]          | CarTelemetryData      | ...          | 2019           | Array for each car
+ * - m_speed                        | uint16               | 2            | 2019           | Speed of car in kph
+ * - m_throttle                     | float                | 4            | 2019           | Amount of throttle applied (0.0-1.0)
+ * - m_steer                        | float                | 4            | 2019           | Steering (-1.0 full left, 1.0 full right)
+ * - m_brake                        | float                | 4            | 2019           | Amount of brake applied (0.0-1.0)
+ * - m_clutch                       | uint8                | 1            | 2019           | Clutch applied (0-100)
+ * - m_gear                         | int8                 | 1            | 2019           | Gear selected (1-8, N=0, R=-1)
+ * - m_engineRPM                    | uint16               | 2            | 2019           | Engine RPM
+ * - m_drs                          | uint8                | 1            | 2019           | 0 = off, 1 = on
+ * - m_revLightsPercent             | uint8                | 1            | 2019           | Rev lights indicator (percentage)
+ * - m_revLightsBitValue            | uint16               | 2            | 2021           | Bitmask for rev lights (0=leftmost LED, 14=rightmost)
+ * - m_brakesTemperature[4]         | uint16[4]            | 8            | 2019           | Brake temperatures in Celsius
+ * - m_tyresSurfaceTemperature[4]   | uint8[4]             | 4            | 2019           | Tyre surface temperatures
+ * - m_tyresInnerTemperature[4]     | uint8[4]             | 4            | 2019           | Tyre inner temperatures
+ * - m_engineTemperature            | uint16 (uint8 in 26) | 2            | 2019           | Engine temperature in Celsius
+ * - m_tyresPressure[4]             | float[4]             | 16           | 2019           | Tyre pressures in PSI
+ * - m_surfaceType[4]               | uint8[4]             | 4            | 2019           | Driving surface type
+ * m_mfdPanelIndex                  | uint8                | 1            | 2020           | Index of MFD panel open (255 = closed)
+ * m_mfdPanelIndexSecondaryPlayer   | uint8                | 1            | 2020           | Same as above for secondary player
+ * m_suggestedGear                  | int8                 | 1            | 2020           | Suggested gear for the player (0 = none)
  * <p>
  * Note:
  * - uint16 and uint8 types require bitmasking to be read as positive integers in Java.

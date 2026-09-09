@@ -83,24 +83,25 @@ Currently, the log records:
 ___
 ## Packets per Game
 
-| Packet Type          | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
-|----------------------|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-| Motion               |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Session              |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Lap Data             |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Event                |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Participants         |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Car Setups           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Car Telemetry        |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Car Status           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Final Classification |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Lobby Information    |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Session History      |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |
-| Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
-| Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |
-| Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |
-| Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |
+| Packet Type          | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 | 2026   |
+|----------------------|:----:|:----:|:----:|:----:|:----:|:----:|:----:|---|
+| Motion               |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Session              |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Lap Data             |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Event                |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Participants         |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Car Setups           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Car Telemetry        |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Car Status           |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Final Classification |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Lobby Information    |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Car Damage           |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Session History      |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   |  ✅   |  ✅   | ✅ |
+| Tyre Sets            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   | ✅ |
+| Motion Ex            |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   |  ✅   | ✅ |
+| Time Trial           |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   |  ✅   | ✅ |
+| Lap Positions        |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ✅   | ✅ |
+| Car Telemetry 2      |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   |  ❌   | ✅ |
 
 **Legend:**
 - ✅ Fully parsed / supported

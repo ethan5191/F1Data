@@ -11,7 +11,8 @@ import java.nio.ByteBuffer;
  * - F1 2019 Length: 56 bytes
  * - F1 2020 Length: 56 bytes CarDamage info was part of CarStatusPacket
  * - F1 2021 length: 47 bytes
- * - F1 2024 length: 55 bytes
+ * - F1 2024 - 2025 length: 55 bytes
+ * - F1 2026 length: 59 bytes
  * This struct is 55 bytes long and contains details of the car's components,
  * including fuel, tyres, ERS, and vehicle settings. This data is sent for all cars in the session.
  * <p>
@@ -46,6 +47,7 @@ import java.nio.ByteBuffer;
  * - m_ersDeployMode             | uint8           | 1            | 2019           |
  * - m_ersHarvestedThisLapMGUK   | float           | 4            | 2019           |
  * - m_ersHarvestedThisLapMGUH   | float           | 4            | 2019           |
+ * - m_ersHarvestLimitPerLap     | float           | 4            | 2026           |
  * - m_ersDeployedThisLap        | float           | 4            | 2019           |
  * - m_networkPaused             | uint8           | 1            | 2021           |
  * <p>

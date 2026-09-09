@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  * - F1 2020 Length: 53 bytes
  * - F1 2021/2022 Length: 43 bytes
  * - F1 2023 Length: 55 bytes Removed an uint 8 m_warnings that was after m_penalties and replaced it with 2 params.
- * - F1 2024/2025 Length: 57 bytes
+ * - F1 2024 - 2026 Length: 57 bytes
  * This struct is 57 bytes long and contains data about a single car's lap.
  * It is repeated for each car in the PacketLapData packet.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.

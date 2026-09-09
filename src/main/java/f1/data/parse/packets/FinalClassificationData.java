@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  * F1 2020 FinalClassificationData Breakdown (Little Endian)
  * - F1 2020/2021 Length: 37 bytes per car (2021 the type of bestLapTime changed from float to uint32)
  * - F1 2022 - 2024 Length: 45 bytes per car
- * - F1 2025 Length: 46 bytes per car
+ * - F1 2025 - 2026 Length: 46 bytes per car
  * This struct is 37 bytes long and contains details of a driver's final classification in a session.
  * This data is sent as an array for each car.
  * <p>
