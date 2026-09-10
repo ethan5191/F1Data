@@ -26,7 +26,7 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
                 c19.fuelInTank(), c19.fuelCapacity(), c19.fuelRemainingLaps(), c19.maxRPM(), c19.idleRPM(), c19.maxGears(), c19.drsAllowed(),
                 0, c19.actualTireCompound(), c19.visualTireCompound(), 0, c19.vehicleFiaFlags(),
                 c19.ersStoreEnergy(), c19.ersDeployMode(), c19.ersHarvestedThisLapMGUK(), c19.ersHarvestedThisLapMGUH(), c19.ersDeployedThisLap(),
-                0, 0, 0, c19.tyresWear(), c19.tyresDamage(), c19.frontLeftWingDamage(), c19.frontRightWingDamage(),
+                0, 0, 0, 0, c19.tyresWear(), c19.tyresDamage(), c19.frontLeftWingDamage(), c19.frontRightWingDamage(),
                 c19.rearWingDamage(), 0, c19.engineDamage(), c19.gearBoxDamage());
     }
 
@@ -35,7 +35,7 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
                 c20.fuelInTank(), c20.fuelCapacity(), c20.fuelRemainingLaps(), c20.maxRPM(), c20.idleRPM(), c20.maxGears(), c20.drsAllowed(),
                 c20.drsActivationDistance(), c20.actualTireCompound(), c20.visualTireCompound(), c20.tiresAgeLaps(), c20.vehicleFiaFlags(),
                 c20.ersStoreEnergy(), c20.ersDeployMode(), c20.ersHarvestedThisLapMGUK(), c20.ersHarvestedThisLapMGUH(), c20.ersDeployedThisLap(),
-                0, 0, 0, c20.tyresWear(), c20.tyresDamage(), c20.frontLeftWingDamage(), c20.frontRightWingDamage(),
+                0, 0, 0, 0, c20.tyresWear(), c20.tyresDamage(), c20.frontLeftWingDamage(), c20.frontRightWingDamage(),
                 c20.rearWingDamage(), c20.drsFault(), c20.engineDamage(), c20.gearBoxDamage());
     }
 
@@ -44,7 +44,7 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
                 c21.fuelInTank(), c21.fuelCapacity(), c21.fuelRemainingLaps(), c21.maxRPM(), c21.idleRPM(), c21.maxGears(), c21.drsAllowed(),
                 c21.drsActivationDistance(), c21.actualTireCompound(), c21.visualTireCompound(), c21.tiresAgeLaps(), c21.vehicleFiaFlags(),
                 c21.ersStoreEnergy(), c21.ersDeployMode(), c21.ersHarvestedThisLapMGUK(), c21.ersHarvestedThisLapMGUH(), c21.ersDeployedThisLap(),
-                c21.networkPaused(), 0, 0, new float[0], new int[0], 0, 0, 0,
+                c21.networkPaused(), 0, 0, 0, new float[0], new int[0], 0, 0, 0,
                 0, 0, 0);
     }
 
@@ -53,7 +53,7 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
                 c23.fuelInTank(), c23.fuelCapacity(), c23.fuelRemainingLaps(), c23.maxRPM(), c23.idleRPM(), c23.maxGears(), c23.drsAllowed(),
                 c23.drsActivationDistance(), c23.actualTireCompound(), c23.visualTireCompound(), c23.tiresAgeLaps(), c23.vehicleFiaFlags(),
                 c23.ersStoreEnergy(), c23.ersDeployMode(), c23.ersHarvestedThisLapMGUK(), c23.ersHarvestedThisLapMGUH(), c23.ersDeployedThisLap(),
-                c23.networkPaused(), c23.enginePowerICE(), c23.enginePowerMGUK(), new float[0], new int[0], 0, 0, 0,
+                c23.networkPaused(), c23.enginePowerICE(), c23.enginePowerMGUK(), 0, new float[0], new int[0], 0, 0, 0,
                 0, 0, 0);
     }
 }

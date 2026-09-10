@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  * <p>
  * - F1 2019 Length: 56 bytes
  * - F1 2020 Length: 56 bytes CarDamage info was part of CarStatusPacket
- * - F1 2021 length: 47 bytes
- * - F1 2024 - 2025 length: 55 bytes
+ * - F1 2021 - 2022 length: 47 bytes
+ * - F1 2023 - 2025 length: 55 bytes
  * - F1 2026 length: 59 bytes
  * This struct is 55 bytes long and contains details of the car's components,
  * including fuel, tyres, ERS, and vehicle settings. This data is sent for all cars in the session.
@@ -66,7 +66,7 @@ public record CarStatusData(int tractionControl, int antiLockBrakes, int fuelMix
                             int actualTireCompound, int visualTireCompound, int tiresAgeLaps, int vehicleFiaFlags,
                             float ersStoreEnergy, int ersDeployMode, float ersHarvestedThisLapMGUK,
                             float ersHarvestedThisLapMGUH, float ersDeployedThisLap, int networkPaused,
-                            float enginePowerICE, float enginePowerMGUK, float[] tyresWear, int[] tyresDamage,
+                            float enginePowerICE, float enginePowerMGUK, float ersHarvestLimitPerLap, float[] tyresWear, int[] tyresDamage,
                             int frontLeftWingDamage, int frontRightWingDamage, int rearWingDamage, int drsFault,
                             int engineDamage, int gearBoxDamage) {
 
@@ -228,6 +228,46 @@ public record CarStatusData(int tractionControl, int antiLockBrakes, int fuelMix
                     byteBuffer.getFloat(),
                     byteBuffer.getFloat(),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
+
+    record CarStatusData26(int tractionControl, int antiLockBrakes, int fuelMix, int frontBrakeBias, int pitLimitStatus,
+                           float fuelInTank, float fuelCapacity, float fuelRemainingLaps, int maxRPM, int idleRPM,
+                           int maxGears, int drsAllowed, int drsActivationDistance, int actualTireCompound,
+                           int visualTireCompound, int tiresAgeLaps, int vehicleFiaFlags, float enginePowerICE,
+                           float enginePowerMGUK, float ersStoreEnergy, int ersDeployMode,
+                           float ersHarvestedThisLapMGUK, float ersHarvestedThisLapMGUH, float ersHarvestLimitPerLap,
+                           float ersDeployedThisLap, int networkPaused
+    ) {
+        public CarStatusData26(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.getFloat(),
                     byteBuffer.getFloat(),
                     byteBuffer.getFloat(),
                     byteBuffer.getFloat(),

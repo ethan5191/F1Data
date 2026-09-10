@@ -70,6 +70,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.networkPaused());
             assertEquals(0, result.enginePowerICE());
             assertEquals(0, result.enginePowerMGUK());
+            assertEquals(0, result.ersHarvestLimitPerLap());
         }
     }
 
@@ -123,9 +124,11 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(floatValue++, result.ersHarvestedThisLapMGUK());
             assertEquals(floatValue++, result.ersHarvestedThisLapMGUH());
             assertEquals(floatValue++, result.ersDeployedThisLap());
+
             assertEquals(0, result.networkPaused());
             assertEquals(0, result.enginePowerICE());
             assertEquals(0, result.enginePowerMGUK());
+            assertEquals(0, result.ersHarvestLimitPerLap());
         }
     }
 
@@ -171,6 +174,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(floatValue++, result.ersHarvestedThisLapMGUH());
             assertEquals(floatValue++, result.ersDeployedThisLap());
             assertEquals(bitMask8Value++, result.networkPaused());
+
             assertEquals(0, result.enginePowerICE());
             assertEquals(0, result.enginePowerMGUK());
             assertArrayEquals(emptyFloatArray, result.tyresWear());
@@ -181,6 +185,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.drsFault());
             assertEquals(0, result.engineDamage());
             assertEquals(0, result.gearBoxDamage());
+            assertEquals(0, result.ersHarvestLimitPerLap());
         }
     }
 
@@ -228,6 +233,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(floatValue++, result.ersHarvestedThisLapMGUH());
             assertEquals(floatValue++, result.ersDeployedThisLap());
             assertEquals(bitMask8Value++, result.networkPaused());
+
             assertArrayEquals(emptyFloatArray, result.tyresWear());
             assertArrayEquals(emptyIntArray, result.tyresDamage());
             assertEquals(0, result.frontLeftWingDamage());
@@ -236,6 +242,7 @@ public class CarStatusDataFactoryTest extends AbstractFactoryTest {
             assertEquals(0, result.drsFault());
             assertEquals(0, result.engineDamage());
             assertEquals(0, result.gearBoxDamage());
+            assertEquals(0, result.ersHarvestLimitPerLap());
         }
     }
 }
