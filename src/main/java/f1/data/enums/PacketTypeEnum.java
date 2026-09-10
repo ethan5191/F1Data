@@ -20,7 +20,8 @@ public enum PacketTypeEnum {
     TIRE_SETS(12),
     MOTION_EX(13),
     TIME_TRIAL(14),
-    LAP_POSITIONS(15);
+    LAP_POSITIONS(15),
+    CAR_TELEMETRY2(16);
 
     private final int value;
     private static final Map<Integer, PacketTypeEnum> LOOKUP = new HashMap<>();
