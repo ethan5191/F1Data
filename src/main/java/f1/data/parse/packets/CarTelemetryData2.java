@@ -1,8 +1,6 @@
 package f1.data.parse.packets;
 
-import f1.data.enums.SupportedYearsEnum;
 import f1.data.utils.BitMaskUtils;
-import f1.data.utils.ParseUtils;
 
 import java.nio.ByteBuffer;
 
@@ -35,7 +33,7 @@ public record CarTelemetryData2(int activeAeroMode, int activeAeroAvailable, int
 
     record CarTelemetryData26(int activeAeroMode, int activeAeroAvailable, int activeAeroActivationDistance, int overtakeAvailable,
                               int overtakeActive, int overtakeActivationDistance, int twentySixRegulations, int drivingWrongWay) {
-        public CarTelemetryData26(SupportedYearsEnum packetFormat, ByteBuffer byteBuffer) {
+        public CarTelemetryData26(ByteBuffer byteBuffer) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),

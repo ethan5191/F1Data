@@ -26,6 +26,7 @@ public class TelemetryData {
 
     private LapData currentLap;
     private CarTelemetryData currentTelemetry;
+    private CarTelemetryData2 currentTelemetry2;
     private CarStatusData currentStatus;
     private CarDamageData currentDamage;
     private TireSetsData[] tireSetsData = new TireSetsData[Constants.TIRE_SETS_PACKET_COUNT];
@@ -106,6 +107,14 @@ public class TelemetryData {
 
     public void setCurrentTelemetry(CarTelemetryData currentTelemetry) {
         this.currentTelemetry = currentTelemetry;
+    }
+
+    public CarTelemetryData2 getCurrentTelemetry2() {
+        return currentTelemetry2;
+    }
+
+    public void setCurrentTelemetry2(CarTelemetryData2 currentTelemetry2) {
+        this.currentTelemetry2 = currentTelemetry2;
     }
 
     public CarStatusData getCurrentStatus() {

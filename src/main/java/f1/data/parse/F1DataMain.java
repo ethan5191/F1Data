@@ -45,6 +45,7 @@ public class F1DataMain {
     private final MotionExPacketHandler motionExPacketHandler;
     private final TimeTrialPacketHandler timeTrialPacketHandler;
     private final LapPositionsPacketHandler lapPositionsPacketHandler;
+    private final CarTelemetry2PacketHandler carTelemetry2PacketHandler;
 
     private final SessionInformationWrapper sessionInformationWrapper;
     private final Map<Integer, PacketHandler> handlerMap = new HashMap<>();
@@ -85,6 +86,7 @@ public class F1DataMain {
         this.motionExPacketHandler = new MotionExPacketHandler(packetFormat);
         this.timeTrialPacketHandler = new TimeTrialPacketHandler(packetFormat);
         this.lapPositionsPacketHandler = new LapPositionsPacketHandler(packetFormat);
+        this.carTelemetry2PacketHandler = new CarTelemetry2PacketHandler(packetFormat, this.playerCarIndex, participants);
 
         initializeHandlerMap();
     }
@@ -142,6 +144,7 @@ public class F1DataMain {
         handlerMap.put(Constants.MOTION_EX_PACK, motionExPacketHandler);
         handlerMap.put(Constants.TIME_TRIAL_PACK, timeTrialPacketHandler);
         handlerMap.put(Constants.LAP_POSITIONS_PACK, lapPositionsPacketHandler);
+        handlerMap.put(Constants.CAR_TELEMETRY_2_PACK, carTelemetry2PacketHandler);
     }
 
     private void logPacketCounts(PacketHandler handler) {
