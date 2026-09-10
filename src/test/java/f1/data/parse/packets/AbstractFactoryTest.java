@@ -54,7 +54,8 @@ public abstract class AbstractFactoryTest {
                 SupportedYearsEnum.F1_2022.getYear(),
                 SupportedYearsEnum.F1_2023.getYear(),
                 SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+                SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
     }
 
     static Stream<Integer> supportedYears2021To2022() {
@@ -67,25 +68,34 @@ public abstract class AbstractFactoryTest {
                 SupportedYearsEnum.F1_2022.getYear(),
                 SupportedYearsEnum.F1_2023.getYear(),
                 SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+                SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
     }
 
     static Stream<Integer> supportedYears2022ToPresent() {
         return Stream.of(SupportedYearsEnum.F1_2022.getYear(),
                 SupportedYearsEnum.F1_2023.getYear(),
                 SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+                SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
     }
 
     static Stream<Integer> supportedYears2023ToPresent() {
         return Stream.of(SupportedYearsEnum.F1_2023.getYear(),
                 SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+                SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
     }
 
     static Stream<Integer> supportedYears2024ToPresent() {
         return Stream.of(SupportedYearsEnum.F1_2024.getYear(),
-                SupportedYearsEnum.F1_2025.getYear());
+                SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
+    }
+
+    static Stream<Integer> supportedYears2025ToPresent() {
+        return Stream.of(SupportedYearsEnum.F1_2025.getYear(),
+                SupportedYearsEnum.F1_2026.getYear());
     }
 
     static Stream<Integer> supportedYears2019() {
@@ -110,5 +120,9 @@ public abstract class AbstractFactoryTest {
 
     static Stream<Integer> supportedYears2025() {
         return Stream.of(SupportedYearsEnum.F1_2025.getYear());
+    }
+
+    static Stream<Integer> supportedYears2026() {
+        return Stream.of(SupportedYearsEnum.F1_2026.getYear());
     }
 }

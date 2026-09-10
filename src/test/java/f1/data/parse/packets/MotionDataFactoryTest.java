@@ -24,6 +24,16 @@ public class MotionDataFactoryTest extends AbstractFactoryTest {
                 SupportedYearsEnum.F1_2022.getYear());
     }
 
+    static Stream<Integer> supportedYears2019To2025() {
+        return Stream.of(SupportedYearsEnum.F1_2019.getYear(),
+                SupportedYearsEnum.F1_2020.getYear(),
+                SupportedYearsEnum.F1_2021.getYear(),
+                SupportedYearsEnum.F1_2022.getYear(),
+                SupportedYearsEnum.F1_2023.getYear(),
+                SupportedYearsEnum.F1_2024.getYear(),
+                SupportedYearsEnum.F1_2025.getYear());
+    }
+
     @ParameterizedTest
     @MethodSource("supportedYears2019To2022")
     @DisplayName("Builds the Motion Data Legacy 2019 to 2022")
@@ -70,9 +80,9 @@ public class MotionDataFactoryTest extends AbstractFactoryTest {
     }
 
     @ParameterizedTest
-    @MethodSource("supportedYearsAll")
-    @DisplayName("Builds the Motion Data 2019 to Present")
-    void testBuild_motionData2019ToPresent(int packetFormat) {
+    @MethodSource("supportedYears2019To2025")
+    @DisplayName("Builds the Motion Data 2019 to 2025")
+    void testBuild_motionData2019To2025(int packetFormat) {
         int bitMask16Count = 6;
         int bitMask16Value = BIT_16_START;
         try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
@@ -98,6 +108,46 @@ public class MotionDataFactoryTest extends AbstractFactoryTest {
             assertEquals(1, result.yaw());
             assertEquals(1, result.pitch());
             assertEquals(1, result.roll());
+
+            assertEquals(0, result.gForceLatInt());
+            assertEquals(0, result.gForceLonInt());
+            assertEquals(0, result.gForceVerInt());
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("supportedYears2026")
+    @DisplayName("Builds the Motion Data 2026 To Present")
+    void testBuild_motionData2026ToPresent(int packetFormat) {
+        int bitMask16Count = 9;
+        int bitMask16Value = BIT_16_START;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            when(mockByteBuffer.getFloat()).thenReturn(Constants.DIVISOR);
+            MotionData result = new MotionDataFactory(packetFormat).build(mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(1, result.worldPositionX());
+            assertEquals(1, result.worldPositionY());
+            assertEquals(1, result.worldPositionZ());
+            assertEquals(1, result.worldVelocityX());
+            assertEquals(1, result.worldVelocityY());
+            assertEquals(1, result.worldVelocityZ());
+            assertEquals(bitMask16Value++, result.worldForwardDirX());
+            assertEquals(bitMask16Value++, result.worldForwardDirY());
+            assertEquals(bitMask16Value++, result.worldForwardDirZ());
+            assertEquals(bitMask16Value++, result.worldRightDirX());
+            assertEquals(bitMask16Value++, result.worldRightDirY());
+            assertEquals(bitMask16Value++, result.worldRightDirZ());
+            assertEquals(1, result.yaw());
+            assertEquals(1, result.pitch());
+            assertEquals(1, result.roll());
+            assertEquals(bitMask16Value++, result.gForceLatInt());
+            assertEquals(bitMask16Value++, result.gForceLonInt());
+            assertEquals(bitMask16Value++, result.gForceVerInt());
+
+            assertEquals(0, result.gForceLat());
+            assertEquals(0, result.gForceLon());
+            assertEquals(0, result.gForceVer());
         }
     }
 }

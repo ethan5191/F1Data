@@ -139,8 +139,8 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
 
     @ParameterizedTest
     @MethodSource("supportedYears2025")
-    @DisplayName("Builds the Participant Data for 2025 to Present.")
-    void testBuild_participantData2025ToPresent(int packetFormat) {
+    @DisplayName("Builds the Participant Data for 2025.")
+    void testBuild_participantData2025(int packetFormat) {
         int bitMask8Count = 12;
         int bitMask16Count = 1;
         int bitMask8Value = BIT_8_START;
@@ -160,6 +160,41 @@ public class ParticipantDataFactoryTest extends AbstractFactoryTest {
             assertEquals(bitMask8Value++, result.yourTelemetry());
             assertEquals(bitMask8Value++, result.showOnlineNames());
             assertEquals(BIT_16_START, result.techLevel());
+            assertEquals(bitMask8Value++, result.platform());
+            assertEquals(bitMask8Value++, result.numColours());
+            for (int n = 0; n < LIVERY_COLOUR_DATA_25_SIZE; n++) {
+                LiveryColourData temp = result.liveryColourData()[n];
+                assertEquals(bitMask8Value, temp.red());
+                assertEquals(bitMask8Value, temp.green());
+                assertEquals(bitMask8Value, temp.blue());
+            }
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("supportedYears2026")
+    @DisplayName("Builds the Participant Data for 2026.")
+    void testBuild_participantData2026(int packetFormat) {
+        int bitMask8Count = 9;
+        int bitMask16Count = 4;
+        int bitMask8Value = BIT_8_START;
+        int bitMask16Value = BIT_16_START;
+        try (MockedStatic<BitMaskUtils> bitMaskUtils = mockStatic(BitMaskUtils.class)) {
+            FactoryTestHelper.mockBitMask8(bitMaskUtils, bitMask8Count);
+            FactoryTestHelper.mockBitMask16(bitMaskUtils, bitMask16Count);
+            ParticipantData result = new ParticipantDataFactory(packetFormat).build(mockByteBuffer);
+            assertNotNull(result);
+            assertEquals(bitMask8Value++, result.aiControlled());
+            assertEquals(bitMask16Value++, result.driverId());
+            assertEquals(bitMask16Value++, result.networkId());
+            assertEquals(bitMask16Value++, result.teamId());
+            assertEquals(bitMask8Value++, result.myTeam());
+            assertEquals(bitMask8Value++, result.raceNumber());
+            assertEquals(bitMask8Value++, result.nationality());
+            assertArrayEquals(new byte[POST_2025_NAME_LENGTH], result.name());
+            assertEquals(bitMask8Value++, result.yourTelemetry());
+            assertEquals(bitMask8Value++, result.showOnlineNames());
+            assertEquals(bitMask16Value++, result.techLevel());
             assertEquals(bitMask8Value++, result.platform());
             assertEquals(bitMask8Value++, result.numColours());
             for (int n = 0; n < LIVERY_COLOUR_DATA_25_SIZE; n++) {
