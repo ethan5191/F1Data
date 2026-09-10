@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /**
  *  - F1 2020 WeatherForecast Length: 5 bytes
- *  - F1 2021 - 2025 WeatherForecast Length: 8 bytes
+ *  - F1 2021 - 2026 WeatherForecast Length: 8 bytes
  * This struct is 8 bytes long and provides a single sample of weather and track
  * conditions for a specific point in the near future.
  * <p>

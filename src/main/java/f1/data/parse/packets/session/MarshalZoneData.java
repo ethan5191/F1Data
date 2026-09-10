@@ -3,7 +3,7 @@ package f1.data.parse.packets.session;
 import java.nio.ByteBuffer;
 
 /**
- * - F1 2020 - 2025 MarshalZone Length: 5 bytes
+ * - F1 2020 - 2026 MarshalZone Length: 5 bytes
  * This struct is 5 bytes long and describes a single marshal zone on the track,
  * used to indicate the status of a specific area.
  * <p>

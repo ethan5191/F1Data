@@ -5,6 +5,7 @@ import f1.data.utils.ParseUtils;
 
 import java.nio.ByteBuffer;
 
+//Not an actual struct, I just grouped common elements to shrink the size of the SessionData packet.
 public record GameModeData(int equalCarPerformance, int recoveryMode, int flashbackLimit, int surfaceType,
                            int lowFuelMode, int raceStarts, int tyreTemperature, int pitLaneTyreSim, int carDamage,
                            int carDamageRate, int collisions, int collisionsOffFirstLap, int mpUnsafePitRelease,

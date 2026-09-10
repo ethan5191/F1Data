@@ -53,24 +53,24 @@ public record MotionData(float worldPositionX, float worldPositionY, float world
                         float gForceLat, float gForceLon, float gForceVer, float yaw, float pitch, float roll) {
         public MotionData19(ByteBuffer byteBuffer) {
             this(
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat())
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat())
             );
         }
     }
@@ -81,12 +81,12 @@ public record MotionData(float worldPositionX, float worldPositionY, float world
                         int gForceLat, int gForceLon, int gForceVer, float yaw, float pitch, float roll) {
         public MotionData26(ByteBuffer byteBuffer) {
             this(
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
@@ -96,14 +96,10 @@ public record MotionData(float worldPositionX, float worldPositionY, float world
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat()),
-                    determineFloatValue(byteBuffer.getFloat())
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat()),
+                    PacketUtils.determineFloatValue(byteBuffer.getFloat())
             );
         }
-    }
-
-    private static float determineFloatValue(float val) {
-        return val / Constants.DIVISOR;
     }
 }

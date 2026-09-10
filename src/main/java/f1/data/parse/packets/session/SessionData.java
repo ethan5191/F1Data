@@ -13,7 +13,8 @@ import java.nio.ByteBuffer;
  * - F1 2021 Length: 601 bytes
  * - F1 2022 Length: 608 bytes
  * - F1 2023 Length: 615 bytes
- * - F1 2024/2025 Length: 724 bytes
+ * - F1 2024 - 2025 Length: 724 bytes
+ * - F1 2026 Length: 897
  * <p>
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
  * <p>
@@ -99,6 +100,19 @@ import java.nio.ByteBuffer;
  * - m_weekendStructure[12]       | uint8     | 12           | 2024           | List of session types to show weekend structure - see appendix for types
  * - m_sector2LapDistanceStart    | float     | 4            | 2024           | Distance in m around track where sector 2 starts
  * - m_sector3LapDistanceStart    | float     | 4            | 2024           | Distance in m around track where sector 3 starts
+ * - m_activeAeroTrackStatus      | uint8     | 1            | 2026           | 0 = Full, 1 = Partial
+ * - m_numActiveAeroZonesFull     | uint8     | 1            | 2026           | Number of Active Aero zones to follow
+ * - m_activeAeroZonesFull        | struct[8] | 64           | 2026           | List of Active Aero zones - max 8
+ * - m_numActiveAeroZonesPartial  | uint8     | 1            | 2026           | Number of Active Aero zones to follow
+ * - m_activeAeroZonesPartial     | struct[8] | 64           | 2026           | List of Active Aero zones - max 8
+ * - m_numDRSZones                | uint8     | 1            | 2026           | Number of DRS zones to follow
+ * - m_drsZones                   | struct[4] | 32           | 2026           | List of DRS zones - max 4
+ * - m_startReactionTime          | float     | 4            | 2026           | Driver start reaction time in seconds, 0.0f if assisted starts
+ * - m_antiLockBrakesAssist       | uint8     | 1            | 2026           | 0 = Off, 1 = On
+ * - m_tractionControlAssist      | uint8     | 1            | 2026           | 0 = Off, 1 = Medium, 2 = Full
+ * - m_dynamicRacingLineHiVis     | uint8     | 1            | 2026           | 0 = Off, 1 = On
+ * - m_dynamicRacingLineColourBlind | uint8   | 1            | 2026           | 0 = Off, 1 = Protanopia, 2 = Deuteranopia, 3 = Tritanopia
+ * - m_recurringRewindPrompt      | uint8     | 1            | 2026           | 0 = Off, 1 = On
  */
 
 public record SessionData(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
@@ -113,11 +127,14 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                           int speedUnitsLeadPlayer, int tempUnitsLeadPlayer, int speedUnitsSecondaryPlayer,
                           int tempUnitsSecondaryPlayer, int numSafetyCarPeriods, int numVirtualSafetyCarPeriods,
                           int numRedFlagPeriods, GameModeData gameModeData, float sector2LapDistanceStart,
-                          float sector3LapDistanceStart) {
+                          float sector3LapDistanceStart, TwentySixSessionData twentySixSessionData) {
 
     public static final int WEATHER_FORECAST_20_SIZE = 20;
     public static final int WEATHER_FORECAST_21_TO_23_SIZE = 56;
     public static final int WEATHER_FORECAST_24_NEWER_SIZE = 64;
+
+    public static final int ACTIVE_AERO_ZONE_SIZE = 8;
+    public static final int DRS_ZONE_SIZE = 4;
 
     public String buildSessionName() {
         String formula = FormulaEnum.fromValue(this.formula).name();
@@ -223,6 +240,24 @@ public record SessionData(int weather, int trackTemperature, int airTemperature,
                                 float sector2LapDistanceStart, float sector3LapDistanceStart) {
         public SessionData24(int packetFormat, ByteBuffer byteBuffer) {
             this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(packetFormat, byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(packetFormat, byteBuffer, WEATHER_FORECAST_24_NEWER_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new GameModeData(byteBuffer), byteBuffer.getFloat(), byteBuffer.getFloat());
+        }
+    }
+
+    public record SessionData26(int weather, int trackTemperature, int airTemperature, int totalLaps, int trackLength,
+                                int sessionType, int trackId, int formula, int sessionTimeLeft, int sessionDuration,
+                                int pitSpeedLimit, int gamePaused, int isSpectating, int spectatorCarIndex,
+                                int sliProNativeSupport, int numMarshalZones, MarshalZoneData[] marshalZones,
+                                int safetyCarStatus, int networkGame, int numWeatherForecastSamples,
+                                WeatherForecastSampleData[] weatherForecastSamples, int forecastAccuracy,
+                                int aiDifficulty, long seasonLinkIdentifier, long weekendLinkIdentifier,
+                                long sessionLinkIdentifier, int pitStopWindowIdealLap, int pitStopWindowLatestLap,
+                                int pitStopRejoinPosition, AssistData assistData, int gameMode, int ruleSet,
+                                long timeOfDay, int sessionLength, int speedUnitsLeadPlayer, int tempUnitsLeadPlayer,
+                                int speedUnitsSecondaryPlayer, int tempUnitsSecondaryPlayer, int numSafetyCarPeriods,
+                                int numVirtualSafetyCarPeriods, int numRedFlagPeriods, GameModeData gameModeData,
+                                float sector2LapDistanceStart, float sector3LapDistanceStart, TwentySixSessionData twentySixSessionData) {
+        public SessionData26(int packetFormat, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), byteBuffer.get(), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask16(byteBuffer.getShort()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildMarshalZones(packetFormat, byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), buildWeatherForecastSamples21(packetFormat, byteBuffer, WEATHER_FORECAST_24_NEWER_SIZE), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new AssistData(byteBuffer), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask32(byteBuffer.getInt()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), new GameModeData(byteBuffer), byteBuffer.getFloat(), byteBuffer.getFloat(), new TwentySixSessionData(packetFormat, byteBuffer));
         }
     }
 }
