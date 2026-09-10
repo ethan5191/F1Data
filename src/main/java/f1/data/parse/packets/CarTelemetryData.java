@@ -8,11 +8,10 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 24 CarTelemetryData Breakdown (Little Endian)
- * 2026 changed the engineTemperature from uint16 to uint8.
  * - F1 2019 Length: 66 bytes
  * - F1 2020 Length: 58 bytes (m_tyresSurfaceTemperature and m_tyresInnerTemperature changed from u_int16 to u_int8)
  * - F1 2021-2025 Length: 60 bytes
- * - F1 2026 Length: 59 bytes
+ * - F1 2026 Length: 59 bytes (2026 changed the m_engineTemperature from uint16 to uint8.)
  * This struct is 60 bytes long and contains a snapshot of a single car's
  * telemetry data, including speed, temperatures, pressures, and controls.
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
@@ -96,6 +95,32 @@ public record CarTelemetryData(int speed, float throttle, float steer, float bra
                     ParseUtils.parseIntArray(byteBuffer, 4),
                     ParseUtils.parseIntArray(byteBuffer, 4),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    ParseUtils.parseFloatArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4)
+            );
+        }
+    }
+
+    record CarTelemetryData26(int speed, float throttle, float steer, float brake, int clutch, int gear, int engineRPM,
+                              int drs, int revLightPercent, int revLightBitVal, int[] brakeTemps,
+                              int[] tireSurfaceTemps, int[] tireInnerTemps, int engineTemp, float[] tirePressure,
+                              int[] surfaceType) {
+        public CarTelemetryData26(ByteBuffer byteBuffer) {
+            this(
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    byteBuffer.getFloat(),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    byteBuffer.get(),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    ParseUtils.parseShortArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    ParseUtils.parseIntArray(byteBuffer, 4),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
                     ParseUtils.parseFloatArray(byteBuffer, 4),
                     ParseUtils.parseIntArray(byteBuffer, 4)
             );
