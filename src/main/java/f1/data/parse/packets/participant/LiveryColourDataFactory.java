@@ -16,7 +16,7 @@ public class LiveryColourDataFactory implements DataFactory<LiveryColourData[]>,
 
     public LiveryColourData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2025 -> buildData(byteBuffer);
+            case F1_2025, F1_2026 -> buildData(byteBuffer);
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

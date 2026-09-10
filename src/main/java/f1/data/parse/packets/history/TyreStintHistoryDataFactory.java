@@ -18,7 +18,7 @@ public class TyreStintHistoryDataFactory implements DataFactory<TyreStintHistory
 
     public TyreStintHistoryData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
+            case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025, F1_2026 -> buildData(byteBuffer);
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

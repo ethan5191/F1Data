@@ -17,7 +17,7 @@ public class MarshalZoneDataFactory implements DataFactory<MarshalZoneData[]> {
 
     public MarshalZoneData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2019, F1_2020, F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
+            case F1_2019, F1_2020, F1_2021, F1_2022, F1_2023, F1_2024, F1_2025, F1_2026 -> buildData(byteBuffer);
         };
     }
 

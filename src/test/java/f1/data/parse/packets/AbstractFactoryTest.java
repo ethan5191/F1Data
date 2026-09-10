@@ -42,7 +42,7 @@ public abstract class AbstractFactoryTest {
             IllegalStateException exception = assertThrows(IllegalStateException.class,
                     () -> PacketHeaderFactory.build(mockByteBuffer));
 
-            assertEquals("Games Packet Format did not match an accepted format (2019 - 2025)",
+            assertEquals("Games Packet Format did not match an accepted format (" + SupportedYearsEnum.MIN_YEAR + " - " + SupportedYearsEnum.MAX_YEAR + ")",
                     exception.getMessage());
         }
     }

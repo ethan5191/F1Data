@@ -14,7 +14,7 @@ public class LapPositionsDataFactory implements DataFactory<LapPositionsData>, F
 
     public LapPositionsData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2025 -> new LapPositionsData(this.packetFormat, byteBuffer);
+            case F1_2025, F1_2026 -> new LapPositionsData(this.packetFormat, byteBuffer);
             default -> throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }

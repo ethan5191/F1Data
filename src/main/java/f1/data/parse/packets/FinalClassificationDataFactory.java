@@ -18,7 +18,7 @@ public class FinalClassificationDataFactory implements DataFactory<FinalClassifi
             case F1_2021 -> buildData(new FinalClassificationData.FinalClassificationData21(byteBuffer));
             case F1_2022, F1_2023, F1_2024 ->
                     buildData(new FinalClassificationData.FinalClassificationData22(byteBuffer));
-            case F1_2025 -> buildData(new FinalClassificationData.FinalClassificationData25(byteBuffer));
+            case F1_2025, F1_2026 -> buildData(new FinalClassificationData.FinalClassificationData25(byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

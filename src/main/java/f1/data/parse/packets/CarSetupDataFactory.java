@@ -16,7 +16,7 @@ public class CarSetupDataFactory implements DataFactory<CarSetupData> {
         return switch (this.packetFormat) {
             case F1_2019 -> buildData(new CarSetupData.CarSetupData19(byteBuffer));
             case F1_2020, F1_2021, F1_2022, F1_2023 -> buildData(new CarSetupData.CarSetupData20(byteBuffer));
-            case F1_2024, F1_2025 -> buildData(new CarSetupData.CarSetupData24(byteBuffer));
+            case F1_2024, F1_2025, F1_2026 -> buildData(new CarSetupData.CarSetupData24(byteBuffer));
         };
     }
 

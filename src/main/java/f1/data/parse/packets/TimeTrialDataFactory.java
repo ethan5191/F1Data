@@ -15,17 +15,22 @@ public class TimeTrialDataFactory implements DataFactory<TimeTrialData>, FirstYe
     public TimeTrialData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
             case F1_2024, F1_2025 -> buildData(new TimeTrialData.TimeTrialData24(byteBuffer));
+            case F1_2026 -> buildData(new TimeTrialData.TimeTrialData26(byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
     }
 
+    private TimeTrialData buildData(TimeTrialData.TimeTrialData24 ttd24) {
+        return new TimeTrialData(ttd24.carIndex(), ttd24.teamId(), ttd24.lapTimeInMS(), ttd24.sector1TimeInMS(), ttd24.sector2TimeInMS(), ttd24.sector3TimeInMS(), ttd24.tractionControl(), ttd24.gearboxAssist(), ttd24.antiLockBrakes(), ttd24.equalCarPerformance(), ttd24.customSetup(), ttd24.valid());
+    }
+
+    private TimeTrialData buildData(TimeTrialData.TimeTrialData26 ttd26) {
+        return new TimeTrialData(ttd26.carIndex(), ttd26.teamId(), ttd26.lapTimeInMS(), ttd26.sector1TimeInMS(), ttd26.sector2TimeInMS(), ttd26.sector3TimeInMS(), ttd26.tractionControl(), ttd26.gearboxAssist(), ttd26.antiLockBrakes(), ttd26.equalCarPerformance(), ttd26.customSetup(), ttd26.valid());
+    }
+
     @Override
     public int getFirstYear() {
         return SupportedYearsEnum.F1_2024.getYear();
-    }
-
-    private TimeTrialData buildData(TimeTrialData.TimeTrialData24 ttd24) {
-        return new TimeTrialData(ttd24.carIndex(), ttd24.teamId(), ttd24.lapTimeInMS(), ttd24.sector1TimeInMS(), ttd24.sector2TimeInMS(), ttd24.sector3TimeInMS(), ttd24.tractionControl(), ttd24.gearboxAssist(), ttd24.antiLockBrakes(), ttd24.equalCarPerformance(), ttd24.customSetup(), ttd24.valid());
     }
 }

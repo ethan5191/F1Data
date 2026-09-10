@@ -8,7 +8,7 @@ import java.nio.ByteBuffer;
  * F1 24 SpeedTrap Breakdown (Little Endian)
  * - F1 2020 Length: 5 bytes
  * - F1 2022 Length: 7 bytes
- * - F1 2022-2025 Length: 12 bytes
+ * - F1 2022-2026 Length: 12 bytes
  * This struct is 12 bytes long and contains data about a speed trap event,
  * including the fastest speeds recorded in the session.
  * It is a member of the PacketEventData packet.

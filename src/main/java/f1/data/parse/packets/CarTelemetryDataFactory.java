@@ -18,6 +18,7 @@ public class CarTelemetryDataFactory implements DataFactory<CarTelemetryData> {
                     buildData(new CarTelemetryData.CarTelemetryData19(this.packetFormat, byteBuffer));
             case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 ->
                     buildData(new CarTelemetryData.CarTelemetryData21(byteBuffer));
+            case F1_2026 -> buildData(new CarTelemetryData.CarTelemetryData26(byteBuffer));
         };
     }
 
@@ -31,5 +32,11 @@ public class CarTelemetryDataFactory implements DataFactory<CarTelemetryData> {
         return new CarTelemetryData(c21.speed(), c21.throttle(), c21.steer(), c21.brake(), c21.clutch(), c21.gear(), c21.engineRPM(),
                 c21.drs(), c21.revLightPercent(), c21.brakeTemps(), c21.tireSurfaceTemps(), c21.tireInnerTemps(), c21.engineTemp(),
                 c21.tirePressure(), c21.surfaceType(), c21.revLightBitVal());
+    }
+
+    private CarTelemetryData buildData(CarTelemetryData.CarTelemetryData26 c26) {
+        return new CarTelemetryData(c26.speed(), c26.throttle(), c26.steer(), c26.brake(), c26.clutch(), c26.gear(), c26.engineRPM(),
+                c26.drs(), c26.revLightPercent(), c26.brakeTemps(), c26.tireSurfaceTemps(), c26.tireInnerTemps(), c26.engineTemp(),
+                c26.tirePressure(), c26.surfaceType(), c26.revLightBitVal());
     }
 }

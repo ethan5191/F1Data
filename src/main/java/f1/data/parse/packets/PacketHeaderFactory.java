@@ -14,7 +14,7 @@ public class PacketHeaderFactory {
             case F1_2019 -> buildData(packetFormat, new PacketHeader.PacketHeader19(packetFormat, byteBuffer));
             case F1_2020, F1_2021, F1_2022 ->
                     buildData(packetFormat, new PacketHeader.PacketHeader20(packetFormat, byteBuffer));
-            case F1_2023, F1_2024, F1_2025 ->
+            case F1_2023, F1_2024, F1_2025, F1_2026 ->
                     buildData(packetFormat, new PacketHeader.PacketHeader23(packetFormat, byteBuffer));
         };
     }

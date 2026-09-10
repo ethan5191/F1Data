@@ -24,6 +24,7 @@ public class ParticipantDataFactory implements DataFactory<ParticipantData> {
             case F1_2023 -> buildData(new ParticipantData.ParticipantData23(this.nameLength, byteBuffer));
             case F1_2024 -> buildData(new ParticipantData.ParticipantData24(this.nameLength, byteBuffer));
             case F1_2025 -> buildData(new ParticipantData.ParticipantData25(packetFormat.getYear(), this.nameLength, byteBuffer));
+            case F1_2026 -> buildData(new ParticipantData.ParticipantData26(packetFormat.getYear(), nameLength, byteBuffer));
         };
     }
 
@@ -50,6 +51,11 @@ public class ParticipantDataFactory implements DataFactory<ParticipantData> {
     private ParticipantData buildData(ParticipantData.ParticipantData25 p25) {
         return new ParticipantData(p25.aiControlled(), p25.driverId(), p25.teamId(), p25.raceNumber(), p25.nationality(),
                 p25.name(), p25.yourTelemetry(), p25.networkId(), p25.myTeam(), p25.showOnlineNames(), p25.platform(), p25.techLevel(), p25.numColors(), p25.liveryColourData(), buildLastName(p25.name()));
+    }
+
+    private ParticipantData buildData(ParticipantData.ParticipantData26 p26) {
+        return new ParticipantData(p26.aiControlled(), p26.driverId(), p26.teamId(), p26.raceNumber(), p26.nationality(),
+                p26.name(), p26.yourTelemetry(), p26.networkId(), p26.myTeam(), p26.showOnlineNames(), p26.platform(), p26.techLevel(), p26.numColors(), p26.liveryColourData(), buildLastName(p26.name()));
     }
 
     private String buildLastName(byte[] name) {

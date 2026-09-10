@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 2021 LapHistoryData Breakdown (Little Endian)
- * - F1 2021/2022 Length: 11 bytes per lap
+ * - F1 2021-2022 Length: 11 bytes per lap
  * - F1 2023-2026 Length: 14 bytes per lap
  * This struct is 11 bytes long and contains details of a single lap's history,
  * including lap time, sector times, and validity flags. This data is sent as an array.

@@ -18,7 +18,7 @@ public class SpeedTrapDataFactory implements DataFactory<SpeedTrapData>, FirstYe
         return switch (packetFormat) {
             case F1_2020 -> buildData(new SpeedTrapData.SpeedTrapData20(byteBuffer));
             case F1_2021 -> buildData(new SpeedTrapData.SpeedTrapData21(byteBuffer));
-            case F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(new SpeedTrapData.SpeedTrapData22(byteBuffer));
+            case F1_2022, F1_2023, F1_2024, F1_2025, F1_2026 -> buildData(new SpeedTrapData.SpeedTrapData22(byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

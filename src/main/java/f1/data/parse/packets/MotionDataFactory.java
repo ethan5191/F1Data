@@ -15,6 +15,7 @@ public class MotionDataFactory implements DataFactory<MotionData> {
     public MotionData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
             case F1_2019, F1_2020, F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 -> buildData(new MotionData.MotionData19(byteBuffer));
+            case F1_2026 -> buildData(new MotionData.MotionData26(byteBuffer));
         };
     }
 
@@ -30,5 +31,9 @@ public class MotionDataFactory implements DataFactory<MotionData> {
 
     private MotionData buildData(MotionData.MotionData19 md19) {
         return new MotionData(md19.worldPositionX(), md19.worldPositionY(), md19.worldPositionZ(), md19.worldVelocityX(), md19.worldVelocityY(), md19.worldVelocityZ(), md19.worldForwardDirX(), md19.worldForwardDirY(), md19.worldForwardDirZ(), md19.worldRightDirX(), md19.worldRightDirY(), md19.worldRightDirZ(), md19.gForceLat(), md19.gForceLon(), md19.gForceVer(), md19.yaw(), md19.pitch(), md19.roll(), 0, 0, 0);
+    }
+
+    private MotionData buildData(MotionData.MotionData26 md26) {
+        return new MotionData(md26.worldPositionX(), md26.worldPositionY(), md26.worldPositionZ(), md26.worldVelocityX(), md26.worldVelocityY(), md26.worldVelocityZ(), md26.worldForwardDirX(), md26.worldForwardDirY(), md26.worldForwardDirZ(), md26.worldRightDirX(), md26.worldRightDirY(), md26.worldRightDirZ(), 0,0,0, md26.yaw(), md26.pitch(), md26.roll(), md26.gForceLat(), md26.gForceLon(), md26.gForceVer());
     }
 }

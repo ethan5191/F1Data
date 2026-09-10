@@ -16,7 +16,7 @@ public class SessionHistoryDataFactory implements DataFactory<SessionHistoryData
 
     public SessionHistoryData build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025 ->
+            case F1_2021, F1_2022, F1_2023, F1_2024, F1_2025, F1_2026 ->
                     buildData(new SessionHistoryData.SessionHistoryData21(this.packetFormat.getYear(), byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));

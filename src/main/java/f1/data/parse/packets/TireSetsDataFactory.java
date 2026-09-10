@@ -15,7 +15,7 @@ public class TireSetsDataFactory implements DataFactory<TireSetsData[]>, FirstYe
 
     public TireSetsData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2023, F1_2024, F1_2025 -> buildData(byteBuffer);
+            case F1_2023, F1_2024, F1_2025, F1_2026 -> buildData(byteBuffer);
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

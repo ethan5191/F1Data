@@ -16,7 +16,7 @@ public class CarDamageDataFactory implements DataFactory<CarDamageData>, FirstYe
         return switch (packetFormat) {
             case F1_2020, F1_2021 -> buildData(new CarDamageData.CarDamageData20(byteBuffer));
             case F1_2022, F1_2023, F1_2024 -> buildData(new CarDamageData.CarDamageData22(byteBuffer));
-            case F1_2025 -> buildData(new CarDamageData.CarDamageData25(byteBuffer));
+            case F1_2025, F1_2026 -> buildData(new CarDamageData.CarDamageData25(byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

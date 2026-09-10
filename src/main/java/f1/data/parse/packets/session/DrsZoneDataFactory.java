@@ -16,7 +16,7 @@ public class DrsZoneDataFactory implements DataFactory<DrsZoneData[]>, FirstYear
 
     public DrsZoneData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
-            case F1_2025 -> buildData26(byteBuffer);
+            case F1_2026 -> buildData26(byteBuffer);
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
@@ -32,6 +32,6 @@ public class DrsZoneDataFactory implements DataFactory<DrsZoneData[]>, FirstYear
 
     @Override
     public int getFirstYear() {
-        return SupportedYearsEnum.F1_2025.getYear();
+        return SupportedYearsEnum.F1_2026.getYear();
     }
 }

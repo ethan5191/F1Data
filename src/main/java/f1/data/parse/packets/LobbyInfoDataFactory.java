@@ -20,6 +20,7 @@ public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData>, FirstYe
             case F1_2021, F1_2022 -> buildData(new LobbyInfoData.LobbyInfoData21(byteBuffer, nameLength));
             case F1_2023 -> buildData(new LobbyInfoData.LobbyInfoData23(byteBuffer, nameLength));
             case F1_2024, F1_2025 -> buildData(new LobbyInfoData.LobbyInfoData24(byteBuffer, nameLength));
+            case F1_2026 -> buildData(new LobbyInfoData.LobbyInfoData26(byteBuffer, nameLength));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
@@ -39,6 +40,10 @@ public class LobbyInfoDataFactory implements DataFactory<LobbyInfoData>, FirstYe
 
     private LobbyInfoData buildData(LobbyInfoData.LobbyInfoData24 lid24) {
         return new LobbyInfoData(lid24.aiControlled(), lid24.teamId(), lid24.nationality(), lid24.name(), lid24.readyStatus(), lid24.carNumber(), lid24.platform(), lid24.yourTelemetry(), lid24.showOnlineNames(), lid24.techLevel());
+    }
+
+    private LobbyInfoData buildData(LobbyInfoData.LobbyInfoData26 lid26) {
+        return new LobbyInfoData(lid26.aiControlled(), lid26.teamId(), lid26.nationality(), lid26.name(), lid26.readyStatus(), lid26.carNumber(), lid26.platform(), lid26.yourTelemetry(), lid26.showOnlineNames(), lid26.techLevel());
     }
 
     @Override

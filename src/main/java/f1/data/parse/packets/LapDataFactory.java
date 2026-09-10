@@ -18,7 +18,7 @@ public class LapDataFactory implements DataFactory<LapData> {
             case F1_2020 -> buildData(new LapData.LapData20(byteBuffer));
             case F1_2021, F1_2022 -> buildData(new LapData.LapData21(byteBuffer));
             case F1_2023 -> buildData(new LapData.LapData23(byteBuffer));
-            case F1_2024, F1_2025 -> buildData(new LapData.LapData24(byteBuffer));
+            case F1_2024, F1_2025, F1_2026 -> buildData(new LapData.LapData24(byteBuffer));
         };
     }
 

@@ -21,6 +21,7 @@ public class SessionDataFactory implements DataFactory<SessionData> {
             case F1_2022 -> buildData(new SessionData.SessionData22(this.packetFormat.getYear(), byteBuffer));
             case F1_2023 -> buildData(new SessionData.SessionData23(this.packetFormat.getYear(), byteBuffer));
             case F1_2024, F1_2025 -> buildData(new SessionData.SessionData24(this.packetFormat.getYear(), byteBuffer));
+            case F1_2026 -> buildData(new SessionData.SessionData26(this.packetFormat.getYear(), byteBuffer));
         };
     }
 
@@ -46,5 +47,9 @@ public class SessionDataFactory implements DataFactory<SessionData> {
 
     private SessionData buildData(SessionData.SessionData24 s24) {
         return new SessionData(s24.weather(), s24.trackTemperature(), s24.airTemperature(), s24.totalLaps(), s24.trackLength(), s24.sessionType(), s24.trackId(), s24.formula(), s24.sessionTimeLeft(), s24.sessionDuration(), s24.pitSpeedLimit(), s24.gamePaused(), s24.isSpectating(), s24.spectatorCarIndex(), s24.sliProNativeSupport(), s24.numMarshalZones(), s24.marshalZones(), s24.safetyCarStatus(), s24.networkGame(), s24.numWeatherForecastSamples(), s24.weatherForecastSamples(), s24.forecastAccuracy(), s24.aiDifficulty(), s24.seasonLinkIdentifier(), s24.weekendLinkIdentifier(), s24.sessionLinkIdentifier(), s24.pitStopWindowIdealLap(), s24.pitStopWindowLatestLap(), s24.pitStopRejoinPosition(), s24.assistData(), s24.gameMode(), s24.ruleSet(), s24.timeOfDay(), s24.sessionLength(), s24.speedUnitsLeadPlayer(), s24.tempUnitsLeadPlayer(), s24.speedUnitsSecondaryPlayer(), s24.tempUnitsSecondaryPlayer(), s24.numSafetyCarPeriods(), s24.numVirtualSafetyCarPeriods(), s24.numRedFlagPeriods(), s24.gameModeData(), s24.sector2LapDistanceStart(), s24.sector3LapDistanceStart(), null);
+    }
+
+    private SessionData buildData(SessionData.SessionData26 s26) {
+        return new SessionData(s26.weather(), s26.trackTemperature(), s26.airTemperature(), s26.totalLaps(), s26.trackLength(), s26.sessionType(), s26.trackId(), s26.formula(), s26.sessionTimeLeft(), s26.sessionDuration(), s26.pitSpeedLimit(), s26.gamePaused(), s26.isSpectating(), s26.spectatorCarIndex(), s26.sliProNativeSupport(), s26.numMarshalZones(), s26.marshalZones(), s26.safetyCarStatus(), s26.networkGame(), s26.numWeatherForecastSamples(), s26.weatherForecastSamples(), s26.forecastAccuracy(), s26.aiDifficulty(), s26.seasonLinkIdentifier(), s26.weekendLinkIdentifier(), s26.sessionLinkIdentifier(), s26.pitStopWindowIdealLap(), s26.pitStopWindowLatestLap(), s26.pitStopRejoinPosition(), s26.assistData(), s26.gameMode(), s26.ruleSet(), s26.timeOfDay(), s26.sessionLength(), s26.speedUnitsLeadPlayer(), s26.tempUnitsLeadPlayer(), s26.speedUnitsSecondaryPlayer(), s26.tempUnitsSecondaryPlayer(), s26.numSafetyCarPeriods(), s26.numVirtualSafetyCarPeriods(), s26.numRedFlagPeriods(), s26.gameModeData(), s26.sector2LapDistanceStart(), s26.sector3LapDistanceStart(), s26.twentySixSessionData());
     }
 }

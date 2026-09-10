@@ -19,7 +19,7 @@ public class LapHistoryDataFactory implements DataFactory<LapHistoryData[]>, Fir
     public LapHistoryData[] build(ByteBuffer byteBuffer) {
         return switch (packetFormat) {
             case F1_2021, F1_2022 -> buildData21(byteBuffer);
-            case F1_2023, F1_2024, F1_2025 -> buildData23(byteBuffer);
+            case F1_2023, F1_2024, F1_2025, F1_2026 -> buildData23(byteBuffer);
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };

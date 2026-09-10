@@ -18,6 +18,7 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
             case F1_2020 -> buildData(new CarStatusData.CarStatusData20(byteBuffer));
             case F1_2021, F1_2022 -> buildData(new CarStatusData.CarStatusData21(byteBuffer));
             case F1_2023, F1_2024, F1_2025 -> buildData(new CarStatusData.CarStatusData23(byteBuffer));
+            case F1_2026 -> buildData(new CarStatusData.CarStatusData26(byteBuffer));
         };
     }
 
@@ -54,6 +55,15 @@ public class CarStatusDataFactory implements DataFactory<CarStatusData> {
                 c23.drsActivationDistance(), c23.actualTireCompound(), c23.visualTireCompound(), c23.tiresAgeLaps(), c23.vehicleFiaFlags(),
                 c23.ersStoreEnergy(), c23.ersDeployMode(), c23.ersHarvestedThisLapMGUK(), c23.ersHarvestedThisLapMGUH(), c23.ersDeployedThisLap(),
                 c23.networkPaused(), c23.enginePowerICE(), c23.enginePowerMGUK(), 0, new float[0], new int[0], 0, 0, 0,
+                0, 0, 0);
+    }
+
+    private CarStatusData buildData(CarStatusData.CarStatusData26 c26) {
+        return new CarStatusData(c26.tractionControl(), c26.antiLockBrakes(), c26.fuelMix(), c26.frontBrakeBias(), c26.pitLimitStatus(),
+                c26.fuelInTank(), c26.fuelCapacity(), c26.fuelRemainingLaps(), c26.maxRPM(), c26.idleRPM(), c26.maxGears(), c26.drsAllowed(),
+                c26.drsActivationDistance(), c26.actualTireCompound(), c26.visualTireCompound(), c26.tiresAgeLaps(), c26.vehicleFiaFlags(),
+                c26.ersStoreEnergy(), c26.ersDeployMode(), c26.ersHarvestedThisLapMGUK(), c26.ersHarvestedThisLapMGUH(), c26.ersDeployedThisLap(),
+                c26.networkPaused(), c26.enginePowerICE(), c26.enginePowerMGUK(), c26.ersHarvestLimitPerLap(), new float[0], new int[0], 0, 0, 0,
                 0, 0, 0);
     }
 }

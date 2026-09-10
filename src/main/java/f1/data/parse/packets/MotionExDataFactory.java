@@ -16,7 +16,7 @@ public class MotionExDataFactory implements DataFactory<MotionExData>, FirstYear
         return switch (packetFormat) {
             case F1_2023 -> buildData(new MotionExData.MotionExData23(byteBuffer));
             case F1_2024 -> buildData(new MotionExData.MotionExData24(byteBuffer));
-            case F1_2025 -> buildData(new MotionExData.MotionExData25(byteBuffer));
+            case F1_2025, F1_2026 -> buildData(new MotionExData.MotionExData25(byteBuffer));
             default ->
                     throw new IllegalStateException(SupportedYearsEnum.buildErrorMessageFromYear(getFirstYear()));
         };
