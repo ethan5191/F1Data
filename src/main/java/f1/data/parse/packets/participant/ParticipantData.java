@@ -51,12 +51,18 @@ import java.util.Objects;
 
 public record ParticipantData(int aiControlled, int driverId, int teamId, int raceNumber, int nationality, byte[] name,
                               int yourTelemetry, int networkId, int myTeam, int showOnlineNames, int platform,
-                              int techLevel, String lastName) {
+                              int techLevel, int numColours, LiveryColourData[] liveryColourData, String lastName) {
+
+    public static final int LIVERY_COLOUR_DATA_25_SIZE = 4;
 
     private static byte[] formatName(ByteBuffer byteBuffer, int nameLength) {
         byte[] tempName = new byte[nameLength];
         byteBuffer.get(tempName, 0, nameLength);
         return tempName;
+    }
+
+    private static LiveryColourData[] buildLiverColourData25(int packetFormat, ByteBuffer byteBuffer) {
+        return new LiveryColourDataFactory(packetFormat).build(byteBuffer);
     }
 
     record ParticipantData19(int aiControlled, int driverId, int teamId, int raceNumber, int nationality, byte[] name,
@@ -129,8 +135,8 @@ public record ParticipantData(int aiControlled, int driverId, int teamId, int ra
 
     record ParticipantData25(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
                              int nationality, byte[] name, int yourTelemetry, int showOnlineNames, int techLevel,
-                             int platform) {
-        public ParticipantData25(int nameLength, ByteBuffer byteBuffer) {
+                             int platform, int numColors, LiveryColourData[] liveryColourData) {
+        public ParticipantData25(int packetFormat, int nameLength, ByteBuffer byteBuffer) {
             this(BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
@@ -142,8 +148,9 @@ public record ParticipantData(int aiControlled, int driverId, int teamId, int ra
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                    BitMaskUtils.bitMask8(byteBuffer.get())
-                    //TODO add new params for 2025 participantData
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    buildLiverColourData25(packetFormat, byteBuffer)
             );
         }
     }
