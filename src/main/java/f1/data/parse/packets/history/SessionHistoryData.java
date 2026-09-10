@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 2021 PacketSessionHistoryData Breakdown (Little Endian)
- * - F1 2021 Length: 1131 bytes
+ * - F1 2021 - 2026 Length: 1131 bytes
  * This struct contains the lap and tyre history for a single car.
  * <p>
  * The values must be read from a ByteBuffer configured for Little Endian byte order.
@@ -36,6 +36,14 @@ public record SessionHistoryData(int carIndex, int numLaps, int numTyreStints, i
                                  int bestSector1LapNum, int bestSector2LapNum, int bestSector3LapNum,
                                  LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
 
+    public static LapHistoryData[] buildLapHistoryData(int packetFormat, ByteBuffer byteBuffer) {
+        return new LapHistoryDataFactory(packetFormat).build(byteBuffer);
+    }
+
+    public static TyreStintHistoryData[] buildTyreStintHistoryData(int packetFormat, ByteBuffer byteBuffer) {
+        return new TyreStintHistoryDataFactory(packetFormat).build(byteBuffer);
+    }
+
     record SessionHistoryData21(int carIndex, int numLaps, int numTyreStints, int bestLapTimeLapNum,
                                 int bestSector1LapNum, int bestSector2LapNum, int bestSector3LapNum,
                                 LapHistoryData[] lapHistoryData, TyreStintHistoryData[] tyreStintHistoryData) {
@@ -48,8 +56,8 @@ public record SessionHistoryData(int carIndex, int numLaps, int numTyreStints, i
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
-                    new LapHistoryDataFactory(packetFormat).build(byteBuffer),
-                    new TyreStintHistoryDataFactory(packetFormat).build(byteBuffer)
+                    buildLapHistoryData(packetFormat, byteBuffer),
+                    buildTyreStintHistoryData(packetFormat, byteBuffer)
             );
         }
     }

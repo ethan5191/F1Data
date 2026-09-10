@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 /**
  * F1 2021 TyreStintHistoryData Breakdown (Little Endian)
- * - F1 2021-2025 Length: 3 bytes per stint
+ * - F1 2021-2026 Length: 3 bytes per stint
  * This struct is 3 bytes long and contains details about a single tyre stint in a race.
  * This data is sent as an array for each tyre stint used by a driver.
  * <p>
