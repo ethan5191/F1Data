@@ -5,6 +5,7 @@ import f1.data.utils.BitMaskUtils;
 
 import java.nio.ByteBuffer;
 
+//Not a struct, houses the new params that were added to the SessionData struct in the 2026 DLC.
 public record TwentySixSessionData(int activeAeroTrackStatus, int numActiveAeroZonesFull, ActiveAeroZoneData[] activeAeroZonesFull,
                                    int numActiveAeroZonesPartial, ActiveAeroZoneData[] activeAeroZonesPartial, int numDrsZones,
                                    DrsZoneData[] drsZoneData, float startReactionTime, int antiLockBrakesAssist,
