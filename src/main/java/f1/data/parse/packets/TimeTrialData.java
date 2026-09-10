@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 /**
  * F1 2024 TimeTrialDataSet Breakdown (Little Endian)
  * - F1 2024/2025 Length: 23 bytes
- * - F1 2026 Length: 24 bytes (teamId from uint8 to uint16)
+ * - F1 2026 Length: 24 bytes (m_teamId from uint8 to uint16)
  * This struct is 23 bytes long and contains time trial data for a single car,
  * including lap times and assist settings.
  * <p>
@@ -38,19 +38,43 @@ public record TimeTrialData(int carIndex, int teamId, long lapTimeInMS, long sec
                             long sector3TimeInMS, int tractionControl, int gearboxAssist, int antiLockBrakes,
                             int equalCarPerformance, int customSetup, int valid) {
 
-    public TimeTrialData(ByteBuffer byteBuffer) {
-        this(BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask32(byteBuffer.getInt()),
-                BitMaskUtils.bitMask32(byteBuffer.getInt()),
-                BitMaskUtils.bitMask32(byteBuffer.getInt()),
-                BitMaskUtils.bitMask32(byteBuffer.getInt()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get()),
-                BitMaskUtils.bitMask8(byteBuffer.get())
-        );
+    record TimeTrialData24(int carIndex, int teamId, long lapTimeInMS, long sector1TimeInMS, long sector2TimeInMS,
+                           long sector3TimeInMS, int tractionControl, int gearboxAssist, int antiLockBrakes,
+                           int equalCarPerformance, int customSetup, int valid) {
+        public TimeTrialData24(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
+
+    record TimeTrialData26(int carIndex, int teamId, long lapTimeInMS, long sector1TimeInMS, long sector2TimeInMS,
+                           long sector3TimeInMS, int tractionControl, int gearboxAssist, int antiLockBrakes,
+                           int equalCarPerformance, int customSetup, int valid) {
+        public TimeTrialData26(ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask32(byteBuffer.getInt()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
     }
 }
