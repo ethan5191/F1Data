@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  * - F1 2020 CarDamage info was part of CarStatusPacket
  * - F1 2021 Length: 39 bytes
  * - F1 2022-2024 Length: 42 bytes
- * - F1 2025-2026 Length: 46 bytes TODO:add m_tyreBlisters[4] after breakDamage[4] for 2025.
+ * - F1 2025-2026 Length: 46 bytes
  * This struct is 42 bytes long and contains details of the car's damage state,
  * including bodywork, tyres, brakes, and engine components. This data is sent for all cars.
  * <p>
@@ -53,13 +53,13 @@ public record CarDamageData(float[] tyresWear, int[] tyresDamage, int[] brakesDa
                             int frontRightWingDamage, int rearWingDamage, int floorDamage, int diffuserDamage,
                             int sidepodDamage, int drsFault, int gearBoxDamage, int engineDamage, int engineMGUHWear,
                             int engineESWear, int engineCEWear, int engineICEWear, int engineMGUKWear,
-                            int engineTCWear, int ersFault, int engineBlown, int engineSeized) {
+                            int engineTCWear, int ersFault, int engineBlown, int engineSeized, int[] tyreBlisters) {
 
     public static CarDamageData fromStatus(CarStatusData status) {
         return new CarDamageData(status.tyresWear(), status.tyresDamage(), new int[4], status.frontLeftWingDamage(),
                 status.frontRightWingDamage(), status.rearWingDamage(), 0, 0, 0,
                 status.drsFault(), status.gearBoxDamage(), status.engineDamage(), 0, 0,
-                0, 0, 0, 0, 0, 0, 0);
+                0, 0, 0, 0, 0, 0, 0, new int[4]);
     }
 
     record CarDamageData20(float[] tyresWear, int[] tyresDamage, int[] brakesDamage, int frontLeftWingDamage,
@@ -79,6 +79,16 @@ public record CarDamageData(float[] tyresWear, int[] tyresDamage, int[] brakesDa
                            int engineMGUKWear, int engineTCWear, int engineBlown, int engineSeized) {
         public CarDamageData22(ByteBuffer byteBuffer) {
             this(ParseUtils.parseFloatArray(byteBuffer, 4), ParseUtils.parseIntArray(byteBuffer, 4), ParseUtils.parseIntArray(byteBuffer, 4), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()));
+        }
+    }
+
+    record CarDamageData25(float[] tyresWear, int[] tyresDamage, int[] brakesDamage, int[] tyreBlisters, int frontLeftWingDamage,
+                           int frontRightWingDamage, int rearWingDamage, int floorDamage, int diffuserDamage,
+                           int sidepodDamage, int drsFault, int ersFault, int gearBoxDamage, int engineDamage,
+                           int engineMGUHWear, int engineESWear, int engineCEWear, int engineICEWear,
+                           int engineMGUKWear, int engineTCWear, int engineBlown, int engineSeized) {
+        public CarDamageData25(ByteBuffer byteBuffer) {
+            this(ParseUtils.parseFloatArray(byteBuffer, 4), ParseUtils.parseIntArray(byteBuffer, 4), ParseUtils.parseIntArray(byteBuffer, 4), ParseUtils.parseIntArray(byteBuffer, 4), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()), BitMaskUtils.bitMask8(byteBuffer.get()));
         }
     }
 }
