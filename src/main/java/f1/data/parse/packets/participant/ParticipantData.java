@@ -19,31 +19,30 @@ import java.util.Objects;
  * - F1 2021/2022 Length: 56 bytes
  * - F1 2023 Length: 58 bytes
  * - F1 2024 Length: 60 bytes
- *  TODO: Still need to implement 2025/2026 methods.
- * - F1 2025 Length: 57 bytes
+ * - F1 2025 Length: 57 bytes (m_name changed from 48 to 32)
  * - F1 2026 Length: 60 bytes
  * /*
  * PacketParticipantsData
  * ----------------------
- * Member Name               | Data Type          | Size (bytes) | First Appeared | Notes
- * --------------------------|--------------------|--------------|----------------|-------------------------
- * m_header                  | PacketHeader       | ...          | 2019           | Full packet header
- * m_numActiveCars            | uint8             | 1            | 2019           | Number of active cars on HUD
- * m_participants[22]         | ParticipantData   | ...          | 2019           | Array for each participant
- * - m_aiControlled         | uint8               | 1            | 2019           | AI or human
- * - m_driverId             | uint8 (int16 in 26) | 1            | 2019           | 255 if network human
- * - m_networkId            | uint8 (int16 in 26) | 1            | 2021           | Unique network ID
- * - m_teamId               | uint8 (int16 in 26) | 1            | 2019           |
- * - m_myTeam               | uint8               | 1            | 2021           | 1 = My Team, 0 = otherwise
- * - m_raceNumber           | uint8               | 1            | 2019           |
- * - m_nationality          | uint8               | 1            | 2019           |
- * - m_name[48]             | char[48]            | 48           | 2019           | UTF-8, null-terminated
- * - m_yourTelemetry        | uint8               | 1            | 2019           | 0 = restricted, 1 = public
- * - m_showOnlineNames      | uint8               | 1            | 2023           | 0 = off, 1 = on
- * - m_techLevel            | uint16              | 2            | 2024           | F1 World tech level
- * - m_platform             | uint8               | 1            | 2023           | 1=Steam,3=PS,4=Xbox,6=Origin,255=unknown
- * - m_numColours           | uint8               | 1            | 2025           | Number of colours valid for this car
- * - m_liveryColours[4]     | uint8[4]            | 12           | 2025           | Colours for the car
+ * Member Name               | Data Type          | Size (bytes)   | First Appeared | Notes
+ * --------------------------|--------------------|----------------|----------------|-------------------------
+ * m_header                  | PacketHeader       | ...            | 2019           | Full packet header
+ * m_numActiveCars            | uint8             | 1              | 2019           | Number of active cars on HUD
+ * m_participants[22]         | ParticipantData   | ...            | 2019           | Array for each participant
+ * - m_aiControlled         | uint8               | 1              | 2019           | AI or human
+ * - m_driverId             | uint8 (int16 in 26) | 1              | 2019           | 255 if network human
+ * - m_networkId            | uint8 (int16 in 26) | 1              | 2021           | Unique network ID
+ * - m_teamId               | uint8 (int16 in 26) | 1              | 2019           |
+ * - m_myTeam               | uint8               | 1              | 2021           | 1 = My Team, 0 = otherwise
+ * - m_raceNumber           | uint8               | 1              | 2019           |
+ * - m_nationality          | uint8               | 1              | 2019           |
+ * - m_name[48]             | char[48]            | 48 (32 in '25) | 2019           | UTF-8, null-terminated
+ * - m_yourTelemetry        | uint8               | 1              | 2019           | 0 = restricted, 1 = public
+ * - m_showOnlineNames      | uint8               | 1              | 2023           | 0 = off, 1 = on
+ * - m_techLevel            | uint16              | 2              | 2024           | F1 World tech level
+ * - m_platform             | uint8               | 1              | 2023           | 1=Steam,3=PS,4=Xbox,6=Origin,255=unknown
+ * - m_numColours           | uint8               | 1              | 2025           | Number of colours valid for this car
+ * - m_liveryColours[4]     | uint8[4]            | 12             | 2025           | Colours for the car
  * * Note:
  * - uint8 and uint16 types should be read as unsigned integers.
  * - m_name is a fixed-size char array that should be read into a String.
@@ -141,6 +140,28 @@ public record ParticipantData(int aiControlled, int driverId, int teamId, int ra
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    buildLiverColourData25(packetFormat, byteBuffer)
+            );
+        }
+    }
+
+    record ParticipantData26(int aiControlled, int driverId, int networkId, int teamId, int myTeam, int raceNumber,
+                             int nationality, byte[] name, int yourTelemetry, int showOnlineNames, int techLevel,
+                             int platform, int numColors, LiveryColourData[] liveryColourData) {
+        public ParticipantData26(int packetFormat, int nameLength, ByteBuffer byteBuffer) {
+            this(BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
