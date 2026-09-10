@@ -10,8 +10,8 @@ import java.nio.ByteBuffer;
  * - F1 2021/2022 Length: 53 bytes per player
  * - F1 2023 Length: 54 bytes per player
  * - F1 2024 Length: 58 bytes per player
- * - F1 2025 Length: 42 bytes per player (Name changed to 32 length)
- * - F1 2026 Length: 43 byters per player (teamId changed to a uint16)
+ * - F1 2025 Length: 42 bytes per player (m_name changed to 32 length)
+ * - F1 2026 Length: 43 byters per player (m_teamId changed to a uint16)
  * This struct is 52 bytes long and contains details about a single player in the lobby,
  * including their name, team, and ready status. This data is sent as an array for each player.
  * <p>
@@ -88,11 +88,29 @@ public record LobbyInfoData(int aiControlled, int teamId, int nationality, byte[
         }
     }
 
+    //2025 uses this objects as its the same object, just the name was shorter.
     record LobbyInfoData24(int aiControlled, int teamId, int nationality, int platform, byte[] name, int carNumber, int yourTelemetry, int showOnlineNames, int techLevel, int readyStatus) {
         public LobbyInfoData24(ByteBuffer byteBuffer, int nameLength) {
             this(
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    formatName(byteBuffer, nameLength),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask8(byteBuffer.get())
+            );
+        }
+    }
+
+    record LobbyInfoData26(int aiControlled, int teamId, int nationality, int platform, byte[] name, int carNumber, int yourTelemetry, int showOnlineNames, int techLevel, int readyStatus) {
+        public LobbyInfoData26(ByteBuffer byteBuffer, int nameLength) {
+            this(
+                    BitMaskUtils.bitMask8(byteBuffer.get()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     BitMaskUtils.bitMask8(byteBuffer.get()),
                     formatName(byteBuffer, nameLength),
