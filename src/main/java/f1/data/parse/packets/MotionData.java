@@ -41,48 +41,66 @@ import java.nio.ByteBuffer;
  * - m_roll                        | float               | 4            | 2019           | Roll angle in radians
  */
 
-public record MotionData(
-        float worldPositionX,
-        float worldPositionY,
-        float worldPositionZ,
-        float worldVelocityX,
-        float worldVelocityY,
-        float worldVelocityZ,
-        int worldForwardDirX,
-        int worldForwardDirY,
-        int worldForwardDirZ,
-        int worldRightDirX,
-        int worldRightDirY,
-        int worldRightDirZ,
-        float gForceLat,
-        float gForceLon,
-        float gForceVer,
-        float yaw,
-        float pitch,
-        float roll
+public record MotionData(float worldPositionX, float worldPositionY, float worldPositionZ, float worldVelocityX,
+        float worldVelocityY, float worldVelocityZ, int worldForwardDirX, int worldForwardDirY, int worldForwardDirZ,
+        int worldRightDirX, int worldRightDirY, int worldRightDirZ, float gForceLat, float gForceLon, float gForceVer,
+        float yaw, float pitch, float roll, int gForceLatInt, int gForceLonInt, int gForceVerInt
 ) {
 
-    public MotionData(ByteBuffer byteBuffer) {
-        this(
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                BitMaskUtils.bitMask16(byteBuffer.getShort()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat()),
-                determineFloatValue(byteBuffer.getFloat())
-        );
+    record MotionData19(float worldPositionX, float worldPositionY, float worldPositionZ, float worldVelocityX,
+                        float worldVelocityY, float worldVelocityZ, int worldForwardDirX, int worldForwardDirY,
+                        int worldForwardDirZ, int worldRightDirX, int worldRightDirY, int worldRightDirZ,
+                        float gForceLat, float gForceLon, float gForceVer, float yaw, float pitch, float roll) {
+        public MotionData19(ByteBuffer byteBuffer) {
+            this(
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat())
+            );
+        }
+    }
+
+    record MotionData26(float worldPositionX, float worldPositionY, float worldPositionZ, float worldVelocityX,
+                        float worldVelocityY, float worldVelocityZ, int worldForwardDirX, int worldForwardDirY,
+                        int worldForwardDirZ, int worldRightDirX, int worldRightDirY, int worldRightDirZ,
+                        int gForceLat, int gForceLon, int gForceVer, float yaw, float pitch, float roll) {
+        public MotionData26(ByteBuffer byteBuffer) {
+            this(
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    BitMaskUtils.bitMask16(byteBuffer.getShort()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat()),
+                    determineFloatValue(byteBuffer.getFloat())
+            );
+        }
     }
 
     private static float determineFloatValue(float val) {
